@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "seed": 1729,
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false,
+    "gpu": "A100-80GB",
+    "selection_reason": "passed all 8 balanced toy behavioral cells; 4B failed the worst-cell gate"
+  },
+  "retired_model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "dtype": "bfloat16",
+    "gpu": "L4",
+    "status": "retired after failed balanced behavioral screen; artifacts preserved under results/4b_behavioral_screen"
+  },
+  "lens": {
+    "code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+    "repo": "neuronpedia/jacobian-lens",
+    "revision": "qwen-n1000",
+    "filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+    "fit_prompts": 1000
+  },
+  "dataset": {
+    "stage": "toy",
+    "n_base": 120,
+    "answer_symbols": ["A", "B"],
+    "policy_styles": ["explicit", "indirect"],
+    "splits": {
+      "discovery": ["container", "route", "locker"],
+      "validation": ["code", "archive"],
+      "test": ["custodian"]
+    }
+  },
+  "budget": {
+    "monthly_hard_limit_usd": 30.0,
+    "reserve_usd": 5.0,
+    "study_limit_usd": 25.0,
+    "default_gpu": "A100-80GB",
+    "job_timeout_seconds": 3600
+  }
+}

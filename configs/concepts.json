@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "status": "seed-list; freeze only after discovery, before validation",
+  "reveal": ["copy", "same", "truth", "true", "honest", "reveal", "disclose"],
+  "conceal": ["flip", "opposite", "hide", "conceal", "withhold", "mislead", "deceive"],
+  "lexical_controls": ["objective", "answer", "option", "point"],
+  "unrelated_controls": ["weather", "music", "wooden", "circle"]
+}
