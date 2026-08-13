@@ -1,0 +1,3 @@
+world_state,n_rows,n_scenarios,delta_literal_logodds,delta_literal_logodds_low,delta_literal_logodds_high,delta_policy_score,delta_policy_score_low,delta_policy_score_high
+A,24,6,-0.125,-0.140625,-0.10416666666666667,0.125,0.10416666666666667,0.140625
+B,24,6,0.057291666666666664,0.036458333333333336,0.08333333333333333,0.057291666666666664,0.036458333333333336,0.078125

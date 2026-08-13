@@ -2,6 +2,7 @@ import pandas as pd
 
 from jspace_policy.analysis import (
     add_behavior_metrics,
+    grouped_intervention_summary,
     paired_policy_shift,
     paired_readout_trajectories,
 )
@@ -88,3 +89,19 @@ def test_readout_trajectories_pair_policy_and_fact() -> None:
     policy, fact = paired_readout_trajectories(pd.DataFrame(rows))
     assert policy.loc[0, "effect"] == 6.0
     assert fact.loc[0, "effect"] == 4.0
+
+
+def test_grouped_intervention_summary_clusters_by_scenario() -> None:
+    frame = pd.DataFrame(
+        [
+            {"scenario_id": "s1", "layer": 1, "effect": 1.0},
+            {"scenario_id": "s1", "layer": 1, "effect": 1.0},
+            {"scenario_id": "s2", "layer": 1, "effect": 3.0},
+            {"scenario_id": "s2", "layer": 1, "effect": 3.0},
+        ]
+    )
+    summary = grouped_intervention_summary(
+        frame, ["layer"], ["effect"], n_boot=100, seed=7
+    )
+    assert summary.loc[0, "effect"] == 2.0
+    assert summary.loc[0, "n_scenarios"] == 2

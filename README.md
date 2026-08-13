@@ -4,13 +4,15 @@ Can a language model continue to represent what is true while a causal intervent
 
 This repository is the reproducible experiment scaffold for answering that narrow question in `Qwen/Qwen3.6-27B` with Anthropic's released Jacobian Lens. It deliberately does **not** equate instructed concealment with real-world deception, model intent, or consciousness. The target claim is mechanistic: under controlled binary tasks, a fact representation and a context-dependent reporting computation may be empirically dissociable.
 
-> **Status:** the 27B model passed the toy behavioral gate (192/192 balanced rows), its released J-lens passed structural/reference validation, and a small discovery pilot found a middle-layer policy-family signal under both named and unlabeled rules. This is observational evidence, not a mechanism. Held-out causal tests remain before any mechanistic claim.
+> **Status:** the 27B model passed the toy behavioral gate (192/192 balanced rows), and its released J-lens passed structural/reference validation. A middle-layer policy-family signal appeared under named and unlabeled rules, but the Stage-1 causal sweep found it **readable, not writable**: the fixed stability effect was only 0.091 log-odds, with zero report flips and a 4.11-SD fact-proxy displacement. The candidate therefore failed the causal gate, and downstream transfer/strategic stages were not run.
 
 The initial 4B candidate failed its balanced behavioral gate and was retired before mechanistic analysis. The complete negative screen is preserved in [`results/4b_behavioral_screen/`](results/4b_behavioral_screen/README.md). The successful replacement gate, including raw scores and an interpretable figure, is in [`results/27b_behavioral_gate/`](results/27b_behavioral_gate/README.md).
 
 The released 27B lens now also passes structural integrity and a reference qualitative readout. Its complete top-token records are preserved in [`results/27b_lens_integrity/`](results/27b_lens_integrity/README.md). No causal intervention has yet been interpreted as a result.
 
 The first balanced observational pilot is in [`results/27b_observational_pilot/`](results/27b_observational_pilot/README.md). It finds a candidate policy-family signal under both semantic and unlabeled rule wording, while also showing why the literal A/B J-lens score is inadequate as the independent fact-preservation metric.
+
+The completed causal discovery study is in [`results/27b_causal_discovery/`](results/27b_causal_discovery/README.md), with the full interpretation in [`docs/causal-discovery-report.md`](docs/causal-discovery-report.md). It is a clean negative result: single-layer final-position steering, ablation, and coordinate swap did not establish a practically meaningful, fact-preserving reporting-policy mechanism.
 
 ## Decision rule
 
