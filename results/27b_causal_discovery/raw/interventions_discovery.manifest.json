@@ -1,0 +1,189 @@
+{
+  "alpha_sds": [
+    2.0,
+    4.0,
+    8.0,
+    16.0
+  ],
+  "concept_token_ids": {
+    "conceal": [
+      8297,
+      9959,
+      13600,
+      17743,
+      21023,
+      24775,
+      37725,
+      38951,
+      45243,
+      51375,
+      83802,
+      89631
+    ],
+    "fact_A": [
+      32,
+      357
+    ],
+    "fact_B": [
+      33,
+      417
+    ],
+    "lexical": [
+      1406,
+      1979,
+      2522,
+      2680,
+      2904,
+      4087,
+      4963,
+      5173,
+      6743,
+      8944,
+      15666,
+      16050,
+      21134,
+      52465,
+      75620,
+      81596
+    ],
+    "reveal": [
+      804,
+      1788,
+      1802,
+      2434,
+      2880,
+      2912,
+      7793,
+      8298,
+      10429,
+      11762,
+      14122,
+      15919,
+      18618,
+      23305,
+      23310,
+      24919,
+      28147,
+      34066,
+      51397,
+      56598,
+      90781
+    ],
+    "unrelated": [
+      4477,
+      8831,
+      10401,
+      12307,
+      14764,
+      20573,
+      21664,
+      21926,
+      23373,
+      24399,
+      25033,
+      28034,
+      30141,
+      60387
+    ]
+  },
+  "concept_words": {
+    "conceal": [
+      "flip",
+      "opposite",
+      "hide",
+      "conceal",
+      "withhold",
+      "mislead",
+      "deceive"
+    ],
+    "fact_A": [
+      "A"
+    ],
+    "fact_B": [
+      "B"
+    ],
+    "lexical": [
+      "objective",
+      "answer",
+      "option",
+      "point"
+    ],
+    "reveal": [
+      "copy",
+      "same",
+      "truth",
+      "true",
+      "honest",
+      "reveal",
+      "disclose"
+    ],
+    "unrelated": [
+      "weather",
+      "music",
+      "wooden",
+      "circle"
+    ]
+  },
+  "created_at": "2026-08-13T02:07:06.055554+00:00",
+  "elapsed_seconds": 248.65552380700004,
+  "gpu": "A100-80GB",
+  "layer_diagnostics": [
+    {
+      "fact_coordinate_sd": 0.36023223400115967,
+      "layer": 43,
+      "n_private": 8,
+      "n_public": 16,
+      "policy_coordinate_sd": 0.8265141248703003
+    },
+    {
+      "fact_coordinate_sd": 0.36997029185295105,
+      "layer": 44,
+      "n_private": 8,
+      "n_public": 16,
+      "policy_coordinate_sd": 0.9103785753250122
+    },
+    {
+      "fact_coordinate_sd": 0.42957091331481934,
+      "layer": 45,
+      "n_private": 8,
+      "n_public": 16,
+      "policy_coordinate_sd": 0.9228804111480713
+    },
+    {
+      "fact_coordinate_sd": 0.3623046278953552,
+      "layer": 46,
+      "n_private": 8,
+      "n_public": 16,
+      "policy_coordinate_sd": 0.8383222222328186
+    },
+    {
+      "fact_coordinate_sd": 0.49834558367729187,
+      "layer": 47,
+      "n_private": 8,
+      "n_public": 16,
+      "policy_coordinate_sd": 0.9055724143981934
+    }
+  ],
+  "layers": [
+    43,
+    44,
+    45,
+    46,
+    47
+  ],
+  "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+  "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+  "lens_repo": "neuronpedia/jacobian-lens",
+  "lens_revision": "qwen-n1000",
+  "model_id": "Qwen/Qwen3.6-27B",
+  "model_revision_requested": "main",
+  "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "n_base": 2,
+  "n_private_prompts": 8,
+  "n_public_prompts": 16,
+  "n_records": 2040,
+  "preflight": false,
+  "run_id": "3577c6d0d3e7",
+  "schema_version": 2,
+  "seed": 1729
+}

@@ -1,0 +1,4 @@
+assay,n_rows,n_scenarios,delta_native_policy_score,delta_native_policy_score_low,delta_native_policy_score_high,behavior_flip,behavior_flip_low,behavior_flip_high
+Private use of fact,24,6,-0.125,-0.125,-0.125,0.0,0.0,0.0
+Public conceal prompt,24,6,-0.036458333333333336,-0.046875,-0.026041666666666668,0.0,0.0,0.0
+Public reveal prompt,24,6,-0.21875,-0.234375,-0.203125,0.0,0.0,0.0
