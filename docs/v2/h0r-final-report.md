@@ -1,6 +1,6 @@
 # H0R final report
 
-Status: **H0R-B complete; candidate frozen; prospective controls unopened**.
+Status: **H0R-B complete; first H0R-C corpus invalid; intervention unopened**.
 
 The original H0 remains failed. The exploratory burned-set diagnostic selected
 layers 36--42, argument-through-end positions, a pseudoinverse coordinate
@@ -14,5 +14,9 @@ target top-1, output KL 0.227 nats, and mean delta-RMS ratio 0.017. Identity and
 random-basis controls were null. Full interpretation is in
 `docs/v2/h0r-diagnostic-report.md`.
 
-H0R-C and H0R-D remain prospective and unopened. This report will be finalized
-only after their frozen-gate evaluations.
+The first locked H0R-C corpus achieved only 60.8% baseline accuracy, below the
+80% behavioral gate. The runner stopped before intervention inference, so this
+does not test the causal protocol. Following the preregistered rule, a simpler
+replacement argument corpus will be frozen and baseline-checked. The protocol,
+validity limits, and causal pass thresholds remain unchanged. H0R-D remains
+unopened.

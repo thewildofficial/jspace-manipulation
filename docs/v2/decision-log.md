@@ -86,3 +86,19 @@
 - **Files:** `configs/v2/h0r_candidate_protocol.json`,
   `results/v2_h0r_diagnostic/`, `docs/v2/h0r-diagnostic-report.md`.
 - **Commit:** recorded by the candidate-freeze commit before H0R-C.
+
+## 2026-08-17 — V2-D007 — Reject the first H0R-C corpus at baseline
+
+- **Change:** declare the first 102-trial fresh argument corpus behaviorally
+  invalid and permit one simpler replacement corpus under the existing
+  preregistered redesign rule.
+- **Reason:** baseline accuracy was 60.8%, below the frozen 80% minimum.
+- **Already observed:** baseline top-1 correctness only: countries 86.7%; Greek
+  sequence, chemical element, and weekday families 50% each. No intervention
+  inference was executed (`intervention_opened: false`).
+- **Confirmatory status:** the candidate protocol and all causal thresholds are
+  unchanged and remain unopened on fresh argument outcomes. The replacement
+  may use only baseline competence to simplify prompts/functions.
+- **Files:** `results/v2_h0r_argument_validation/`,
+  `docs/v2/h0r-final-report.md`.
+- **Commit:** recorded before constructing the replacement corpus.
