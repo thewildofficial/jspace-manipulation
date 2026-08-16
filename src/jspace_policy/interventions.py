@@ -19,13 +19,59 @@ def j_lens_vector(
         raise ValueError("jacobian and unembedding weight must be matrices")
     if jacobian.shape[0] != unembedding_weight.shape[1]:
         raise ValueError("incompatible Jacobian and unembedding dimensions")
-    vector = jacobian.T.float() @ unembedding_weight[token_id].float()
+    unembedding_row = unembedding_weight[token_id].float().to(jacobian.device)
+    vector = jacobian.T.float() @ unembedding_row
     if unit_norm:
         norm = vector.norm()
         if norm <= 0:
             raise ValueError("cannot normalize a zero J-lens vector")
         vector = vector / norm
     return vector
+
+
+def family_j_lens_vector(
+    jacobian: torch.Tensor,
+    unembedding_weight: torch.Tensor,
+    positive_token_ids: Sequence[int],
+    negative_token_ids: Sequence[int] = (),
+    *,
+    unit_norm: bool = True,
+) -> torch.Tensor:
+    """Construct an efficient mean-family J-lens direction.
+
+    The returned vector is ``J.T @ (mean(W_pos) - mean(W_neg))``.  Computing
+    the family mean before the matrix product is algebraically identical to
+    averaging individual token directions and is much cheaper for large
+    vocabularies and residual widths.
+    """
+    if not positive_token_ids:
+        raise ValueError("positive_token_ids cannot be empty")
+    if jacobian.ndim != 2 or unembedding_weight.ndim != 2:
+        raise ValueError("jacobian and unembedding weight must be matrices")
+    if jacobian.shape[0] != unembedding_weight.shape[1]:
+        raise ValueError("incompatible Jacobian and unembedding dimensions")
+
+    positive = unembedding_weight[list(positive_token_ids)].float().mean(dim=0)
+    family_unembedding = positive
+    if negative_token_ids:
+        negative = unembedding_weight[list(negative_token_ids)].float().mean(dim=0)
+        family_unembedding = family_unembedding - negative
+    vector = jacobian.T.float() @ family_unembedding.to(jacobian.device)
+    if unit_norm:
+        norm = vector.norm()
+        if norm <= 0:
+            raise ValueError("cannot normalize a zero family J-lens vector")
+        vector = vector / norm
+    return vector
+
+
+def norm_matched_random(reference: torch.Tensor, seed: int) -> torch.Tensor:
+    """Return a reproducible isotropic direction with ``reference`` norm."""
+    generator = torch.Generator(device="cpu").manual_seed(seed)
+    sample = torch.randn(reference.shape, generator=generator, dtype=torch.float32)
+    sample = sample.to(reference.device)
+    sample = sample / sample.norm().clamp_min(1e-12)
+    return sample * reference.float().norm()
 
 
 def steer(hidden: torch.Tensor, direction: torch.Tensor, alpha: float) -> torch.Tensor:

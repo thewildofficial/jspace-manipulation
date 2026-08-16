@@ -78,6 +78,61 @@ def _cluster_mean_bootstrap(
     return point, float(low), float(high)
 
 
+def cluster_mean_interval(
+    frame: pd.DataFrame,
+    column: str,
+    *,
+    cluster: str = "scenario_id",
+    n_boot: int = 5000,
+    seed: int = 1729,
+) -> tuple[float, float, float]:
+    """Public scenario-clustered bootstrap interval for a column mean."""
+    if column not in frame:
+        raise ValueError(f"table missing outcome column: {column}")
+    if cluster not in frame:
+        raise ValueError(f"table missing cluster column: {cluster}")
+    return _cluster_mean_bootstrap(
+        frame, column, cluster=cluster, n_boot=n_boot, seed=seed
+    )
+
+
+def grouped_intervention_summary(
+    frame: pd.DataFrame,
+    group_columns: list[str],
+    outcome_columns: list[str],
+    *,
+    n_boot: int = 5000,
+    seed: int = 1729,
+) -> pd.DataFrame:
+    """Summarize intervention outcomes with scenario-clustered intervals."""
+    required = set(group_columns) | set(outcome_columns) | {"scenario_id"}
+    missing = required - set(frame.columns)
+    if missing:
+        raise ValueError(f"intervention table missing columns: {sorted(missing)}")
+    records: list[dict[str, object]] = []
+    grouped = frame.groupby(group_columns, sort=True, dropna=False)
+    for group_index, (keys, group) in enumerate(grouped):
+        if not isinstance(keys, tuple):
+            keys = (keys,)
+        record = dict(zip(group_columns, keys, strict=True))
+        record.update(
+            n_rows=len(group),
+            n_scenarios=group["scenario_id"].nunique(),
+        )
+        for outcome_index, column in enumerate(outcome_columns):
+            point, low, high = cluster_mean_interval(
+                group,
+                column,
+                n_boot=n_boot,
+                seed=seed + group_index * 101 + outcome_index,
+            )
+            record[column] = point
+            record[f"{column}_low"] = low
+            record[f"{column}_high"] = high
+        records.append(record)
+    return pd.DataFrame.from_records(records)
+
+
 def behavior_summary(
     frame: pd.DataFrame, *, n_boot: int = 1000, seed: int = 1729
 ) -> pd.DataFrame:

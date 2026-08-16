@@ -23,6 +23,9 @@ The early V1 work established useful but observational prerequisites:
 - the released 27B lens passed structural/reference checks;
 - a balanced discovery pilot found a middle-layer policy-family signal under
   named and unlabeled rules.
+- a separate 27B causal-discovery study found the candidate signal readable but
+  not writable: no practically meaningful, fact-preserving reporting-policy
+  mechanism was established.
 
 V2 then required a causal instrumentation gate before any strategic task:
 
@@ -61,6 +64,7 @@ on the strategic task.
 | 27B behavioral gate | Passed, 192/192 | [`results/27b_behavioral_gate/`](results/27b_behavioral_gate/README.md) |
 | 27B lens integrity | Passed structural/reference checks | [`results/27b_lens_integrity/`](results/27b_lens_integrity/README.md) |
 | Observational pilot | Candidate signal; no causal claim | [`results/27b_observational_pilot/`](results/27b_observational_pilot/README.md) |
+| Causal discovery | Readable, not writable; clean negative | [`results/27b_causal_discovery/`](results/27b_causal_discovery/README.md) |
 | V2 H0 | Failed causal topology | [`results/v2_smoke_tests/`](results/v2_smoke_tests/README.md) |
 | H0R-B diagnostic | Candidate selected on burned controls | [`results/v2_h0r_diagnostic/`](results/v2_h0r_diagnostic/) |
 | First H0R-C corpus | Invalid 60.8% baseline; intervention unopened | [`results/v2_h0r_argument_validation/`](results/v2_h0r_argument_validation/README.md) |
