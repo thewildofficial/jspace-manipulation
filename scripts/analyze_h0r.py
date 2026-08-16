@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import hashlib
 import json
-import subprocess
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -351,11 +349,10 @@ def main() -> None:
         & all_rows["baseline_correct"].astype(bool)
     ]
     config = json.loads(Path("configs/v2/h0r_diagnostic.json").read_text())
-    parent = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    candidate_path = Path("configs/v2/h0r_candidate_protocol.json")
     protocol = {
         "schema_version": 1,
         "status": "frozen_before_locked_control_open",
-        "selection_parent_commit": parent,
         "diagnostic_run_ids": sorted(all_rows["run_id"].unique().tolist()),
         "operation": winner["operation"],
         "layers": layers,
@@ -404,11 +401,22 @@ def main() -> None:
             },
         },
     }
-    payload = json.dumps(protocol, sort_keys=True, separators=(",", ":"))
-    protocol["content_sha256"] = hashlib.sha256(payload.encode()).hexdigest()
-    Path("configs/v2/h0r_candidate_protocol.json").write_text(
-        json.dumps(protocol, indent=2, sort_keys=True) + "\n"
-    )
+    if candidate_path.exists():
+        frozen = json.loads(candidate_path.read_text())
+        selected_fields = ("operation", "layers", "position_mask", "alpha")
+        mismatches = [
+            field for field in selected_fields if frozen[field] != protocol[field]
+        ]
+        if mismatches:
+            raise RuntimeError(
+                "analysis no longer reproduces frozen candidate fields: "
+                + ", ".join(mismatches)
+            )
+        protocol = frozen
+    else:
+        raise RuntimeError(
+            "refusing to create a new candidate outside the original selection commit"
+        )
     _make_figures(all_rows, topology, winner)
     print(json.dumps(protocol, indent=2, sort_keys=True))
 
