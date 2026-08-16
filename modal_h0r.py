@@ -509,6 +509,7 @@ def _reconstruction_runs(
     from jspace_policy.h0r_diagnostics import (
         projected_coordinates,
         reconstruction_fraction,
+        resolve_position_mask,
         symmetric_coordinate_swap,
     )
 
@@ -530,6 +531,7 @@ def _reconstruction_runs(
         for source in arguments:
             prompt = str(function["template"]).format(arg=source)
             input_ids = model.encode(prompt, max_length=512)
+            argument_positions = _argument_positions(model.tokenizer, prompt, source)
             clean = _capture_layers(model, input_ids, downstream)
             with torch.inference_mode():
                 baseline_logits = model._hf_model(input_ids).logits[0, -1].float()
@@ -544,6 +546,7 @@ def _reconstruction_runs(
                     layer: int,
                     current_source: str,
                     current_target: str,
+                    current_argument_positions: list[int],
                     current_captured: dict[int, Any],
                     current_installed: dict[str, object],
                 ):
@@ -551,7 +554,11 @@ def _reconstruction_runs(
                         tensor = output if torch.is_tensor(output) else output[0]
                         updated = tensor
                         if layer == write_layer:
-                            positions = list(range(tensor.shape[1]))
+                            positions = resolve_position_mask(
+                                str(candidate["position_mask"]),
+                                sequence_length=int(tensor.shape[1]),
+                                argument_positions=current_argument_positions,
+                            )
                             updated = tensor.clone()
                             patched, record = symmetric_coordinate_swap(
                                 updated[0, positions, :],
@@ -571,7 +578,14 @@ def _reconstruction_runs(
                 for layer in downstream:
                     handles.append(
                         model.layers[layer].register_forward_hook(
-                            make_hook(layer, source, target, captured, installed)
+                            make_hook(
+                                layer,
+                                source,
+                                target,
+                                argument_positions,
+                                captured,
+                                installed,
+                            )
                         )
                     )
                 try:
@@ -907,8 +921,17 @@ def diagnostic(phase: str = "layer") -> None:
         ["git", "rev-parse", "HEAD"], text=True
     ).strip()
     status = subprocess.check_output(["git", "status", "--short"], text=True)
+    generated_prefixes = (
+        "?? .prismor/",
+        "?? results/v2_h0r_diagnostic/",
+        " M artifacts/raw/cost_ledger.jsonl",
+    )
     dirty_tree = bool(
-        "\n".join(line for line in status.splitlines() if ".prismor/" not in line)
+        "\n".join(
+            line
+            for line in status.splitlines()
+            if not line.startswith(generated_prefixes)
+        )
     )
     estimate = estimate_cost("A100-80GB", 3600, memory_gib=32.0)
     ledger = Path("artifacts/raw/cost_ledger.jsonl")
