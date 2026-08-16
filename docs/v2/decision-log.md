@@ -40,3 +40,17 @@
   any metric, interval, threshold, exclusion, or gate decision.
 - **Files:** `scripts/analyze_v2_h0.py`, `docs/v2/decision-log.md`.
 - **Commit:** recorded in the final documentation commit.
+
+## 2026-08-17 — V2-D004 — Open H0R after failed full-band causal control
+
+- **Change:** open a separate causal-instrument recovery study; preserve H0 as
+  failed and separate implementation parity from Qwen topology recovery.
+- **Reason:** full-band/all-position swaps produced 0/90 target top-1 outcomes,
+  while one-layer/all-position produced 25/90 overall and 24/33 for countries.
+- **Already observed:** those values, the L36–43 operational band, center L40,
+  and all numerical H0 parity checks. The Anthropic control set is burned.
+- **Confirmatory status:** H0 remains failed. H0R-B is exploratory. Only the
+  unopened H0R-C/D controls can prospectively unblock the causal branch.
+- **Files:** `docs/v2/h0r-preregistration.md`,
+  `docs/v2/h0r-analysis-plan.md`, `docs/v2/h0r-final-report.md`.
+- **Commit:** recorded by Git history before locked-control construction.
