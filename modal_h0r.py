@@ -60,6 +60,25 @@ def tokenize_locked_controls() -> str:
     return json.dumps(controls, indent=2, sort_keys=True)
 
 
+@app.function(image=image, volumes={"/cache": cache}, cpu=2.0, memory=4096, timeout=900)
+def tokenize_locked_argument_v2() -> str:
+    import transformers
+
+    from jspace_policy.h0r import build_locked_argument_control_v2
+
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+        MODEL_ID, revision=MODEL_REVISION
+    )
+    controls = build_locked_argument_control_v2(tokenizer)
+    controls["created_at"] = datetime.now(UTC).isoformat()
+    controls["model_id"] = MODEL_ID
+    controls["tokenizer_revision"] = MODEL_REVISION
+    payload = json.dumps(controls, sort_keys=True, separators=(",", ":"))
+    controls["content_sha256"] = hashlib.sha256(payload.encode()).hexdigest()
+    cache.commit()
+    return json.dumps(controls, indent=2, sort_keys=True)
+
+
 @app.local_entrypoint()
 def freeze_controls() -> None:
     output = Path("configs/v2/h0r_locked_controls.json")
@@ -78,6 +97,27 @@ def freeze_controls() -> None:
                 "content_sha256": parsed["content_sha256"],
                 "argument_trials": len(parsed["argument_control"]["trials"]),
                 "intermediate_trials": len(parsed["intermediate_control"]["trials"]),
+            },
+            indent=2,
+        )
+    )
+
+
+@app.local_entrypoint()
+def freeze_argument_v2() -> None:
+    output = Path("configs/v2/h0r_locked_controls_v2.json")
+    if output.exists():
+        raise RuntimeError(f"refusing to overwrite locked control: {output}")
+    payload = tokenize_locked_argument_v2.remote()
+    output.write_text(payload + "\n")
+    parsed = json.loads(payload)
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "content_sha256": parsed["content_sha256"],
+                "argument_trials": len(parsed["argument_control"]["trials"]),
+                "status": parsed["status"],
             },
             indent=2,
         )
@@ -1399,7 +1439,12 @@ def validate(control_type: str = "argument") -> None:
 
     if control_type not in {"argument", "intermediate"}:
         raise ValueError("control_type must be argument or intermediate")
-    locked = json.loads(Path("configs/v2/h0r_locked_controls.json").read_text())
+    locked_path = Path(
+        "configs/v2/h0r_locked_controls_v2.json"
+        if control_type == "argument"
+        else "configs/v2/h0r_locked_controls.json"
+    )
+    locked = json.loads(locked_path.read_text())
     protocol = json.loads(Path("configs/v2/h0r_candidate_protocol.json").read_text())
     validation = json.loads(Path("configs/v2/h0r_validation.json").read_text())
     if control_type == "intermediate":
@@ -1409,7 +1454,7 @@ def validate(control_type: str = "argument") -> None:
         )["gate_pass"]:
             raise RuntimeError("H0R-D is forbidden unless H0R-C passed")
     root = Path(
-        "results/v2_h0r_argument_validation"
+        "results/v2_h0r_argument_validation_v2"
         if control_type == "argument"
         else "results/v2_h0r_intermediate_validation"
     )

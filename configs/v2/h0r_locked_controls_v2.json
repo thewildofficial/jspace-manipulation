@@ -1,0 +1,4512 @@
+{
+  "argument_control": {
+    "minimum_baseline_accuracy": 0.8,
+    "tokenization_exclusions": [
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Japan",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "Japan"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "Germany"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "Italy"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "India"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Brazil",
+        "target": "Spain"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Germany",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Kenya",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Italy",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "India",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "capital",
+        "reason": "not a one-token continuation: Brasilia",
+        "source": "Spain",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Japan",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Brazil",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Germany",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "Japan"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "Brazil"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "Germany"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "Italy"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "India"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Kenya",
+        "target": "Spain"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Italy",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "India",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "language",
+        "reason": "not a one-token continuation: Swahili",
+        "source": "Spain",
+        "target": "Kenya"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Japan",
+        "target": "India"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Germany",
+        "target": "Italy"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Germany",
+        "target": "Spain"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Italy",
+        "target": "Germany"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Italy",
+        "target": "Spain"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "India",
+        "target": "Japan"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Spain",
+        "target": "Germany"
+      },
+      {
+        "category": "easy_countries",
+        "function": "continent",
+        "reason": "source and target answers share a token",
+        "source": "Spain",
+        "target": "Italy"
+      }
+    ],
+    "trials": [
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Japan is the city of",
+        "prompt_sha256": "1a819f335739d521921db3a984a3ab0acd80a2985adece4f8d36e5fb22cbbe68",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6124,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "f536c74ccaaf0c14",
+        "source_answer": "Tokyo",
+        "source_answer_surface": " Tokyo",
+        "source_answer_token_id": 25358,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Berlin",
+        "target_answer_surface": " Berlin",
+        "target_answer_token_id": 19241,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "f4c0c334b825b1c3"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Japan is the city of",
+        "prompt_sha256": "1a819f335739d521921db3a984a3ab0acd80a2985adece4f8d36e5fb22cbbe68",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6124,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "f536c74ccaaf0c14",
+        "source_answer": "Tokyo",
+        "source_answer_surface": " Tokyo",
+        "source_answer_token_id": 25358,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Nairobi",
+        "target_answer_surface": " Nairobi",
+        "target_answer_token_id": 93190,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "d466ebe9f1c6177c"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Japan is the city of",
+        "prompt_sha256": "1a819f335739d521921db3a984a3ab0acd80a2985adece4f8d36e5fb22cbbe68",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6124,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "f536c74ccaaf0c14",
+        "source_answer": "Tokyo",
+        "source_answer_surface": " Tokyo",
+        "source_answer_token_id": 25358,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Rome",
+        "target_answer_surface": " Rome",
+        "target_answer_token_id": 21047,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "358ff726c7bd9a0f"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Japan is the city of",
+        "prompt_sha256": "1a819f335739d521921db3a984a3ab0acd80a2985adece4f8d36e5fb22cbbe68",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6124,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "f536c74ccaaf0c14",
+        "source_answer": "Tokyo",
+        "source_answer_surface": " Tokyo",
+        "source_answer_token_id": 25358,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Delhi",
+        "target_answer_surface": " Delhi",
+        "target_answer_token_id": 21318,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "1abb5e5018a740d8"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Japan is the city of",
+        "prompt_sha256": "1a819f335739d521921db3a984a3ab0acd80a2985adece4f8d36e5fb22cbbe68",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6124,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "f536c74ccaaf0c14",
+        "source_answer": "Tokyo",
+        "source_answer_surface": " Tokyo",
+        "source_answer_token_id": 25358,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Madrid",
+        "target_answer_surface": " Madrid",
+        "target_answer_token_id": 23327,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "b88ff8127987aa91"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Germany is the city of",
+        "prompt_sha256": "e8629037346616f8713e37fb031fdc6e9711ce9ac75f4ff3868b3b883114b3a1",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          9564,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "cf2cd0f0b9fceac5",
+        "source_answer": "Berlin",
+        "source_answer_surface": " Berlin",
+        "source_answer_token_id": 19241,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Tokyo",
+        "target_answer_surface": " Tokyo",
+        "target_answer_token_id": 25358,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "081260f3eccb4f6f"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Germany is the city of",
+        "prompt_sha256": "e8629037346616f8713e37fb031fdc6e9711ce9ac75f4ff3868b3b883114b3a1",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          9564,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "cf2cd0f0b9fceac5",
+        "source_answer": "Berlin",
+        "source_answer_surface": " Berlin",
+        "source_answer_token_id": 19241,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Nairobi",
+        "target_answer_surface": " Nairobi",
+        "target_answer_token_id": 93190,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "8cf3f47fd58e4adc"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Germany is the city of",
+        "prompt_sha256": "e8629037346616f8713e37fb031fdc6e9711ce9ac75f4ff3868b3b883114b3a1",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          9564,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "cf2cd0f0b9fceac5",
+        "source_answer": "Berlin",
+        "source_answer_surface": " Berlin",
+        "source_answer_token_id": 19241,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Rome",
+        "target_answer_surface": " Rome",
+        "target_answer_token_id": 21047,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "848542636de362b9"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Germany is the city of",
+        "prompt_sha256": "e8629037346616f8713e37fb031fdc6e9711ce9ac75f4ff3868b3b883114b3a1",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          9564,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "cf2cd0f0b9fceac5",
+        "source_answer": "Berlin",
+        "source_answer_surface": " Berlin",
+        "source_answer_token_id": 19241,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Delhi",
+        "target_answer_surface": " Delhi",
+        "target_answer_token_id": 21318,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "74068b50d8793599"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Germany is the city of",
+        "prompt_sha256": "e8629037346616f8713e37fb031fdc6e9711ce9ac75f4ff3868b3b883114b3a1",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          9564,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "cf2cd0f0b9fceac5",
+        "source_answer": "Berlin",
+        "source_answer_surface": " Berlin",
+        "source_answer_token_id": 19241,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Madrid",
+        "target_answer_surface": " Madrid",
+        "target_answer_token_id": 23327,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "58f3230b92e64222"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Kenya is the city of",
+        "prompt_sha256": "d0f20c998712c6a1c621e1ce1ef92f8a6330495e35985b1710e35070608f2849",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          35453,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "5d8212645f45039a",
+        "source_answer": "Nairobi",
+        "source_answer_surface": " Nairobi",
+        "source_answer_token_id": 93190,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Tokyo",
+        "target_answer_surface": " Tokyo",
+        "target_answer_token_id": 25358,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "1d28b38449645c22"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Kenya is the city of",
+        "prompt_sha256": "d0f20c998712c6a1c621e1ce1ef92f8a6330495e35985b1710e35070608f2849",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          35453,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "5d8212645f45039a",
+        "source_answer": "Nairobi",
+        "source_answer_surface": " Nairobi",
+        "source_answer_token_id": 93190,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Berlin",
+        "target_answer_surface": " Berlin",
+        "target_answer_token_id": 19241,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "eb574f4479665c14"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Kenya is the city of",
+        "prompt_sha256": "d0f20c998712c6a1c621e1ce1ef92f8a6330495e35985b1710e35070608f2849",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          35453,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "5d8212645f45039a",
+        "source_answer": "Nairobi",
+        "source_answer_surface": " Nairobi",
+        "source_answer_token_id": 93190,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Rome",
+        "target_answer_surface": " Rome",
+        "target_answer_token_id": 21047,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "8b75b1b9efeaf364"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Kenya is the city of",
+        "prompt_sha256": "d0f20c998712c6a1c621e1ce1ef92f8a6330495e35985b1710e35070608f2849",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          35453,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "5d8212645f45039a",
+        "source_answer": "Nairobi",
+        "source_answer_surface": " Nairobi",
+        "source_answer_token_id": 93190,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Delhi",
+        "target_answer_surface": " Delhi",
+        "target_answer_token_id": 21318,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "ef849a54dec2e2fb"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Kenya is the city of",
+        "prompt_sha256": "d0f20c998712c6a1c621e1ce1ef92f8a6330495e35985b1710e35070608f2849",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          35453,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "5d8212645f45039a",
+        "source_answer": "Nairobi",
+        "source_answer_surface": " Nairobi",
+        "source_answer_token_id": 93190,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Madrid",
+        "target_answer_surface": " Madrid",
+        "target_answer_token_id": 23327,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "47b47f2a67f93e90"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Italy is the city of",
+        "prompt_sha256": "e846acdbcfa89fc6f45df28d7288f6c25060044a6bebab14f4dead476aa0bed5",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          14898,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "4837c2a8d67267d4",
+        "source_answer": "Rome",
+        "source_answer_surface": " Rome",
+        "source_answer_token_id": 21047,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Tokyo",
+        "target_answer_surface": " Tokyo",
+        "target_answer_token_id": 25358,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "542f1c183421d951"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Italy is the city of",
+        "prompt_sha256": "e846acdbcfa89fc6f45df28d7288f6c25060044a6bebab14f4dead476aa0bed5",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          14898,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "4837c2a8d67267d4",
+        "source_answer": "Rome",
+        "source_answer_surface": " Rome",
+        "source_answer_token_id": 21047,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Berlin",
+        "target_answer_surface": " Berlin",
+        "target_answer_token_id": 19241,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "6fc913084b4ddf0c"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Italy is the city of",
+        "prompt_sha256": "e846acdbcfa89fc6f45df28d7288f6c25060044a6bebab14f4dead476aa0bed5",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          14898,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "4837c2a8d67267d4",
+        "source_answer": "Rome",
+        "source_answer_surface": " Rome",
+        "source_answer_token_id": 21047,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Nairobi",
+        "target_answer_surface": " Nairobi",
+        "target_answer_token_id": 93190,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "8873c945dd68f0e8"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Italy is the city of",
+        "prompt_sha256": "e846acdbcfa89fc6f45df28d7288f6c25060044a6bebab14f4dead476aa0bed5",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          14898,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "4837c2a8d67267d4",
+        "source_answer": "Rome",
+        "source_answer_surface": " Rome",
+        "source_answer_token_id": 21047,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Delhi",
+        "target_answer_surface": " Delhi",
+        "target_answer_token_id": 21318,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "ac5c938b98274774"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Italy is the city of",
+        "prompt_sha256": "e846acdbcfa89fc6f45df28d7288f6c25060044a6bebab14f4dead476aa0bed5",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          14898,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "4837c2a8d67267d4",
+        "source_answer": "Rome",
+        "source_answer_surface": " Rome",
+        "source_answer_token_id": 21047,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Madrid",
+        "target_answer_surface": " Madrid",
+        "target_answer_token_id": 23327,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "99838a8bb93fc240"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of India is the city of",
+        "prompt_sha256": "79dee739d0fed9f3c9956d6255a8e0b100630d2456bbce98f38e89092646eb00",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6535,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "d320e0bcfb8cc497",
+        "source_answer": "Delhi",
+        "source_answer_surface": " Delhi",
+        "source_answer_token_id": 21318,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Tokyo",
+        "target_answer_surface": " Tokyo",
+        "target_answer_token_id": 25358,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "09443ddcc28afca9"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of India is the city of",
+        "prompt_sha256": "79dee739d0fed9f3c9956d6255a8e0b100630d2456bbce98f38e89092646eb00",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6535,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "d320e0bcfb8cc497",
+        "source_answer": "Delhi",
+        "source_answer_surface": " Delhi",
+        "source_answer_token_id": 21318,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Berlin",
+        "target_answer_surface": " Berlin",
+        "target_answer_token_id": 19241,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "06de9966b8c23c1a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of India is the city of",
+        "prompt_sha256": "79dee739d0fed9f3c9956d6255a8e0b100630d2456bbce98f38e89092646eb00",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6535,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "d320e0bcfb8cc497",
+        "source_answer": "Delhi",
+        "source_answer_surface": " Delhi",
+        "source_answer_token_id": 21318,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Nairobi",
+        "target_answer_surface": " Nairobi",
+        "target_answer_token_id": 93190,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "3ce8d14b5495a7bb"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of India is the city of",
+        "prompt_sha256": "79dee739d0fed9f3c9956d6255a8e0b100630d2456bbce98f38e89092646eb00",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6535,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "d320e0bcfb8cc497",
+        "source_answer": "Delhi",
+        "source_answer_surface": " Delhi",
+        "source_answer_token_id": 21318,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Rome",
+        "target_answer_surface": " Rome",
+        "target_answer_token_id": 21047,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "b1f14e83cc12c66f"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of India is the city of",
+        "prompt_sha256": "79dee739d0fed9f3c9956d6255a8e0b100630d2456bbce98f38e89092646eb00",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          6535,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "d320e0bcfb8cc497",
+        "source_answer": "Delhi",
+        "source_answer_surface": " Delhi",
+        "source_answer_token_id": 21318,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Madrid",
+        "target_answer_surface": " Madrid",
+        "target_answer_token_id": 23327,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "29a07a83e4df5b39"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Spain is the city of",
+        "prompt_sha256": "9f8a3bc00f014f7ba8c19abf3e2bcd2d5fed5d0be729528633cffbb860444516",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          17163,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "09d62fe2a2ba8100",
+        "source_answer": "Madrid",
+        "source_answer_surface": " Madrid",
+        "source_answer_token_id": 23327,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Tokyo",
+        "target_answer_surface": " Tokyo",
+        "target_answer_token_id": 25358,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "a9866c207df66521"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Spain is the city of",
+        "prompt_sha256": "9f8a3bc00f014f7ba8c19abf3e2bcd2d5fed5d0be729528633cffbb860444516",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          17163,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "09d62fe2a2ba8100",
+        "source_answer": "Madrid",
+        "source_answer_surface": " Madrid",
+        "source_answer_token_id": 23327,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Berlin",
+        "target_answer_surface": " Berlin",
+        "target_answer_token_id": 19241,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "376651771638c858"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Spain is the city of",
+        "prompt_sha256": "9f8a3bc00f014f7ba8c19abf3e2bcd2d5fed5d0be729528633cffbb860444516",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          17163,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "09d62fe2a2ba8100",
+        "source_answer": "Madrid",
+        "source_answer_surface": " Madrid",
+        "source_answer_token_id": 23327,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Nairobi",
+        "target_answer_surface": " Nairobi",
+        "target_answer_token_id": 93190,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "f30be65383cad70f"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Spain is the city of",
+        "prompt_sha256": "9f8a3bc00f014f7ba8c19abf3e2bcd2d5fed5d0be729528633cffbb860444516",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          17163,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "09d62fe2a2ba8100",
+        "source_answer": "Madrid",
+        "source_answer_surface": " Madrid",
+        "source_answer_token_id": 23327,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Rome",
+        "target_answer_surface": " Rome",
+        "target_answer_token_id": 21047,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "b5069931303bb4f5"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "capital",
+        "prompt": "The capital of Spain is the city of",
+        "prompt_sha256": "9f8a3bc00f014f7ba8c19abf3e2bcd2d5fed5d0be729528633cffbb860444516",
+        "prompt_token_ids": [
+          760,
+          6511,
+          314,
+          17163,
+          369,
+          279,
+          3177,
+          314
+        ],
+        "scenario_id": "09d62fe2a2ba8100",
+        "source_answer": "Madrid",
+        "source_answer_surface": " Madrid",
+        "source_answer_token_id": 23327,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Delhi",
+        "target_answer_surface": " Delhi",
+        "target_answer_token_id": 21318,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "faee75dd00370d03"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Japan speak",
+        "prompt_sha256": "f54d4790bf737f4b14b69c8ff4527add0e26516c6353b6aa4d0d0a84972764fa",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6124,
+          6266
+        ],
+        "scenario_id": "4f28e13c8581e0df",
+        "source_answer": "Japanese",
+        "source_answer_surface": " Japanese",
+        "source_answer_token_id": 10452,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Portuguese",
+        "target_answer_surface": " Portuguese",
+        "target_answer_token_id": 40790,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "cfe086654293a765"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Japan speak",
+        "prompt_sha256": "f54d4790bf737f4b14b69c8ff4527add0e26516c6353b6aa4d0d0a84972764fa",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6124,
+          6266
+        ],
+        "scenario_id": "4f28e13c8581e0df",
+        "source_answer": "Japanese",
+        "source_answer_surface": " Japanese",
+        "source_answer_token_id": 10452,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "German",
+        "target_answer_surface": " German",
+        "target_answer_token_id": 5753,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "291142c878e9183b"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Japan speak",
+        "prompt_sha256": "f54d4790bf737f4b14b69c8ff4527add0e26516c6353b6aa4d0d0a84972764fa",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6124,
+          6266
+        ],
+        "scenario_id": "4f28e13c8581e0df",
+        "source_answer": "Japanese",
+        "source_answer_surface": " Japanese",
+        "source_answer_token_id": 10452,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Italian",
+        "target_answer_surface": " Italian",
+        "target_answer_token_id": 14382,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "710038d6b94bf9f6"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Japan speak",
+        "prompt_sha256": "f54d4790bf737f4b14b69c8ff4527add0e26516c6353b6aa4d0d0a84972764fa",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6124,
+          6266
+        ],
+        "scenario_id": "4f28e13c8581e0df",
+        "source_answer": "Japanese",
+        "source_answer_surface": " Japanese",
+        "source_answer_token_id": 10452,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Hindi",
+        "target_answer_surface": " Hindi",
+        "target_answer_token_id": 42524,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "f4be2033e3b2dd9a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Japan speak",
+        "prompt_sha256": "f54d4790bf737f4b14b69c8ff4527add0e26516c6353b6aa4d0d0a84972764fa",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6124,
+          6266
+        ],
+        "scenario_id": "4f28e13c8581e0df",
+        "source_answer": "Japanese",
+        "source_answer_surface": " Japanese",
+        "source_answer_token_id": 10452,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Spanish",
+        "target_answer_surface": " Spanish",
+        "target_answer_token_id": 14712,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "c4875c735bb15e45"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Brazil speak",
+        "prompt_sha256": "29f1dda64b0331759374dac004674c2801b6c72461849a5375cd8044eac1344d",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          15477,
+          6266
+        ],
+        "scenario_id": "9fe5b6b26048d335",
+        "source_answer": "Portuguese",
+        "source_answer_surface": " Portuguese",
+        "source_answer_token_id": 40790,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Japanese",
+        "target_answer_surface": " Japanese",
+        "target_answer_token_id": 10452,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "1149f5f4b230fdc0"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Brazil speak",
+        "prompt_sha256": "29f1dda64b0331759374dac004674c2801b6c72461849a5375cd8044eac1344d",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          15477,
+          6266
+        ],
+        "scenario_id": "9fe5b6b26048d335",
+        "source_answer": "Portuguese",
+        "source_answer_surface": " Portuguese",
+        "source_answer_token_id": 40790,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "German",
+        "target_answer_surface": " German",
+        "target_answer_token_id": 5753,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "daca4d2de2b8bc5a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Brazil speak",
+        "prompt_sha256": "29f1dda64b0331759374dac004674c2801b6c72461849a5375cd8044eac1344d",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          15477,
+          6266
+        ],
+        "scenario_id": "9fe5b6b26048d335",
+        "source_answer": "Portuguese",
+        "source_answer_surface": " Portuguese",
+        "source_answer_token_id": 40790,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Italian",
+        "target_answer_surface": " Italian",
+        "target_answer_token_id": 14382,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "74ce31659c6044c9"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Brazil speak",
+        "prompt_sha256": "29f1dda64b0331759374dac004674c2801b6c72461849a5375cd8044eac1344d",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          15477,
+          6266
+        ],
+        "scenario_id": "9fe5b6b26048d335",
+        "source_answer": "Portuguese",
+        "source_answer_surface": " Portuguese",
+        "source_answer_token_id": 40790,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Hindi",
+        "target_answer_surface": " Hindi",
+        "target_answer_token_id": 42524,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "31e8d0f9038f5528"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Brazil speak",
+        "prompt_sha256": "29f1dda64b0331759374dac004674c2801b6c72461849a5375cd8044eac1344d",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          15477,
+          6266
+        ],
+        "scenario_id": "9fe5b6b26048d335",
+        "source_answer": "Portuguese",
+        "source_answer_surface": " Portuguese",
+        "source_answer_token_id": 40790,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Spanish",
+        "target_answer_surface": " Spanish",
+        "target_answer_token_id": 14712,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "44d24ffd8dbc3f81"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Germany speak",
+        "prompt_sha256": "9c4f220b0df29f16f16623008e58acdd003ce6d268ac0e5543f6b38024d8d7f0",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          9564,
+          6266
+        ],
+        "scenario_id": "d1936651a84efe13",
+        "source_answer": "German",
+        "source_answer_surface": " German",
+        "source_answer_token_id": 5753,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Japanese",
+        "target_answer_surface": " Japanese",
+        "target_answer_token_id": 10452,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "b84e9359d4a16e1a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Germany speak",
+        "prompt_sha256": "9c4f220b0df29f16f16623008e58acdd003ce6d268ac0e5543f6b38024d8d7f0",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          9564,
+          6266
+        ],
+        "scenario_id": "d1936651a84efe13",
+        "source_answer": "German",
+        "source_answer_surface": " German",
+        "source_answer_token_id": 5753,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Portuguese",
+        "target_answer_surface": " Portuguese",
+        "target_answer_token_id": 40790,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "154b3c719a5a73f6"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Germany speak",
+        "prompt_sha256": "9c4f220b0df29f16f16623008e58acdd003ce6d268ac0e5543f6b38024d8d7f0",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          9564,
+          6266
+        ],
+        "scenario_id": "d1936651a84efe13",
+        "source_answer": "German",
+        "source_answer_surface": " German",
+        "source_answer_token_id": 5753,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Italian",
+        "target_answer_surface": " Italian",
+        "target_answer_token_id": 14382,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "02df8fae93b550a1"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Germany speak",
+        "prompt_sha256": "9c4f220b0df29f16f16623008e58acdd003ce6d268ac0e5543f6b38024d8d7f0",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          9564,
+          6266
+        ],
+        "scenario_id": "d1936651a84efe13",
+        "source_answer": "German",
+        "source_answer_surface": " German",
+        "source_answer_token_id": 5753,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Hindi",
+        "target_answer_surface": " Hindi",
+        "target_answer_token_id": 42524,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "d813ac58a8f6d35c"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Germany speak",
+        "prompt_sha256": "9c4f220b0df29f16f16623008e58acdd003ce6d268ac0e5543f6b38024d8d7f0",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          9564,
+          6266
+        ],
+        "scenario_id": "d1936651a84efe13",
+        "source_answer": "German",
+        "source_answer_surface": " German",
+        "source_answer_token_id": 5753,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Spanish",
+        "target_answer_surface": " Spanish",
+        "target_answer_token_id": 14712,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "9b58c8d7c9dda1b2"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Italy speak",
+        "prompt_sha256": "ed8e5f342456dadb5d80e676ababef1e34d1c6e1633c41b809c6c5128f05a166",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          14898,
+          6266
+        ],
+        "scenario_id": "cab4a70c9ee505c6",
+        "source_answer": "Italian",
+        "source_answer_surface": " Italian",
+        "source_answer_token_id": 14382,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Japanese",
+        "target_answer_surface": " Japanese",
+        "target_answer_token_id": 10452,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "0a3a4640af7414b8"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Italy speak",
+        "prompt_sha256": "ed8e5f342456dadb5d80e676ababef1e34d1c6e1633c41b809c6c5128f05a166",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          14898,
+          6266
+        ],
+        "scenario_id": "cab4a70c9ee505c6",
+        "source_answer": "Italian",
+        "source_answer_surface": " Italian",
+        "source_answer_token_id": 14382,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Portuguese",
+        "target_answer_surface": " Portuguese",
+        "target_answer_token_id": 40790,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "bed86029abfcdd82"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Italy speak",
+        "prompt_sha256": "ed8e5f342456dadb5d80e676ababef1e34d1c6e1633c41b809c6c5128f05a166",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          14898,
+          6266
+        ],
+        "scenario_id": "cab4a70c9ee505c6",
+        "source_answer": "Italian",
+        "source_answer_surface": " Italian",
+        "source_answer_token_id": 14382,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "German",
+        "target_answer_surface": " German",
+        "target_answer_token_id": 5753,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "af8036e4e90ce658"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Italy speak",
+        "prompt_sha256": "ed8e5f342456dadb5d80e676ababef1e34d1c6e1633c41b809c6c5128f05a166",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          14898,
+          6266
+        ],
+        "scenario_id": "cab4a70c9ee505c6",
+        "source_answer": "Italian",
+        "source_answer_surface": " Italian",
+        "source_answer_token_id": 14382,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Hindi",
+        "target_answer_surface": " Hindi",
+        "target_answer_token_id": 42524,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "e521256247faa0f3"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Italy speak",
+        "prompt_sha256": "ed8e5f342456dadb5d80e676ababef1e34d1c6e1633c41b809c6c5128f05a166",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          14898,
+          6266
+        ],
+        "scenario_id": "cab4a70c9ee505c6",
+        "source_answer": "Italian",
+        "source_answer_surface": " Italian",
+        "source_answer_token_id": 14382,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Spanish",
+        "target_answer_surface": " Spanish",
+        "target_answer_token_id": 14712,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "299f0953d4f8d6b3"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in India speak",
+        "prompt_sha256": "24a19a169bf7ecd2f7e46e52e636909bca2f2db444506e9ec36a6ec2bc899892",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6535,
+          6266
+        ],
+        "scenario_id": "9e4d7f1298becf29",
+        "source_answer": "Hindi",
+        "source_answer_surface": " Hindi",
+        "source_answer_token_id": 42524,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Japanese",
+        "target_answer_surface": " Japanese",
+        "target_answer_token_id": 10452,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "dd1ba71f3b3370b3"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in India speak",
+        "prompt_sha256": "24a19a169bf7ecd2f7e46e52e636909bca2f2db444506e9ec36a6ec2bc899892",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6535,
+          6266
+        ],
+        "scenario_id": "9e4d7f1298becf29",
+        "source_answer": "Hindi",
+        "source_answer_surface": " Hindi",
+        "source_answer_token_id": 42524,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Portuguese",
+        "target_answer_surface": " Portuguese",
+        "target_answer_token_id": 40790,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "1064ffb09218c2ff"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in India speak",
+        "prompt_sha256": "24a19a169bf7ecd2f7e46e52e636909bca2f2db444506e9ec36a6ec2bc899892",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6535,
+          6266
+        ],
+        "scenario_id": "9e4d7f1298becf29",
+        "source_answer": "Hindi",
+        "source_answer_surface": " Hindi",
+        "source_answer_token_id": 42524,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "German",
+        "target_answer_surface": " German",
+        "target_answer_token_id": 5753,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "07fcaf81922179e2"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in India speak",
+        "prompt_sha256": "24a19a169bf7ecd2f7e46e52e636909bca2f2db444506e9ec36a6ec2bc899892",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6535,
+          6266
+        ],
+        "scenario_id": "9e4d7f1298becf29",
+        "source_answer": "Hindi",
+        "source_answer_surface": " Hindi",
+        "source_answer_token_id": 42524,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Italian",
+        "target_answer_surface": " Italian",
+        "target_answer_token_id": 14382,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "9e70d83627ab8d51"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in India speak",
+        "prompt_sha256": "24a19a169bf7ecd2f7e46e52e636909bca2f2db444506e9ec36a6ec2bc899892",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          6535,
+          6266
+        ],
+        "scenario_id": "9e4d7f1298becf29",
+        "source_answer": "Hindi",
+        "source_answer_surface": " Hindi",
+        "source_answer_token_id": 42524,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Spanish",
+        "target_answer_surface": " Spanish",
+        "target_answer_token_id": 14712,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "a02420bd374dd40d"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Spain speak",
+        "prompt_sha256": "348af3c632cc3f53d7d98637ea031aa1e571535bff7eea19b13be6b614a810a5",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          17163,
+          6266
+        ],
+        "scenario_id": "699247d45ff7c553",
+        "source_answer": "Spanish",
+        "source_answer_surface": " Spanish",
+        "source_answer_token_id": 14712,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Japanese",
+        "target_answer_surface": " Japanese",
+        "target_answer_token_id": 10452,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "8964f09eef5cbf2a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Spain speak",
+        "prompt_sha256": "348af3c632cc3f53d7d98637ea031aa1e571535bff7eea19b13be6b614a810a5",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          17163,
+          6266
+        ],
+        "scenario_id": "699247d45ff7c553",
+        "source_answer": "Spanish",
+        "source_answer_surface": " Spanish",
+        "source_answer_token_id": 14712,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Portuguese",
+        "target_answer_surface": " Portuguese",
+        "target_answer_token_id": 40790,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "a0c346fa4bfdf28c"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Spain speak",
+        "prompt_sha256": "348af3c632cc3f53d7d98637ea031aa1e571535bff7eea19b13be6b614a810a5",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          17163,
+          6266
+        ],
+        "scenario_id": "699247d45ff7c553",
+        "source_answer": "Spanish",
+        "source_answer_surface": " Spanish",
+        "source_answer_token_id": 14712,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "German",
+        "target_answer_surface": " German",
+        "target_answer_token_id": 5753,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "566723ff8370205a"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Spain speak",
+        "prompt_sha256": "348af3c632cc3f53d7d98637ea031aa1e571535bff7eea19b13be6b614a810a5",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          17163,
+          6266
+        ],
+        "scenario_id": "699247d45ff7c553",
+        "source_answer": "Spanish",
+        "source_answer_surface": " Spanish",
+        "source_answer_token_id": 14712,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Italian",
+        "target_answer_surface": " Italian",
+        "target_answer_token_id": 14382,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "e47cce35d832112f"
+      },
+      {
+        "argument_positions": [
+          3
+        ],
+        "category": "easy_countries",
+        "function": "language",
+        "prompt": "Most people in Spain speak",
+        "prompt_sha256": "348af3c632cc3f53d7d98637ea031aa1e571535bff7eea19b13be6b614a810a5",
+        "prompt_token_ids": [
+          12934,
+          1208,
+          303,
+          17163,
+          6266
+        ],
+        "scenario_id": "699247d45ff7c553",
+        "source_answer": "Spanish",
+        "source_answer_surface": " Spanish",
+        "source_answer_token_id": 14712,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Hindi",
+        "target_answer_surface": " Hindi",
+        "target_answer_token_id": 42524,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "e5baba383f289063"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Japan is a country on the continent of",
+        "prompt_sha256": "858dfd739384e49a5fedbd68cd8b62e595d3efcf1a2add301a59b97d2c4be412",
+        "prompt_token_ids": [
+          47122,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "8b0a4c284e7afe9e",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "3e07b32351adb9fc"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Japan is a country on the continent of",
+        "prompt_sha256": "858dfd739384e49a5fedbd68cd8b62e595d3efcf1a2add301a59b97d2c4be412",
+        "prompt_token_ids": [
+          47122,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "8b0a4c284e7afe9e",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "e2e810348f0a4ccf"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Japan is a country on the continent of",
+        "prompt_sha256": "858dfd739384e49a5fedbd68cd8b62e595d3efcf1a2add301a59b97d2c4be412",
+        "prompt_token_ids": [
+          47122,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "8b0a4c284e7afe9e",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "cd1357ca3ec80287"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Japan is a country on the continent of",
+        "prompt_sha256": "858dfd739384e49a5fedbd68cd8b62e595d3efcf1a2add301a59b97d2c4be412",
+        "prompt_token_ids": [
+          47122,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "8b0a4c284e7afe9e",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "34fbbf7e15d63dac"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Japan is a country on the continent of",
+        "prompt_sha256": "858dfd739384e49a5fedbd68cd8b62e595d3efcf1a2add301a59b97d2c4be412",
+        "prompt_token_ids": [
+          47122,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "8b0a4c284e7afe9e",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "Japan",
+        "source_argument_surface": " Japan",
+        "source_argument_token_id": 6124,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "3b84591d133fda00"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "da12b2390d6607a3"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "da0fed01ce039441"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "ccfb6c2d11528018"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "df3911c0f5774835"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "41e5c4c505118d1e"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Brazil is a country on the continent of",
+        "prompt_sha256": "fc3c40c6264902de8809a3a9be52318c40708cf900c636f4ce4d4f632ea2973e",
+        "prompt_token_ids": [
+          64931,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "a5102a7c123368e1",
+        "source_answer": "South",
+        "source_answer_surface": " South",
+        "source_answer_token_id": 4725,
+        "source_argument": "Brazil",
+        "source_argument_surface": " Brazil",
+        "source_argument_token_id": 15477,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "643c51a2e357fa37"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Germany is a country on the continent of",
+        "prompt_sha256": "5203979abd6581aa836e7be0bf345fbea9a1fa808deea0857f64db3fe087c690",
+        "prompt_token_ids": [
+          48484,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "43b0c2911fa3f8c0",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "2b0d2b1799518460"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Germany is a country on the continent of",
+        "prompt_sha256": "5203979abd6581aa836e7be0bf345fbea9a1fa808deea0857f64db3fe087c690",
+        "prompt_token_ids": [
+          48484,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "43b0c2911fa3f8c0",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "f213adaf294628bb"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Germany is a country on the continent of",
+        "prompt_sha256": "5203979abd6581aa836e7be0bf345fbea9a1fa808deea0857f64db3fe087c690",
+        "prompt_token_ids": [
+          48484,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "43b0c2911fa3f8c0",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "968691b1662bca4d"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Germany is a country on the continent of",
+        "prompt_sha256": "5203979abd6581aa836e7be0bf345fbea9a1fa808deea0857f64db3fe087c690",
+        "prompt_token_ids": [
+          48484,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "43b0c2911fa3f8c0",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Germany",
+        "source_argument_surface": " Germany",
+        "source_argument_token_id": 9564,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "b6d74780623ff1df"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "5ca1c61390ed24b6"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "e50b641d0860252c"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "3f34a35a6cc6ea20"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "96403e0ed52b6b49"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "c2262d129207c7b8"
+      },
+      {
+        "argument_positions": [
+          0,
+          1
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Kenya is a country on the continent of",
+        "prompt_sha256": "922e08efd2627af358ed3f09ba116998a144559151f04e9a29f21fe5bdf9b217",
+        "prompt_token_ids": [
+          45665,
+          7509,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "d2c2029b1772c9a9",
+        "source_answer": "Africa",
+        "source_answer_surface": " Africa",
+        "source_answer_token_id": 9871,
+        "source_argument": "Kenya",
+        "source_argument_surface": " Kenya",
+        "source_argument_token_id": 35453,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "efb93364486ed0ed"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Italy is a country on the continent of",
+        "prompt_sha256": "71b2ee7ca879f842eaf8dccc6e9d71fa2530d77f427cc525aee9120e7dd09ff2",
+        "prompt_token_ids": [
+          68121,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "9496492946891b6a",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "2969f500e2908da0"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Italy is a country on the continent of",
+        "prompt_sha256": "71b2ee7ca879f842eaf8dccc6e9d71fa2530d77f427cc525aee9120e7dd09ff2",
+        "prompt_token_ids": [
+          68121,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "9496492946891b6a",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "86dbc4563c18c159"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Italy is a country on the continent of",
+        "prompt_sha256": "71b2ee7ca879f842eaf8dccc6e9d71fa2530d77f427cc525aee9120e7dd09ff2",
+        "prompt_token_ids": [
+          68121,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "9496492946891b6a",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "d3d44b5f203f6926"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Italy is a country on the continent of",
+        "prompt_sha256": "71b2ee7ca879f842eaf8dccc6e9d71fa2530d77f427cc525aee9120e7dd09ff2",
+        "prompt_token_ids": [
+          68121,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "9496492946891b6a",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Italy",
+        "source_argument_surface": " Italy",
+        "source_argument_token_id": 14898,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "906e96644e90af8d"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "India is a country on the continent of",
+        "prompt_sha256": "c17b34280a63820a93fb70b93464bbcc4ea5e0bd8a78fd825c89b472a5725edf",
+        "prompt_token_ids": [
+          32436,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "dea680eb850c9255",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "68fea7c4863759ad"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "India is a country on the continent of",
+        "prompt_sha256": "c17b34280a63820a93fb70b93464bbcc4ea5e0bd8a78fd825c89b472a5725edf",
+        "prompt_token_ids": [
+          32436,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "dea680eb850c9255",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Germany",
+        "target_argument_surface": " Germany",
+        "target_argument_token_id": 9564,
+        "trial_id": "2db095acfb6fb2fb"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "India is a country on the continent of",
+        "prompt_sha256": "c17b34280a63820a93fb70b93464bbcc4ea5e0bd8a78fd825c89b472a5725edf",
+        "prompt_token_ids": [
+          32436,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "dea680eb850c9255",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "09aa625744163e02"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "India is a country on the continent of",
+        "prompt_sha256": "c17b34280a63820a93fb70b93464bbcc4ea5e0bd8a78fd825c89b472a5725edf",
+        "prompt_token_ids": [
+          32436,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "dea680eb850c9255",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Italy",
+        "target_argument_surface": " Italy",
+        "target_argument_token_id": 14898,
+        "trial_id": "1d7c271096615e65"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "India is a country on the continent of",
+        "prompt_sha256": "c17b34280a63820a93fb70b93464bbcc4ea5e0bd8a78fd825c89b472a5725edf",
+        "prompt_token_ids": [
+          32436,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "dea680eb850c9255",
+        "source_answer": "Asia",
+        "source_answer_surface": " Asia",
+        "source_answer_token_id": 13229,
+        "source_argument": "India",
+        "source_argument_surface": " India",
+        "source_argument_token_id": 6535,
+        "target_answer": "Europe",
+        "target_answer_surface": " Europe",
+        "target_answer_token_id": 4357,
+        "target_argument": "Spain",
+        "target_argument_surface": " Spain",
+        "target_argument_token_id": 17163,
+        "trial_id": "6101fb41626d6bab"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Spain is a country on the continent of",
+        "prompt_sha256": "a39103f3d5b7a7163d30bf0a4dfcacf06b2f4beaf675d5fce90e8b4361ff3cae",
+        "prompt_token_ids": [
+          71792,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "66a9205e2f82a468",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "Japan",
+        "target_argument_surface": " Japan",
+        "target_argument_token_id": 6124,
+        "trial_id": "69af80f575a5d24c"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Spain is a country on the continent of",
+        "prompt_sha256": "a39103f3d5b7a7163d30bf0a4dfcacf06b2f4beaf675d5fce90e8b4361ff3cae",
+        "prompt_token_ids": [
+          71792,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "66a9205e2f82a468",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "South",
+        "target_answer_surface": " South",
+        "target_answer_token_id": 4725,
+        "target_argument": "Brazil",
+        "target_argument_surface": " Brazil",
+        "target_argument_token_id": 15477,
+        "trial_id": "0fccf88ddfb4f45c"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Spain is a country on the continent of",
+        "prompt_sha256": "a39103f3d5b7a7163d30bf0a4dfcacf06b2f4beaf675d5fce90e8b4361ff3cae",
+        "prompt_token_ids": [
+          71792,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "66a9205e2f82a468",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Africa",
+        "target_answer_surface": " Africa",
+        "target_answer_token_id": 9871,
+        "target_argument": "Kenya",
+        "target_argument_surface": " Kenya",
+        "target_argument_token_id": 35453,
+        "trial_id": "f5e101b95963cb7b"
+      },
+      {
+        "argument_positions": [
+          0
+        ],
+        "category": "easy_countries",
+        "function": "continent",
+        "prompt": "Spain is a country on the continent of",
+        "prompt_sha256": "a39103f3d5b7a7163d30bf0a4dfcacf06b2f4beaf675d5fce90e8b4361ff3cae",
+        "prompt_token_ids": [
+          71792,
+          369,
+          264,
+          3046,
+          383,
+          279,
+          30701,
+          314
+        ],
+        "scenario_id": "66a9205e2f82a468",
+        "source_answer": "Europe",
+        "source_answer_surface": " Europe",
+        "source_answer_token_id": 4357,
+        "source_argument": "Spain",
+        "source_argument_surface": " Spain",
+        "source_argument_token_id": 17163,
+        "target_answer": "Asia",
+        "target_answer_surface": " Asia",
+        "target_answer_token_id": 13229,
+        "target_argument": "India",
+        "target_argument_surface": " India",
+        "target_argument_token_id": 6535,
+        "trial_id": "a0a5b96867435dc4"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after alpha is",
+        "prompt_sha256": "71427acbdf0b732ce4c8162b6e5559dd592d343010dce22e74f5642a8359f635",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          8029,
+          369
+        ],
+        "scenario_id": "801014f41c809998",
+        "source_answer": "beta",
+        "source_answer_surface": " beta",
+        "source_answer_token_id": 13053,
+        "source_argument": "alpha",
+        "source_argument_surface": " alpha",
+        "source_argument_token_id": 8029,
+        "target_answer": "gamma",
+        "target_answer_surface": " gamma",
+        "target_answer_token_id": 20956,
+        "target_argument": "beta",
+        "target_argument_surface": " beta",
+        "target_argument_token_id": 13053,
+        "trial_id": "9b09e49a4ca71d65"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after alpha is",
+        "prompt_sha256": "71427acbdf0b732ce4c8162b6e5559dd592d343010dce22e74f5642a8359f635",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          8029,
+          369
+        ],
+        "scenario_id": "801014f41c809998",
+        "source_answer": "beta",
+        "source_answer_surface": " beta",
+        "source_answer_token_id": 13053,
+        "source_argument": "alpha",
+        "source_argument_surface": " alpha",
+        "source_argument_token_id": 8029,
+        "target_answer": "delta",
+        "target_answer_surface": " delta",
+        "target_answer_token_id": 9197,
+        "target_argument": "gamma",
+        "target_argument_surface": " gamma",
+        "target_argument_token_id": 20956,
+        "trial_id": "4cdc7fe76fd4430f"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after alpha is",
+        "prompt_sha256": "71427acbdf0b732ce4c8162b6e5559dd592d343010dce22e74f5642a8359f635",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          8029,
+          369
+        ],
+        "scenario_id": "801014f41c809998",
+        "source_answer": "beta",
+        "source_answer_surface": " beta",
+        "source_answer_token_id": 13053,
+        "source_argument": "alpha",
+        "source_argument_surface": " alpha",
+        "source_argument_token_id": 8029,
+        "target_answer": "epsilon",
+        "target_answer_surface": " epsilon",
+        "target_answer_token_id": 30183,
+        "target_argument": "delta",
+        "target_argument_surface": " delta",
+        "target_argument_token_id": 9197,
+        "trial_id": "f08d5f0e0df738ce"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after beta is",
+        "prompt_sha256": "2461a01500efdb5bac863c4995f6dbf544eb691b06ab0cd71e65d0f418d0e885",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          13053,
+          369
+        ],
+        "scenario_id": "ad7c1d5941508364",
+        "source_answer": "gamma",
+        "source_answer_surface": " gamma",
+        "source_answer_token_id": 20956,
+        "source_argument": "beta",
+        "source_argument_surface": " beta",
+        "source_argument_token_id": 13053,
+        "target_answer": "beta",
+        "target_answer_surface": " beta",
+        "target_answer_token_id": 13053,
+        "target_argument": "alpha",
+        "target_argument_surface": " alpha",
+        "target_argument_token_id": 8029,
+        "trial_id": "4572bd32f4c38640"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after beta is",
+        "prompt_sha256": "2461a01500efdb5bac863c4995f6dbf544eb691b06ab0cd71e65d0f418d0e885",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          13053,
+          369
+        ],
+        "scenario_id": "ad7c1d5941508364",
+        "source_answer": "gamma",
+        "source_answer_surface": " gamma",
+        "source_answer_token_id": 20956,
+        "source_argument": "beta",
+        "source_argument_surface": " beta",
+        "source_argument_token_id": 13053,
+        "target_answer": "delta",
+        "target_answer_surface": " delta",
+        "target_answer_token_id": 9197,
+        "target_argument": "gamma",
+        "target_argument_surface": " gamma",
+        "target_argument_token_id": 20956,
+        "trial_id": "c4348403c62f8ea2"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after beta is",
+        "prompt_sha256": "2461a01500efdb5bac863c4995f6dbf544eb691b06ab0cd71e65d0f418d0e885",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          13053,
+          369
+        ],
+        "scenario_id": "ad7c1d5941508364",
+        "source_answer": "gamma",
+        "source_answer_surface": " gamma",
+        "source_answer_token_id": 20956,
+        "source_argument": "beta",
+        "source_argument_surface": " beta",
+        "source_argument_token_id": 13053,
+        "target_answer": "epsilon",
+        "target_answer_surface": " epsilon",
+        "target_answer_token_id": 30183,
+        "target_argument": "delta",
+        "target_argument_surface": " delta",
+        "target_argument_token_id": 9197,
+        "trial_id": "27eeaa85c2b619f4"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after gamma is",
+        "prompt_sha256": "cba27d97b6916675b5f81ff7275af86f0538152fb560f0407ebbf0d3c4353b50",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          20956,
+          369
+        ],
+        "scenario_id": "54b26084b4d0be41",
+        "source_answer": "delta",
+        "source_answer_surface": " delta",
+        "source_answer_token_id": 9197,
+        "source_argument": "gamma",
+        "source_argument_surface": " gamma",
+        "source_argument_token_id": 20956,
+        "target_answer": "beta",
+        "target_answer_surface": " beta",
+        "target_answer_token_id": 13053,
+        "target_argument": "alpha",
+        "target_argument_surface": " alpha",
+        "target_argument_token_id": 8029,
+        "trial_id": "28d6502031014361"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after gamma is",
+        "prompt_sha256": "cba27d97b6916675b5f81ff7275af86f0538152fb560f0407ebbf0d3c4353b50",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          20956,
+          369
+        ],
+        "scenario_id": "54b26084b4d0be41",
+        "source_answer": "delta",
+        "source_answer_surface": " delta",
+        "source_answer_token_id": 9197,
+        "source_argument": "gamma",
+        "source_argument_surface": " gamma",
+        "source_argument_token_id": 20956,
+        "target_answer": "gamma",
+        "target_answer_surface": " gamma",
+        "target_answer_token_id": 20956,
+        "target_argument": "beta",
+        "target_argument_surface": " beta",
+        "target_argument_token_id": 13053,
+        "trial_id": "5ae177bf5d2632f1"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after gamma is",
+        "prompt_sha256": "cba27d97b6916675b5f81ff7275af86f0538152fb560f0407ebbf0d3c4353b50",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          20956,
+          369
+        ],
+        "scenario_id": "54b26084b4d0be41",
+        "source_answer": "delta",
+        "source_answer_surface": " delta",
+        "source_answer_token_id": 9197,
+        "source_argument": "gamma",
+        "source_argument_surface": " gamma",
+        "source_argument_token_id": 20956,
+        "target_answer": "epsilon",
+        "target_answer_surface": " epsilon",
+        "target_answer_token_id": 30183,
+        "target_argument": "delta",
+        "target_argument_surface": " delta",
+        "target_argument_token_id": 9197,
+        "trial_id": "48fb4d47ca6c6589"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after delta is",
+        "prompt_sha256": "aaab02f28a30134bf1b89ace3a6dbed8a88c320387cdcd4207a63be202c66f8b",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          9197,
+          369
+        ],
+        "scenario_id": "c238ea3c3f07213b",
+        "source_answer": "epsilon",
+        "source_answer_surface": " epsilon",
+        "source_answer_token_id": 30183,
+        "source_argument": "delta",
+        "source_argument_surface": " delta",
+        "source_argument_token_id": 9197,
+        "target_answer": "beta",
+        "target_answer_surface": " beta",
+        "target_answer_token_id": 13053,
+        "target_argument": "alpha",
+        "target_argument_surface": " alpha",
+        "target_argument_token_id": 8029,
+        "trial_id": "0a33d9d29f3bb8b1"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after delta is",
+        "prompt_sha256": "aaab02f28a30134bf1b89ace3a6dbed8a88c320387cdcd4207a63be202c66f8b",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          9197,
+          369
+        ],
+        "scenario_id": "c238ea3c3f07213b",
+        "source_answer": "epsilon",
+        "source_answer_surface": " epsilon",
+        "source_answer_token_id": 30183,
+        "source_argument": "delta",
+        "source_argument_surface": " delta",
+        "source_argument_token_id": 9197,
+        "target_answer": "gamma",
+        "target_answer_surface": " gamma",
+        "target_answer_token_id": 20956,
+        "target_argument": "beta",
+        "target_argument_surface": " beta",
+        "target_argument_token_id": 13053,
+        "trial_id": "a591986d0175fea6"
+      },
+      {
+        "argument_positions": [
+          5
+        ],
+        "category": "easy_greek_sequence",
+        "function": "successor",
+        "prompt": "The Greek letter immediately after delta is",
+        "prompt_sha256": "aaab02f28a30134bf1b89ace3a6dbed8a88c320387cdcd4207a63be202c66f8b",
+        "prompt_token_ids": [
+          760,
+          17326,
+          6321,
+          6849,
+          1238,
+          9197,
+          369
+        ],
+        "scenario_id": "c238ea3c3f07213b",
+        "source_answer": "epsilon",
+        "source_answer_surface": " epsilon",
+        "source_answer_token_id": 30183,
+        "source_argument": "delta",
+        "source_argument_surface": " delta",
+        "source_argument_token_id": 9197,
+        "target_answer": "delta",
+        "target_answer_surface": " delta",
+        "target_answer_token_id": 9197,
+        "target_argument": "gamma",
+        "target_argument_surface": " gamma",
+        "target_argument_token_id": 20956,
+        "trial_id": "e009708c608605a9"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for hydrogen is",
+        "prompt_sha256": "ab95210a3cce14be0cd94d9daf82dc026c1cfd20538c9643b5fc69772e31caf0",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          33536,
+          369
+        ],
+        "scenario_id": "42f4150187a7ede9",
+        "source_answer": "H",
+        "source_answer_surface": " H",
+        "source_answer_token_id": 462,
+        "source_argument": "hydrogen",
+        "source_argument_surface": " hydrogen",
+        "source_argument_token_id": 33536,
+        "target_answer": "C",
+        "target_answer_surface": " C",
+        "target_answer_token_id": 351,
+        "target_argument": "carbon",
+        "target_argument_surface": " carbon",
+        "target_argument_token_id": 12141,
+        "trial_id": "8ef7d1c49b924b2e"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for hydrogen is",
+        "prompt_sha256": "ab95210a3cce14be0cd94d9daf82dc026c1cfd20538c9643b5fc69772e31caf0",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          33536,
+          369
+        ],
+        "scenario_id": "42f4150187a7ede9",
+        "source_answer": "H",
+        "source_answer_surface": " H",
+        "source_answer_token_id": 462,
+        "source_argument": "hydrogen",
+        "source_argument_surface": " hydrogen",
+        "source_argument_token_id": 33536,
+        "target_answer": "O",
+        "target_answer_surface": " O",
+        "target_answer_token_id": 496,
+        "target_argument": "oxygen",
+        "target_argument_surface": " oxygen",
+        "target_argument_token_id": 22817,
+        "trial_id": "f5ed64316d8afa8a"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for hydrogen is",
+        "prompt_sha256": "ab95210a3cce14be0cd94d9daf82dc026c1cfd20538c9643b5fc69772e31caf0",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          33536,
+          369
+        ],
+        "scenario_id": "42f4150187a7ede9",
+        "source_answer": "H",
+        "source_answer_surface": " H",
+        "source_answer_token_id": 462,
+        "source_argument": "hydrogen",
+        "source_argument_surface": " hydrogen",
+        "source_argument_token_id": 33536,
+        "target_answer": "Na",
+        "target_answer_surface": " Na",
+        "target_answer_token_id": 12444,
+        "target_argument": "sodium",
+        "target_argument_surface": " sodium",
+        "target_argument_token_id": 37315,
+        "trial_id": "6c799b1b99bbc6a5"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for carbon is",
+        "prompt_sha256": "52e0be1286e134ff0ebe298f1430cef439df11432b78e6e8aae48706dab077ec",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          12141,
+          369
+        ],
+        "scenario_id": "e78e4f004079049b",
+        "source_answer": "C",
+        "source_answer_surface": " C",
+        "source_answer_token_id": 351,
+        "source_argument": "carbon",
+        "source_argument_surface": " carbon",
+        "source_argument_token_id": 12141,
+        "target_answer": "H",
+        "target_answer_surface": " H",
+        "target_answer_token_id": 462,
+        "target_argument": "hydrogen",
+        "target_argument_surface": " hydrogen",
+        "target_argument_token_id": 33536,
+        "trial_id": "9d1ef0e2ed8388e0"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for carbon is",
+        "prompt_sha256": "52e0be1286e134ff0ebe298f1430cef439df11432b78e6e8aae48706dab077ec",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          12141,
+          369
+        ],
+        "scenario_id": "e78e4f004079049b",
+        "source_answer": "C",
+        "source_answer_surface": " C",
+        "source_answer_token_id": 351,
+        "source_argument": "carbon",
+        "source_argument_surface": " carbon",
+        "source_argument_token_id": 12141,
+        "target_answer": "O",
+        "target_answer_surface": " O",
+        "target_answer_token_id": 496,
+        "target_argument": "oxygen",
+        "target_argument_surface": " oxygen",
+        "target_argument_token_id": 22817,
+        "trial_id": "d2ec6f664c26059a"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for carbon is",
+        "prompt_sha256": "52e0be1286e134ff0ebe298f1430cef439df11432b78e6e8aae48706dab077ec",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          12141,
+          369
+        ],
+        "scenario_id": "e78e4f004079049b",
+        "source_answer": "C",
+        "source_answer_surface": " C",
+        "source_answer_token_id": 351,
+        "source_argument": "carbon",
+        "source_argument_surface": " carbon",
+        "source_argument_token_id": 12141,
+        "target_answer": "Na",
+        "target_answer_surface": " Na",
+        "target_answer_token_id": 12444,
+        "target_argument": "sodium",
+        "target_argument_surface": " sodium",
+        "target_argument_token_id": 37315,
+        "trial_id": "64ced335bcf58a96"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for oxygen is",
+        "prompt_sha256": "269cb29158cb63154384c87512110c027147faa8fc9e7f4dd52da659275269fa",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          22817,
+          369
+        ],
+        "scenario_id": "5d861b5476e402ab",
+        "source_answer": "O",
+        "source_answer_surface": " O",
+        "source_answer_token_id": 496,
+        "source_argument": "oxygen",
+        "source_argument_surface": " oxygen",
+        "source_argument_token_id": 22817,
+        "target_answer": "H",
+        "target_answer_surface": " H",
+        "target_answer_token_id": 462,
+        "target_argument": "hydrogen",
+        "target_argument_surface": " hydrogen",
+        "target_argument_token_id": 33536,
+        "trial_id": "eb7c00975c840558"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for oxygen is",
+        "prompt_sha256": "269cb29158cb63154384c87512110c027147faa8fc9e7f4dd52da659275269fa",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          22817,
+          369
+        ],
+        "scenario_id": "5d861b5476e402ab",
+        "source_answer": "O",
+        "source_answer_surface": " O",
+        "source_answer_token_id": 496,
+        "source_argument": "oxygen",
+        "source_argument_surface": " oxygen",
+        "source_argument_token_id": 22817,
+        "target_answer": "C",
+        "target_answer_surface": " C",
+        "target_answer_token_id": 351,
+        "target_argument": "carbon",
+        "target_argument_surface": " carbon",
+        "target_argument_token_id": 12141,
+        "trial_id": "e0b5793b97397483"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for oxygen is",
+        "prompt_sha256": "269cb29158cb63154384c87512110c027147faa8fc9e7f4dd52da659275269fa",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          22817,
+          369
+        ],
+        "scenario_id": "5d861b5476e402ab",
+        "source_answer": "O",
+        "source_answer_surface": " O",
+        "source_answer_token_id": 496,
+        "source_argument": "oxygen",
+        "source_argument_surface": " oxygen",
+        "source_argument_token_id": 22817,
+        "target_answer": "Na",
+        "target_answer_surface": " Na",
+        "target_answer_token_id": 12444,
+        "target_argument": "sodium",
+        "target_argument_surface": " sodium",
+        "target_argument_token_id": 37315,
+        "trial_id": "368c0b668a5e7d07"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for sodium is",
+        "prompt_sha256": "95bdf462d3299d5f570d5624b7f49a21679da822b3d0a284837adc6449b90306",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          37315,
+          369
+        ],
+        "scenario_id": "d775c5321de8c91a",
+        "source_answer": "Na",
+        "source_answer_surface": " Na",
+        "source_answer_token_id": 12444,
+        "source_argument": "sodium",
+        "source_argument_surface": " sodium",
+        "source_argument_token_id": 37315,
+        "target_answer": "H",
+        "target_answer_surface": " H",
+        "target_answer_token_id": 462,
+        "target_argument": "hydrogen",
+        "target_argument_surface": " hydrogen",
+        "target_argument_token_id": 33536,
+        "trial_id": "7da3817b4f8713e4"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for sodium is",
+        "prompt_sha256": "95bdf462d3299d5f570d5624b7f49a21679da822b3d0a284837adc6449b90306",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          37315,
+          369
+        ],
+        "scenario_id": "d775c5321de8c91a",
+        "source_answer": "Na",
+        "source_answer_surface": " Na",
+        "source_answer_token_id": 12444,
+        "source_argument": "sodium",
+        "source_argument_surface": " sodium",
+        "source_argument_token_id": 37315,
+        "target_answer": "C",
+        "target_answer_surface": " C",
+        "target_answer_token_id": 351,
+        "target_argument": "carbon",
+        "target_argument_surface": " carbon",
+        "target_argument_token_id": 12141,
+        "trial_id": "886d289e7a197ea9"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_chemical_symbols",
+        "function": "symbol",
+        "prompt": "The chemical symbol for sodium is",
+        "prompt_sha256": "95bdf462d3299d5f570d5624b7f49a21679da822b3d0a284837adc6449b90306",
+        "prompt_token_ids": [
+          760,
+          11153,
+          7489,
+          364,
+          37315,
+          369
+        ],
+        "scenario_id": "d775c5321de8c91a",
+        "source_answer": "Na",
+        "source_answer_surface": " Na",
+        "source_answer_token_id": 12444,
+        "source_argument": "sodium",
+        "source_argument_surface": " sodium",
+        "source_argument_token_id": 37315,
+        "target_answer": "O",
+        "target_answer_surface": " O",
+        "target_answer_token_id": 496,
+        "target_argument": "oxygen",
+        "target_argument_surface": " oxygen",
+        "target_argument_token_id": 22817,
+        "trial_id": "414df6d355af7c28"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Monday is",
+        "prompt_sha256": "debc12edd5b88e8f1f3e3dd5f8b2e924edc95b7f009b7c5cd21ce87f5271d6fa",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6796,
+          369
+        ],
+        "scenario_id": "df16c5a064af1b74",
+        "source_answer": "Tuesday",
+        "source_answer_surface": " Tuesday",
+        "source_answer_token_id": 7348,
+        "source_argument": "Monday",
+        "source_argument_surface": " Monday",
+        "source_argument_token_id": 6796,
+        "target_answer": "Thursday",
+        "target_answer_surface": " Thursday",
+        "target_answer_token_id": 7548,
+        "target_argument": "Wednesday",
+        "target_argument_surface": " Wednesday",
+        "target_argument_token_id": 7670,
+        "trial_id": "1b5783ff4b88ef2e"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Monday is",
+        "prompt_sha256": "debc12edd5b88e8f1f3e3dd5f8b2e924edc95b7f009b7c5cd21ce87f5271d6fa",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6796,
+          369
+        ],
+        "scenario_id": "df16c5a064af1b74",
+        "source_answer": "Tuesday",
+        "source_answer_surface": " Tuesday",
+        "source_answer_token_id": 7348,
+        "source_argument": "Monday",
+        "source_argument_surface": " Monday",
+        "source_argument_token_id": 6796,
+        "target_answer": "Saturday",
+        "target_answer_surface": " Saturday",
+        "target_answer_token_id": 7483,
+        "target_argument": "Friday",
+        "target_argument_surface": " Friday",
+        "target_argument_token_id": 6394,
+        "trial_id": "b5fbb75df441a8e9"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Monday is",
+        "prompt_sha256": "debc12edd5b88e8f1f3e3dd5f8b2e924edc95b7f009b7c5cd21ce87f5271d6fa",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6796,
+          369
+        ],
+        "scenario_id": "df16c5a064af1b74",
+        "source_answer": "Tuesday",
+        "source_answer_surface": " Tuesday",
+        "source_answer_token_id": 7348,
+        "source_argument": "Monday",
+        "source_argument_surface": " Monday",
+        "source_argument_token_id": 6796,
+        "target_answer": "Monday",
+        "target_answer_surface": " Monday",
+        "target_answer_token_id": 6796,
+        "target_argument": "Sunday",
+        "target_argument_surface": " Sunday",
+        "target_argument_token_id": 7043,
+        "trial_id": "3cab0f9a1b6e4179"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Wednesday is",
+        "prompt_sha256": "a4367358bbf37df1f14c525fe19d47e82a1c9e4c549e1041784e6b2df77fcf09",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7670,
+          369
+        ],
+        "scenario_id": "fa6dfbbceea3bfdb",
+        "source_answer": "Thursday",
+        "source_answer_surface": " Thursday",
+        "source_answer_token_id": 7548,
+        "source_argument": "Wednesday",
+        "source_argument_surface": " Wednesday",
+        "source_argument_token_id": 7670,
+        "target_answer": "Tuesday",
+        "target_answer_surface": " Tuesday",
+        "target_answer_token_id": 7348,
+        "target_argument": "Monday",
+        "target_argument_surface": " Monday",
+        "target_argument_token_id": 6796,
+        "trial_id": "2884d18e441995ab"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Wednesday is",
+        "prompt_sha256": "a4367358bbf37df1f14c525fe19d47e82a1c9e4c549e1041784e6b2df77fcf09",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7670,
+          369
+        ],
+        "scenario_id": "fa6dfbbceea3bfdb",
+        "source_answer": "Thursday",
+        "source_answer_surface": " Thursday",
+        "source_answer_token_id": 7548,
+        "source_argument": "Wednesday",
+        "source_argument_surface": " Wednesday",
+        "source_argument_token_id": 7670,
+        "target_answer": "Saturday",
+        "target_answer_surface": " Saturday",
+        "target_answer_token_id": 7483,
+        "target_argument": "Friday",
+        "target_argument_surface": " Friday",
+        "target_argument_token_id": 6394,
+        "trial_id": "289f44235eee5b6f"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Wednesday is",
+        "prompt_sha256": "a4367358bbf37df1f14c525fe19d47e82a1c9e4c549e1041784e6b2df77fcf09",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7670,
+          369
+        ],
+        "scenario_id": "fa6dfbbceea3bfdb",
+        "source_answer": "Thursday",
+        "source_answer_surface": " Thursday",
+        "source_answer_token_id": 7548,
+        "source_argument": "Wednesday",
+        "source_argument_surface": " Wednesday",
+        "source_argument_token_id": 7670,
+        "target_answer": "Monday",
+        "target_answer_surface": " Monday",
+        "target_answer_token_id": 6796,
+        "target_argument": "Sunday",
+        "target_argument_surface": " Sunday",
+        "target_argument_token_id": 7043,
+        "trial_id": "efe574e3517f0d17"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Friday is",
+        "prompt_sha256": "b7f9b42d251d7750d8514fe36818885704a7ebe18a0a4fcf2014c83bb8ebbd33",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6394,
+          369
+        ],
+        "scenario_id": "ca1bf3a8b4ab700b",
+        "source_answer": "Saturday",
+        "source_answer_surface": " Saturday",
+        "source_answer_token_id": 7483,
+        "source_argument": "Friday",
+        "source_argument_surface": " Friday",
+        "source_argument_token_id": 6394,
+        "target_answer": "Tuesday",
+        "target_answer_surface": " Tuesday",
+        "target_answer_token_id": 7348,
+        "target_argument": "Monday",
+        "target_argument_surface": " Monday",
+        "target_argument_token_id": 6796,
+        "trial_id": "e699b7bf74ed10b2"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Friday is",
+        "prompt_sha256": "b7f9b42d251d7750d8514fe36818885704a7ebe18a0a4fcf2014c83bb8ebbd33",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6394,
+          369
+        ],
+        "scenario_id": "ca1bf3a8b4ab700b",
+        "source_answer": "Saturday",
+        "source_answer_surface": " Saturday",
+        "source_answer_token_id": 7483,
+        "source_argument": "Friday",
+        "source_argument_surface": " Friday",
+        "source_argument_token_id": 6394,
+        "target_answer": "Thursday",
+        "target_answer_surface": " Thursday",
+        "target_answer_token_id": 7548,
+        "target_argument": "Wednesday",
+        "target_argument_surface": " Wednesday",
+        "target_argument_token_id": 7670,
+        "trial_id": "b155fa583f3d4dd4"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Friday is",
+        "prompt_sha256": "b7f9b42d251d7750d8514fe36818885704a7ebe18a0a4fcf2014c83bb8ebbd33",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          6394,
+          369
+        ],
+        "scenario_id": "ca1bf3a8b4ab700b",
+        "source_answer": "Saturday",
+        "source_answer_surface": " Saturday",
+        "source_answer_token_id": 7483,
+        "source_argument": "Friday",
+        "source_argument_surface": " Friday",
+        "source_argument_token_id": 6394,
+        "target_answer": "Monday",
+        "target_answer_surface": " Monday",
+        "target_answer_token_id": 6796,
+        "target_argument": "Sunday",
+        "target_argument_surface": " Sunday",
+        "target_argument_token_id": 7043,
+        "trial_id": "8eb327a05e98ad27"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Sunday is",
+        "prompt_sha256": "dea41d0fbd5be03d69417c797de596855e576e127f097d6ca44dc6b02f39d21c",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7043,
+          369
+        ],
+        "scenario_id": "e62347a03e08a93f",
+        "source_answer": "Monday",
+        "source_answer_surface": " Monday",
+        "source_answer_token_id": 6796,
+        "source_argument": "Sunday",
+        "source_argument_surface": " Sunday",
+        "source_argument_token_id": 7043,
+        "target_answer": "Tuesday",
+        "target_answer_surface": " Tuesday",
+        "target_answer_token_id": 7348,
+        "target_argument": "Monday",
+        "target_argument_surface": " Monday",
+        "target_argument_token_id": 6796,
+        "trial_id": "f5d33d19b209cfa4"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Sunday is",
+        "prompt_sha256": "dea41d0fbd5be03d69417c797de596855e576e127f097d6ca44dc6b02f39d21c",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7043,
+          369
+        ],
+        "scenario_id": "e62347a03e08a93f",
+        "source_answer": "Monday",
+        "source_answer_surface": " Monday",
+        "source_answer_token_id": 6796,
+        "source_argument": "Sunday",
+        "source_argument_surface": " Sunday",
+        "source_argument_token_id": 7043,
+        "target_answer": "Thursday",
+        "target_answer_surface": " Thursday",
+        "target_answer_token_id": 7548,
+        "target_argument": "Wednesday",
+        "target_argument_surface": " Wednesday",
+        "target_argument_token_id": 7670,
+        "trial_id": "1e81f43399c8890f"
+      },
+      {
+        "argument_positions": [
+          4
+        ],
+        "category": "easy_weekday_sequence",
+        "function": "successor",
+        "prompt": "The day immediately after Sunday is",
+        "prompt_sha256": "dea41d0fbd5be03d69417c797de596855e576e127f097d6ca44dc6b02f39d21c",
+        "prompt_token_ids": [
+          760,
+          1834,
+          6849,
+          1238,
+          7043,
+          369
+        ],
+        "scenario_id": "e62347a03e08a93f",
+        "source_answer": "Monday",
+        "source_answer_surface": " Monday",
+        "source_answer_token_id": 6796,
+        "source_argument": "Sunday",
+        "source_argument_surface": " Sunday",
+        "source_argument_token_id": 7043,
+        "target_answer": "Saturday",
+        "target_answer_surface": " Saturday",
+        "target_answer_token_id": 7483,
+        "target_argument": "Friday",
+        "target_argument_surface": " Friday",
+        "target_argument_token_id": 6394,
+        "trial_id": "61a06483d9c926e3"
+      }
+    ]
+  },
+  "content_sha256": "7f044c700fe16bb404cfafce90da47fa42fe1974997e3385ade243f819e2ce45",
+  "created_at": "2026-08-16T21:36:29.380445+00:00",
+  "model_id": "Qwen/Qwen3.6-27B",
+  "redesign_basis": "baseline_competence_only_from_invalid_v1_control",
+  "schema_version": 2,
+  "source_definitions": {
+    "argument_control": [
+      {
+        "arguments": [
+          "Japan",
+          "Brazil",
+          "Germany",
+          "Kenya",
+          "Italy",
+          "India",
+          "Spain"
+        ],
+        "category": "easy_countries",
+        "functions": [
+          {
+            "answers": {
+              "Brazil": "Brasilia",
+              "Germany": "Berlin",
+              "India": "Delhi",
+              "Italy": "Rome",
+              "Japan": "Tokyo",
+              "Kenya": "Nairobi",
+              "Spain": "Madrid"
+            },
+            "name": "capital",
+            "template": "The capital of {arg} is the city of"
+          },
+          {
+            "answers": {
+              "Brazil": "Portuguese",
+              "Germany": "German",
+              "India": "Hindi",
+              "Italy": "Italian",
+              "Japan": "Japanese",
+              "Kenya": "Swahili",
+              "Spain": "Spanish"
+            },
+            "name": "language",
+            "template": "Most people in {arg} speak"
+          },
+          {
+            "answers": {
+              "Brazil": "South",
+              "Germany": "Europe",
+              "India": "Asia",
+              "Italy": "Europe",
+              "Japan": "Asia",
+              "Kenya": "Africa",
+              "Spain": "Europe"
+            },
+            "name": "continent",
+            "template": "{arg} is a country on the continent of"
+          }
+        ]
+      },
+      {
+        "arguments": [
+          "alpha",
+          "beta",
+          "gamma",
+          "delta"
+        ],
+        "category": "easy_greek_sequence",
+        "functions": [
+          {
+            "answers": {
+              "alpha": "beta",
+              "beta": "gamma",
+              "delta": "epsilon",
+              "gamma": "delta"
+            },
+            "name": "successor",
+            "template": "The Greek letter immediately after {arg} is"
+          }
+        ]
+      },
+      {
+        "arguments": [
+          "hydrogen",
+          "carbon",
+          "oxygen",
+          "sodium"
+        ],
+        "category": "easy_chemical_symbols",
+        "functions": [
+          {
+            "answers": {
+              "carbon": "C",
+              "hydrogen": "H",
+              "oxygen": "O",
+              "sodium": "Na"
+            },
+            "name": "symbol",
+            "template": "The chemical symbol for {arg} is"
+          }
+        ]
+      },
+      {
+        "arguments": [
+          "Monday",
+          "Wednesday",
+          "Friday",
+          "Sunday"
+        ],
+        "category": "easy_weekday_sequence",
+        "functions": [
+          {
+            "answers": {
+              "Friday": "Saturday",
+              "Monday": "Tuesday",
+              "Sunday": "Monday",
+              "Wednesday": "Thursday"
+            },
+            "name": "successor",
+            "template": "The day immediately after {arg} is"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "locked_unopened_causal",
+  "tokenizer_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9"
+}

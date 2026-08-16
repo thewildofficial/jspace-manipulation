@@ -102,3 +102,20 @@
 - **Files:** `results/v2_h0r_argument_validation/`,
   `docs/v2/h0r-final-report.md`.
 - **Commit:** recorded before constructing the replacement corpus.
+
+## 2026-08-17 — V2-D008 — Freeze replacement H0R-C corpus
+
+- **Change:** freeze a 130-trial replacement argument corpus across easy
+  countries, Greek successors, chemical symbols, and weekday successors.
+- **Reason:** these functions were baseline-correct in the invalid first
+  control; expanding only those easy families raises competence without using
+  any intervention outcome.
+- **Already observed:** first-control baseline correctness by function and
+  tokenizer eligibility for the replacement. No replacement model forward pass
+  and no fresh intervention outcome was observed.
+- **Confirmatory status:** candidate protocol, 80% baseline gate, causal pass
+  thresholds, and matched controls remain unchanged. The replacement content
+  hash is `7f044c700fe16bb404cfafce90da47fa42fe1974997e3385ade243f819e2ce45`.
+- **Files:** `configs/v2/h0r_locked_controls_v2.json`,
+  `src/jspace_policy/h0r.py`, `modal_h0r.py`.
+- **Commit:** recorded before the replacement baseline run.

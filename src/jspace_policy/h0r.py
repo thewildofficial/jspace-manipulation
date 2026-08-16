@@ -131,6 +131,103 @@ ARGUMENT_CONTROL_DEFINITIONS = [
 ]
 
 
+ARGUMENT_CONTROL_V2_DEFINITIONS = [
+    {
+        "category": "easy_countries",
+        "arguments": ["Japan", "Brazil", "Germany", "Kenya", "Italy", "India", "Spain"],
+        "functions": [
+            {
+                "name": "capital",
+                "template": "The capital of {arg} is the city of",
+                "answers": {
+                    "Japan": "Tokyo",
+                    "Brazil": "Brasilia",
+                    "Germany": "Berlin",
+                    "Kenya": "Nairobi",
+                    "Italy": "Rome",
+                    "India": "Delhi",
+                    "Spain": "Madrid",
+                },
+            },
+            {
+                "name": "language",
+                "template": "Most people in {arg} speak",
+                "answers": {
+                    "Japan": "Japanese",
+                    "Brazil": "Portuguese",
+                    "Germany": "German",
+                    "Kenya": "Swahili",
+                    "Italy": "Italian",
+                    "India": "Hindi",
+                    "Spain": "Spanish",
+                },
+            },
+            {
+                "name": "continent",
+                "template": "{arg} is a country on the continent of",
+                "answers": {
+                    "Japan": "Asia",
+                    "Brazil": "South",
+                    "Germany": "Europe",
+                    "Kenya": "Africa",
+                    "Italy": "Europe",
+                    "India": "Asia",
+                    "Spain": "Europe",
+                },
+            },
+        ],
+    },
+    {
+        "category": "easy_greek_sequence",
+        "arguments": ["alpha", "beta", "gamma", "delta"],
+        "functions": [
+            {
+                "name": "successor",
+                "template": "The Greek letter immediately after {arg} is",
+                "answers": {
+                    "alpha": "beta",
+                    "beta": "gamma",
+                    "gamma": "delta",
+                    "delta": "epsilon",
+                },
+            }
+        ],
+    },
+    {
+        "category": "easy_chemical_symbols",
+        "arguments": ["hydrogen", "carbon", "oxygen", "sodium"],
+        "functions": [
+            {
+                "name": "symbol",
+                "template": "The chemical symbol for {arg} is",
+                "answers": {
+                    "hydrogen": "H",
+                    "carbon": "C",
+                    "oxygen": "O",
+                    "sodium": "Na",
+                },
+            }
+        ],
+    },
+    {
+        "category": "easy_weekday_sequence",
+        "arguments": ["Monday", "Wednesday", "Friday", "Sunday"],
+        "functions": [
+            {
+                "name": "successor",
+                "template": "The day immediately after {arg} is",
+                "answers": {
+                    "Monday": "Tuesday",
+                    "Wednesday": "Thursday",
+                    "Friday": "Saturday",
+                    "Sunday": "Monday",
+                },
+            }
+        ],
+    },
+]
+
+
 PARITY_CANDIDATES = [
     (3, 5),
     (2, 5),
@@ -351,5 +448,95 @@ def build_locked_controls(tokenizer: Any) -> dict[str, object]:
         "source_definitions": {
             "argument_control": ARGUMENT_CONTROL_DEFINITIONS,
             "parity_candidates": PARITY_CANDIDATES,
+        },
+    }
+
+
+def build_locked_argument_control_v2(tokenizer: Any) -> dict[str, object]:
+    """Build the baseline-redesign corpus without consulting intervention outcomes."""
+    trials: list[dict[str, object]] = []
+    exclusions: list[dict[str, str]] = []
+    for category in ARGUMENT_CONTROL_V2_DEFINITIONS:
+        arguments = category["arguments"]
+        for function in category["functions"]:
+            for source in arguments:
+                prompt = function["template"].format(arg=source)
+                prompt_ids = [int(token) for token in tokenizer.encode(prompt)]
+                source_piece = tokenizer.encode(source, add_special_tokens=False)
+                source_positions = _subsequence_positions(prompt_ids, source_piece)
+                if not source_positions:
+                    source_piece = tokenizer.encode(f" {source}", add_special_tokens=False)
+                    source_positions = _subsequence_positions(prompt_ids, source_piece)
+                for target in arguments:
+                    if target == source:
+                        continue
+                    try:
+                        source_token, source_surface = _one_token(tokenizer, source)
+                        target_token, target_surface = _one_token(tokenizer, target)
+                        source_answer_token, source_answer_surface = _continuation_token(
+                            tokenizer, prompt, function["answers"][source]
+                        )
+                        target_answer_token, target_answer_surface = _continuation_token(
+                            tokenizer, prompt, function["answers"][target]
+                        )
+                        if source_answer_token == target_answer_token:
+                            raise ValueError("source and target answers share a token")
+                        if not source_positions:
+                            raise ValueError("argument token span not found")
+                    except ValueError as exc:
+                        exclusions.append(
+                            {
+                                "category": str(category["category"]),
+                                "function": str(function["name"]),
+                                "source": source,
+                                "target": target,
+                                "reason": str(exc),
+                            }
+                        )
+                        continue
+                    key = (
+                        f"argument-v2:{category['category']}:"
+                        f"{function['name']}:{source}:{target}"
+                    )
+                    trials.append(
+                        {
+                            "trial_id": _sha256(key)[:16],
+                            "scenario_id": _sha256(
+                                f"argument-v2:{category['category']}:"
+                                f"{function['name']}:{source}"
+                            )[:16],
+                            "category": category["category"],
+                            "function": function["name"],
+                            "prompt": prompt,
+                            "prompt_sha256": _sha256(prompt),
+                            "prompt_token_ids": prompt_ids,
+                            "argument_positions": source_positions,
+                            "source_argument": source,
+                            "source_argument_token_id": source_token,
+                            "source_argument_surface": source_surface,
+                            "target_argument": target,
+                            "target_argument_token_id": target_token,
+                            "target_argument_surface": target_surface,
+                            "source_answer": function["answers"][source],
+                            "source_answer_token_id": source_answer_token,
+                            "source_answer_surface": source_answer_surface,
+                            "target_answer": function["answers"][target],
+                            "target_answer_token_id": target_answer_token,
+                            "target_answer_surface": target_answer_surface,
+                        }
+                    )
+    if len(trials) < 100:
+        raise RuntimeError(f"only {len(trials)} replacement trials; require >=100")
+    return {
+        "schema_version": 2,
+        "status": "locked_unopened_causal",
+        "redesign_basis": "baseline_competence_only_from_invalid_v1_control",
+        "argument_control": {
+            "minimum_baseline_accuracy": 0.80,
+            "trials": trials,
+            "tokenization_exclusions": exclusions,
+        },
+        "source_definitions": {
+            "argument_control": ARGUMENT_CONTROL_V2_DEFINITIONS,
         },
     }
