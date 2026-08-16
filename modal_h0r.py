@@ -895,6 +895,574 @@ def _candidate_context(path: Path) -> dict[str, object]:
     }
 
 
+def _content_hash_matches(payload: dict[str, object]) -> bool:
+    expected = str(payload["content_sha256"])
+    without_hash = {key: value for key, value in payload.items() if key != "content_sha256"}
+    actual = hashlib.sha256(
+        json.dumps(without_hash, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    return expected == actual
+
+
+def _computed_argument_positions(trial: dict[str, object]) -> list[int]:
+    prompt_ids = [int(value) for value in trial["prompt_token_ids"]]
+    # The rendered arithmetic subsequence is immutable in the locked prompt. Its
+    # token IDs are recovered by slicing from the final occurrence of the first
+    # operand through the second operand, excluding the terminal arrow token.
+    a = int(trial["a"])
+    b = int(trial["b"])
+    prompt = str(trial["prompt"])
+    rendered = f"{a} + {b}"
+    character_start = prompt.rfind(rendered)
+    if character_start < 0:
+        raise RuntimeError(f"locked arithmetic span absent: {rendered}")
+    # Qwen's tokenizer offsets are resolved remotely; this marker is replaced by
+    # exact subsequence matching in `_evaluate_locked_trials`.
+    return prompt_ids
+
+
+def _baseline_locked_trials(
+    model: Any, trials: list[dict[str, object]], control_type: str
+) -> tuple[list[dict[str, object]], dict[str, Any]]:
+    import torch
+
+    source_answer_key = "source_answer_token_id"
+    grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for trial in trials:
+        grouped[str(trial["scenario_id"])].append(trial)
+    rows: list[dict[str, object]] = []
+    logits_by_scenario: dict[str, Any] = {}
+    for scenario_id, part in grouped.items():
+        first = part[0]
+        input_ids = torch.tensor(
+            [[int(token) for token in first["prompt_token_ids"]]],
+            device="cuda",
+            dtype=torch.long,
+        )
+        with torch.inference_mode():
+            logits = model._hf_model(input_ids).logits[0, -1].float()
+        logits_by_scenario[scenario_id] = logits
+        top1 = int(logits.argmax().detach().cpu())
+        for trial in part:
+            family = (
+                str(trial["category"])
+                if control_type == "argument"
+                else str(trial["family"])
+            )
+            rows.append(
+                {
+                    "record_type": "baseline",
+                    "trial_id": trial["trial_id"],
+                    "scenario_id": scenario_id,
+                    "family": family,
+                    "function": trial.get("function", trial.get("family")),
+                    "prompt_sha256": trial["prompt_sha256"],
+                    "source_answer_token_id": trial[source_answer_key],
+                    "target_answer_token_id": trial["target_answer_token_id"],
+                    "baseline_top1_token_id": top1,
+                    "baseline_correct": top1 == int(trial[source_answer_key]),
+                }
+            )
+    return rows, logits_by_scenario
+
+
+def _find_locked_span(tokenizer: Any, trial: dict[str, object]) -> list[int]:
+    prompt_ids = [int(token) for token in trial["prompt_token_ids"]]
+    if "argument_positions" in trial:
+        return [int(position) for position in trial["argument_positions"]]
+    rendered = f"{trial['a']} + {trial['b']}"
+    for surface in (rendered, f" {rendered}"):
+        piece = tokenizer.encode(surface, add_special_tokens=False)
+        for start in range(len(prompt_ids) - len(piece) + 1):
+            if prompt_ids[start : start + len(piece)] == piece:
+                return list(range(start, start + len(piece)))
+    raise RuntimeError(f"computed argument span not found for {trial['trial_id']}")
+
+
+def _evaluate_locked_trials(
+    model: Any,
+    lens: Any,
+    trials: list[dict[str, object]],
+    protocol: dict[str, object],
+    validation: dict[str, object],
+    control_type: str,
+    baseline_rows: list[dict[str, object]],
+    baseline_logits_by_scenario: dict[str, Any],
+) -> list[dict[str, object]]:
+    import torch
+
+    from jspace_policy.h0r_diagnostics import (
+        resolve_position_mask,
+        symmetric_coordinate_swap,
+    )
+    from jspace_policy.interventions import MultiLayerResidualIntervention
+
+    layers = [int(layer) for layer in protocol["layers"]]
+    state_prefix = "argument" if control_type == "argument" else "intermediate"
+    source_state_key = f"source_{state_prefix}_token_id"
+    target_state_key = f"target_{state_prefix}_token_id"
+    all_token_ids = {
+        int(trial[key])
+        for trial in trials
+        for key in (
+            source_state_key,
+            target_state_key,
+            "source_answer_token_id",
+            "target_answer_token_id",
+        )
+    }
+    unrelated_ids: tuple[int, int] | None = None
+    if control_type == "intermediate":
+        pair = validation["intermediate_unrelated_pair"]
+        unrelated_ids = (
+            _token_id(model.tokenizer, str(pair["source"])),
+            _token_id(model.tokenizer, str(pair["target"])),
+        )
+        all_token_ids.update(unrelated_ids)
+    directions = _precompute_directions(model, lens, layers, sorted(all_token_ids))
+    baseline_by_trial = {str(row["trial_id"]): row for row in baseline_rows}
+    grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for trial in trials:
+        grouped[str(trial["scenario_id"])].append(trial)
+    control_names = validation[f"{control_type}_controls"]
+    rows: list[dict[str, object]] = []
+    for scenario_id, scenario_trials in grouped.items():
+        first = scenario_trials[0]
+        input_ids = torch.tensor(
+            [[int(token) for token in first["prompt_token_ids"]]],
+            device="cuda",
+            dtype=torch.long,
+        )
+        argument_positions = _find_locked_span(model.tokenizer, first)
+        variants = [
+            (trial, str(control))
+            for trial in scenario_trials
+            for control in control_names
+        ]
+        batch_ids = input_ids.repeat(len(variants), 1)
+        diagnostics: dict[int, dict[int, dict[str, object]]] = defaultdict(dict)
+
+        def make_transform(
+            layer: int,
+            current_variants: list[tuple[dict[str, object], str]],
+            current_positions: list[int],
+            current_diagnostics: dict[int, dict[int, dict[str, object]]],
+        ):
+            def transform(tensor: Any) -> Any:
+                for index, (trial, control) in enumerate(current_variants):
+                    positions = resolve_position_mask(
+                        str(protocol["position_mask"]),
+                        sequence_length=int(tensor.shape[1]),
+                        argument_positions=current_positions,
+                    )
+                    source_id = int(trial[source_state_key])
+                    target_id = int(trial[target_state_key])
+                    if control == "direct_answer_direction":
+                        source_id = int(trial["source_answer_token_id"])
+                        target_id = int(trial["target_answer_token_id"])
+                    elif control == "unrelated_fixed_pair":
+                        if unrelated_ids is None:
+                            raise RuntimeError("missing fixed unrelated token pair")
+                        source_id, target_id = unrelated_ids
+                    elif control == "unrelated_same_category":
+                        candidates = sorted(
+                            {
+                                int(item[target_state_key])
+                                for item in trials
+                                if item["category"] == trial["category"]
+                                and int(item[target_state_key])
+                                not in {
+                                    int(trial[source_state_key]),
+                                    int(trial[target_state_key]),
+                                }
+                            }
+                        )
+                        if not candidates:
+                            raise RuntimeError("no unrelated within-category state")
+                        target_id = candidates[0]
+                    source_vector = directions[layer][source_id]
+                    target_vector = directions[layer][target_id]
+                    if control == "norm_matched_random_basis":
+                        generator = torch.Generator(device="cpu").manual_seed(
+                            SEED + layer * 1009 + index
+                        )
+                        source_vector = torch.randn(
+                            source_vector.shape, generator=generator
+                        ).to(source_vector.device)
+                        target_vector = torch.randn(
+                            target_vector.shape, generator=generator
+                        ).to(target_vector.device)
+                        source_vector = source_vector / source_vector.norm()
+                        target_vector = target_vector - (
+                            target_vector @ source_vector
+                        ) * source_vector
+                        target_vector = target_vector / target_vector.norm()
+                    before = tensor[index, positions, :].clone()
+                    after, record = symmetric_coordinate_swap(
+                        before,
+                        source_vector,
+                        target_vector,
+                        alpha=float(protocol["alpha"]),
+                    )
+                    tensor[index, positions, :] = after
+                    current_diagnostics[index][layer] = record
+                return tensor
+
+            return transform
+
+        transforms = {
+            layer: make_transform(layer, variants, argument_positions, diagnostics)
+            for layer in layers
+        }
+        with torch.inference_mode(), MultiLayerResidualIntervention(
+            model.layers, transforms
+        ):
+            intervened_logits = model._hf_model(batch_ids).logits[:, -1].float()
+        baseline_log_probs = baseline_logits_by_scenario[scenario_id].log_softmax(-1)
+        for index, (trial, control) in enumerate(variants):
+            records = diagnostics[index]
+            coordinates = [record["coordinates"] for record in records.values()]
+            bases = [record["basis"] for record in records.values()]
+            output = _output_metrics(
+                baseline_log_probs,
+                intervened_logits[index],
+                int(trial["source_answer_token_id"]),
+                int(trial["target_answer_token_id"]),
+                [
+                    int(trial["source_answer_token_id"]),
+                    int(trial["target_answer_token_id"]),
+                ],
+            )
+            baseline = baseline_by_trial[str(trial["trial_id"])]
+            rows.append(
+                {
+                    "record_type": "intervention",
+                    "trial_id": trial["trial_id"],
+                    "scenario_id": scenario_id,
+                    "family": baseline["family"],
+                    "function": baseline["function"],
+                    "prompt_sha256": trial["prompt_sha256"],
+                    "control": control,
+                    "baseline_correct": baseline["baseline_correct"],
+                    "layers": layers,
+                    "position_mask": protocol["position_mask"],
+                    "operation": protocol["operation"],
+                    "alpha": protocol["alpha"],
+                    "source_state_token_id": trial[source_state_key],
+                    "target_state_token_id": trial[target_state_key],
+                    "source_answer_token_id": trial["source_answer_token_id"],
+                    "target_answer_token_id": trial["target_answer_token_id"],
+                    "layer_diagnostics": {
+                        str(layer): record for layer, record in sorted(records.items())
+                    },
+                    "mean_delta_rms_ratio": sum(
+                        float(record["delta_rms_ratio"]) for record in coordinates
+                    )
+                    / len(coordinates),
+                    "median_condition_number": sorted(
+                        float(record["condition_number"]) for record in bases
+                    )[len(bases) // 2],
+                    "high_cosine_fraction": sum(
+                        float(record["absolute_cosine"]) > 0.95 for record in bases
+                    )
+                    / len(bases),
+                    **output,
+                }
+            )
+    return rows
+
+
+@app.function(
+    image=image,
+    volumes={"/cache": cache},
+    cpu=4.0,
+    memory=32768,
+    gpu="A100-80GB",
+    timeout=3600,
+    max_containers=1,
+    retries=0,
+)
+def run_validation_remote(
+    control_type: str,
+    locked: dict[str, object],
+    protocol: dict[str, object],
+    validation: dict[str, object],
+    git_commit: str,
+) -> str:
+    import torch
+
+    if not _content_hash_matches(locked) or not _content_hash_matches(protocol):
+        raise RuntimeError("locked control or candidate protocol hash mismatch")
+    started = time.perf_counter()
+    model, lens, metadata = _load_model()
+    key = "argument_control" if control_type == "argument" else "intermediate_control"
+    trials = locked[key]["trials"]
+    baseline_rows, baseline_logits = _baseline_locked_trials(
+        model, trials, control_type
+    )
+    baseline_accuracy = sum(row["baseline_correct"] for row in baseline_rows) / len(
+        baseline_rows
+    )
+    baseline_gate_pass = (
+        baseline_accuracy
+        >= float(validation["argument_baseline_gate"]["minimum_overall_accuracy"])
+        if control_type == "argument"
+        else True
+    )
+    intervention_rows: list[dict[str, object]] = []
+    if baseline_gate_pass:
+        intervention_rows = _evaluate_locked_trials(
+            model,
+            lens,
+            trials,
+            protocol,
+            validation,
+            control_type,
+            baseline_rows,
+            baseline_logits,
+        )
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - started
+    cache.commit()
+    return json.dumps(
+        {
+            "metadata": {
+                "schema_version": 1,
+                "run_id": uuid.uuid4().hex,
+                "created_at": datetime.now(UTC).isoformat(),
+                "git_commit": git_commit,
+                "dirty_tree": False,
+                "control_type": control_type,
+                "locked_control_sha256": locked["content_sha256"],
+                "candidate_protocol_sha256": protocol["content_sha256"],
+                "validation_config_sha256": hashlib.sha256(
+                    json.dumps(validation, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest(),
+                "baseline_accuracy": baseline_accuracy,
+                "baseline_gate_pass": baseline_gate_pass,
+                "intervention_opened": bool(intervention_rows),
+                "elapsed_seconds": elapsed,
+                **metadata,
+            },
+            "baseline_rows": baseline_rows,
+            "intervention_rows": intervention_rows,
+        },
+        allow_nan=False,
+    )
+
+
+def _bootstrap_validation(rows: list[dict[str, object]], draws: int) -> list[float]:
+    import random
+
+    grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for row in rows:
+        grouped[str(row["scenario_id"])].append(row)
+    scenarios = sorted(grouped)
+    rng = random.Random(SEED)
+    values = []
+    for _ in range(draws):
+        picked = [scenarios[rng.randrange(len(scenarios))] for _ in scenarios]
+        sample = [row for scenario in picked for row in grouped[scenario]]
+        values.append(
+            sum(float(row["target_logodds_gain"]) for row in sample) / len(sample)
+        )
+    return sorted(values)
+
+
+def _validation_summary(
+    result: dict[str, object],
+    protocol: dict[str, object],
+    validation: dict[str, object],
+) -> dict[str, object]:
+    baseline = result["baseline_rows"]
+    metadata = result["metadata"]
+    family_rows: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for row in baseline:
+        family_rows[str(row["family"])].append(row)
+    summary: dict[str, object] = {
+        "run_id": metadata["run_id"],
+        "control_type": metadata["control_type"],
+        "baseline_accuracy": metadata["baseline_accuracy"],
+        "baseline_accuracy_by_family": {
+            family: sum(row["baseline_correct"] for row in rows) / len(rows)
+            for family, rows in sorted(family_rows.items())
+        },
+        "baseline_gate_pass": metadata["baseline_gate_pass"],
+        "intervention_opened": metadata["intervention_opened"],
+    }
+    if not metadata["intervention_opened"]:
+        summary["gate_pass"] = False
+        summary["failure_reason"] = "argument baseline accuracy below 0.80"
+        return summary
+    eligible = [
+        row for row in result["intervention_rows"] if row["baseline_correct"]
+    ]
+    by_control: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for row in eligible:
+        by_control[str(row["control"])].append(row)
+    control_summary = {}
+    for control, rows in sorted(by_control.items()):
+        control_summary[control] = {
+            "n_eligible": len(rows),
+            "mean_target_logodds_gain": sum(
+                float(row["target_logodds_gain"]) for row in rows
+            )
+            / len(rows),
+            "positive_gain_fraction": sum(
+                float(row["target_logodds_gain"]) > 0 for row in rows
+            )
+            / len(rows),
+            "target_top1_fraction": sum(bool(row["target_top1"]) for row in rows)
+            / len(rows),
+            "mean_output_kl_nats": sum(float(row["output_kl_nats"]) for row in rows)
+            / len(rows),
+            "mean_delta_rms_ratio": sum(
+                float(row["mean_delta_rms_ratio"]) for row in rows
+            )
+            / len(rows),
+            "median_condition_number": sorted(
+                float(row["median_condition_number"]) for row in rows
+            )[len(rows) // 2],
+            "high_cosine_fraction": sum(
+                float(row["high_cosine_fraction"]) > 0.05 for row in rows
+            )
+            / len(rows),
+        }
+    semantic = by_control["semantic"]
+    boot = _bootstrap_validation(semantic, int(validation["bootstrap_draws"]))
+    low = boot[int(0.025 * len(boot))]
+    high = boot[int(0.975 * len(boot)) - 1]
+    semantic_summary = control_summary["semantic"]
+    semantic_summary["gain_ci_95"] = [low, high]
+    validity = protocol["validity_domain"]
+    validity_pass = (
+        semantic_summary["median_condition_number"]
+        <= validity["maximum_median_condition_number"]
+        and semantic_summary["high_cosine_fraction"]
+        <= validity["maximum_high_cosine_fraction"]
+        and semantic_summary["mean_output_kl_nats"]
+        <= validity["maximum_mean_output_kl_nats"]
+        and semantic_summary["mean_delta_rms_ratio"]
+        <= validity["maximum_mean_delta_rms_ratio"]
+    )
+    if metadata["control_type"] == "argument":
+        thresholds = protocol["prospective_thresholds"]["argument_control"]
+        control_gain = max(
+            control_summary["norm_matched_random_basis"]["mean_target_logodds_gain"],
+            control_summary["unrelated_same_category"]["mean_target_logodds_gain"],
+        )
+        contrast = semantic_summary["mean_target_logodds_gain"] - control_gain
+        gate_pass = (
+            low > 0
+            and semantic_summary["mean_target_logodds_gain"]
+            >= thresholds["minimum_mean_gain"]
+            and semantic_summary["positive_gain_fraction"]
+            >= thresholds["minimum_positive_gain_fraction"]
+            and semantic_summary["target_top1_fraction"]
+            >= thresholds["minimum_target_top1_fraction"]
+            and contrast >= thresholds["minimum_semantic_minus_control_gain"]
+            and validity_pass
+        )
+        summary["semantic_minus_max_random_unrelated_gain"] = contrast
+    else:
+        thresholds = protocol["prospective_thresholds"]["intermediate_control"]
+        random_gain = control_summary["norm_matched_random_basis"][
+            "mean_target_logodds_gain"
+        ]
+        unrelated_gain = control_summary["unrelated_fixed_pair"][
+            "mean_target_logodds_gain"
+        ]
+        direct_gain = control_summary["direct_answer_direction"][
+            "mean_target_logodds_gain"
+        ]
+        gate_pass = (
+            low > 0
+            and semantic_summary["mean_target_logodds_gain"]
+            >= thresholds["minimum_mean_gain"]
+            and semantic_summary["positive_gain_fraction"]
+            >= thresholds["minimum_positive_gain_fraction"]
+            and semantic_summary["mean_target_logodds_gain"] > random_gain
+            and semantic_summary["mean_target_logodds_gain"] > unrelated_gain
+            and semantic_summary["mean_target_logodds_gain"] > direct_gain
+            and validity_pass
+        )
+    summary["controls"] = control_summary
+    summary["validity_pass"] = validity_pass
+    summary["gate_pass"] = gate_pass
+    return summary
+
+
+@app.local_entrypoint()
+def validate(control_type: str = "argument") -> None:
+    """Run a frozen H0R-C or H0R-D prospective validation exactly once."""
+    from jspace_policy.budget import admit_run, append_ledger, estimate_cost
+
+    if control_type not in {"argument", "intermediate"}:
+        raise ValueError("control_type must be argument or intermediate")
+    locked = json.loads(Path("configs/v2/h0r_locked_controls.json").read_text())
+    protocol = json.loads(Path("configs/v2/h0r_candidate_protocol.json").read_text())
+    validation = json.loads(Path("configs/v2/h0r_validation.json").read_text())
+    if control_type == "intermediate":
+        argument_summary = Path("results/v2_h0r_argument_validation/summary.json")
+        if not argument_summary.exists() or not json.loads(
+            argument_summary.read_text()
+        )["gate_pass"]:
+            raise RuntimeError("H0R-D is forbidden unless H0R-C passed")
+    root = Path(
+        "results/v2_h0r_argument_validation"
+        if control_type == "argument"
+        else "results/v2_h0r_intermediate_validation"
+    )
+    if root.exists():
+        raise RuntimeError(f"refusing to overwrite prospective result: {root}")
+    git_commit = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], text=True
+    ).strip()
+    relevant_status = [
+        line
+        for line in subprocess.check_output(
+            ["git", "status", "--short"], text=True
+        ).splitlines()
+        if ".prismor/" not in line
+    ]
+    if relevant_status:
+        raise RuntimeError(f"prospective validation requires a clean tree: {relevant_status}")
+    estimate = estimate_cost("A100-80GB", 1800, memory_gib=32.0)
+    ledger = Path("artifacts/raw/cost_ledger.jsonl")
+    admit_run(ledger, estimate)
+    result = json.loads(
+        run_validation_remote.remote(
+            control_type, locked, protocol, validation, git_commit
+        )
+    )
+    root.joinpath("raw").mkdir(parents=True)
+    metadata = result["metadata"]
+    with root.joinpath("raw/baseline.jsonl").open("w") as handle:
+        for row in result["baseline_rows"]:
+            handle.write(json.dumps(metadata | row, sort_keys=True) + "\n")
+    if result["intervention_rows"]:
+        with root.joinpath("raw/interventions.jsonl").open("w") as handle:
+            for row in result["intervention_rows"]:
+                handle.write(json.dumps(metadata | row, sort_keys=True) + "\n")
+    summary = _validation_summary(result, protocol, validation)
+    root.joinpath("summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    )
+    root.joinpath("run_manifest.json").write_text(
+        json.dumps(metadata, indent=2, sort_keys=True) + "\n"
+    )
+    measured = estimate_cost(
+        "A100-80GB", float(metadata["elapsed_seconds"]), memory_gib=32.0
+    )
+    append_ledger(
+        ledger,
+        measured,
+        run_id=str(metadata["run_id"]),
+        stage=f"v2-h0r-{control_type}-validation",
+    )
+    print(json.dumps(summary, indent=2, sort_keys=True))
+
+
 @app.local_entrypoint()
 def diagnostic(phase: str = "layer") -> None:
     """Run one preregistered H0R-B diagnostic GPU phase and download raw rows."""
