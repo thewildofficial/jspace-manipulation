@@ -136,3 +136,28 @@
 - **Files:** `results/v2_h0r_argument_validation_v2/`,
   `docs/v2/h0r-final-report.md`.
 - **Commit:** recorded by the terminal H0R result commit.
+
+## 2026-08-17 — V2-D010 — Preregister observational Stage 1
+
+- **Change:** open a non-causal latent state–report dissociation study with
+  explicit-state and inferred-state substages, neutral four-state report
+  transformations, family-held-out splits, frozen pre-output J-space scores,
+  independent residual probes, behavioral gates, and a once-opened locked test.
+- **Reason:** H0R did not validate counterfactual replacement, but its failure
+  does not answer the prior observational question of whether task state
+  remains recoverable when report policy selects a different output.
+- **Already observed:** all immutable Stage 0/H0R results and historical V1
+  observational artifacts. No Stage 1 prompt tokenization, behavior, residual
+  activation, J-space score, probe performance, or locked-family result has
+  been opened.
+- **Confirmatory status:** generator families/splits, model/lens identifiers,
+  layers 36–43, final pre-output position, K/Q/M/D signs, exclusions,
+  behavioral thresholds, probe grid/selection rule, bootstrap, and success
+  criterion become confirmatory when this entry and associated code/config are
+  committed.
+- **Files:** `docs/v2/stage1-preregistration.md`,
+  `docs/v2/stage1-analysis-plan.md`, `configs/v2/stage1.json`,
+  `src/jspace_policy/stage1.py`, `src/jspace_policy/stage1_analysis.py`,
+  `modal_stage1.py`, `scripts/analyze_stage1.py`, `tests/test_stage1.py`.
+- **Commit:** recorded by the preregistration commit before tokenizer-only
+  dataset freezing.
