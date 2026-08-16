@@ -54,3 +54,19 @@
 - **Files:** `docs/v2/h0r-preregistration.md`,
   `docs/v2/h0r-analysis-plan.md`, `docs/v2/h0r-final-report.md`.
 - **Commit:** recorded by Git history before locked-control construction.
+
+## 2026-08-17 — V2-D005 — Replace LCM with a parity intermediate before locking
+
+- **Change:** use computed sum parity (`even/odd`) with a fixed `RED/BLUE`
+  downstream mapping for Control B instead of numeric LCM/GCD outputs.
+- **Reason:** a tokenizer-only Modal pass found 0/30 LCM candidates with both
+  natural and counterfactual answers as one-token continuations. The parity
+  family retains computed-intermediate composition while using tokenizer-valid
+  semantic states and reports.
+- **Already observed:** tokenization eligibility only; no model forward pass,
+  baseline behavior, J-lens readout, or intervention outcome.
+- **Confirmatory status:** unchanged. The replacement is finalized and committed
+  before H0R-B topology discovery, and will remain unopened until H0R-D.
+- **Files:** `src/jspace_policy/h0r.py`,
+  `configs/v2/h0r_locked_controls.json`, `docs/v2/decision-log.md`.
+- **Commit:** recorded by the locked-control commit.
