@@ -28,3 +28,15 @@
   interventions, metrics, exclusions, and pass thresholds are untouched.
 - **Files:** `modal_v2.py`, `docs/v2/decision-log.md`.
 - **Commit:** recorded by the subsequent run manifest.
+
+## 2026-08-17 — V2-D003 — Cast the stored selection flag for plotting
+
+- **Change:** cast the JSONL-derived `selected` column to boolean when filtering
+  the deterministic workspace figure.
+- **Reason:** pandas inferred JSON booleans as numeric values after grouping,
+  causing the first post-run plotting command to stop before writing figures.
+- **Already observed:** the complete immutable H0 raw output and gate result.
+- **Confirmatory status:** unchanged; this affects only figure generation, not
+  any metric, interval, threshold, exclusion, or gate decision.
+- **Files:** `scripts/analyze_v2_h0.py`, `docs/v2/decision-log.md`.
+- **Commit:** recorded in the final documentation commit.

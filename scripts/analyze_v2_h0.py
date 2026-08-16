@@ -123,7 +123,7 @@ def main() -> None:
     axis.plot(
         mapping["layer_fraction"], mapping["selection_score"], label="Frozen score"
     )
-    selected = mapping[mapping["selected"]]
+    selected = mapping[mapping["selected"].astype(bool)]
     if not selected.empty:
         axis.axvspan(
             selected["layer_fraction"].min(),
