@@ -119,3 +119,20 @@
 - **Files:** `configs/v2/h0r_locked_controls_v2.json`,
   `src/jspace_policy/h0r.py`, `modal_h0r.py`.
 - **Commit:** recorded before the replacement baseline run.
+
+## 2026-08-17 — V2-D009 — Close H0R after prospective H0R-C failure
+
+- **Change:** mark H0R-C failed, prohibit H0R-D, and keep the V2 causal branch
+  blocked without creating a validated protocol artifact.
+- **Reason:** the replacement baseline passed at 96.2%, and all gain,
+  directional, selectivity, KL, displacement, conditioning, and cosine criteria
+  passed, but target-answer top-1 was only 4/125 (3.2%) versus the frozen 20%
+  minimum.
+- **Already observed:** the one prospective H0R-C baseline and frozen semantic,
+  random, unrelated, and direct-answer intervention results. No H0R-D behavior
+  or strategic-reporting data was opened.
+- **Confirmatory status:** H0R-C is a prospective failure. H0R-D is not run; the
+  conjunction required to unblock V2 is false.
+- **Files:** `results/v2_h0r_argument_validation_v2/`,
+  `docs/v2/h0r-final-report.md`.
+- **Commit:** recorded by the terminal H0R result commit.
