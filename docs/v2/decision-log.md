@@ -70,3 +70,19 @@
 - **Files:** `src/jspace_policy/h0r.py`,
   `configs/v2/h0r_locked_controls.json`, `docs/v2/decision-log.md`.
 - **Commit:** recorded by the locked-control commit.
+
+## 2026-08-17 — V2-D006 — Freeze the H0R candidate protocol
+
+- **Change:** freeze layers 36--42, argument-through-end positions,
+  pseudoinverse coordinate writing, alpha 0.5, and unit-normalized per-layer
+  directions for both prospective controls.
+- **Reason:** this configuration won the preregistered mean-rank rule after all
+  conditioning, KL, displacement, function-stability, and direction filters.
+- **Already observed:** all three burned-country diagnostic runs, including the
+  layer, mask, strength, cumulative-set, semantic, control, and reconstruction
+  results. No locked-control baseline or intervention result was opened.
+- **Confirmatory status:** H0R-B is exploratory. The candidate becomes immutable
+  for H0R-C and, only if C passes, H0R-D.
+- **Files:** `configs/v2/h0r_candidate_protocol.json`,
+  `results/v2_h0r_diagnostic/`, `docs/v2/h0r-diagnostic-report.md`.
+- **Commit:** recorded by the candidate-freeze commit before H0R-C.
