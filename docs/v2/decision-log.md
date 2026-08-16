@@ -176,3 +176,27 @@
   tokenization rule applied before the rendered corpus is frozen.
 - **Files:** `src/jspace_policy/stage1.py`.
 - **Commit:** recorded with the tokenizer-enriched dataset freeze.
+
+## 2026-08-17 — V2-D012 — Reject raw-prompt behavior and use pinned chat rendering
+
+- **Change:** preserve the first rendered corpus and behavior run as invalid;
+  render the unchanged task texts through Qwen's pinned chat template with
+  `enable_thinking=False`; use left padding and request only final-position
+  logits from Transformers.
+- **Reason:** all 1,440 development rows returned the identical raw-model
+  paragraph token `\\n\\n` as top-1, yielding 0% exact-format accuracy. The
+  repository's established Qwen behavioral path uses the chat template. The
+  run also logged an allocation warning while materializing unused
+  full-sequence logits; final-only logits remove that infrastructure issue
+  without changing any scientific score.
+- **Already observed:** 0% exact top-1 accuracy in both substages; all top-1
+  tokens were ID 271; candidate-restricted argmax accuracy was 89.3% for 1A and
+  28.1% for 1B. No activation, residual probe, J-space, or locked-family output
+  was opened.
+- **Confirmatory status:** the first corpus/run is an invalid behavior-format
+  gate and remains committed. Behavioral redesign is permitted before any
+  mechanistic output. Families, evidence generators, states, codebooks, splits,
+  thresholds, metrics, and mechanistic definitions are unchanged.
+- **Files:** `modal_stage1.py`, preserved v1 dataset/behavior artifacts, and the
+  replacement `configs/v2/stage1_dataset.json`.
+- **Commit:** recorded before opening replacement behavior.

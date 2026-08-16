@@ -62,7 +62,7 @@ def _content_hash_valid(payload: dict[str, Any]) -> bool:
 
 def _continuation_id(tokenizer: Any, prompt: str, answer: str) -> int:
     prefix = tokenizer.encode(prompt, add_special_tokens=False)
-    for suffix in (f" {answer}", answer):
+    for suffix in (answer, f" {answer}"):
         full = tokenizer.encode(prompt + suffix, add_special_tokens=False)
         if full[: len(prefix)] == prefix and len(full) == len(prefix) + 1:
             return int(full[-1])
@@ -77,7 +77,17 @@ def _tokenize_payload(config: dict[str, Any]) -> dict[str, Any]:
     tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     payload = dataset_payload(config)
     for row in payload["rows"]:
-        prompt = str(row["prompt"])
+        task_text = str(row["prompt"])
+        prompt = tokenizer.apply_chat_template(
+            [{"role": "user", "content": task_text}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        row["task_text"] = task_text
+        row["task_sha256"] = row["prompt_sha256"]
+        row["prompt"] = prompt
+        row["prompt_sha256"] = hashlib.sha256(prompt.encode()).hexdigest()
         row["prompt_token_ids"] = tokenizer.encode(prompt, add_special_tokens=False)
         row["candidate_token_ids"] = [
             _continuation_id(tokenizer, prompt, candidate) for candidate in row["candidates"]
@@ -157,7 +167,7 @@ def _select_rows(dataset: dict[str, Any], phase: str) -> list[dict[str, Any]]:
     return [row for row in dataset["rows"] if row["split"] in allowed]
 
 
-def _right_padded_batch(rows: list[dict[str, Any]]) -> tuple[Any, Any, list[int]]:
+def _left_padded_batch(rows: list[dict[str, Any]]) -> tuple[Any, Any, list[int]]:
     import torch
 
     lengths = [len(row["prompt_token_ids"]) for row in rows]
@@ -166,8 +176,8 @@ def _right_padded_batch(rows: list[dict[str, Any]]) -> tuple[Any, Any, list[int]
     attention = torch.zeros_like(input_ids)
     for index, row in enumerate(rows):
         tokens = torch.tensor(row["prompt_token_ids"], dtype=torch.long, device="cuda")
-        input_ids[index, : len(tokens)] = tokens
-        attention[index, : len(tokens)] = 1
+        input_ids[index, width - len(tokens) :] = tokens
+        attention[index, width - len(tokens) :] = 1
     return input_ids, attention, lengths
 
 
@@ -180,11 +190,15 @@ def _behavior_rows(
     ordered = sorted(rows, key=lambda row: (row["sequence_length"], row["condition_id"]))
     for start in range(0, len(ordered), batch_size):
         part = ordered[start : start + batch_size]
-        input_ids, attention, lengths = _right_padded_batch(part)
+        input_ids, attention, _ = _left_padded_batch(part)
         with torch.inference_mode():
-            logits = model._hf_model(input_ids, attention_mask=attention).logits
+            logits = model._hf_model(
+                input_ids,
+                attention_mask=attention,
+                logits_to_keep=1,
+            ).logits
         for index, row in enumerate(part):
-            final = logits[index, lengths[index] - 1].float()
+            final = logits[index, -1].float()
             log_probs = final.log_softmax(-1)
             candidate_ids = [int(token) for token in row["candidate_token_ids"]]
             top1 = int(final.argmax().detach().cpu())
@@ -510,13 +524,17 @@ def _mechanistic_rows(
     batch_size = int(config["behavior"]["batch_size"])
     for start in range(0, len(ordered), batch_size):
         part = ordered[start : start + batch_size]
-        input_ids, attention, lengths = _right_padded_batch(part)
+        input_ids, attention, _ = _left_padded_batch(part)
         with torch.inference_mode(), ActivationRecorder(model.layers, at=layers) as recorder:
-            model_output = model._hf_model(input_ids, attention_mask=attention)
+            model_output = model._hf_model(
+                input_ids,
+                attention_mask=attention,
+                logits_to_keep=1,
+            )
         for index, row in enumerate(part):
-            final_position = lengths[index] - 1
+            final_position = int(input_ids.shape[1]) - 1
             candidate_ids = [int(token) for token in row["candidate_token_ids"]]
-            output_logits = model_output.logits[index, final_position].float()
+            output_logits = model_output.logits[index, -1].float()
             output_log_probs = output_logits.log_softmax(-1)
             output_scores = [
                 float(output_logits[token].detach().cpu()) for token in candidate_ids
