@@ -15,7 +15,7 @@ STATE_VOCABULARIES: tuple[tuple[str, ...], ...] = (
     ("north", "south", "east", "west"),
     ("cat", "dog", "bird", "fish"),
     ("sun", "moon", "star", "cloud"),
-    ("oak", "pine", "birch", "maple"),
+    ("oak", "pine", "tree", "maple"),
     ("iron", "copper", "silver", "gold"),
 )
 

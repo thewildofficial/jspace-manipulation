@@ -161,3 +161,18 @@
   `modal_stage1.py`, `scripts/analyze_stage1.py`, `tests/test_stage1.py`.
 - **Commit:** recorded by the preregistration commit before tokenizer-only
   dataset freezing.
+
+## 2026-08-17 — V2-D011 — Replace a tokenizer-invalid candidate label
+
+- **Change:** replace `birch` with `tree` in the fifth four-label vocabulary.
+- **Reason:** the first tokenizer-only freeze stopped because `birch` is not a
+  single continuation token after the frozen answer prefix. The replacement is
+  a common, semantically task-irrelevant label subject to the identical frozen
+  tokenization check.
+- **Already observed:** the tokenizer exception naming `birch`; no dataset was
+  written and no model forward pass, behavior, activation, J-space score, or
+  probe output was opened.
+- **Confirmatory status:** unchanged. This is the preregistered mechanical
+  tokenization rule applied before the rendered corpus is frozen.
+- **Files:** `src/jspace_policy/stage1.py`.
+- **Commit:** recorded with the tokenizer-enriched dataset freeze.
