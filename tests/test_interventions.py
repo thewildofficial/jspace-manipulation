@@ -3,6 +3,7 @@ import pytest
 torch = pytest.importorskip("torch")
 
 from jspace_policy.interventions import (  # noqa: E402
+    MultiLayerResidualIntervention,
     ablate,
     coordinate_swap,
     family_j_lens_vector,
@@ -50,3 +51,37 @@ def test_norm_matched_random_is_reproducible_and_matched() -> None:
     second = norm_matched_random(reference, seed=7)
     assert torch.equal(first, second)
     assert first.norm() == pytest.approx(reference.norm())
+
+
+def test_multi_layer_intervention_updates_selected_positions_and_cleans_up() -> None:
+    blocks = torch.nn.ModuleList([torch.nn.Identity(), torch.nn.Identity()])
+    hidden = torch.zeros(1, 3, 2)
+
+    with MultiLayerResidualIntervention(
+        blocks,
+        {0: lambda value: value + 1, 1: lambda value: value + 2},
+        positions=(-1,),
+    ):
+        for block in blocks:
+            hidden = block(hidden)
+
+    assert torch.equal(hidden[0, :2], torch.zeros(2, 2))
+    assert torch.equal(hidden[0, -1], torch.full((2,), 3.0))
+    assert all(not block._forward_hooks for block in blocks)
+
+
+def test_multi_layer_intervention_can_transform_heterogeneous_batch() -> None:
+    block = torch.nn.Identity()
+    hidden = torch.zeros(2, 2, 1)
+
+    def transform(value: torch.Tensor) -> torch.Tensor:
+        value[0] += 1
+        value[1, -1] += 2
+        return value
+
+    with MultiLayerResidualIntervention([block], {0: transform}):
+        hidden = block(hidden)
+
+    assert torch.equal(hidden[0], torch.ones(2, 1))
+    assert torch.equal(hidden[1, 0], torch.zeros(1))
+    assert torch.equal(hidden[1, 1], torch.full((1,), 2.0))

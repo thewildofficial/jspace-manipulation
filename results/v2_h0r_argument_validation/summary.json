@@ -1,0 +1,15 @@
+{
+  "baseline_accuracy": 0.6078431372549019,
+  "baseline_accuracy_by_family": {
+    "chemical_elements": 0.5,
+    "greek_sequence": 0.5,
+    "unseen_countries": 0.8666666666666667,
+    "weekdays": 0.5
+  },
+  "baseline_gate_pass": false,
+  "control_type": "argument",
+  "failure_reason": "argument baseline accuracy below 0.80",
+  "gate_pass": false,
+  "intervention_opened": false,
+  "run_id": "81826b69f92243979d46741e5c0306b8"
+}

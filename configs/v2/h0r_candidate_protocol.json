@@ -1,0 +1,82 @@
+{
+  "alpha": 0.5,
+  "content_sha256": "b5ca0a910185deecfa2adfae54ab87ed43d0f8a825ea428225cb5119c60a8910",
+  "coordinate_definition": "pinv([J_l^T W_U[source], J_l^T W_U[target]]) @ h",
+  "diagnostic_run_ids": [
+    "155fbee330fe459ca4bbfdf85f6c20a5",
+    "24066f0e85ac409296a9555ae212cbf8",
+    "cf00eca905f44b50ab5b6ee3f2e3fc07"
+  ],
+  "diagnostic_selection": {
+    "configuration_id": "layers_36_37_38_39_40_41_42",
+    "gain_ci_95": [
+      3.6155066252657857,
+      5.209327647902748
+    ],
+    "high_cosine_fraction": 0.0,
+    "mean_delta_rms_ratio": 0.01704640730457476,
+    "mean_output_kl_nats": 0.2266728339688565,
+    "mean_rank": 0.3397435897435897,
+    "mean_target_logodds_gain": 4.343749996387597,
+    "median_condition_number": 1.7489029169082642,
+    "minimum_function_effect": 3.8749999867545233,
+    "n_eligible": 33,
+    "positive_gain_fraction": 1.0,
+    "target_top1_fraction": 0.030303030303030304
+  },
+  "expected_delta_rms_range": [
+    0.010575451718510001,
+    0.024919164792767
+  ],
+  "hook_point": "transformer_block_output_residual",
+  "layers": [
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42
+  ],
+  "normalized_layer_depths": [
+    0.5714285714285714,
+    0.5873015873015873,
+    0.6031746031746031,
+    0.6190476190476191,
+    0.6349206349206349,
+    0.6507936507936508,
+    0.6666666666666666
+  ],
+  "operation": "pseudoinverse_coordinate_swap",
+  "position_mask": "argument_through_end",
+  "prospective_thresholds": {
+    "argument_control": {
+      "minimum_baseline_accuracy": 0.8,
+      "minimum_mean_gain": 0.75,
+      "minimum_positive_gain_fraction": 0.7,
+      "minimum_semantic_minus_control_gain": 0.5,
+      "minimum_target_top1_fraction": 0.2,
+      "require_bootstrap_ci_above_zero": true
+    },
+    "intermediate_control": {
+      "minimum_mean_gain": 0.5,
+      "minimum_positive_gain_fraction": 0.65,
+      "require_bootstrap_ci_above_zero": true,
+      "require_direct_answer_not_comparable": true,
+      "require_semantic_above_random_and_unrelated": true
+    }
+  },
+  "schema_version": 1,
+  "selection_parent_commit": "91f5f888e19cfab8b23d887297e2674987512c58",
+  "source_tokenization_rule": "exactly_one_token_prefer_leading_space",
+  "status": "frozen_before_locked_control_open",
+  "target_tokenization_rule": "exactly_one_token_prefer_leading_space",
+  "validity_domain": {
+    "maximum_absolute_cosine": 0.95,
+    "maximum_high_cosine_fraction": 0.05,
+    "maximum_mean_delta_rms_ratio": 0.25,
+    "maximum_mean_output_kl_nats": 1.0,
+    "maximum_median_condition_number": 20.0
+  },
+  "vector_normalization": "unit_l2_per_layer"
+}

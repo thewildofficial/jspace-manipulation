@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "frozen_before_prospective_behavior_open",
+  "bootstrap_draws": 2000,
+  "bootstrap_seed": 1729,
+  "argument_controls": [
+    "semantic",
+    "norm_matched_random_basis",
+    "unrelated_same_category",
+    "direct_answer_direction"
+  ],
+  "intermediate_controls": [
+    "semantic",
+    "norm_matched_random_basis",
+    "unrelated_fixed_pair",
+    "direct_answer_direction"
+  ],
+  "intermediate_unrelated_pair": {
+    "source": "true",
+    "target": "false",
+    "tokenization_rule": "exactly_one_token_prefer_leading_space"
+  },
+  "computed_argument_span_rule": "exact token subsequence for rendered 'a + b'; argument_through_end starts at the first operand",
+  "argument_baseline_gate": {
+    "minimum_overall_accuracy": 0.80,
+    "preferred_minimum_family_accuracy": 0.70
+  }
+}

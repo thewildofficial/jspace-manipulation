@@ -1,0 +1,62 @@
+{
+  "baseline_accuracy": 0.9615384615384616,
+  "baseline_accuracy_by_family": {
+    "easy_chemical_symbols": 1.0,
+    "easy_countries": 0.9468085106382979,
+    "easy_greek_sequence": 1.0,
+    "easy_weekday_sequence": 1.0
+  },
+  "baseline_gate_pass": true,
+  "control_type": "argument",
+  "controls": {
+    "direct_answer_direction": {
+      "high_cosine_fraction": 0.0,
+      "mean_delta_rms_ratio": 0.011765635722948767,
+      "mean_output_kl_nats": 0.08281430000206455,
+      "mean_target_logodds_gain": 2.4293750114440917,
+      "median_condition_number": 1.969031572341919,
+      "n_eligible": 125,
+      "positive_gain_fraction": 0.84,
+      "target_top1_fraction": 0.008
+    },
+    "norm_matched_random_basis": {
+      "high_cosine_fraction": 0.0,
+      "mean_delta_rms_ratio": 0.012281026863060623,
+      "mean_output_kl_nats": 0.0008811415962409228,
+      "mean_target_logodds_gain": -0.01599998188018799,
+      "median_condition_number": 1.0000001192092896,
+      "n_eligible": 125,
+      "positive_gain_fraction": 0.288,
+      "target_top1_fraction": 0.0
+    },
+    "semantic": {
+      "gain_ci_95": [
+        2.6788043768509575,
+        4.288167953491211
+      ],
+      "high_cosine_fraction": 0.0,
+      "mean_delta_rms_ratio": 0.014302689922108716,
+      "mean_output_kl_nats": 0.2607625553670805,
+      "mean_target_logodds_gain": 3.527625020980835,
+      "median_condition_number": 1.8720811605453491,
+      "n_eligible": 125,
+      "positive_gain_fraction": 0.912,
+      "target_top1_fraction": 0.032
+    },
+    "unrelated_same_category": {
+      "high_cosine_fraction": 0.0,
+      "mean_delta_rms_ratio": 0.014895795194199314,
+      "mean_output_kl_nats": 0.1874258464265149,
+      "mean_target_logodds_gain": 0.7101249980926514,
+      "median_condition_number": 1.8881844282150269,
+      "n_eligible": 125,
+      "positive_gain_fraction": 0.696,
+      "target_top1_fraction": 0.0
+    }
+  },
+  "gate_pass": false,
+  "intervention_opened": true,
+  "run_id": "1787f424572746a0a080096628404bb2",
+  "semantic_minus_max_random_unrelated_gain": 2.8175000228881837,
+  "validity_pass": true
+}

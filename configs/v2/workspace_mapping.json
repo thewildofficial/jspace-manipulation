@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_before_h0",
+  "model_id": "Qwen/Qwen3.6-27B",
+  "model_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "lens_revision": "qwen-n1000",
+  "selection_rule": {
+    "name": "neutral_kurtosis_motor_penalty_v1",
+    "candidate_normalized_depth": [0.35, 0.85],
+    "band_width_layers": 8,
+    "score": "z(mean_excess_kurtosis) - 0.5 * z(mean_jlens_logitlens_cosine)",
+    "tie_break": "lowest_start_layer",
+    "note": "Select the contiguous width-8 candidate band with maximum mean score. The neutral corpus and rule are fixed before flexible-generalization outcomes are observed."
+  },
+  "positions_per_prompt": 2,
+  "minimum_token_position": 16,
+  "neutral_prompts": [
+    "Fact: The currency used in the country shaped like a boot is",
+    "Fact: The capital of Japan is Tokyo. Fact: The currency used in the country shaped like a boot is",
+    "A careful laboratory note records the temperature before and after each ordinary calibration step, then summarizes the observed trend.",
+    "The museum guide described three galleries, the order in which they opened, and the materials used in the oldest exhibit.",
+    "Compute the intermediate result silently: ( 4 + 17 ) * 2 + 7 =",
+    "The key is held by whoever arrived earliest. Arun arrived at 09:14. Maya arrived at 08:52. Lee arrived at 09:03. The key holder is",
+    "Route Cedar reaches the depot. Route Maple reaches the harbor. A dispatcher who needs the depot should choose route",
+    "In a small archive, volume A precedes volume B, and volume B precedes volume C. The earliest volume is"
+  ]
+}

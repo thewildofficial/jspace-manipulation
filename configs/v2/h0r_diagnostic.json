@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "status": "preregistered_before_h0r_diagnostics",
+  "seed": 1729,
+  "burned_category": "countries",
+  "layer_sweep": {
+    "layers": [28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52],
+    "position_mask": "all_prompt_positions",
+    "operation": "pseudoinverse_coordinate_swap",
+    "alpha": 1.0
+  },
+  "position_masks": [
+    "final_prompt_position",
+    "argument_token_position",
+    "argument_through_end",
+    "all_prompt_positions"
+  ],
+  "strengths": [0.25, 0.5, 1.0, 1.5, 2.0],
+  "top_layer_count": 3,
+  "cumulative_layer_sets": [
+    [40],
+    [40, 41],
+    [39, 40, 41],
+    [38, 39, 40, 41],
+    [36, 37, 38, 39],
+    [36, 37, 38, 39, 40],
+    [36, 37, 38, 39, 40, 41],
+    [36, 37, 38, 39, 40, 41, 42],
+    [36, 37, 38, 39, 40, 41, 42, 43],
+    [40, 41, 42, 43],
+    [41, 42, 43],
+    [42, 43],
+    [43],
+    [36, 38, 40, 42],
+    [37, 39, 41, 43]
+  ],
+  "operations": [
+    "pseudoinverse_coordinate_swap",
+    "source_suppression_target_installation",
+    "donor_coordinate_patch"
+  ],
+  "controls": [
+    "identity_source_source",
+    "unrelated_same_category",
+    "norm_matched_random_basis",
+    "direct_answer_direction",
+    "out_of_window_layer"
+  ],
+  "validity_domain": {
+    "maximum_median_condition_number": 20.0,
+    "maximum_absolute_cosine": 0.95,
+    "maximum_high_cosine_fraction": 0.05,
+    "maximum_mean_output_kl_nats": 1.0,
+    "maximum_mean_delta_rms_ratio": 0.25
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 1729,
+    "unit": "source_prompt_scenario"
+  },
+  "coordinate_exchange": {
+    "dtype": "float32",
+    "absolute_tolerance": 0.00002,
+    "relative_tolerance": 0.00002
+  },
+  "reconstruction": {
+    "minimum_denominator": 0.000001,
+    "return_thresholds": [0.25, 0.5, 0.75]
+  }
+}

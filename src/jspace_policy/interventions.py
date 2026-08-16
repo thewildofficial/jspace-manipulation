@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from contextlib import AbstractContextManager
 
 import torch
@@ -135,3 +135,69 @@ class ResidualIntervention(AbstractContextManager["ResidualIntervention"]):
         if self.handle is not None:
             self.handle.remove()
             self.handle = None
+
+
+class MultiLayerResidualIntervention(
+    AbstractContextManager["MultiLayerResidualIntervention"]
+):
+    """Clamp layer-specific transforms during one forward pass.
+
+    Hooks are installed on block outputs, matching ``jlens.ActivationRecorder``.
+    ``positions=None`` exposes the full ``[batch, sequence, d_model]`` tensor to
+    each transform. This supports heterogeneous batched experiments; a fixed
+    position sequence provides the simpler all-batch geometry.
+    """
+
+    def __init__(
+        self,
+        blocks: Sequence[nn.Module],
+        transforms: Mapping[int, Callable[[torch.Tensor], torch.Tensor]],
+        *,
+        positions: Sequence[int] | None = None,
+    ) -> None:
+        if not transforms:
+            raise ValueError("at least one layer transform is required")
+        invalid = sorted(layer for layer in transforms if not 0 <= layer < len(blocks))
+        if invalid:
+            raise ValueError(f"layer indices out of range: {invalid}")
+        self.blocks = blocks
+        self.transforms = dict(transforms)
+        self.positions = None if positions is None else tuple(positions)
+        self.handles: list[torch.utils.hooks.RemovableHandle] = []
+
+    def _make_hook(
+        self, transform: Callable[[torch.Tensor], torch.Tensor]
+    ) -> Callable[[nn.Module, object, object], object]:
+        def hook(module: nn.Module, inputs: object, output: object) -> object:
+            tensor = output if torch.is_tensor(output) else output[0]
+            updated = tensor.clone()
+            if self.positions is None:
+                updated = transform(updated)
+            else:
+                resolved = [
+                    p if p >= 0 else tensor.shape[1] + p for p in self.positions
+                ]
+                updated[:, resolved, :] = transform(updated[:, resolved, :])
+            if torch.is_tensor(output):
+                return updated
+            return (updated, *output[1:])
+
+        return hook
+
+    def __enter__(self) -> MultiLayerResidualIntervention:
+        try:
+            for layer, transform in sorted(self.transforms.items()):
+                self.handles.append(
+                    self.blocks[layer].register_forward_hook(self._make_hook(transform))
+                )
+        except Exception:
+            for handle in self.handles:
+                handle.remove()
+            self.handles = []
+            raise
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        for handle in self.handles:
+            handle.remove()
+        self.handles = []
