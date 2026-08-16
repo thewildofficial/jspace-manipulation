@@ -741,7 +741,7 @@ def run_h0_remote(
     flexible_config: dict,
     git_commit: str,
     dirty_tree: bool,
-) -> dict[str, object]:
+) -> str:
     import torch
     import transformers
     from huggingface_hub import model_info
@@ -792,19 +792,20 @@ def run_h0_remote(
         "dtype": "bfloat16",
         "gpu_requested": "A100-80GB",
         "gpu_actual": torch.cuda.get_device_name(0),
-        "torch_version": torch.__version__,
+        "torch_version": str(torch.__version__),
         "transformers_version": transformers.__version__,
         "cuda_version": torch.version.cuda,
         "workspace_config_hash": _sha256_json(workspace_config),
         "flexible_config_hash": _sha256_json(flexible_config),
         "elapsed_seconds": elapsed,
     }
-    return {
+    result = {
         "metadata": metadata,
         "summary": summary,
         "workspace_rows": workspace_rows,
         "flexible_rows": flexible_rows,
     }
+    return json.dumps(result, allow_nan=False)
 
 
 def _write_jsonl(rows: list[dict], path: Path, metadata: dict) -> None:
@@ -835,8 +836,10 @@ def h0() -> None:
     estimate = estimate_cost("A100-80GB", 1800, memory_gib=32.0)
     ledger = Path("artifacts/raw/cost_ledger.jsonl")
     admit_run(ledger, estimate)
-    result = run_h0_remote.remote(
-        workspace_config, flexible_config, git_commit, dirty_tree
+    result = json.loads(
+        run_h0_remote.remote(
+            workspace_config, flexible_config, git_commit, dirty_tree
+        )
     )
     metadata = result["metadata"]
     smoke_root = Path("results/v2_smoke_tests")
