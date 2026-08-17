@@ -493,3 +493,23 @@
   `docs/v2/strategic-workspace-atlas-freeze.md`, open raw/summaries/atlas/
   figures/report, and locked evaluation support in the runner/analysis script.
 - **Commit:** the replication-freeze commit immediately before locked behavior.
+
+## 2026-08-17 — V2-D028 — Pass the V2-E1 locked behavioral gate
+
+- **Change:** declare the 72-row locked rendering behaviorally valid and open
+  the once-run locked mechanistic replication.
+- **Reason:** formatting was 100%, pooled exact-game accuracy was 85.0% versus
+  the 70% floor, and the weakest exact game was Kuhn at 66.7% versus the 50%
+  family floor. Other exact-game accuracies were cheap talk 83.3%, signaling
+  75.0%, inspection 100%, and disclosure 100%. Chameleon reached 25% but is
+  explicitly outside the exact-game gate and frozen quantitative endpoints.
+- **Already observed:** all open atlas evidence and locked behavior only. No
+  locked activation, J-lens readout, probe metric, commitment trajectory, or
+  endpoint result has been observed.
+- **Confirmatory status:** H1--H4 are now behaviorally valid for their named
+  exact games and will be opened once under the committed freeze. Chameleon is
+  retained as a descriptive negative transfer result.
+- **Files:** `results/v2_workspace_atlas/raw/behavior_locked.json`, locked
+  behavior summaries/figure/report, and cumulative cost ledger.
+- **Commit:** the locked behavior-gate commit immediately before locked
+  mechanistic execution.
