@@ -315,7 +315,9 @@ def behavior_remote(
 
 
 def _evidence(scores: list[float], index: int) -> float:
-    return float(scores[index] - sum(value for i, value in enumerate(scores) if i != index) / 3)
+    from jspace_policy.stage1_analysis import candidate_evidence
+
+    return candidate_evidence(scores, index)
 
 
 def _serialize_estimator(

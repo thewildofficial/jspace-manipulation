@@ -288,3 +288,24 @@
   for confirmatory Stage 1.
 - **Files:** `results/v2_stage1/raw/behavior_dev.json` and cost ledger.
 - **Commit:** recorded before the first mechanistic run.
+
+## 2026-08-17 — V2-D018 — Freeze the Stage 1 locked-test protocol
+
+- **Change:** freeze the fitted discovery-only residual probes, validation-
+  selected layers/regularization, exact locked families, run hashes, final
+  analysis implementation, and claim ladder for a once-opened locked test.
+- **Reason:** discovery/validation mechanistic execution completed under the
+  preregistered band and generated the artifacts needed to apply independent
+  probes prospectively.
+- **Already observed:** all discovery/validation J-space, logit-lens, output,
+  and residual-probe results. Stage 1A transformed band K was negative in every
+  development family; Stage 1B transformed band K was slightly positive in
+  eight of nine development families. No locked-family behavior or mechanistic
+  output has been opened.
+- **Confirmatory status:** the locked test is confirmatory and will be executed
+  once. No prompt, family, layer, score, probe, threshold, exclusion,
+  bootstrap, or claim rule may change based on its outcome.
+- **Files:** `configs/v2/stage1_probe_freeze.json`,
+  `docs/v2/stage1-freeze.md`, development raw results/summaries/figure, and the
+  unit-tested shared candidate-evidence function.
+- **Commit:** the freeze commit immediately preceding locked behavior.

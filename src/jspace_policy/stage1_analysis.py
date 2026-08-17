@@ -9,6 +9,16 @@ from typing import Any
 import numpy as np
 
 
+def candidate_evidence(scores: list[float], index: int) -> float:
+    """Return a candidate score minus the mean of the other three scores."""
+    if len(scores) != 4 or index not in range(4):
+        raise ValueError("candidate evidence requires four scores and an index in [0, 3]")
+    return float(
+        scores[index]
+        - sum(value for position, value in enumerate(scores) if position != index) / 3
+    )
+
+
 def percentile_interval(values: list[float], confidence: float = 0.95) -> tuple[float, float]:
     alpha = (1 - confidence) / 2
     low, high = np.quantile(np.asarray(values, dtype=float), [alpha, 1 - alpha])

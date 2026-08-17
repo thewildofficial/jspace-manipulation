@@ -14,6 +14,7 @@ from jspace_policy.stage1 import (
     verify_dataset_payload,
 )
 from jspace_policy.stage1_analysis import (
+    candidate_evidence,
     macro_ovr_auc,
     paired_policy_effect,
     scenario_bootstrap,
@@ -95,6 +96,13 @@ def test_paired_policy_effect_sign() -> None:
                 ]
             )
     assert paired_policy_effect(rows, "score") == pytest.approx(2.0)
+
+
+def test_candidate_evidence_sign_and_scale() -> None:
+    assert candidate_evidence([4.0, 1.0, 1.0, 1.0], 0) == pytest.approx(3.0)
+    assert candidate_evidence([1.0, 4.0, 1.0, 1.0], 0) == pytest.approx(-1.0)
+    with pytest.raises(ValueError, match="four scores"):
+        candidate_evidence([1.0, 2.0], 0)
 
 
 def test_scenario_bootstrap_keeps_factorial_groups() -> None:
