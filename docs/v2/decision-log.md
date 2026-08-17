@@ -427,3 +427,20 @@
   `results/v2_workspace_atlas/raw/behavior_open_v1_failed_gate.json`, updated
   generator/tests/config, and the retained v1 summaries/figure/report.
 - **Commit:** the redesign commit immediately before v2 tokenization.
+
+## 2026-08-17 — V2-D025 — Freeze V2-E1 corpus v2
+
+- **Change:** freeze the behaviorally redesigned 216-row corpus with the same
+  games, split sizes, paired groups, and legal action IDs as v1.
+- **Reason:** all solver tests pass after the redesign; every row now has a
+  unique payoff-maximizing action, action diversity remains present in every
+  game, legal tokens remain IDs 32/33/34, and rendered lengths are 74--166
+  tokens.
+- **Already observed:** v1 behavior and v2 tokenizer/solver metadata only. No v2
+  behavior, activation, J-lens, logit-lens, residual-probe, or locked output has
+  been observed.
+- **Confirmatory status:** thresholds and mechanistic protocol remain unchanged.
+  The v2 corpus hash is
+  `e37873b3a44e29aeb96798aca6a38bcd04b1b99656bd66214b787df33874df24`.
+- **Files:** `configs/v2/workspace_atlas/dataset.json`.
+- **Commit:** the v2 dataset-freeze commit immediately before its open behavior.
