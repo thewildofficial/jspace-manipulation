@@ -254,3 +254,21 @@
   runner, model revision, and gates.
 - **Files:** append-only decision log only.
 - **Commit:** recorded before retry.
+
+## 2026-08-17 — V2-D016 — Replace the invalid prime-classification family
+
+- **Change:** replace only the discovery `unique_prime` family with
+  `unique_negative`, in which exactly one of four label-associated values is
+  negative.
+- **Reason:** the third development gate passed Stage 1A at 100% and Stage 1B
+  overall at 90.6%, but `unique_prime` reached only 55%, below the frozen 80%
+  family minimum, and the Stage 1B x3/transformed cell reached only 77.8%, below
+  85%. All other Stage 1B families were at least 88.8%.
+- **Already observed:** third-corpus discovery/validation behavior only. No
+  activation, J-space, residual-probe, or locked-family output was opened.
+- **Confirmatory status:** behavioral redesign remains permitted. One unopened
+  replacement discovery family is substituted; all other corpus and analysis
+  choices are unchanged.
+- **Files:** `src/jspace_policy/stage1.py`, preserved v3 dataset/behavior
+  artifacts, and replacement dataset.
+- **Commit:** recorded before opening the fourth development behavior corpus.

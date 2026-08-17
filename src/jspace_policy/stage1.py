@@ -43,7 +43,7 @@ STAGE1B_FAMILIES = (
     "highest_score",
     "coldest_station",
     "unique_even",
-    "unique_prime",
+    "unique_negative",
     "unique_membership",
     "shortest_route",
     "uppercase_code",
@@ -194,13 +194,13 @@ def _inferred_state_text(
             f"{labels[i]} has number {value}" for i, value in enumerate(values)
         )
         rule = "Exactly one number is even; its label is the private result."
-    elif family == "unique_prime":
-        values = [12, 14, 15, 16]
-        values[state] = (11, 13, 17, 19)[nonce % 4]
+    elif family == "unique_negative":
+        values = [3, 5, 7, 9]
+        values[state] = -(3 + 2 * (nonce % 4))
         evidence = ", ".join(
             f"{labels[i]} has number {value}" for i, value in enumerate(values)
         )
-        rule = "Exactly one number is prime; its label is the private result."
+        rule = "Exactly one number is negative; its label is the private result."
     elif family == "unique_membership":
         groups = ["K", "K", "K", "K"]
         groups[state] = "M"
