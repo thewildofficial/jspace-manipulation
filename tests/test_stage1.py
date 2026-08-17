@@ -98,6 +98,30 @@ def test_paired_policy_effect_sign() -> None:
     assert paired_policy_effect(rows, "score") == pytest.approx(2.0)
 
 
+def test_paired_policy_effect_preserves_bootstrap_multiplicity() -> None:
+    rows = []
+    for instance, scenario, effect in ((0, "a", 0.0), (1, "a", 0.0), (2, "b", 9.0)):
+        rows.extend(
+            [
+                {
+                    "_bootstrap_instance": instance,
+                    "base_scenario_id": scenario,
+                    "world_state_id": 0,
+                    "policy_id": "T",
+                    "score": 1.0,
+                },
+                {
+                    "_bootstrap_instance": instance,
+                    "base_scenario_id": scenario,
+                    "world_state_id": 0,
+                    "policy_id": "M",
+                    "score": 1.0 + effect,
+                },
+            ]
+        )
+    assert paired_policy_effect(rows, "score") == pytest.approx(3.0)
+
+
 def test_candidate_evidence_sign_and_scale() -> None:
     assert candidate_evidence([4.0, 1.0, 1.0, 1.0], 0) == pytest.approx(3.0)
     assert candidate_evidence([1.0, 4.0, 1.0, 1.0], 0) == pytest.approx(-1.0)

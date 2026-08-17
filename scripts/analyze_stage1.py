@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,69 @@ ROOT = Path("results/v2_stage1")
 
 def _load(name: str) -> dict[str, Any]:
     return json.loads((ROOT / "raw" / name).read_text(encoding="utf-8"))
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _write_run_manifest(config: dict[str, Any], locked: dict[str, Any]) -> None:
+    raw_names = (
+        "behavior_dev.json",
+        "mechanistic_dev.json",
+        "behavior_locked.json",
+        "mechanistic_locked.json",
+    )
+    raw_results = {name: _load(name) for name in raw_names}
+    metadata = locked["metadata"]
+    dataset = json.loads(Path("configs/v2/stage1_dataset.json").read_text())
+    probe = json.loads(Path("configs/v2/stage1_probe_freeze.json").read_text())
+    manifest = {
+        "schema_version": 1,
+        "status": "complete_locked_test",
+        "model_id": metadata["model_id"],
+        "model_revision": metadata["model_revision_resolved"],
+        "tokenizer_revision": metadata["tokenizer_revision"],
+        "lens_repo": metadata["lens_repo"],
+        "lens_revision": metadata["lens_revision"],
+        "lens_filename": metadata["lens_filename"],
+        "lens_code_commit": metadata["lens_code_commit"],
+        "dataset_sha256": dataset["content_sha256"],
+        "config_sha256": metadata["config_sha256"],
+        "probe_artifact_sha256": probe["content_sha256"],
+        "primary_layers": metadata["primary_layers"],
+        "primary_position": metadata["primary_position"],
+        "dtype": metadata["dtype"],
+        "gpu_requested": metadata["gpu_requested"],
+        "gpu_actual": metadata["gpu_actual"],
+        "torch_version": metadata["torch_version"],
+        "transformers_version": metadata["transformers_version"],
+        "cuda_version": metadata["cuda_version"],
+        "seeds": {
+            "dataset": config["dataset_seed"],
+            "model_and_probe": metadata["seed"],
+            "bootstrap": config["statistics"]["bootstrap_seed"],
+        },
+        "bootstrap_draws": config["statistics"]["bootstrap_draws"],
+        "raw_files": {
+            name: {
+                "sha256": _file_sha256(ROOT / "raw" / name),
+                "run_id": result["metadata"]["run_id"],
+                "created_at": result["metadata"]["created_at"],
+                "git_commit": result["metadata"]["git_commit"],
+                "rows": len(result["rows"]),
+            }
+            for name, result in raw_results.items()
+        },
+        "analysis_command": "uv run python scripts/analyze_stage1.py --phase locked",
+    }
+    (ROOT / "run_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _mean(rows: list[dict[str, Any]], column: str) -> float:
@@ -300,9 +364,105 @@ def _write_final_report(
     lines.extend(
         [
             "",
-            "The report-preparation, state-policy, interaction, baseline, "
-            "family-specific, and full probe metrics are in the generated CSV "
-            "summaries. The figure is generated from the same raw rows.",
+            "## Policy decomposition",
+            "",
+            "| Substage | Report preparation ΔM (95% CI) | State change ΔK "
+            "(95% CI) | Interaction (95% CI) |",
+            "|---|---:|---:|---:|",
+        ]
+    )
+    for substage in ("1A", "1B"):
+        selected = effects[effects.substage == substage].set_index("estimand")
+        report = selected.loc["report_preparation_delta_M"]
+        state = selected.loc["state_policy_delta_K"]
+        interaction = selected.loc["state_report_interaction"]
+        lines.append(
+            f"| {substage} | {_fmt(report.point)} [{_fmt(report.ci_95_low)}, "
+            f"{_fmt(report.ci_95_high)}] | {_fmt(state.point)} "
+            f"[{_fmt(state.ci_95_low)}, {_fmt(state.ci_95_high)}] | "
+            f"{_fmt(interaction.point)} [{_fmt(interaction.ci_95_low)}, "
+            f"{_fmt(interaction.ci_95_high)}] |"
+        )
+    lines.extend(
+        [
+            "",
+            "Both interactions are positive: report-target evidence increases under "
+            "the transformed policy while true-state J-space evidence decreases. "
+            "This policy sensitivity does not rescue the failed positive-K endpoint.",
+            "",
+            "## Independent residual probes",
+            "",
+            "| Substage | All-policy state | Truth→transformed | "
+            "Transformed→truth | All-policy report |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
+    for substage in ("1A", "1B"):
+        selected = probes[probes.substage == substage].set_index("probe")
+        state = selected.loc["state_all"]
+        truth_to_transformed = selected.loc["state_truth_trained_to_transformed"]
+        transformed_to_truth = selected.loc["state_transformed_trained_to_truth"]
+        report = selected.loc["report_all"]
+        lines.append(
+            f"| {substage} | {_fmt(state.accuracy)} "
+            f"[{_fmt(state.accuracy_ci_95_low)}, {_fmt(state.accuracy_ci_95_high)}] | "
+            f"{_fmt(truth_to_transformed.accuracy)} "
+            f"[{_fmt(truth_to_transformed.accuracy_ci_95_low)}, "
+            f"{_fmt(truth_to_transformed.accuracy_ci_95_high)}] | "
+            f"{_fmt(transformed_to_truth.accuracy)} "
+            f"[{_fmt(transformed_to_truth.accuracy_ci_95_low)}, "
+            f"{_fmt(transformed_to_truth.accuracy_ci_95_high)}] | "
+            f"{_fmt(report.accuracy)} [{_fmt(report.accuracy_ci_95_low)}, "
+            f"{_fmt(report.accuracy_ci_95_high)}] |"
+        )
+    lines.extend(
+        [
+            "",
+            "Four-way chance is 0.25. Full AUROC, negative log-likelihood, and "
+            "calibration metrics are in `probe_metrics_locked.csv`.",
+            "",
+            "## Output-facing baselines",
+            "",
+            "| Substage | J-space transformed K | Logit-lens transformed K | "
+            "Output-logit transformed K |",
+            "|---|---:|---:|---:|",
+        ]
+    )
+    for substage in ("1A", "1B"):
+        selected = effects[effects.substage == substage].set_index("estimand")
+        jspace = selected.loc["transformed_band_K"]
+        logit = selected.loc["transformed_logit_lens_K"]
+        output_logits = selected.loc["transformed_output_K"]
+        lines.append(
+            f"| {substage} | {_fmt(jspace.point)} [{_fmt(jspace.ci_95_low)}, "
+            f"{_fmt(jspace.ci_95_high)}] | {_fmt(logit.point)} "
+            f"[{_fmt(logit.ci_95_low)}, {_fmt(logit.ci_95_high)}] | "
+            f"{_fmt(output_logits.point)} [{_fmt(output_logits.ci_95_low)}, "
+            f"{_fmt(output_logits.ci_95_high)}] |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Preregistration, deviations, and status",
+            "",
+            "The model/lens revisions, four-state factorial structure, family-level "
+            "splits, behavior gates, final pre-output position, layers 36–43, "
+            "K/Q/M/D signs, probe grid, scenario bootstrap, success conjunction, "
+            "and claim ladder were preregistered before mechanistic output.",
+            "",
+            "Before any activation was opened, behavior-only evidence led to logged "
+            "positive-control redesigns: a tokenizer-invalid label was replaced; an "
+            "invalid raw-prompt format was switched to Qwen's pinned non-thinking "
+            "chat rendering; and behaviorally weak inferred-state families were "
+            "simplified or replaced. All failed behavior runs remain committed. "
+            "Two no-output service/client interruptions were also logged. No family "
+            "was changed after the passing development behavior gate, and no "
+            "mechanistic definition changed after development inspection.",
+            "",
+            "Development/validation results are exploratory or selection-only. The "
+            "once-opened locked results and frozen pass/fail decision are "
+            "confirmatory. The append-only decision log contains the complete "
+            "information history.",
             "",
             "## Interpretation",
             "",
@@ -323,9 +483,19 @@ def _write_final_report(
         )
     else:
         lines.append(
-            "The frozen Stage 1 criterion is not met. The study does not establish "
-            "latent state–report "
-            "dissociation, and Stage 2 is not licensed by this result."
+            "Neither substage meets the frozen J-space criterion. Stage 1A true-state "
+            "J-space evidence is significantly negative, and Stage 1B is not "
+            "distinguishable from zero. Stage 2 is therefore not licensed."
+        )
+    state_probe_rows = probes[probes.probe == "state_all"]
+    if (state_probe_rows.accuracy_ci_95_low > 0.25).all():
+        lines.append("")
+        lines.append(
+            "The independent residual probes nevertheless recover state well above "
+            "chance on structurally unseen locked families. The licensed secondary "
+            "conclusion is that state information is present in the residual stream "
+            "but is not reliably surfaced through the pinned vocabulary-grounded "
+            "J-space score."
         )
     lines.extend(
         [
@@ -338,7 +508,7 @@ def _write_final_report(
             "## Reproducibility",
             "",
             "- Dataset, configuration, probe, model, lens, and code identifiers are "
-            "recorded in raw manifests.",
+            "recorded in `results/v2_stage1/run_manifest.json` and the raw metadata.",
             "- All uncertainty uses the frozen 2,000-draw base-scenario bootstrap.",
             "- Run `uv run python scripts/analyze_stage1.py --phase locked` to "
             "regenerate this report, tables, and figure.",
@@ -374,6 +544,7 @@ def main() -> None:
     probes.to_csv(summaries / f"probe_metrics_{args.phase}.csv", index=False)
     _plots(layer_frame, effects, figures)
     if args.phase == "locked":
+        _write_run_manifest(config, mechanistic)
         _write_final_report(
             behavior,
             effects,

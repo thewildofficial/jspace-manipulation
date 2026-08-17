@@ -323,3 +323,39 @@
   opened once with the committed probe artifact and analysis protocol.
 - **Files:** `results/v2_stage1/raw/behavior_locked.json` and cost ledger.
 - **Commit:** recorded immediately before locked mechanistic execution.
+
+## 2026-08-17 — V2-D020 — Close Stage 1 after the locked test
+
+- **Change:** mark both frozen J-space retention criteria failed, report the
+  independently positive residual-probe result, and keep Stage 2 closed.
+- **Reason:** locked Stage 1A transformed band K was -0.108 (95% CI -0.142 to
+  -0.073) with 0/3 positive families. Stage 1B was -0.017 (95% CI -0.043 to
+  0.008) with 2/3 positive families. Although locked all-policy state probes
+  reached 100.0% and 99.2%, positive K was a required conjunct.
+- **Already observed:** the complete once-run locked behavior, J-space,
+  logit-lens, output-logit, and residual-probe results.
+- **Confirmatory status:** Stage 1 is a confirmatory negative for the pinned
+  J-space retention criterion. The residual-stream decoding result is positive
+  and supports only the narrower conclusion preregistered for this outcome.
+  Stage 2 is not licensed.
+- **Files:** `results/v2_stage1/`, `docs/v2/stage1-final-report.md`, root
+  `README.md`.
+- **Commit:** recorded by the final Stage 1 results commit.
+
+## 2026-08-17 — V2-D021 — Preserve duplicate clusters in paired bootstraps
+
+- **Change:** assign each resampled scenario occurrence a unique bootstrap
+  instance before computing paired policy differences.
+- **Reason:** final reproducibility QA found that duplicate scenario IDs were
+  retained for mean-K and probe estimands but collapsed by the dictionary used
+  for secondary paired report-preparation, state-policy, and interaction
+  effects. The point estimates were correct; only their secondary intervals
+  required regeneration.
+- **Already observed:** all locked results. No model output is rerun and no
+  endpoint, threshold, sign, exclusion, seed, or claim rule changes.
+- **Confirmatory status:** headline transformed-K intervals, family directions,
+  probe intervals, and both failed criterion decisions are unchanged. The
+  repaired paired intervals are reported as the reproducible final values.
+- **Files:** `src/jspace_policy/stage1_analysis.py`, regression test, regenerated
+  summaries/report/figure.
+- **Commit:** recorded in the final Stage 1 results commit.

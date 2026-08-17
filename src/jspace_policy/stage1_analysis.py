@@ -43,16 +43,24 @@ def scenario_bootstrap(
     samples: list[float] = []
     for _ in range(draws):
         selected = rng.integers(0, len(scenarios), size=len(scenarios))
-        sample = [item for index in selected for item in grouped[scenarios[int(index)]]]
+        sample = [
+            {**item, "_bootstrap_instance": draw_index}
+            for draw_index, index in enumerate(selected)
+            for item in grouped[scenarios[int(index)]]
+        ]
         samples.append(statistic(sample))
     low, high = percentile_interval(samples)
     return float(point), low, high
 
 
 def paired_policy_effect(rows: list[dict[str, Any]], column: str) -> float:
-    paired: dict[tuple[str, int], dict[str, float]] = defaultdict(dict)
+    paired: dict[tuple[int | None, str, int], dict[str, float]] = defaultdict(dict)
     for row in rows:
-        key = (str(row["base_scenario_id"]), int(row["world_state_id"]))
+        key = (
+            row.get("_bootstrap_instance"),
+            str(row["base_scenario_id"]),
+            int(row["world_state_id"]),
+        )
         paired[key][str(row["policy_id"])] = float(row[column])
     if not paired or any(set(value) != {"T", "M"} for value in paired.values()):
         raise ValueError("paired policy effect requires complete T/M pairs")
