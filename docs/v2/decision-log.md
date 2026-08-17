@@ -359,3 +359,28 @@
 - **Files:** `src/jspace_policy/stage1_analysis.py`, regression test, regenerated
   summaries/report/figure.
 - **Commit:** recorded in the final Stage 1 results commit.
+
+## 2026-08-17 — V2-D022 — Open V2-E1 Strategic Workspace Atlas
+
+- **Change:** open a separate observational exploratory study across six
+  incomplete-information and information-control game families. Freeze the
+  model/lens identifiers, deterministic solvers, dataset seed, rendering-level
+  splits, behavioral gates, full-layer top-k readout, residual/J-space/output
+  probe variables, deep-atlas rule, overwrite refusal, and cost ceiling before
+  tokenization or model execution.
+- **Reason:** Stage 1 found strong residual state decodability without positive
+  state visibility under its four-candidate J-space endpoint. The new question
+  is which independently calculated strategic variables become vocabulary-
+  visible, rather than whether one privileged state token remains active.
+- **Already observed:** all prior repository results; deterministic local game
+  outputs and solver-validation tests only. No V2-E1 tokenizer result, model
+  behavior, activation, J-lens token, residual-probe metric, or locked-
+  replication output has been observed.
+- **Confirmatory status:** discovery and validation are explicitly exploratory.
+  The locked rendering split is reserved for hypotheses frozen only after open-
+  atlas inspection. V2-E1 does not reopen H0/H0R or license causal claims.
+- **Files:** `docs/v2/strategic-workspace-atlas-spec.md`,
+  `configs/v2/workspace_atlas/experiment.json`,
+  `src/jspace_policy/workspace_atlas.py`, `modal_workspace_atlas.py`,
+  `scripts/analyze_workspace_atlas.py`, and `tests/test_workspace_atlas.py`.
+- **Commit:** the V2-E1 protocol commit immediately before dataset tokenization.
