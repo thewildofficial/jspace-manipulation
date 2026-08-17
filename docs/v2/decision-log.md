@@ -242,3 +242,15 @@
 - **Files:** `src/jspace_policy/stage1.py`, `modal_stage1.py`, preserved v2
   dataset/behavior artifacts, and replacement dataset.
 - **Commit:** recorded before opening the third development behavior corpus.
+
+## 2026-08-17 — V2-D015 — Retry third behavior corpus after connection failure
+
+- **Change:** retry the unchanged third-corpus behavior command.
+- **Reason:** the Modal client could not connect to the service; no remote app
+  was created and no result file was written.
+- **Already observed:** a client connection error only. No prompt output or
+  scientific result was materialized.
+- **Confirmatory status:** unchanged; the retry uses the same committed corpus,
+  runner, model revision, and gates.
+- **Files:** append-only decision log only.
+- **Commit:** recorded before retry.
