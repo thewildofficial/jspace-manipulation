@@ -272,3 +272,19 @@
 - **Files:** `src/jspace_policy/stage1.py`, preserved v3 dataset/behavior
   artifacts, and replacement dataset.
 - **Commit:** recorded before opening the fourth development behavior corpus.
+
+## 2026-08-17 — V2-D017 — Pass the development behavioral gate
+
+- **Change:** declare the fourth frozen corpus behaviorally eligible for
+  discovery/validation mechanistic execution.
+- **Reason:** Stage 1A achieved 100.0% overall, cell, and family accuracy. Stage
+  1B achieved 95.4% overall accuracy, with minimum state-policy cell 88.9% and
+  minimum family 88.8%, exceeding the frozen 90%/85%/80% thresholds.
+- **Already observed:** behavior-only outputs on discovery and validation
+  families. Locked families remain unopened. No activation, J-space score, or
+  residual-probe output has been observed.
+- **Confirmatory status:** dataset design is now frozen. No further family,
+  prompt, vocabulary, codebook, formatting, or exclusion redesign is permitted
+  for confirmatory Stage 1.
+- **Files:** `results/v2_stage1/raw/behavior_dev.json` and cost ledger.
+- **Commit:** recorded before the first mechanistic run.
