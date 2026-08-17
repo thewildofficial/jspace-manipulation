@@ -1,6 +1,22 @@
 {
   "schema_version": 1,
-  "status": "exploratory_protocol_frozen_before_behavior_or_mechanistic_output",
+  "status": "behavioral_redesign_v2_frozen_after_v1_gate_failure_before_any_mechanistic_output",
+  "behavioral_redesign": {
+    "source": "v1_behavior_only",
+    "changes": [
+      "remove tied legal-action optima",
+      "widen Kuhn expected-value margins and require literal use of supplied opponent policy",
+      "show computed payoff rows in inspection and disclosure calibration prompts"
+    ],
+    "unchanged": [
+      "games",
+      "splits",
+      "behavioral_thresholds",
+      "mechanistic_readout",
+      "probe_variables",
+      "locked_replication"
+    ]
+  },
   "study_id": "V2-E1",
   "study_name": "Strategic Workspace Atlas",
   "model_id": "Qwen/Qwen3.6-27B",

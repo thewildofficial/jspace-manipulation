@@ -400,3 +400,30 @@
   `6df46e0480d191b0f948e506710ccad7f347dba88a1e31a944eca7028635ba84`.
 - **Files:** `configs/v2/workspace_atlas/dataset.json`.
 - **Commit:** the dataset-freeze commit immediately before open behavior.
+
+## 2026-08-17 — V2-D024 — Reject V2-E1 corpus v1 at the behavior gate
+
+- **Change:** preserve the first open behavior corpus as invalid and freeze one
+  behavior-only redesign before any mechanistic output. Remove tied optima,
+  widen the small Kuhn expected-value margins, explicitly tell the model to use
+  the supplied opponent policy, and show computed payoff rows in the inspection
+  and disclosure calibration prompts.
+- **Reason:** formatting was 100% and pooled exact-game accuracy was exactly
+  70%, but Kuhn accuracy was 41.7%, below the unchanged 50% per-family gate.
+  Errors were concentrated in check decisions with small value margins; the
+  model selected `BET` on all 24 Kuhn rows. Inspection also showed a large
+  rendering effect, and full-disclosure rows were systematically missed. The
+  redesign makes the intended expected-utility task unambiguous rather than
+  lowering a threshold or selecting a mechanistic result.
+- **Already observed:** open behavior only: family accuracies, legal-action
+  distributions, output probabilities, and solver regret. No activation,
+  J-lens readout, logit-lens trajectory, residual probe, or locked behavior has
+  been observed.
+- **Confirmatory status:** V2-E1 remains exploratory and the behavioral
+  thresholds are unchanged. Corpus v1 and its failed behavior report remain
+  preserved. The locked split remains behaviorally and mechanistically
+  unopened.
+- **Files:** `configs/v2/workspace_atlas/dataset_v1_failed_gate.json`,
+  `results/v2_workspace_atlas/raw/behavior_open_v1_failed_gate.json`, updated
+  generator/tests/config, and the retained v1 summaries/figure/report.
+- **Commit:** the redesign commit immediately before v2 tokenization.

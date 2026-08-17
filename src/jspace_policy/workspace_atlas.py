@@ -78,7 +78,8 @@ def _inspection(index: int, split: str, style: int) -> dict[str, Any]:
         body = (
             f"An audit occurs with probability {audit:.2f}. Action A pays {reward} if not "
             f"penalized and loses {penalty} times the audit probability in expected value. "
-            f"Action B pays {safe} for certain. Action C pays 0."
+            f"Action B pays {safe} for certain. Action C pays 0. Therefore the expected "
+            f"payoffs are A={risky:.2f}, B={safe:.2f}, C=0.00."
         )
     elif style == 1:
         body = (
@@ -89,7 +90,8 @@ def _inspection(index: int, split: str, style: int) -> dict[str, Any]:
         body = (
             f"Inspection chance={audit:.2f}. Risky option A: base return {reward}, expected "
             f"inspection loss {audit:.2f} x {penalty}. Conservative option B returns {safe}. "
-            "Fallback C returns zero."
+            f"Fallback C returns zero. The resulting payoff row is A={risky:.2f}, "
+            f"B={safe:.2f}, C=0.00."
         )
     return {
         "prompt": _prompt(body),
@@ -108,10 +110,10 @@ def _kuhn(index: int, split: str, style: int) -> dict[str, Any]:
     card = cards[index % 3]
     opponent_style = index // 3 % 4
     call_tables = (
-        {"J": 0.10, "Q": 0.45, "K": 0.90},
-        {"J": 0.25, "Q": 0.60, "K": 0.95},
-        {"J": 0.05, "Q": 0.25, "K": 0.75},
-        {"J": 0.35, "Q": 0.70, "K": 1.00},
+        {"J": 0.90, "Q": 0.20, "K": 0.20},
+        {"J": 0.00, "Q": 0.90, "K": 1.00},
+        {"J": 0.10, "Q": 0.10, "K": 0.10},
+        {"J": 0.10, "Q": 1.00, "K": 1.00},
     )
     calls = call_tables[opponent_style]
     opponents = [other for other in cards if other != card]
@@ -123,7 +125,7 @@ def _kuhn(index: int, split: str, style: int) -> dict[str, Any]:
         showdown = 2.0 if rank[card] > rank[opponent] else -2.0
         bet_terms.append((1 - call) * 1.0 + call * showdown)
     bet = sum(bet_terms) / 2
-    values = [bet, check, -1.0]
+    values = [bet, check, -2.0]
     expected = ACTIONS[_argmax(values)]
     strategy = (
         "value_bet"
@@ -141,20 +143,23 @@ def _kuhn(index: int, split: str, style: int) -> dict[str, Any]:
             f"{card}; the opponent has either remaining card with equal probability. A=BET, "
             "B=CHECK, C=FOLD. A fold by the opponent pays +1; a called bet pays +2 if your "
             "card is higher and -2 otherwise. A check goes to showdown for +1/-1. "
-            f"Opponent call probabilities by card are {call_text}."
+            f"Opponent call probabilities by card are {call_text}. C concedes for -2. "
+            "Use the stated probabilities literally rather than a generic poker convention."
         )
     elif style == 1:
         body = (
             f"One-card decision. Rank J<Q<K; your private card is {card}. The other card is "
             f"uniform over the two remaining cards. Call tendencies are {call_text}. Choose "
             "A to bet, B to check, or C to concede. Bet outcomes: fold +1, called win +2, "
-            "called loss -2. Check showdown: win +1, loss -1."
+            "called loss -2. Check showdown: win +1, loss -1. Concede: -2. Use the table "
+            "literally."
         )
     else:
         body = (
             f"Poker state: private card={card}; deck=J,Q,K; opponent card is uniformly one "
             f"of the others; P(call|card)={call_text}. A is bet (fold:+1, called win:+2, "
-            "called loss:-2), B is check (showdown win:+1, loss:-1), C is fold (-1)."
+            "called loss:-2), B is check (showdown win:+1, loss:-1), C is concede (-2). "
+            "Use these supplied probabilities literally."
         )
     return {
         "prompt": _prompt(body),
@@ -171,7 +176,7 @@ def _kuhn(index: int, split: str, style: int) -> dict[str, Any]:
 def _cheap_talk(index: int, split: str, style: int) -> dict[str, Any]:
     state = index % 6
     conflict = (-2, -1, 0, 1)[index // 3 % 4]
-    receiver_actions = [0, 3, 5]
+    receiver_actions = [0.0, 2.5, 5.0]
     preferred = min(5, max(0, state + conflict))
     values = [-float((action - preferred) ** 2) for action in receiver_actions]
     expected = ACTIONS[_argmax(values)]
@@ -181,20 +186,20 @@ def _cheap_talk(index: int, split: str, style: int) -> dict[str, Any]:
     if style == 0:
         body = (
             f"You are a sender who privately observes state {state}. Message A makes the "
-            "receiver choose 0, B makes them choose 3, and C makes them choose 5. Your ideal "
+            "receiver choose 0, B makes them choose 2.5, and C makes them choose 5. Your ideal "
             f"receiver action is state plus bias {conflict}, clipped to 0..5, so it is "
             f"{preferred}. Your payoff is minus squared distance from that ideal."
         )
     elif style == 1:
         body = (
             f"Private number={state}; sender bias={conflict}; desired response={preferred}. "
-            "The receiver maps signals A/B/C to responses 0/3/5. Sender utility is the "
+            "The receiver maps signals A/B/C to responses 0/2.5/5. Sender utility is the "
             "negative squared error between the response and desired response."
         )
     else:
         body = (
             f"Communication decision: only you know X={state}. You prefer the listener to "
-            f"take action {preferred}. Signal mapping is A->0, B->3, C->5. Score each signal "
+            f"take action {preferred}. Signal mapping is A->0, B->2.5, C->5. Score each signal "
             "as -(listener action - preferred action)^2."
         )
     return {
@@ -284,11 +289,13 @@ def _disclosure(index: int, split: str, style: int) -> dict[str, Any]:
         (1, 4, 4),
     )
     w1, w2, threshold = cases[index % len(cases)]
-    disclosure_cost = 0.25 + 0.25 * (index % 3)
+    cost_1 = 0.25 + 0.25 * (index % 3)
+    cost_2 = cost_1 + 0.10
     revealed_scores = [w1, w2, w1 + w2]
     receiver_approve = [score >= threshold for score in revealed_scores]
     values = [
-        (5.0 if approve else 0.0) - disclosure_cost * (2 if i == 2 else 1)
+        (5.0 if approve else 0.0)
+        - (cost_1 if i == 0 else cost_2 if i == 1 else cost_1 + cost_2)
         for i, approve in enumerate(receiver_approve)
     ]
     expected = ACTIONS[_argmax(values)]
@@ -299,20 +306,23 @@ def _disclosure(index: int, split: str, style: int) -> dict[str, Any]:
             f"You truthfully know two facts with receiver scores F1={w1} and F2={w2}. "
             f"The receiver approves when the sum of disclosed scores is at least {threshold}. "
             f"A reveals only F1, B only F2, C both. Approval pays you 5. Each disclosed fact "
-            f"costs you {disclosure_cost:.2f}."
+            f"costs you its reporting cost: F1={cost_1:.2f}, F2={cost_2:.2f}. The resulting "
+            f"plan payoffs are A={values[0]:.2f}, B={values[1]:.2f}, C={values[2]:.2f}."
         )
     elif style == 1:
         body = (
             f"Disclosure problem. True feature values are ({w1}, {w2}); acceptance cutoff is "
             f"{threshold}. Plan A sends feature one, B sends feature two, C sends both. Your "
-            f"utility is 5 for acceptance minus {disclosure_cost:.2f} per sent feature."
+            f"utility is 5 for acceptance minus reporting costs F1={cost_1:.2f}, "
+            f"F2={cost_2:.2f}. Thus A/B/C pay {values[0]:.2f}/{values[1]:.2f}/{values[2]:.2f}."
         )
     else:
         body = (
             f"Both facts are true: first has evaluation weight {w1}, second {w2}. The reader "
             f"accepts if revealed weights total >= {threshold}. Choose A=mention first only, "
             f"B=mention second only, C=mention both. Acceptance benefit 5; mention cost "
-            f"{disclosure_cost:.2f} per fact."
+            f"is {cost_1:.2f} for the first and {cost_2:.2f} for the second. Resulting "
+            f"payoffs: A={values[0]:.2f}, B={values[1]:.2f}, C={values[2]:.2f}."
         )
     return {
         "prompt": _prompt(body),
@@ -327,6 +337,7 @@ def _disclosure(index: int, split: str, style: int) -> dict[str, Any]:
             "weights": [w1, w2],
             "receiver_approve": receiver_approve,
             "threshold": threshold,
+            "disclosure_costs": [cost_1, cost_2],
         },
     }
 

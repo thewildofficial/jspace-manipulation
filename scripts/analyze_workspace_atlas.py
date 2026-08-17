@@ -25,6 +25,15 @@ def _write_csv(frame: pd.DataFrame, path: Path) -> None:
     frame.to_csv(path, index=False)
 
 
+def _frame_block(frame: pd.DataFrame) -> str:
+    """Render a dependency-free, readable table for generated Markdown reports."""
+    return (
+        "```text\n"
+        + frame.to_string(index=False, float_format=lambda value: f"{value:.3f}")
+        + "\n```"
+    )
+
+
 def _behavior_tables(
     behavior: dict[str, Any], dataset: dict[str, Any]
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -231,7 +240,7 @@ def _report(
         "- Minimum exact-game family accuracy: "
         f"{behavior['summary']['exact_game_minimum_family_accuracy']:.1%}",
         "",
-        behavior_summary.to_markdown(index=False, floatfmt=".3f"),
+        _frame_block(behavior_summary),
     ]
     if probes is not None:
         strategy = probes[
@@ -251,7 +260,7 @@ def _report(
                 "",
                 "Best layer is selected post hoc and is descriptive only.",
                 "",
-                best.to_markdown(index=False, floatfmt=".3f"),
+                _frame_block(best),
             ]
         )
     if commitments is not None and not commitments.empty:
@@ -264,7 +273,7 @@ def _report(
                 "",
                 "## Output commitment depth",
                 "",
-                commitment_summary.to_markdown(index=False, floatfmt=".1f"),
+                _frame_block(commitment_summary),
             ]
         )
     lines.extend(

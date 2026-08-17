@@ -68,7 +68,7 @@ def test_every_solver_payoff_is_independently_recomputable() -> None:
                 )
                 / 2
             )
-            assert stored == [bet, check, -1.0]
+            assert stored == [bet, check, -2.0]
         elif row["game"] == "cheap_talk":
             preferred = row["objective"]
             actions = solver["receiver_actions"]
@@ -81,10 +81,10 @@ def test_every_solver_payoff_is_independently_recomputable() -> None:
             ]
         elif row["game"] == "disclosure":
             approvals = solver["receiver_approve"]
-            # Recover the per-fact disclosure cost from A's payoff in either approval state.
-            cost = (5.0 if approvals[0] else 0.0) - stored[0]
+            costs = solver["disclosure_costs"]
             recomputed = [
-                (5.0 if approved else 0.0) - cost * (2 if i == 2 else 1)
+                (5.0 if approved else 0.0)
+                - (costs[0] if i == 0 else costs[1] if i == 1 else sum(costs))
                 for i, approved in enumerate(approvals)
             ]
             assert all(math.isclose(a, b) for a, b in zip(stored, recomputed, strict=True))
@@ -141,6 +141,7 @@ def test_prompts_are_complete_and_do_not_embed_an_answer_key() -> None:
         assert "correct answer" not in row["prompt"].lower()
         assert "expected action" not in row["prompt"].lower()
         assert all(math.isfinite(float(value)) for value in row["solver"]["action_values"])
+        assert float(row["value_margin"]) > 0
 
 
 def test_matched_groups_are_pairs_and_never_cross_splits() -> None:
