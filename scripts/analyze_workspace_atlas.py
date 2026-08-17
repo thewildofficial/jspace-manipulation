@@ -392,6 +392,66 @@ def _plot_probe(probes: pd.DataFrame, output: Path) -> None:
     plt.close(figure)
 
 
+def _plot_replication(replication: pd.DataFrame, output: Path) -> None:
+    sns.set_theme(style="whitegrid")
+    figure, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+
+    h1 = replication[replication["endpoint"] == "H1_generic_optimization_workspace"]
+    sns.barplot(data=h1, x="unit", y="secondary_value", ax=axes[0], color="#4c78a8")
+    axes[0].axhline(35, color="black", linestyle="--", linewidth=1)
+    axes[0].set_title("H1: median best rank at L43")
+    axes[0].set_xlabel("")
+    axes[0].set_ylabel("rank (lower is stronger)")
+    for patch, value in zip(axes[0].patches, h1["primary_value"], strict=True):
+        axes[0].text(
+            patch.get_x() + patch.get_width() / 2,
+            patch.get_height() + 1,
+            f"{value:.0%} present",
+            ha="center",
+            fontsize=9,
+        )
+
+    h2 = replication[replication["endpoint"] == "H2_strategy_routing_game"].copy()
+    h2 = h2.rename(
+        columns={
+            "primary_value": "residual",
+            "secondary_value": "J-space",
+            "tertiary_value": "output",
+        }
+    )
+    h2_long = h2.melt(
+        id_vars="unit",
+        value_vars=["residual", "J-space", "output"],
+        var_name="representation",
+        value_name="balanced_accuracy",
+    )
+    sns.barplot(
+        data=h2_long,
+        x="unit",
+        y="balanced_accuracy",
+        hue="representation",
+        ax=axes[1],
+    )
+    axes[1].set_ylim(0, 1.05)
+    axes[1].tick_params(axis="x", rotation=35)
+    axes[1].set_title("H2: locked strategy decoding")
+    axes[1].set_xlabel("")
+
+    h4 = replication[replication["endpoint"] == "H4_late_action_commitment"]
+    sns.barplot(data=h4, x="unit", y="primary_value", ax=axes[2], color="#f58518")
+    axes[2].axhline(58, color="black", linestyle="--", linewidth=1)
+    axes[2].set_ylim(0, 64)
+    axes[2].set_title("H4: censored commitment layer")
+    axes[2].set_xlabel("")
+    axes[2].set_ylabel("median layer")
+
+    figure.suptitle("V2-E1 frozen replication endpoints")
+    figure.tight_layout()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(output, dpi=180)
+    plt.close(figure)
+
+
 def _report(
     phase: str,
     behavior: dict[str, Any],
@@ -500,6 +560,10 @@ def analyze(phase: str) -> None:
             _write_csv(
                 replication,
                 ROOT / "summaries" / "replication_endpoints_locked.csv",
+            )
+            _plot_replication(
+                replication,
+                ROOT / "figures" / "replication_endpoints_locked.png",
             )
 
     report = _report(phase, behavior, summary, probes, commitments)

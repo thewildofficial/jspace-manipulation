@@ -513,3 +513,25 @@
   behavior summaries/figure/report, and cumulative cost ledger.
 - **Commit:** the locked behavior-gate commit immediately before locked
   mechanistic execution.
+
+## 2026-08-17 — V2-D029 — Close V2-E1 after mixed locked replication
+
+- **Change:** mark V2-E1 complete, accept H1 and H4 in both named games, reject
+  H2 and H3, and preserve the causal claim boundary.
+- **Reason:** the frozen optimization-token family appeared at layer 43 in 100%
+  of locked Kuhn and signaling rows, with median best ranks 27.5 and 11 and
+  zero prompt echoes; it preceded commitment in every row. Censored median
+  commitment layers were 63 and 60, passing H4. H2 failed: mean residual
+  strategy balanced accuracy was 0.719, but mean advantage was 0.090 versus
+  0.15 and residual won 3/5 games versus 4 required. H3 failed with locked
+  same-action Kuhn balanced accuracies 0.333 residual, 0.333 J-space, and 0.417
+  output.
+- **Already observed:** the complete locked behavior and mechanistic return,
+  all frozen endpoint values, and deterministic summaries/figures.
+- **Confirmatory status:** H1/H4 are prospective cross-rendering positives;
+  H2/H3 are prospective negatives. The result supports early generic decision-
+  optimization visibility, not specific strategic-intent visibility, causal
+  use, or a robust monitor.
+- **Files:** `results/v2_workspace_atlas/`,
+  `docs/v2/strategic-workspace-atlas-final-report.md`, and root `README.md`.
+- **Commit:** the terminal V2-E1 result commit.
