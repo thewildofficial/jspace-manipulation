@@ -444,3 +444,24 @@
   `e37873b3a44e29aeb96798aca6a38bcd04b1b99656bd66214b787df33874df24`.
 - **Files:** `configs/v2/workspace_atlas/dataset.json`.
 - **Commit:** the v2 dataset-freeze commit immediately before its open behavior.
+
+## 2026-08-17 — V2-D026 — Pass the V2-E1 open behavioral gate
+
+- **Change:** declare corpus v2 behaviorally eligible for open-atlas
+  mechanistic execution under the frozen all-layer protocol.
+- **Reason:** all 144 outputs were formatting-compliant; pooled exact-game
+  optimal accuracy was 78.3% versus the 70% floor; and the weakest exact game
+  reached 62.5% versus the 50% family floor. Pooled family accuracies were
+  inspection 91.7%, Kuhn 62.5%, cheap talk 62.5%, signaling 83.3%, disclosure
+  91.7%, and controlled Chameleon 62.5% (descriptive, not gated).
+- **Already observed:** open behavior and solver regret only. Validation cheap-
+  talk behavior was weaker than discovery behavior and will be retained rather
+  than excluded. No activation, J-lens, logit-lens trajectory, residual-probe,
+  or locked output has been observed.
+- **Confirmatory status:** the open mechanistic atlas is exploratory. Dataset,
+  game solvers, thresholds, layers, positions, top-k rules, variables, and
+  probe training/evaluation splits are now frozen for this run.
+- **Files:** `results/v2_workspace_atlas/raw/behavior_open.json`, behavior
+  summaries/figure/report, and the cumulative cost ledger.
+- **Commit:** the behavior-gate commit immediately before open mechanistic
+  execution.
