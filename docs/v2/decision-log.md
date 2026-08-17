@@ -465,3 +465,31 @@
   summaries/figure/report, and the cumulative cost ledger.
 - **Commit:** the behavior-gate commit immediately before open mechanistic
   execution.
+
+## 2026-08-17 — V2-D027 — Freeze V2-E1 locked replication endpoints
+
+- **Change:** after inspecting the open atlas, freeze four separate locked
+  endpoints: layer-43 generic optimization-token visibility in Kuhn/signaling;
+  a five-game residual-over-J-space/output strategy-decoding contrast; same-
+  action Kuhn bluff/thin/value decoding; and late Kuhn/signaling action
+  commitment. Add locked-only decoder training/evaluation support without
+  changing the underlying readout.
+- **Reason:** the open atlas showed `optimal`/`optimize` variants in every Kuhn
+  and signaling row at layer 43, while their median action commitment occurred
+  at layers 62 and 60.5. Strategy class was strongly validation-decodable from
+  residual activations in the five exact games, but top-50 J-space rank features
+  and output logits were generally much weaker. The Chameleon `safe`/`risk`
+  pattern was not advanced because it failed open-template transfer.
+- **Already observed:** all open behavior, 144 all-layer final-position
+  readouts, 12 deterministic deep traces, and 4,572 open decoder evaluations.
+  No locked behavior, activation, J-lens token, probe metric, or endpoint has
+  been observed.
+- **Confirmatory status:** every selection above is exploratory on the open
+  atlas and prospective only on the locked rendering. Exact layers, token
+  family, classifiers, thresholds, censoring, endpoint rules, and claim limits
+  are frozen in the machine and prose replication documents. The locked
+  behavior gate remains unchanged and is run before any locked activation.
+- **Files:** `configs/v2/workspace_atlas/replication_freeze.json`,
+  `docs/v2/strategic-workspace-atlas-freeze.md`, open raw/summaries/atlas/
+  figures/report, and locked evaluation support in the runner/analysis script.
+- **Commit:** the replication-freeze commit immediately before locked behavior.

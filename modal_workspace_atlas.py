@@ -335,6 +335,7 @@ def _fit_probe_metrics(
     output_features: Any,
     layers: list[int],
     config: dict[str, Any],
+    phase: str,
 ) -> list[dict[str, Any]]:
     import numpy as np
     from sklearn.feature_extraction import DictVectorizer
@@ -349,8 +350,12 @@ def _fit_probe_metrics(
     from sklearn.preprocessing import StandardScaler
 
     output: list[dict[str, Any]] = []
-    train_split = config["probe"]["training_split"]
-    test_split = config["probe"]["evaluation_split"]
+    if phase == "open":
+        train_splits = {config["probe"]["training_split"]}
+        test_splits = {config["probe"]["evaluation_split"]}
+    else:
+        train_splits = set(config["execution"]["open_splits"])
+        test_splits = {config["execution"]["locked_split"]}
 
     def fit_one(
         game: str,
@@ -359,22 +364,29 @@ def _fit_probe_metrics(
         representation: str,
         layer: int,
         features: Any,
+        *,
+        reported_variable: str | None = None,
+        required_action: str | None = None,
     ) -> None:
         indices_train = [
             i
             for i, row in enumerate(metadata)
-            if row["game"] == game and row["split"] == train_split
+            if row["game"] == game
+            and row["split"] in train_splits
+            and (required_action is None or row["action"] == required_action)
         ]
         indices_test = [
             i
             for i, row in enumerate(metadata)
-            if row["game"] == game and row["split"] == test_split
+            if row["game"] == game
+            and row["split"] in test_splits
+            and (required_action is None or row["action"] == required_action)
         ]
         y_train = [metadata[i][variable] for i in indices_train]
         y_test = [metadata[i][variable] for i in indices_test]
         base = {
             "game": game,
-            "variable": variable,
+            "variable": reported_variable or variable,
             "kind": kind,
             "representation": representation,
             "layer": layer,
@@ -451,6 +463,37 @@ def _fit_probe_metrics(
             for layer in layers:
                 fit_one(game, variable, kind, "residual", layer, residual_features[layer])
                 fit_one(game, variable, kind, "jspace", layer, jspace_features[layer])
+    fit_one(
+        "kuhn",
+        "strategy",
+        "categorical",
+        "output",
+        -1,
+        output_features,
+        reported_variable="strategy_given_action_A",
+        required_action="A",
+    )
+    for layer in layers:
+        fit_one(
+            "kuhn",
+            "strategy",
+            "categorical",
+            "residual",
+            layer,
+            residual_features[layer],
+            reported_variable="strategy_given_action_A",
+            required_action="A",
+        )
+        fit_one(
+            "kuhn",
+            "strategy",
+            "categorical",
+            "jspace",
+            layer,
+            jspace_features[layer],
+            reported_variable="strategy_given_action_A",
+            required_action="A",
+        )
     return output
 
 
@@ -602,7 +645,11 @@ def _mechanistic_rows(
         np.asarray(output_features, dtype=np.float32),
         layers,
         config,
+        phase,
     )
+    if phase == "locked":
+        locked_split = config["execution"]["locked_split"]
+        output = [row for row in output if row["split"] == locked_split]
     return sorted(output, key=lambda row: row["condition_id"]), metrics
 
 
@@ -631,7 +678,7 @@ def mechanistic_remote(
         raise RuntimeError("behavioral gate failed; mechanistic output remains unopened")
     started = time.perf_counter()
     model, lens, metadata = _load_model(with_lens=True)
-    selected = _select_rows(dataset, config, phase)
+    selected = dataset["rows"] if phase == "locked" else _select_rows(dataset, config, phase)
     rows, probe_metrics = _mechanistic_rows(model, lens, selected, config, phase)
     torch.cuda.synchronize()
     elapsed = time.perf_counter() - started

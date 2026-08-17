@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "frozen_after_open_atlas_before_locked_behavior",
+  "study_id": "V2-E1",
+  "open_mechanistic_run_id": "fe6fb9292d0f4402afb807f4d147f0ad",
+  "locked_split": "locked_replication",
+  "training_splits": ["discovery", "validation"],
+  "endpoints": {
+    "H1_generic_optimization_workspace": {
+      "games": ["kuhn", "signaling"],
+      "layer": 43,
+      "normalized_token_family": ["optimal", "optimize", "optimally", "optimization"],
+      "minimum_presence_rate_each_game": 0.90,
+      "maximum_median_best_rank_each_game": 35.0,
+      "minimum_fraction_before_commitment_each_game": 0.80
+    },
+    "H2_strategy_routing": {
+      "games": ["inspection", "kuhn", "cheap_talk", "signaling", "disclosure"],
+      "metric": "balanced_accuracy",
+      "residual_layers": {
+        "inspection": 55,
+        "kuhn": 42,
+        "cheap_talk": 34,
+        "signaling": 0,
+        "disclosure": 32
+      },
+      "jspace_layers": {
+        "inspection": 40,
+        "kuhn": 42,
+        "cheap_talk": 62,
+        "signaling": 61,
+        "disclosure": 11
+      },
+      "minimum_mean_residual_balanced_accuracy": 0.70,
+      "minimum_mean_residual_advantage_over_stronger_baseline": 0.15,
+      "minimum_games_residual_exceeds_stronger_baseline": 4
+    },
+    "H3_same_action_kuhn_strategy": {
+      "game": "kuhn",
+      "condition": "expected_action_A",
+      "classes": ["bluff", "thin_bet", "value_bet"],
+      "variable": "strategy_given_action_A",
+      "residual_layer": 42,
+      "jspace_layer": 42,
+      "metric": "balanced_accuracy",
+      "minimum_residual_balanced_accuracy": 0.65,
+      "minimum_residual_advantage_over_stronger_baseline": 0.15
+    },
+    "H4_late_action_commitment": {
+      "games": ["kuhn", "signaling"],
+      "uncommitted_censor_layer": 63,
+      "minimum_median_commitment_layer_each_game": 58
+    }
+  },
+  "decision_rule": "Each endpoint is evaluated separately; there is no omnibus success label. H1 supports early generic workspace availability, H2/H3 support selective residual-over-J-space strategy routing, and H4 establishes output lead-time context.",
+  "claim_boundary": "Observational cross-rendering replication only; no causal, deception, consciousness, or general-monitor claim."
+}

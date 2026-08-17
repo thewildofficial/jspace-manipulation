@@ -155,7 +155,18 @@ def _mechanistic_tables(
 
 def _emergent_inventory(tokens: pd.DataFrame) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
-    subset = tokens[(tokens["rank"] <= 10) & ~tokens["prompt_echo"]]
+    semantic = (
+        tokens["token_text"]
+        .fillna("")
+        .astype(str)
+        .map(
+            lambda value: (
+                any(character.isalnum() for character in value)
+                and not value.strip().startswith("<")
+            )
+        )
+    )
+    subset = tokens[(tokens["rank"] <= 10) & ~tokens["prompt_echo"] & semantic]
     for (game, layer), part in subset.groupby(["game", "layer"]):
         counts = Counter(part["token_text"].astype(str))
         for rank, (token, count) in enumerate(counts.most_common(20), start=1):
@@ -169,6 +180,171 @@ def _emergent_inventory(tokens: pd.DataFrame) -> pd.DataFrame:
                     "row_fraction": count / part["condition_id"].nunique(),
                 }
             )
+    return pd.DataFrame(rows)
+
+
+def _replication_endpoints(
+    probes: pd.DataFrame,
+    tokens: pd.DataFrame,
+    commitments: pd.DataFrame,
+    freeze: dict[str, Any],
+) -> pd.DataFrame:
+    rows: list[dict[str, Any]] = []
+    endpoints = freeze["endpoints"]
+
+    h1 = endpoints["H1_generic_optimization_workspace"]
+    normalized = tokens["token_text"].fillna("").astype(str).str.strip().str.lower()
+    token_family = set(h1["normalized_token_family"])
+    for game in h1["games"]:
+        game_commitments = commitments[commitments["game"] == game].copy()
+        matched = tokens[
+            (tokens["game"] == game)
+            & (tokens["layer"] == int(h1["layer"]))
+            & normalized.isin(token_family)
+        ]
+        best = matched.groupby("condition_id", as_index=False)["rank"].min()
+        merged = game_commitments.merge(best, on="condition_id", how="left")
+        presence = float(merged["rank"].notna().mean())
+        median_rank = float(merged["rank"].fillna(51).median())
+        commitment = merged["commitment_layer"].fillna(63)
+        before = float(((merged["rank"].notna()) & (int(h1["layer"]) < commitment)).mean())
+        passed = (
+            presence >= float(h1["minimum_presence_rate_each_game"])
+            and median_rank <= float(h1["maximum_median_best_rank_each_game"])
+            and before >= float(h1["minimum_fraction_before_commitment_each_game"])
+        )
+        rows.append(
+            {
+                "endpoint": "H1_generic_optimization_workspace",
+                "unit": game,
+                "primary_value": presence,
+                "secondary_value": median_rank,
+                "tertiary_value": before,
+                "pass": passed,
+                "detail": "presence; median best rank; fraction before commitment",
+            }
+        )
+
+    h2 = endpoints["H2_strategy_routing"]
+    h2_game_rows: list[dict[str, Any]] = []
+    for game in h2["games"]:
+        part = probes[
+            (probes["game"] == game)
+            & (probes["variable"] == "strategy")
+            & (probes["status"] == "ok")
+        ]
+
+        def score(
+            representation: str,
+            layer: int,
+            game_part: pd.DataFrame = part,
+            game_name: str = game,
+        ) -> float:
+            selected = game_part[
+                (game_part["representation"] == representation) & (game_part["layer"] == layer)
+            ]
+            if len(selected) != 1:
+                raise RuntimeError(
+                    f"missing frozen {representation} strategy metric for {game_name} L{layer}"
+                )
+            return float(selected.iloc[0]["balanced_accuracy"])
+
+        residual = score("residual", int(h2["residual_layers"][game]))
+        jspace = score("jspace", int(h2["jspace_layers"][game]))
+        output = score("output", -1)
+        stronger = max(jspace, output)
+        h2_game_rows.append(
+            {
+                "game": game,
+                "residual": residual,
+                "jspace": jspace,
+                "output": output,
+                "advantage": residual - stronger,
+            }
+        )
+        rows.append(
+            {
+                "endpoint": "H2_strategy_routing_game",
+                "unit": game,
+                "primary_value": residual,
+                "secondary_value": jspace,
+                "tertiary_value": output,
+                "pass": residual > stronger,
+                "detail": "residual; J-space; output balanced accuracy",
+            }
+        )
+    h2_frame = pd.DataFrame(h2_game_rows)
+    mean_residual = float(h2_frame["residual"].mean())
+    mean_advantage = float(h2_frame["advantage"].mean())
+    games_won = int((h2_frame["advantage"] > 0).sum())
+    h2_pass = (
+        mean_residual >= float(h2["minimum_mean_residual_balanced_accuracy"])
+        and mean_advantage
+        >= float(h2["minimum_mean_residual_advantage_over_stronger_baseline"])
+        and games_won >= int(h2["minimum_games_residual_exceeds_stronger_baseline"])
+    )
+    rows.append(
+        {
+            "endpoint": "H2_strategy_routing",
+            "unit": "five_game_mean",
+            "primary_value": mean_residual,
+            "secondary_value": mean_advantage,
+            "tertiary_value": games_won,
+            "pass": h2_pass,
+            "detail": "mean residual BA; mean advantage; games won",
+        }
+    )
+
+    h3 = endpoints["H3_same_action_kuhn_strategy"]
+    part = probes[
+        (probes["game"] == h3["game"])
+        & (probes["variable"] == h3["variable"])
+        & (probes["status"] == "ok")
+    ]
+
+    def h3_score(representation: str, layer: int) -> float:
+        selected = part[(part["representation"] == representation) & (part["layer"] == layer)]
+        if len(selected) != 1:
+            raise RuntimeError(f"missing frozen H3 {representation} metric")
+        return float(selected.iloc[0]["balanced_accuracy"])
+
+    residual = h3_score("residual", int(h3["residual_layer"]))
+    jspace = h3_score("jspace", int(h3["jspace_layer"]))
+    output = h3_score("output", -1)
+    advantage = residual - max(jspace, output)
+    h3_pass = residual >= float(
+        h3["minimum_residual_balanced_accuracy"]
+    ) and advantage >= float(h3["minimum_residual_advantage_over_stronger_baseline"])
+    rows.append(
+        {
+            "endpoint": "H3_same_action_kuhn_strategy",
+            "unit": "kuhn_A",
+            "primary_value": residual,
+            "secondary_value": jspace,
+            "tertiary_value": output,
+            "pass": h3_pass,
+            "detail": f"residual; J-space; output BA; advantage={advantage:.3f}",
+        }
+    )
+
+    h4 = endpoints["H4_late_action_commitment"]
+    for game in h4["games"]:
+        values = commitments.loc[commitments["game"] == game, "commitment_layer"].fillna(
+            int(h4["uncommitted_censor_layer"])
+        )
+        median = float(values.median())
+        passed = median >= float(h4["minimum_median_commitment_layer_each_game"])
+        rows.append(
+            {
+                "endpoint": "H4_late_action_commitment",
+                "unit": game,
+                "primary_value": median,
+                "secondary_value": float((values == 63).mean()),
+                "tertiary_value": len(values),
+                "pass": passed,
+                "detail": "censored median layer; uncommitted fraction; rows",
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -306,6 +482,7 @@ def analyze(phase: str) -> None:
     mechanistic_path = ROOT / "raw" / f"mechanistic_{phase}.json"
     probes = None
     commitments = None
+    replication = None
     if mechanistic_path.exists():
         mechanistic = _load(mechanistic_path)
         probes = pd.DataFrame(mechanistic["probe_metrics"])
@@ -317,8 +494,18 @@ def analyze(phase: str) -> None:
         _write_csv(emergent, ROOT / "summaries" / f"emergent_tokens_{phase}.csv")
         _write_csv(tokens, ROOT / "atlas" / f"top_tokens_{phase}.csv")
         _plot_probe(probes, ROOT / "figures" / f"strategy_decoding_{phase}.png")
+        if phase == "locked":
+            freeze = _load(Path("configs/v2/workspace_atlas/replication_freeze.json"))
+            replication = _replication_endpoints(probes, tokens, commitments, freeze)
+            _write_csv(
+                replication,
+                ROOT / "summaries" / "replication_endpoints_locked.csv",
+            )
 
     report = _report(phase, behavior, summary, probes, commitments)
+    if replication is not None:
+        report += "\n## Frozen replication endpoints\n\n"
+        report += _frame_block(replication) + "\n"
     (ROOT / f"README_{phase}.md").write_text(report, encoding="utf-8")
     print(json.dumps({"phase": phase, "gate_pass": behavior["summary"]["gate_pass"]}, indent=2))
 

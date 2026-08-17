@@ -27,6 +27,44 @@ validation       kuhn 12     0.583                  0.583                  1.000
 validation  signaling 12     0.750                  0.750                  1.000        0.135                1.058
 ```
 
+## Exploratory strategy decoding
+
+Best layer is selected post hoc and is descriptive only.
+
+```text
+      game representation  layer  balanced_accuracy
+ chameleon         jspace     51              1.000
+ chameleon         output     -1              0.500
+ chameleon       residual     48              1.000
+cheap_talk         jspace     62              0.500
+cheap_talk         output     -1              0.500
+cheap_talk       residual     34              0.833
+disclosure         jspace     11              0.500
+disclosure         output     -1              0.500
+disclosure       residual     32              0.944
+inspection         jspace     40              0.500
+inspection         output     -1              0.500
+inspection       residual     55              0.929
+      kuhn         jspace     42              0.500
+      kuhn         output     -1              0.375
+      kuhn       residual     42              0.938
+ signaling         jspace     61              0.333
+ signaling         output     -1              0.333
+ signaling       residual      0              0.833
+```
+
+## Output commitment depth
+
+```text
+      game  median_commitment_layer  measured
+ chameleon                   51.000        18
+cheap_talk                   49.500        20
+disclosure                   51.000        19
+inspection                   50.000        23
+      kuhn                   62.000        15
+ signaling                   60.000        15
+```
+
 ## Artifact map
 
 - `raw/`: immutable behavior and mechanistic returns.
