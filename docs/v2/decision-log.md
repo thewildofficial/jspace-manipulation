@@ -384,3 +384,19 @@
   `src/jspace_policy/workspace_atlas.py`, `modal_workspace_atlas.py`,
   `scripts/analyze_workspace_atlas.py`, and `tests/test_workspace_atlas.py`.
 - **Commit:** the V2-E1 protocol commit immediately before dataset tokenization.
+
+## 2026-08-17 — V2-D023 — Freeze the V2-E1 tokenized corpus
+
+- **Change:** freeze 216 chat-rendered rows across six games and three splits,
+  with 108 paired bootstrap groups and one-token legal action IDs 32/33/34.
+- **Reason:** all deterministic solver tests passed, the remote pinned tokenizer
+  represented `A`, `B`, and `C` as distinct one-token continuations, and the
+  rendered sequence lengths (74--147 tokens) fit the frozen execution design.
+- **Already observed:** tokenizer output, content hash, row/group counts, token
+  IDs, and sequence lengths only. No model forward pass, action probability,
+  activation, J-lens readout, or probe result has been observed.
+- **Confirmatory status:** discovery/validation remain exploratory; locked
+  replication remains unopened. The corpus content hash is
+  `6df46e0480d191b0f948e506710ccad7f347dba88a1e31a944eca7028635ba84`.
+- **Files:** `configs/v2/workspace_atlas/dataset.json`.
+- **Commit:** the dataset-freeze commit immediately before open behavior.
