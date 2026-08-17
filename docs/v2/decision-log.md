@@ -309,3 +309,17 @@
   `docs/v2/stage1-freeze.md`, development raw results/summaries/figure, and the
   unit-tested shared candidate-evidence function.
 - **Commit:** the freeze commit immediately preceding locked behavior.
+
+## 2026-08-17 — V2-D019 — Pass the locked behavioral gate
+
+- **Change:** declare both locked substages behaviorally valid and open their
+  once-run mechanistic readout under the frozen protocol.
+- **Reason:** locked Stage 1A achieved 100.0% overall, cell, and family accuracy.
+  Locked Stage 1B achieved 98.75% overall, with minimum cell 96.7% and minimum
+  family 96.25%; all frozen thresholds pass.
+- **Already observed:** locked behavior only. No locked activation, J-space,
+  logit-lens, or residual-probe output has been observed.
+- **Confirmatory status:** both locked mechanistic tests are valid and will be
+  opened once with the committed probe artifact and analysis protocol.
+- **Files:** `results/v2_stage1/raw/behavior_locked.json` and cost ledger.
+- **Commit:** recorded immediately before locked mechanistic execution.
