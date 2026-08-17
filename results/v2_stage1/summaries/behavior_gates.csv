@@ -1,0 +1,5 @@
+phase,substage,n_rows,overall_accuracy,minimum_cell_accuracy,minimum_family_accuracy,gate_pass
+dev,1A,720,1.0,1.0,1.0,True
+dev,1B,720,0.9541666666666667,0.8888888888888888,0.8875,True
+locked,1A,240,1.0,1.0,1.0,True
+locked,1B,240,0.9875,0.9666666666666667,0.9625,True

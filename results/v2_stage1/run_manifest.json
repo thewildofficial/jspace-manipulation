@@ -1,0 +1,68 @@
+{
+  "analysis_command": "uv run python scripts/analyze_stage1.py --phase locked",
+  "bootstrap_draws": 2000,
+  "config_sha256": "cfac817c1d6ab9924570899ac6ac111cf992936a554c8d678a0e16040fa40489",
+  "cuda_version": "13.0",
+  "dataset_sha256": "6cb715641f0bcdccc9c7248b4806f81ac170123f3d93d534363ee2bdd9532d89",
+  "dtype": "bfloat16",
+  "gpu_actual": "NVIDIA A100-SXM4-80GB",
+  "gpu_requested": "A100-80GB",
+  "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+  "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+  "lens_repo": "neuronpedia/jacobian-lens",
+  "lens_revision": "qwen-n1000",
+  "model_id": "Qwen/Qwen3.6-27B",
+  "model_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "primary_layers": [
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+  ],
+  "primary_position": "final_prompt_token_before_generation",
+  "probe_artifact_sha256": "5cb49d7d6adfd0d71a39fd09893292fc556bed4ce71d525708b8ad7b7edfbddb",
+  "raw_files": {
+    "behavior_dev.json": {
+      "created_at": "2026-08-17T10:03:59.395215+00:00",
+      "git_commit": "86884e3641b9a7e86387edcc822a0dd20ddf6850",
+      "rows": 1440,
+      "run_id": "8733723a86c74f0fb208e4b7066b84fa",
+      "sha256": "45465c833a983d47450fea57971058a6bb62778653c320026fdbbeef5839c668"
+    },
+    "behavior_locked.json": {
+      "created_at": "2026-08-17T10:22:05.501867+00:00",
+      "git_commit": "69b0efa2e12ea32adf8c20c3d9940429ea7a67c1",
+      "rows": 480,
+      "run_id": "9b934cac031e452994d0d11f126e95ce",
+      "sha256": "e9607e17da2f22ebc965b2009c3d0d197c038cd79a00699f56f534555e624337"
+    },
+    "mechanistic_dev.json": {
+      "created_at": "2026-08-17T10:15:05.829897+00:00",
+      "git_commit": "41b3bd109d70d0be5f43ea406d0cccd082181981",
+      "rows": 1440,
+      "run_id": "b4f53930df69466a8af312d65a231f8e",
+      "sha256": "151958d77bcbd3e865a1e6b2f0e77e5815edf7bdce3bfc96956dddcfbfcbe337"
+    },
+    "mechanistic_locked.json": {
+      "created_at": "2026-08-17T10:26:42.806404+00:00",
+      "git_commit": "8ecf0e36931567574e4832f9ad1dfb9a9b0bd9dd",
+      "rows": 480,
+      "run_id": "33e0a9e3a9f04682859edda62aa0e2c2",
+      "sha256": "3af77b6a9b7c3aebace0020dab6c92b7aa5762f150ec6a2d5784fc036fc83c7e"
+    }
+  },
+  "schema_version": 1,
+  "seeds": {
+    "bootstrap": 981723,
+    "dataset": 421337,
+    "model_and_probe": 981723
+  },
+  "status": "complete_locked_test",
+  "tokenizer_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.15.0"
+}

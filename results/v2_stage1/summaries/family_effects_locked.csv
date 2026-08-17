@@ -1,0 +1,7 @@
+substage,family,n_base_scenarios,mean_transformed_band_K,positive_direction
+1A,clinic_alias,10,-0.09667377471923828,False
+1A,marine_buoy,10,-0.07927018801371258,False
+1A,robot_memory,10,-0.14768931070963537,False
+1B,checksum_match,10,0.020761044820149732,True
+1B,largest_inventory,10,0.015522257486979173,True
+1B,only_eligible,10,-0.08769094546635943,False

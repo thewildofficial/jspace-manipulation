@@ -136,3 +136,226 @@
 - **Files:** `results/v2_h0r_argument_validation_v2/`,
   `docs/v2/h0r-final-report.md`.
 - **Commit:** recorded by the terminal H0R result commit.
+
+## 2026-08-17 — V2-D010 — Preregister observational Stage 1
+
+- **Change:** open a non-causal latent state–report dissociation study with
+  explicit-state and inferred-state substages, neutral four-state report
+  transformations, family-held-out splits, frozen pre-output J-space scores,
+  independent residual probes, behavioral gates, and a once-opened locked test.
+- **Reason:** H0R did not validate counterfactual replacement, but its failure
+  does not answer the prior observational question of whether task state
+  remains recoverable when report policy selects a different output.
+- **Already observed:** all immutable Stage 0/H0R results and historical V1
+  observational artifacts. No Stage 1 prompt tokenization, behavior, residual
+  activation, J-space score, probe performance, or locked-family result has
+  been opened.
+- **Confirmatory status:** generator families/splits, model/lens identifiers,
+  layers 36–43, final pre-output position, K/Q/M/D signs, exclusions,
+  behavioral thresholds, probe grid/selection rule, bootstrap, and success
+  criterion become confirmatory when this entry and associated code/config are
+  committed.
+- **Files:** `docs/v2/stage1-preregistration.md`,
+  `docs/v2/stage1-analysis-plan.md`, `configs/v2/stage1.json`,
+  `src/jspace_policy/stage1.py`, `src/jspace_policy/stage1_analysis.py`,
+  `modal_stage1.py`, `scripts/analyze_stage1.py`, `tests/test_stage1.py`.
+- **Commit:** recorded by the preregistration commit before tokenizer-only
+  dataset freezing.
+
+## 2026-08-17 — V2-D011 — Replace a tokenizer-invalid candidate label
+
+- **Change:** replace `birch` with `tree` in the fifth four-label vocabulary.
+- **Reason:** the first tokenizer-only freeze stopped because `birch` is not a
+  single continuation token after the frozen answer prefix. The replacement is
+  a common, semantically task-irrelevant label subject to the identical frozen
+  tokenization check.
+- **Already observed:** the tokenizer exception naming `birch`; no dataset was
+  written and no model forward pass, behavior, activation, J-space score, or
+  probe output was opened.
+- **Confirmatory status:** unchanged. This is the preregistered mechanical
+  tokenization rule applied before the rendered corpus is frozen.
+- **Files:** `src/jspace_policy/stage1.py`.
+- **Commit:** recorded with the tokenizer-enriched dataset freeze.
+
+## 2026-08-17 — V2-D012 — Reject raw-prompt behavior and use pinned chat rendering
+
+- **Change:** preserve the first rendered corpus and behavior run as invalid;
+  render the unchanged task texts through Qwen's pinned chat template with
+  `enable_thinking=False`; use left padding and request only final-position
+  logits from Transformers.
+- **Reason:** all 1,440 development rows returned the identical raw-model
+  paragraph token `\\n\\n` as top-1, yielding 0% exact-format accuracy. The
+  repository's established Qwen behavioral path uses the chat template. The
+  run also logged an allocation warning while materializing unused
+  full-sequence logits; final-only logits remove that infrastructure issue
+  without changing any scientific score.
+- **Already observed:** 0% exact top-1 accuracy in both substages; all top-1
+  tokens were ID 271; candidate-restricted argmax accuracy was 89.3% for 1A and
+  28.1% for 1B. No activation, residual probe, J-space, or locked-family output
+  was opened.
+- **Confirmatory status:** the first corpus/run is an invalid behavior-format
+  gate and remains committed. Behavioral redesign is permitted before any
+  mechanistic output. Families, evidence generators, states, codebooks, splits,
+  thresholds, metrics, and mechanistic definitions are unchanged.
+- **Files:** `modal_stage1.py`, preserved v1 dataset/behavior artifacts, and the
+  replacement `configs/v2/stage1_dataset.json`.
+- **Commit:** recorded before opening replacement behavior.
+
+## 2026-08-17 — V2-D013 — Retry interrupted replacement behavior job
+
+- **Change:** rerun the unchanged replacement discovery/validation behavior
+  command after the local Modal client was interrupted and the remote app was
+  stopped.
+- **Reason:** the interrupted invocation returned no result and wrote no
+  `behavior_dev.json`; there is therefore no partial scientific artifact to
+  analyze or overwrite.
+- **Already observed:** model-loading progress and Modal heartbeat/stop errors
+  only. No replacement prompt output, aggregate behavior, activation, J-space,
+  residual-probe, or locked-family result was materialized locally.
+- **Confirmatory status:** unchanged. Dataset, prompts, runner, gates, and seeds
+  are identical for the retry.
+- **Files:** append-only decision log only.
+- **Commit:** recorded before retrying replacement behavior.
+
+## 2026-08-17 — V2-D014 — Simplify behaviorally invalid positive-control tasks
+
+- **Change:** retain only the four vocabularies whose labels are one-token
+  continuations without a leading-space fallback; remove the extra person-to-
+  label indirection in Stage 1B; replace weak arithmetic, order-statistic,
+  chain, and cycle families with one-step parity, primality, string-case, and
+  set-intersection inference families. The three still-unopened locked families
+  are specified as inventory maximum, eligibility elimination, and checksum
+  matching.
+- **Reason:** the valid chat-rendered development gate reached 87.8% in 1A and
+  50.8% in 1B. Stage 1A was 100% for the first four vocabularies but 50% and
+  75% for two vocabularies whose natural answer began with a subtoken rather
+  than the frozen leading-space token. In 1B, direct selection families were
+  strongest, while modular arithmetic, second-smallest, symbol-chain, and
+  cycle-offset families were invalid positive controls.
+- **Already observed:** discovery/validation behavior only, including family,
+  vocabulary, state, and policy accuracies. No activation, J-space, residual-
+  probe, or locked-family output was opened.
+- **Confirmatory status:** behavioral redesign is permitted. The replacement
+  keeps four states, neutral derangements, factorial grouping, family-level
+  splits, sample size, thresholds, mechanistic scores, probe protocol, and
+  bootstrap unchanged. Replaced development families are new and unopened.
+- **Files:** `src/jspace_policy/stage1.py`, `modal_stage1.py`, preserved v2
+  dataset/behavior artifacts, and replacement dataset.
+- **Commit:** recorded before opening the third development behavior corpus.
+
+## 2026-08-17 — V2-D015 — Retry third behavior corpus after connection failure
+
+- **Change:** retry the unchanged third-corpus behavior command.
+- **Reason:** the Modal client could not connect to the service; no remote app
+  was created and no result file was written.
+- **Already observed:** a client connection error only. No prompt output or
+  scientific result was materialized.
+- **Confirmatory status:** unchanged; the retry uses the same committed corpus,
+  runner, model revision, and gates.
+- **Files:** append-only decision log only.
+- **Commit:** recorded before retry.
+
+## 2026-08-17 — V2-D016 — Replace the invalid prime-classification family
+
+- **Change:** replace only the discovery `unique_prime` family with
+  `unique_negative`, in which exactly one of four label-associated values is
+  negative.
+- **Reason:** the third development gate passed Stage 1A at 100% and Stage 1B
+  overall at 90.6%, but `unique_prime` reached only 55%, below the frozen 80%
+  family minimum, and the Stage 1B x3/transformed cell reached only 77.8%, below
+  85%. All other Stage 1B families were at least 88.8%.
+- **Already observed:** third-corpus discovery/validation behavior only. No
+  activation, J-space, residual-probe, or locked-family output was opened.
+- **Confirmatory status:** behavioral redesign remains permitted. One unopened
+  replacement discovery family is substituted; all other corpus and analysis
+  choices are unchanged.
+- **Files:** `src/jspace_policy/stage1.py`, preserved v3 dataset/behavior
+  artifacts, and replacement dataset.
+- **Commit:** recorded before opening the fourth development behavior corpus.
+
+## 2026-08-17 — V2-D017 — Pass the development behavioral gate
+
+- **Change:** declare the fourth frozen corpus behaviorally eligible for
+  discovery/validation mechanistic execution.
+- **Reason:** Stage 1A achieved 100.0% overall, cell, and family accuracy. Stage
+  1B achieved 95.4% overall accuracy, with minimum state-policy cell 88.9% and
+  minimum family 88.8%, exceeding the frozen 90%/85%/80% thresholds.
+- **Already observed:** behavior-only outputs on discovery and validation
+  families. Locked families remain unopened. No activation, J-space score, or
+  residual-probe output has been observed.
+- **Confirmatory status:** dataset design is now frozen. No further family,
+  prompt, vocabulary, codebook, formatting, or exclusion redesign is permitted
+  for confirmatory Stage 1.
+- **Files:** `results/v2_stage1/raw/behavior_dev.json` and cost ledger.
+- **Commit:** recorded before the first mechanistic run.
+
+## 2026-08-17 — V2-D018 — Freeze the Stage 1 locked-test protocol
+
+- **Change:** freeze the fitted discovery-only residual probes, validation-
+  selected layers/regularization, exact locked families, run hashes, final
+  analysis implementation, and claim ladder for a once-opened locked test.
+- **Reason:** discovery/validation mechanistic execution completed under the
+  preregistered band and generated the artifacts needed to apply independent
+  probes prospectively.
+- **Already observed:** all discovery/validation J-space, logit-lens, output,
+  and residual-probe results. Stage 1A transformed band K was negative in every
+  development family; Stage 1B transformed band K was slightly positive in
+  eight of nine development families. No locked-family behavior or mechanistic
+  output has been opened.
+- **Confirmatory status:** the locked test is confirmatory and will be executed
+  once. No prompt, family, layer, score, probe, threshold, exclusion,
+  bootstrap, or claim rule may change based on its outcome.
+- **Files:** `configs/v2/stage1_probe_freeze.json`,
+  `docs/v2/stage1-freeze.md`, development raw results/summaries/figure, and the
+  unit-tested shared candidate-evidence function.
+- **Commit:** the freeze commit immediately preceding locked behavior.
+
+## 2026-08-17 — V2-D019 — Pass the locked behavioral gate
+
+- **Change:** declare both locked substages behaviorally valid and open their
+  once-run mechanistic readout under the frozen protocol.
+- **Reason:** locked Stage 1A achieved 100.0% overall, cell, and family accuracy.
+  Locked Stage 1B achieved 98.75% overall, with minimum cell 96.7% and minimum
+  family 96.25%; all frozen thresholds pass.
+- **Already observed:** locked behavior only. No locked activation, J-space,
+  logit-lens, or residual-probe output has been observed.
+- **Confirmatory status:** both locked mechanistic tests are valid and will be
+  opened once with the committed probe artifact and analysis protocol.
+- **Files:** `results/v2_stage1/raw/behavior_locked.json` and cost ledger.
+- **Commit:** recorded immediately before locked mechanistic execution.
+
+## 2026-08-17 — V2-D020 — Close Stage 1 after the locked test
+
+- **Change:** mark both frozen J-space retention criteria failed, report the
+  independently positive residual-probe result, and keep Stage 2 closed.
+- **Reason:** locked Stage 1A transformed band K was -0.108 (95% CI -0.142 to
+  -0.073) with 0/3 positive families. Stage 1B was -0.017 (95% CI -0.043 to
+  0.008) with 2/3 positive families. Although locked all-policy state probes
+  reached 100.0% and 99.2%, positive K was a required conjunct.
+- **Already observed:** the complete once-run locked behavior, J-space,
+  logit-lens, output-logit, and residual-probe results.
+- **Confirmatory status:** Stage 1 is a confirmatory negative for the pinned
+  J-space retention criterion. The residual-stream decoding result is positive
+  and supports only the narrower conclusion preregistered for this outcome.
+  Stage 2 is not licensed.
+- **Files:** `results/v2_stage1/`, `docs/v2/stage1-final-report.md`, root
+  `README.md`.
+- **Commit:** recorded by the final Stage 1 results commit.
+
+## 2026-08-17 — V2-D021 — Preserve duplicate clusters in paired bootstraps
+
+- **Change:** assign each resampled scenario occurrence a unique bootstrap
+  instance before computing paired policy differences.
+- **Reason:** final reproducibility QA found that duplicate scenario IDs were
+  retained for mean-K and probe estimands but collapsed by the dictionary used
+  for secondary paired report-preparation, state-policy, and interaction
+  effects. The point estimates were correct; only their secondary intervals
+  required regeneration.
+- **Already observed:** all locked results. No model output is rerun and no
+  endpoint, threshold, sign, exclusion, seed, or claim rule changes.
+- **Confirmatory status:** headline transformed-K intervals, family directions,
+  probe intervals, and both failed criterion decisions are unchanged. The
+  repaired paired intervals are reported as the reproducible final values.
+- **Files:** `src/jspace_policy/stage1_analysis.py`, regression test, regenerated
+  summaries/report/figure.
+- **Commit:** recorded in the final Stage 1 results commit.
