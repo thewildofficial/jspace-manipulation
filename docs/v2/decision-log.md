@@ -216,3 +216,29 @@
   are identical for the retry.
 - **Files:** append-only decision log only.
 - **Commit:** recorded before retrying replacement behavior.
+
+## 2026-08-17 — V2-D014 — Simplify behaviorally invalid positive-control tasks
+
+- **Change:** retain only the four vocabularies whose labels are one-token
+  continuations without a leading-space fallback; remove the extra person-to-
+  label indirection in Stage 1B; replace weak arithmetic, order-statistic,
+  chain, and cycle families with one-step parity, primality, string-case, and
+  set-intersection inference families. The three still-unopened locked families
+  are specified as inventory maximum, eligibility elimination, and checksum
+  matching.
+- **Reason:** the valid chat-rendered development gate reached 87.8% in 1A and
+  50.8% in 1B. Stage 1A was 100% for the first four vocabularies but 50% and
+  75% for two vocabularies whose natural answer began with a subtoken rather
+  than the frozen leading-space token. In 1B, direct selection families were
+  strongest, while modular arithmetic, second-smallest, symbol-chain, and
+  cycle-offset families were invalid positive controls.
+- **Already observed:** discovery/validation behavior only, including family,
+  vocabulary, state, and policy accuracies. No activation, J-space, residual-
+  probe, or locked-family output was opened.
+- **Confirmatory status:** behavioral redesign is permitted. The replacement
+  keeps four states, neutral derangements, factorial grouping, family-level
+  splits, sample size, thresholds, mechanistic scores, probe protocol, and
+  bootstrap unchanged. Replaced development families are new and unopened.
+- **Files:** `src/jspace_policy/stage1.py`, `modal_stage1.py`, preserved v2
+  dataset/behavior artifacts, and replacement dataset.
+- **Commit:** recorded before opening the third development behavior corpus.

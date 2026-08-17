@@ -62,10 +62,9 @@ def _content_hash_valid(payload: dict[str, Any]) -> bool:
 
 def _continuation_id(tokenizer: Any, prompt: str, answer: str) -> int:
     prefix = tokenizer.encode(prompt, add_special_tokens=False)
-    for suffix in (answer, f" {answer}"):
-        full = tokenizer.encode(prompt + suffix, add_special_tokens=False)
-        if full[: len(prefix)] == prefix and len(full) == len(prefix) + 1:
-            return int(full[-1])
+    full = tokenizer.encode(prompt + answer, add_special_tokens=False)
+    if full[: len(prefix)] == prefix and len(full) == len(prefix) + 1:
+        return int(full[-1])
     raise ValueError(f"{answer!r} is not one token after frozen answer prefix")
 
 

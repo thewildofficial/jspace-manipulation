@@ -15,8 +15,6 @@ STATE_VOCABULARIES: tuple[tuple[str, ...], ...] = (
     ("north", "south", "east", "west"),
     ("cat", "dog", "bird", "fish"),
     ("sun", "moon", "star", "cloud"),
-    ("oak", "pine", "tree", "maple"),
-    ("iron", "copper", "silver", "gold"),
 )
 
 SPLITS = {
@@ -44,15 +42,15 @@ STAGE1B_FAMILIES = (
     "earliest_arrival",
     "highest_score",
     "coldest_station",
-    "modular_sum",
-    "second_smallest",
+    "unique_even",
+    "unique_prime",
     "unique_membership",
     "shortest_route",
-    "symbol_chain",
-    "calendar_offset",
+    "uppercase_code",
+    "set_intersection",
     "largest_inventory",
-    "adjacency_deduction",
-    "binary_value",
+    "only_eligible",
+    "checksum_match",
 )
 
 BANNED_PRIMARY_WORDS = (
@@ -171,82 +169,75 @@ def _inferred_state_text(
     state: int,
     nonce: int,
 ) -> str:
-    names = ("Ari", "Bo", "Cy", "Dee")
-    mapping = ", ".join(f"{names[i]}={labels[i]}" for i in range(4))
+    mapping = "all four labels are candidates"
     if family == "earliest_arrival":
         values = _rank_values(state, 8 * 60 + 40 + nonce % 5)
         evidence = ", ".join(
-            f"{names[i]} at {value // 60:02d}:{value % 60:02d}"
+            f"{labels[i]} at {value // 60:02d}:{value % 60:02d}"
             for i, value in enumerate(values)
         )
-        rule = "The private result is the label assigned to the earliest arrival."
+        rule = "The private result is the label with the earliest time."
     elif family == "highest_score":
         values = _rank_values(state, 20 + nonce % 7, highest=True)
-        evidence = ", ".join(f"{names[i]} scored {value}" for i, value in enumerate(values))
-        rule = "The private result is the label assigned to the highest scorer."
+        evidence = ", ".join(f"{labels[i]} scored {value}" for i, value in enumerate(values))
+        rule = "The private result is the label with the highest score."
     elif family == "coldest_station":
         values = _rank_values(state, -9 + nonce % 3)
-        evidence = ", ".join(f"{names[i]} measured {value} C" for i, value in enumerate(values))
-        rule = "The private result is the label assigned to the lowest temperature."
-    elif family == "modular_sum":
-        a = 5 + nonce
-        b = (state - a) % 4 + 12
-        mapping = ", ".join(f"remainder {i}={labels[i]}" for i in range(4))
-        evidence = f"Compute ({a}+{b}) modulo 4."
-        rule = "The private result is the label for the resulting remainder."
-    elif family == "second_smallest":
-        order = [(state + 1) % 4, state, (state + 2) % 4, (state + 3) % 4]
-        values = [0] * 4
-        for rank, candidate in enumerate(order):
-            values[candidate] = 10 + nonce + rank * 7
-        evidence = ", ".join(f"{names[i]} has {value}" for i, value in enumerate(values))
-        rule = "The private result is the label assigned to the second-smallest value."
+        evidence = ", ".join(
+            f"{labels[i]} measured {value} C" for i, value in enumerate(values)
+        )
+        rule = "The private result is the label with the lowest temperature."
+    elif family == "unique_even":
+        values = [11, 13, 15, 17]
+        values[state] = 20 + 2 * (nonce % 5)
+        evidence = ", ".join(
+            f"{labels[i]} has number {value}" for i, value in enumerate(values)
+        )
+        rule = "Exactly one number is even; its label is the private result."
+    elif family == "unique_prime":
+        values = [12, 14, 15, 16]
+        values[state] = (11, 13, 17, 19)[nonce % 4]
+        evidence = ", ".join(
+            f"{labels[i]} has number {value}" for i, value in enumerate(values)
+        )
+        rule = "Exactly one number is prime; its label is the private result."
     elif family == "unique_membership":
         groups = ["K", "K", "K", "K"]
         groups[state] = "M"
-        evidence = ", ".join(f"{names[i]} is in group {groups[i]}" for i in range(4))
-        rule = "Exactly one item is in group M; its assigned label is the private result."
+        evidence = ", ".join(f"{labels[i]} is in group {groups[i]}" for i in range(4))
+        rule = "Exactly one label is in group M; that label is the private result."
     elif family == "shortest_route":
         values = _rank_values(state, 14 + nonce % 4)
         evidence = ", ".join(
-            f"route {names[i]} is {value} km" for i, value in enumerate(values)
+            f"route {labels[i]} is {value} km" for i, value in enumerate(values)
         )
-        rule = "The private result is the label assigned to the shortest route."
-    elif family == "symbol_chain":
-        start = (state - 3) % 4
-        mapping = ", ".join(f"symbol {i}={labels[i]}" for i in range(4))
+        rule = "The private result is the label of the shortest route."
+    elif family == "uppercase_code":
+        codes = ["aa", "bb", "cc", "dd"]
+        codes[state] = codes[state].upper()
+        evidence = ", ".join(f"{labels[i]} has code {codes[i]}" for i in range(4))
+        rule = "Exactly one code is uppercase; its label is the private result."
+    elif family == "set_intersection":
+        first = [labels[state], labels[(state + 1) % 4]]
+        second = [labels[state], labels[(state + 2) % 4]]
         evidence = (
-            f"Start at symbol {start}; apply NEXT three times, where NEXT adds 1 modulo 4."
+            f"List P contains {first[0]}, {first[1]}. List Q contains {second[0]}, {second[1]}."
         )
-        rule = "The private result is the label of the final symbol."
-    elif family == "calendar_offset":
-        start = (state - (nonce % 9 + 1)) % 4
-        step = nonce % 9 + 1
-        mapping = ", ".join(f"cycle position {i}={labels[i]}" for i in range(4))
-        evidence = (
-            f"Begin at cycle position {start} and advance {step} positions "
-            "on a four-position cycle."
-        )
-        rule = "The private result is the label at the final cycle position."
+        rule = "The one label present in both lists is the private result."
     elif family == "largest_inventory":
         values = _rank_values(state, 30 + nonce % 8, highest=True)
-        evidence = ", ".join(f"bin {names[i]} holds {value}" for i, value in enumerate(values))
-        rule = "The private result is the label assigned to the fullest bin."
-    elif family == "adjacency_deduction":
-        left = (state - 1) % 4
-        right = (state + 1) % 4
-        evidence = (
-            "Seats form a four-seat ring numbered 0,1,2,3. The marked seat is "
-            "adjacent to both "
-            f"seat {left} and seat {right}, and it is not seat {(state + 2) % 4}."
-        )
-        mapping = ", ".join(f"seat {i}={labels[i]}" for i in range(4))
-        rule = "The private result is the label assigned to the marked seat."
-    elif family == "binary_value":
-        bits = format(state, "02b")
-        mapping = ", ".join(f"value {i}={labels[i]}" for i in range(4))
-        evidence = f"The two-bit register is {bits}; interpret it as an unsigned binary value."
-        rule = "The private result is the label assigned to that value."
+        evidence = ", ".join(f"bin {labels[i]} holds {value}" for i, value in enumerate(values))
+        rule = "The private result is the label of the fullest bin."
+    elif family == "only_eligible":
+        status = ["NO", "NO", "NO", "NO"]
+        status[state] = "YES"
+        evidence = ", ".join(f"{labels[i]} eligible={status[i]}" for i in range(4))
+        rule = "The only eligible label is the private result."
+    elif family == "checksum_match":
+        values = [31 + nonce % 7 + 3 * index for index in range(4)]
+        target = values[state]
+        evidence = ", ".join(f"{labels[i]} checksum {value}" for i, value in enumerate(values))
+        rule = f"The label whose checksum equals target {target} is the private result."
     else:
         raise ValueError(f"unknown Stage 1B family: {family}")
     return f"Candidate assignment: {mapping}.\nEvidence: {evidence}\nRule: {rule}"

@@ -51,9 +51,10 @@ def test_transformation_is_deranged_and_reports_are_balanced(config: dict) -> No
         part = [row for row in rows if row.substage == substage]
         counts = Counter((row.policy_id, row.expected_report) for row in part)
         by_policy = Counter(row.policy_id for row in part)
+        labels = {row.expected_report for row in part}
         for policy, total in by_policy.items():
             assert {count for (current, _), count in counts.items() if current == policy} == {
-                total // 24
+                total // len(labels)
             }
 
 
