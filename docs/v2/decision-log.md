@@ -200,3 +200,19 @@
 - **Files:** `modal_stage1.py`, preserved v1 dataset/behavior artifacts, and the
   replacement `configs/v2/stage1_dataset.json`.
 - **Commit:** recorded before opening replacement behavior.
+
+## 2026-08-17 — V2-D013 — Retry interrupted replacement behavior job
+
+- **Change:** rerun the unchanged replacement discovery/validation behavior
+  command after the local Modal client was interrupted and the remote app was
+  stopped.
+- **Reason:** the interrupted invocation returned no result and wrote no
+  `behavior_dev.json`; there is therefore no partial scientific artifact to
+  analyze or overwrite.
+- **Already observed:** model-loading progress and Modal heartbeat/stop errors
+  only. No replacement prompt output, aggregate behavior, activation, J-space,
+  residual-probe, or locked-family result was materialized locally.
+- **Confirmatory status:** unchanged. Dataset, prompts, runner, gates, and seeds
+  are identical for the retry.
+- **Files:** append-only decision log only.
+- **Commit:** recorded before retrying replacement behavior.
