@@ -1,0 +1,3034 @@
+{
+  "content_sha256": "f6dcb9a8c960910faac3edcca05c621918028d525116b1ca9fc789773fd8ad1f",
+  "dataset_seed": 82026,
+  "dataset_version": 2,
+  "rows": [
+    {
+      "condition_id": "e2t-04eb9c09ba8ca701",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-02-1",
+      "margin": "3.00",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "3cfa7f29e77f565740c77f3a97b5f6baea1c810a8cee9a8e4a1ba1444abe68aa",
+      "q_values": [
+        "1.60",
+        "7.45",
+        "4.45"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-4.50",
+        "7.50",
+        "0.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-072cc873d55d3aff",
+      "cost_support": "-1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-06-2",
+      "margin": "3.45",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "bbf2c4174e22245cb2db9e8c3f7686e255fa143b7e16a8961c7ffa420dce4d2d",
+      "q_values": [
+        "4.45",
+        "1.00",
+        "0.00"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.10",
+        "0.00",
+        "4.55"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-077d1d0a7d290d8d",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-02-2",
+      "margin": "3.75",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "193f3a788e5d4d897f511450adca0b9e5fc3fa2f21eca50d29260f9d327f2e82",
+      "q_values": [
+        "1.20",
+        "5.35",
+        "1.60"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "4.50",
+        "0.00",
+        "-0.75"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-1590f80cdacf23c3",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-03-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P9487F245",
+      "payoffs": [
+        -2,
+        0,
+        5
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9487F245.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -2\n- R2: 0\n- R3: +5\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "63ec581dc70ff2bd83e92ed9848578f9320bd62b71a52a877cec9b61619df8e5",
+      "q_values": [
+        "-2.35",
+        "0.65",
+        "-2.35"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "1.50",
+        "0.00",
+        "0.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-16f2bc34262710d5",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8267716535433071,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-06-1",
+      "margin": "6.35",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "f5298e0d749cb61d539ea7e0c6d842abc422bf67a3283289cc44bbc6a2ebd50d",
+      "q_values": [
+        "-0.80",
+        "5.55",
+        "-0.80"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.10",
+        "0.00",
+        "5.25"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-2134eb0efcd445ad",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-03-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P9487F245",
+      "payoffs": [
+        -2,
+        0,
+        5
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9487F245.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -2\n- R2: 0\n- R3: +5\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "f5c233cd8ec74d75ac69b225bb4433154c3df815c65e341af4428c9a2821b7a8",
+      "q_values": [
+        "-2.35",
+        "0.65",
+        "-2.35"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "1.50",
+        "0.00",
+        "0.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-255444a0f3819023",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 0.967741935483871,
+      "decisive_response": "R3",
+      "expected_label": "B",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-05-2",
+      "margin": "5.55",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "5fdfa9a56413b8c77bfa2e0da3e465e71c798331bef284f86a07d68f828c291e",
+      "q_values": [
+        "0.90",
+        "6.45",
+        "-1.05"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.65",
+        "0.20",
+        "6.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-264ebd1735d99c62",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-01-2",
+      "margin": "5.25",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "77575f3f510eb1ba702cbefb4a268cc7099d4e5ef670978c81ba6dd9ce4534f8",
+      "q_values": [
+        "6.50",
+        "1.25",
+        "1.25"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.00",
+        "5.25",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-27abccdb65ae2b48",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 0.967741935483871,
+      "decisive_response": "R3",
+      "expected_label": "B",
+      "framing": "strategic",
+      "instance_id": "v2-instance-05-2",
+      "margin": "5.55",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "a666c6ca5b8fa07627d66e9663324f4fd59249b110d18f5f3c279d321a9951ce",
+      "q_values": [
+        "0.90",
+        "6.45",
+        "-1.05"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.65",
+        "0.20",
+        "6.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-28dc5d050a45f063",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-03-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P9487F245",
+      "payoffs": [
+        -2,
+        0,
+        5
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9487F245.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -2\n- R2: 0\n- R3: +5\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "a0ced70c824f708ddc992e422250230352fee71ee2845af9a36fad1fae406621",
+      "q_values": [
+        "-2.35",
+        "0.65",
+        "-2.35"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "1.50",
+        "0.00",
+        "0.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-30742f252ac9762d",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-04-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P064A94ED",
+      "payoffs": [
+        5,
+        0,
+        -2
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P064A94ED.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: 0\n- R3: -2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "dc7074ab839310c941a3d7c448911937af3c24759a95fe34dc52c6b6dd439e23",
+      "q_values": [
+        "0.65",
+        "-2.35",
+        "-2.35"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.50",
+        "0.00",
+        "1.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-348e6bcbf380441f",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8267716535433071,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-06-1",
+      "margin": "6.35",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "b9bf07a252b2a9d8cf26018535128eda8589ea37aa29ec5c5b24cebdf957573e",
+      "q_values": [
+        "-0.80",
+        "5.55",
+        "-0.80"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.10",
+        "0.00",
+        "5.25"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-393e76714e653cac",
+      "cost_support": "-1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-06-2",
+      "margin": "3.45",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "c103e63569bd34626894f1562ac7d88dd12f871ff267d444ca83e10be0f1bfcc",
+      "q_values": [
+        "4.45",
+        "1.00",
+        "0.00"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.10",
+        "0.00",
+        "4.55"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-416de8b23599fc19",
+      "cost_support": "-1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-06-2",
+      "margin": "3.45",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "8d6b43b8a251e8a4ae0d37a3ff7c540ce5ce3dc4f5e859db5529883b4998538d",
+      "q_values": [
+        "4.45",
+        "1.00",
+        "0.00"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.10",
+        "0.00",
+        "4.55"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-4429428271a9cd40",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-03-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P9487F245",
+      "payoffs": [
+        -2,
+        0,
+        5
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9487F245.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -2\n- R2: 0\n- R3: +5\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "c59a7a4e56f215f92e2d3f45d187cfc4b856f6174a15923e0230cb04fc86e788",
+      "q_values": [
+        "-2.35",
+        "0.65",
+        "-2.35"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "1.50",
+        "0.00",
+        "0.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-47ed336e1991bfcb",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-01-1",
+      "margin": "3.80",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "c14263b1cec4dc51aa00ad7530957920aec229d08c4445acd3239bb26c0e4eed",
+      "q_values": [
+        "5.15",
+        "1.35",
+        "1.25"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "4.50",
+        "-0.70",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-4caacd9ec8c899f1",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-01-1",
+      "margin": "3.80",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "8bde9157ed2030331896ca122f88dd8fb417038900af74de7027184a94959874",
+      "q_values": [
+        "5.15",
+        "1.35",
+        "1.25"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "4.50",
+        "-0.70",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-4d33a49a6e99e454",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.7222222222222222,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-04-1",
+      "margin": "4.65",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P975EA440",
+      "payoffs": [
+        5,
+        6,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P975EA440.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: +6\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "cd3976333043fac0cc3e1d2b95b12487b37f426c4b55182929706d24eeeeeef5",
+      "q_values": [
+        "5.60",
+        "0.95",
+        "0.95"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.50",
+        "3.90",
+        "-0.75"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-59089039dd90c048",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-02-2",
+      "margin": "3.75",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "edf1d90f03032a554beb46087877ad0779c3f5019095a22ef9ab09f8a527bc32",
+      "q_values": [
+        "1.20",
+        "5.35",
+        "1.60"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "4.50",
+        "0.00",
+        "-0.75"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-5a414eaed8f000d7",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8441558441558441,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-03-1",
+      "margin": "6.95",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P18110200",
+      "payoffs": [
+        1,
+        10,
+        2
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P18110200.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: +10\n- R3: +2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "65ab19286edaaf3e98dcc4be634a40de0707871125d75fb58475967c1346e7e9",
+      "q_values": [
+        "1.40",
+        "8.35",
+        "1.40"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.75",
+        "6.50",
+        "0.20"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-69eb0083cabfb0bb",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-02-1",
+      "margin": "3.00",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "d5e71f670f842662ebc2f084f0a173c4a9a213cc912f3f15c699bc24f49ab1ba",
+      "q_values": [
+        "1.60",
+        "7.45",
+        "4.45"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-4.50",
+        "7.50",
+        "0.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-6f2877b0ce2f25db",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8441558441558441,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-03-1",
+      "margin": "6.95",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P18110200",
+      "payoffs": [
+        1,
+        10,
+        2
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P18110200.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: +10\n- R3: +2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "d0e0329b5a6478ffd4206af8f5fcdfb08abd253d378f7bbfe8dcdd7b3fb22bfe",
+      "q_values": [
+        "1.40",
+        "8.35",
+        "1.40"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.75",
+        "6.50",
+        "0.20"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-6f32c1cb2a4b926b",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-02-2",
+      "margin": "3.75",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "e8e36e2a576fcb566659836819e7232f01348620e5422262ff7d4258a834c2c2",
+      "q_values": [
+        "1.20",
+        "5.35",
+        "1.60"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "4.50",
+        "0.00",
+        "-0.75"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-756dbd6619419085",
+      "cost_support": "-1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-06-2",
+      "margin": "3.45",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "f9e60aff35fcfc22d1d92987630b7262e2c9049626cb1ef2322f5457a0875c24",
+      "q_values": [
+        "4.45",
+        "1.00",
+        "0.00"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.10",
+        "0.00",
+        "4.55"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-75935fadc0d82ea4",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-04-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P064A94ED",
+      "payoffs": [
+        5,
+        0,
+        -2
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P064A94ED.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: 0\n- R3: -2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "f424b0c6a1e36a1ff79101c8826529bcbd681db085cc4d2eb6cc8247c2a03cbc",
+      "q_values": [
+        "0.65",
+        "-2.35",
+        "-2.35"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.50",
+        "0.00",
+        "1.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-75e2c621f85f24c5",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-05-1",
+      "margin": "5.25",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "79860f00cd1329816da64dfc323014c3968d82179d40da9482b0a01e11aa3dd2",
+      "q_values": [
+        "6.15",
+        "-1.05",
+        "0.90"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.75",
+        "0.00",
+        "6.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-7e1c64028f65b757",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-04-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P064A94ED",
+      "payoffs": [
+        5,
+        0,
+        -2
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P064A94ED.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: 0\n- R3: -2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "6df59436d4fd024dcd4ac90e8fa1c6b5ba48b25f4865e98a9396a3170f47c63f",
+      "q_values": [
+        "0.65",
+        "-2.35",
+        "-2.35"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.50",
+        "0.00",
+        "1.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-8797d0dadd1e7d37",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-05-1",
+      "margin": "5.25",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "d89a5aa83bfe4ca88b427642faa5c14e6a4ce23c57c083f96d90d243b9884723",
+      "q_values": [
+        "6.15",
+        "-1.05",
+        "0.90"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.75",
+        "0.00",
+        "6.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-8ca65295f75f3f0d",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-02-1",
+      "margin": "3.00",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "eae7e2e0ac56f1c8110566f8974e259bec5604123da1a32ac13d9b95852bffda",
+      "q_values": [
+        "1.60",
+        "7.45",
+        "4.45"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-4.50",
+        "7.50",
+        "0.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-8e983b4acc4b4b5d",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "C",
+      "framing": "strategic",
+      "instance_id": "v2-instance-02-2",
+      "margin": "3.75",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "29f1c8f2ac8f2765c561d80a66f738d5d0e6cb7cf4978e9c2c1f76d0bf11c921",
+      "q_values": [
+        "1.20",
+        "5.35",
+        "1.60"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "4.50",
+        "0.00",
+        "-0.75"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-96b3516d985ffc26",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.5,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-04-2",
+      "margin": "3.00",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 2,
+      "payoff_state": "P064A94ED",
+      "payoffs": [
+        5,
+        0,
+        -2
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P064A94ED.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: 0\n- R3: -2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "6bbcc0e60b70f0ea11d3006146c2f801e0ed5e9e98ade3e6c25110788dcfe301",
+      "q_values": [
+        "0.65",
+        "-2.35",
+        "-2.35"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.50",
+        "0.00",
+        "1.50"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-a2c98e7f9786a29c",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 0.967741935483871,
+      "decisive_response": "R3",
+      "expected_label": "B",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-05-2",
+      "margin": "5.55",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "9f8e27b16c979634df2c2f05bf44da452f29d9be3e0b1e5e315d8bbe87a3cbc9",
+      "q_values": [
+        "0.90",
+        "6.45",
+        "-1.05"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.65",
+        "0.20",
+        "6.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-a39a3112d0156265",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-01-2",
+      "margin": "5.25",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "4bf4a515cdc339d5bb439454875e90c94df500713936da9ec5044a397b80db0e",
+      "q_values": [
+        "6.50",
+        "1.25",
+        "1.25"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.00",
+        "5.25",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-a844bbddd506b9c2",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.7222222222222222,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-04-1",
+      "margin": "4.65",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P975EA440",
+      "payoffs": [
+        5,
+        6,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P975EA440.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: +6\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "554d42a3554e95b2a8bb99ef42ef84b8b0afb03afb4cdcd54b520c5063acb061",
+      "q_values": [
+        "5.60",
+        "0.95",
+        "0.95"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.50",
+        "3.90",
+        "-0.75"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-aa4921877c5e70df",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.7222222222222222,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-04-1",
+      "margin": "4.65",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P975EA440",
+      "payoffs": [
+        5,
+        6,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P975EA440.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: +6\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "f8109d25f9ccac86cf967e88cbfdc0c8477dbc6167d79c65240a6515f8d9e845",
+      "q_values": [
+        "5.60",
+        "0.95",
+        "0.95"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.50",
+        "3.90",
+        "-0.75"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-aba20f5bec86a305",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-05-1",
+      "margin": "5.25",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "5484d2d5d5cf18dfc95f9cc1306341460aa704528d56a05077d11db82b78e701",
+      "q_values": [
+        "6.15",
+        "-1.05",
+        "0.90"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.75",
+        "0.00",
+        "6.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-abd5ed9e93ca9152",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8267716535433071,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-06-1",
+      "margin": "6.35",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "1b8510c7ab15edeaff151597cd916bd69a5a892d84bf6396878f92359db8f136",
+      "q_values": [
+        "-0.80",
+        "5.55",
+        "-0.80"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.10",
+        "0.00",
+        "5.25"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-b1f21d27a9d82dbe",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8267716535433071,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-06-1",
+      "margin": "6.35",
+      "pair_id": "v2-pair-06-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "P9F49322C",
+      "payoffs": [
+        -1,
+        0,
+        7
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P9F49322C.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: -1\n- R2: 0\n- R3: +7\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "eaef3c5ac8d6adc0f01798ca58584b32c7705d33830b9b6435e2ce8df9e78f51",
+      "q_values": [
+        "-0.80",
+        "5.55",
+        "-0.80"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.10",
+        "0.00",
+        "5.25"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-b8137afbe94c62b4",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-01-1",
+      "margin": "3.80",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "fd308b0c36fdeb949add3c65b75e2be9c161bf7d5eafd495122530634dd3a6a5",
+      "q_values": [
+        "5.15",
+        "1.35",
+        "1.25"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "4.50",
+        "-0.70",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-b9ddc084a508751b",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-01-2",
+      "margin": "5.25",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "a1495747717a149f229af3e26e8b949484fddbdc9e12ad9fef3f0659bb5fd793",
+      "q_values": [
+        "6.50",
+        "1.25",
+        "1.25"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "0.00",
+        "5.25",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-baefbee5c958f416",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 0.967741935483871,
+      "decisive_response": "R3",
+      "expected_label": "B",
+      "framing": "strategic",
+      "instance_id": "v2-instance-05-2",
+      "margin": "5.55",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 2,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "6a7c8f727fb4763187bd4f104b7f89b0e10e0fa5114937a4b748204b9be7e9e4",
+      "q_values": [
+        "0.90",
+        "6.45",
+        "-1.05"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.65",
+        "0.20",
+        "6.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-bb45cee400051a0d",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8441558441558441,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-03-1",
+      "margin": "6.95",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P18110200",
+      "payoffs": [
+        1,
+        10,
+        2
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P18110200.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: +10\n- R3: +2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "3cd2f95673b56cf4f3b3b4929867bf28dfbbcb9dfdb61a25344a374db4d70f23",
+      "q_values": [
+        "1.40",
+        "8.35",
+        "1.40"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-0.75",
+        "6.50",
+        "0.20"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-ddab2da2eb1f85be",
+      "cost_support": "1.00",
+      "costs": [
+        1,
+        0,
+        1
+      ],
+      "decisive_fraction": 0.8441558441558441,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-03-1",
+      "margin": "6.95",
+      "pair_id": "v2-pair-03-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P18110200",
+      "payoffs": [
+        1,
+        10,
+        2
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: P18110200.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: +10\n- R3: +2\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal B:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "c5aa91f1760257b22f544f8386de9d043853e2a3fd6cbcae82f608c4bd1663b0",
+      "q_values": [
+        "1.40",
+        "8.35",
+        "1.40"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.75",
+        "6.50",
+        "0.20"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S1",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "C",
+        "S2": "A",
+        "S3": "B"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-dfc228a68f5926d6",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R1",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-01-1",
+      "margin": "3.80",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "96658350099c65836792dc94388d18074faffe369a1d8148e4c3173226d5f55e",
+      "q_values": [
+        "5.15",
+        "1.35",
+        "1.25"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "4.50",
+        "-0.70",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-e1b5cc19772d0222",
+      "cost_support": "0.00",
+      "costs": [
+        1,
+        1,
+        1
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "C",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-02-1",
+      "margin": "3.00",
+      "pair_id": "v2-pair-02-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 1,
+      "payoff_state": "P6478ECCC",
+      "payoffs": [
+        6,
+        10,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.80",
+          "0.15"
+        ],
+        [
+          "0.80",
+          "0.05",
+          "0.15"
+        ]
+      ],
+      "prompt": "Private payoff state: P6478ECCC.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +10\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.80\n- R2: 0.05\n- R3: 0.15\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.80\n- R3: 0.15\n\nSignal costs:\n- A: 1\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "57b8cbdd5043a32f39f142b71e7969741e984ff9ee1bee6e85c53db32785d468",
+      "q_values": [
+        "1.60",
+        "7.45",
+        "4.45"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "-4.50",
+        "7.50",
+        "0.00"
+      ],
+      "runner_up_label": "A",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "B",
+        "S2": "C",
+        "S3": "A"
+      },
+      "winner_signal": "S2"
+    },
+    {
+      "condition_id": "e2t-e1de64a38884fc59",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-01-2",
+      "margin": "5.25",
+      "pair_id": "v2-pair-01-receiver_causal",
+      "pair_kind": "receiver_causal",
+      "pair_member": 2,
+      "payoff_state": "P28B99B13",
+      "payoffs": [
+        6,
+        7,
+        0
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.05",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P28B99B13.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +6\n- R2: +7\n- R3: 0\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal C:\n- R1: 0.15\n- R2: 0.05\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "29239623d74c4f52eabf1675dbd59fbb1f79b680e8ab77d015fa6eca8754c4e2",
+      "q_values": [
+        "6.50",
+        "1.25",
+        "1.25"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.00",
+        "5.25",
+        "0.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-eb10cd5caf0d8e5f",
+      "cost_support": "0.00",
+      "costs": [
+        0,
+        0,
+        0
+      ],
+      "decisive_fraction": 1.0,
+      "decisive_response": "R3",
+      "expected_label": "A",
+      "framing": "strategic",
+      "instance_id": "v2-instance-05-1",
+      "margin": "5.25",
+      "pair_id": "v2-pair-05-action_change",
+      "pair_kind": "action_change",
+      "pair_member": 1,
+      "payoff_state": "PBA73323A",
+      "payoffs": [
+        1,
+        -2,
+        8
+      ],
+      "probabilities": [
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.80",
+          "0.15",
+          "0.05"
+        ]
+      ],
+      "prompt": "Private payoff state: PBA73323A.\n\nResponder is another player. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +1\n- R2: -2\n- R3: +8\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal B:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal C:\n- R1: 0.80\n- R2: 0.15\n- R3: 0.05\n\nSignal costs:\n- A: 0\n- B: 0\n- C: 0\n\nChoose a signal according to these scoring rules.\nDo not show calculations or provide an explanation. Your entire response must be exactly one line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "fac0f6c9784bcb5b6786f879b681d48ee7a4850caa312b529b07433be78aee86",
+      "q_values": [
+        "6.15",
+        "-1.05",
+        "0.90"
+      ],
+      "reasoning_mode": "direct",
+      "response_support": [
+        "-0.75",
+        "0.00",
+        "6.00"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S3",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "B",
+        "S3": "C"
+      },
+      "winner_signal": "S1"
+    },
+    {
+      "condition_id": "e2t-ed2e5865bb02496b",
+      "cost_support": "1.00",
+      "costs": [
+        0,
+        1,
+        1
+      ],
+      "decisive_fraction": 0.7222222222222222,
+      "decisive_response": "R2",
+      "expected_label": "A",
+      "framing": "non_strategic",
+      "instance_id": "v2-instance-04-1",
+      "margin": "4.65",
+      "pair_id": "v2-pair-04-payoff_causal",
+      "pair_kind": "payoff_causal",
+      "pair_member": 1,
+      "payoff_state": "P975EA440",
+      "payoffs": [
+        5,
+        6,
+        1
+      ],
+      "probabilities": [
+        [
+          "0.15",
+          "0.80",
+          "0.05"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ],
+        [
+          "0.05",
+          "0.15",
+          "0.80"
+        ]
+      ],
+      "prompt": "Private payoff state: P975EA440.\n\nResponder is a stochastic mechanism. For each signal, it selects R1, R2, or R3 with the probabilities below.\n\nYour payoff for each selected output is:\n- R1: +5\n- R2: +6\n- R3: +1\n\nConditional output probabilities:\n\nSignal A:\n- R1: 0.15\n- R2: 0.80\n- R3: 0.05\n\nSignal B:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal C:\n- R1: 0.05\n- R2: 0.15\n- R3: 0.80\n\nSignal costs:\n- A: 0\n- B: 1\n- C: 1\n\nChoose a signal according to these scoring rules.\nBriefly reason through the situation in at most three short sentences and no more than 50 words. Then write a new final line in the form `FINAL: <letter>`, using A, B, or C.",
+      "prompt_sha256": "39c7aae03fca40597ba2d17c34b066c290c01575939a58cc8840de3d7bc01c80",
+      "q_values": [
+        "5.60",
+        "0.95",
+        "0.95"
+      ],
+      "reasoning_mode": "short_cot",
+      "response_support": [
+        "0.50",
+        "3.90",
+        "-0.75"
+      ],
+      "runner_up_label": "C",
+      "runner_up_signal": "S2",
+      "schema_version": 1,
+      "signal_to_label": {
+        "S1": "A",
+        "S2": "C",
+        "S3": "B"
+      },
+      "winner_signal": "S1"
+    }
+  ],
+  "schema_version": 1,
+  "status": "untokenized_source_frozen_before_behavior",
+  "study_id": "V2-E2-MVP"
+}

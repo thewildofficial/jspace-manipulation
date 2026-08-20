@@ -1,0 +1,36 @@
+CONDITION e2t-ab408f7215989294
+PAIR v3-pair-06-action_change member=2 kind=action_change
+FRAMING strategic | MODE direct
+EXPECTED C | DECISIVE R3
+
+SURFACE
+FINAL: C
+
+TRAJECTORY
+t=0 token=<FINAL_PROMPT>
+L34: <|endoftext|> | \n\n | <|im_end|> |   \n\n | \n\n |  \n\n | <|file_sep|> | \n\n\n\n | \n\n\n\n | \n\n\n | 	\n\n | \n\n\n | \n\n\n\n\n |     \n\n |    \n\n |  \n\n |         \n\n | ...** | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|fim_middle|>
+L42: <|endoftext|> | <|im_end|> | \n\n | <|file_sep|> |   \n\n | \n\n |  \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n | \n\n\n\n | <|fim_middle|> |  ANSW |   \n\n | </think> | \n\n\n\n\n\n\n\n\n\n |  Decision | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|im_start|> |  Winner | \n\n\n
+L46: <|endoftext|> | <|im_end|> |   \n\n |  Calcul |  Calculation |  Winner |  Decision |   \n\n | 计算 |  CALC | calcul |  Calculate |  calculations |  calculation |  cálculo |  \n\n |  Billion | .calculate |  Arithmetic |  Determin
+L54: 计算 |  Calculate | <|im_end|> |  CALC |  Calculation |  calculate | calculate | 的计算 |  calculating |  Calcul |  calculation | calcul | Calcul |  calculations |  calculates | 計算 | Calculate | <think> | </think> |  Calculates
+L60:  FINAL | FINAL |  Final |  finalize | Final |  final | final | -final | finalize |  CALC | .final |  finalist | _final |  SIGNAL |  finale | _FINAL |  FIN |  finalized |  фина |  finalists
+
+t=1 token='FINAL'
+L34: \n\n | <|endoftext|> | <|im_end|> |   \n\n |  \n\n | \n\n\n\n\n | \n\n\n | \n\n\n\n | 	\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n |     \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |         \n\n | <|fim_middle|> | \n\n\n\n\n\n\n\n\n\n |    \n\n | \n\n\n\n\n\n | \n\n    \n |        \n\n
+L42: <|endoftext|> | \n\n | <|im_end|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | 选择不 | <|fim_middle|> |  \n\n |   \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|file_sep|> |  @[ | \n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n |  Choice | \n\n\n\n\n\n\n\n\n\n\n\n\n\n | 选择 | \n\n\n\n\n | \n\n\n\n |  LETTER |  FAILURE
+L46: <|endoftext|> |   \n\n |  Choice | 选择不 |  \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |    \n\n | <|im_end|> |     \n\n | _choice |  \n\n\n\n |   \n\n\n |   \n\n |  Decision |      \n\n | <|fim_middle|> |  Winner | 	\n\n |  Candidate |  \n\n\n
+L54: :C | :F | : | :X | :B | :class | :j | :A | ： | :c | :f | :start | :center | :null | :D | =F | <|endoftext|> | :y | :? | :NO
+L60: : | :C |  C | :A |  A |  : | :B |  B | C | :c | =C | 	C | 'C | :F | .C | -C | A | ： | =A | (C
+
+t=2 token=':'
+L34: \n\n |  \n\n | <|endoftext|> |   \n\n |  ... | <|im_end|> |    \n\n | \n\n\n |     \n\n |  . |  \n\n\n | \n\n |  .... | \n\n\n\n |         \n\n |  # | 	\n\n |  ? |      \n\n |       \n\n
+L42: <|endoftext|> |  ... | \n\n |  \n\n |  Choice |  choice |  [...] |  Best |  cheaper |  Cost | 选择 | <|im_end|> |  best |  BEST |  optimal |  cost |  […] |   \n\n |  ...\ |  …
+L46:  \n\n |   \n\n | \n\n |  Choice |  Either |  choice |  Cost |  maximize |  None |  cheapest |  either | Either |  whichever | Choice | either | 选择 | Cost |  \n\n\n | optimized |  cost
+L54: <|endoftext|> |  Either |  NONE | <|im_end|> | <|im_start|> | either | Either | 要么 |  None | noop |  EITHER |  Choice | -none |  либо |  없음 | 或 |  either | ITHER |  AC | NONE
+L60:  C |  A |  AC |  CA |  B | 	C |  AA | 'C | _C | C | >C |  BC |  CC |  Cs |  c | (C | ,C |  CS |  А |  CAB
+
+t=3 token=' C'
+L34: <|endoftext|> | \n\n |  \n\n |  ... | <|im_end|> | ... |   \n\n | \n\n\n | \n\n\n\n |  ..." | \n\n |  .... |  ...... |  [...] |     \n\n | \n\n\n\n\n | ...... | .... | <|fim_middle|> |  …
+L42: <|endoftext|> | \n\n | <|im_end|> | \n\n\n |  \n\n | \n\n\n\n |  ... | <|fim_middle|> | \n\n\n\n\n |   \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|file_sep|> | </think> | <|im_start|> | \n\n |     \n\n | \n\n\n\n\n\n | \n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |  .
+L46: <|endoftext|> | \n\n | <|im_end|> |  \n\n |   \n\n | \n\n\n\n |     \n\n | </think> |    \n\n | 	\n\n | <|file_sep|> | <|im_start|> |         \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|fim_middle|> | \n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |   \n\n\n | 。 |  \n\n\n
+L54: <|endoftext|> | <|im_end|> | \n\n | <|im_start|> | </think> | <think> | <|file_sep|> | \n\n\n | \n\n\n\n | <|fim_middle|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | 计算 |  \n\n | \n\n\n\n\n | <tool_call> | ** | 。 | ]() | </tool_response> | )
+L60: <|im_end|> | <|endoftext|> | </think> | <|im_start|> | </ |  /> | \n\n |  </ |  ``` | "/> | </tool_call> | ``` | <tool_call> | ** | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|fim_middle|> | .kwargs | <|file_sep|> |  kwargs |  calculation

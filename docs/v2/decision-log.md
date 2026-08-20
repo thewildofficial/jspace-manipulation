@@ -359,3 +359,179 @@
 - **Files:** `src/jspace_policy/stage1_analysis.py`, regression test, regenerated
   summaries/report/figure.
 - **Commit:** recorded in the final Stage 1 results commit.
+
+## 2026-08-17 — V2-D022 — Open V2-E1 Strategic Workspace Atlas
+
+- **Change:** open a separate observational exploratory study across six
+  incomplete-information and information-control game families. Freeze the
+  model/lens identifiers, deterministic solvers, dataset seed, rendering-level
+  splits, behavioral gates, full-layer top-k readout, residual/J-space/output
+  probe variables, deep-atlas rule, overwrite refusal, and cost ceiling before
+  tokenization or model execution.
+- **Reason:** Stage 1 found strong residual state decodability without positive
+  state visibility under its four-candidate J-space endpoint. The new question
+  is which independently calculated strategic variables become vocabulary-
+  visible, rather than whether one privileged state token remains active.
+- **Already observed:** all prior repository results; deterministic local game
+  outputs and solver-validation tests only. No V2-E1 tokenizer result, model
+  behavior, activation, J-lens token, residual-probe metric, or locked-
+  replication output has been observed.
+- **Confirmatory status:** discovery and validation are explicitly exploratory.
+  The locked rendering split is reserved for hypotheses frozen only after open-
+  atlas inspection. V2-E1 does not reopen H0/H0R or license causal claims.
+- **Files:** `docs/v2/strategic-workspace-atlas-spec.md`,
+  `configs/v2/workspace_atlas/experiment.json`,
+  `src/jspace_policy/workspace_atlas.py`, `modal_workspace_atlas.py`,
+  `scripts/analyze_workspace_atlas.py`, and `tests/test_workspace_atlas.py`.
+- **Commit:** the V2-E1 protocol commit immediately before dataset tokenization.
+
+## 2026-08-17 — V2-D023 — Freeze the V2-E1 tokenized corpus
+
+- **Change:** freeze 216 chat-rendered rows across six games and three splits,
+  with 108 paired bootstrap groups and one-token legal action IDs 32/33/34.
+- **Reason:** all deterministic solver tests passed, the remote pinned tokenizer
+  represented `A`, `B`, and `C` as distinct one-token continuations, and the
+  rendered sequence lengths (74--147 tokens) fit the frozen execution design.
+- **Already observed:** tokenizer output, content hash, row/group counts, token
+  IDs, and sequence lengths only. No model forward pass, action probability,
+  activation, J-lens readout, or probe result has been observed.
+- **Confirmatory status:** discovery/validation remain exploratory; locked
+  replication remains unopened. The corpus content hash is
+  `6df46e0480d191b0f948e506710ccad7f347dba88a1e31a944eca7028635ba84`.
+- **Files:** `configs/v2/workspace_atlas/dataset.json`.
+- **Commit:** the dataset-freeze commit immediately before open behavior.
+
+## 2026-08-17 — V2-D024 — Reject V2-E1 corpus v1 at the behavior gate
+
+- **Change:** preserve the first open behavior corpus as invalid and freeze one
+  behavior-only redesign before any mechanistic output. Remove tied optima,
+  widen the small Kuhn expected-value margins, explicitly tell the model to use
+  the supplied opponent policy, and show computed payoff rows in the inspection
+  and disclosure calibration prompts.
+- **Reason:** formatting was 100% and pooled exact-game accuracy was exactly
+  70%, but Kuhn accuracy was 41.7%, below the unchanged 50% per-family gate.
+  Errors were concentrated in check decisions with small value margins; the
+  model selected `BET` on all 24 Kuhn rows. Inspection also showed a large
+  rendering effect, and full-disclosure rows were systematically missed. The
+  redesign makes the intended expected-utility task unambiguous rather than
+  lowering a threshold or selecting a mechanistic result.
+- **Already observed:** open behavior only: family accuracies, legal-action
+  distributions, output probabilities, and solver regret. No activation,
+  J-lens readout, logit-lens trajectory, residual probe, or locked behavior has
+  been observed.
+- **Confirmatory status:** V2-E1 remains exploratory and the behavioral
+  thresholds are unchanged. Corpus v1 and its failed behavior report remain
+  preserved. The locked split remains behaviorally and mechanistically
+  unopened.
+- **Files:** `configs/v2/workspace_atlas/dataset_v1_failed_gate.json`,
+  `results/v2_workspace_atlas/raw/behavior_open_v1_failed_gate.json`, updated
+  generator/tests/config, and the retained v1 summaries/figure/report.
+- **Commit:** the redesign commit immediately before v2 tokenization.
+
+## 2026-08-17 — V2-D025 — Freeze V2-E1 corpus v2
+
+- **Change:** freeze the behaviorally redesigned 216-row corpus with the same
+  games, split sizes, paired groups, and legal action IDs as v1.
+- **Reason:** all solver tests pass after the redesign; every row now has a
+  unique payoff-maximizing action, action diversity remains present in every
+  game, legal tokens remain IDs 32/33/34, and rendered lengths are 74--166
+  tokens.
+- **Already observed:** v1 behavior and v2 tokenizer/solver metadata only. No v2
+  behavior, activation, J-lens, logit-lens, residual-probe, or locked output has
+  been observed.
+- **Confirmatory status:** thresholds and mechanistic protocol remain unchanged.
+  The v2 corpus hash is
+  `e37873b3a44e29aeb96798aca6a38bcd04b1b99656bd66214b787df33874df24`.
+- **Files:** `configs/v2/workspace_atlas/dataset.json`.
+- **Commit:** the v2 dataset-freeze commit immediately before its open behavior.
+
+## 2026-08-17 — V2-D026 — Pass the V2-E1 open behavioral gate
+
+- **Change:** declare corpus v2 behaviorally eligible for open-atlas
+  mechanistic execution under the frozen all-layer protocol.
+- **Reason:** all 144 outputs were formatting-compliant; pooled exact-game
+  optimal accuracy was 78.3% versus the 70% floor; and the weakest exact game
+  reached 62.5% versus the 50% family floor. Pooled family accuracies were
+  inspection 91.7%, Kuhn 62.5%, cheap talk 62.5%, signaling 83.3%, disclosure
+  91.7%, and controlled Chameleon 62.5% (descriptive, not gated).
+- **Already observed:** open behavior and solver regret only. Validation cheap-
+  talk behavior was weaker than discovery behavior and will be retained rather
+  than excluded. No activation, J-lens, logit-lens trajectory, residual-probe,
+  or locked output has been observed.
+- **Confirmatory status:** the open mechanistic atlas is exploratory. Dataset,
+  game solvers, thresholds, layers, positions, top-k rules, variables, and
+  probe training/evaluation splits are now frozen for this run.
+- **Files:** `results/v2_workspace_atlas/raw/behavior_open.json`, behavior
+  summaries/figure/report, and the cumulative cost ledger.
+- **Commit:** the behavior-gate commit immediately before open mechanistic
+  execution.
+
+## 2026-08-17 — V2-D027 — Freeze V2-E1 locked replication endpoints
+
+- **Change:** after inspecting the open atlas, freeze four separate locked
+  endpoints: layer-43 generic optimization-token visibility in Kuhn/signaling;
+  a five-game residual-over-J-space/output strategy-decoding contrast; same-
+  action Kuhn bluff/thin/value decoding; and late Kuhn/signaling action
+  commitment. Add locked-only decoder training/evaluation support without
+  changing the underlying readout.
+- **Reason:** the open atlas showed `optimal`/`optimize` variants in every Kuhn
+  and signaling row at layer 43, while their median action commitment occurred
+  at layers 62 and 60.5. Strategy class was strongly validation-decodable from
+  residual activations in the five exact games, but top-50 J-space rank features
+  and output logits were generally much weaker. The Chameleon `safe`/`risk`
+  pattern was not advanced because it failed open-template transfer.
+- **Already observed:** all open behavior, 144 all-layer final-position
+  readouts, 12 deterministic deep traces, and 4,572 open decoder evaluations.
+  No locked behavior, activation, J-lens token, probe metric, or endpoint has
+  been observed.
+- **Confirmatory status:** every selection above is exploratory on the open
+  atlas and prospective only on the locked rendering. Exact layers, token
+  family, classifiers, thresholds, censoring, endpoint rules, and claim limits
+  are frozen in the machine and prose replication documents. The locked
+  behavior gate remains unchanged and is run before any locked activation.
+- **Files:** `configs/v2/workspace_atlas/replication_freeze.json`,
+  `docs/v2/strategic-workspace-atlas-freeze.md`, open raw/summaries/atlas/
+  figures/report, and locked evaluation support in the runner/analysis script.
+- **Commit:** the replication-freeze commit immediately before locked behavior.
+
+## 2026-08-17 — V2-D028 — Pass the V2-E1 locked behavioral gate
+
+- **Change:** declare the 72-row locked rendering behaviorally valid and open
+  the once-run locked mechanistic replication.
+- **Reason:** formatting was 100%, pooled exact-game accuracy was 85.0% versus
+  the 70% floor, and the weakest exact game was Kuhn at 66.7% versus the 50%
+  family floor. Other exact-game accuracies were cheap talk 83.3%, signaling
+  75.0%, inspection 100%, and disclosure 100%. Chameleon reached 25% but is
+  explicitly outside the exact-game gate and frozen quantitative endpoints.
+- **Already observed:** all open atlas evidence and locked behavior only. No
+  locked activation, J-lens readout, probe metric, commitment trajectory, or
+  endpoint result has been observed.
+- **Confirmatory status:** H1--H4 are now behaviorally valid for their named
+  exact games and will be opened once under the committed freeze. Chameleon is
+  retained as a descriptive negative transfer result.
+- **Files:** `results/v2_workspace_atlas/raw/behavior_locked.json`, locked
+  behavior summaries/figure/report, and cumulative cost ledger.
+- **Commit:** the locked behavior-gate commit immediately before locked
+  mechanistic execution.
+
+## 2026-08-17 — V2-D029 — Close V2-E1 after mixed locked replication
+
+- **Change:** mark V2-E1 complete, accept H1 and H4 in both named games, reject
+  H2 and H3, and preserve the causal claim boundary.
+- **Reason:** the frozen optimization-token family appeared at layer 43 in 100%
+  of locked Kuhn and signaling rows, with median best ranks 27.5 and 11 and
+  zero prompt echoes; it preceded commitment in every row. Censored median
+  commitment layers were 63 and 60, passing H4. H2 failed: mean residual
+  strategy balanced accuracy was 0.719, but mean advantage was 0.090 versus
+  0.15 and residual won 3/5 games versus 4 required. H3 failed with locked
+  same-action Kuhn balanced accuracies 0.333 residual, 0.333 J-space, and 0.417
+  output.
+- **Already observed:** the complete locked behavior and mechanistic return,
+  all frozen endpoint values, and deterministic summaries/figures.
+- **Confirmatory status:** H1/H4 are prospective cross-rendering positives;
+  H2/H3 are prospective negatives. The result supports early generic decision-
+  optimization visibility, not specific strategic-intent visibility, causal
+  use, or a robust monitor.
+- **Files:** `results/v2_workspace_atlas/`,
+  `docs/v2/strategic-workspace-atlas-final-report.md`, and root `README.md`.
+- **Commit:** the terminal V2-E1 result commit.

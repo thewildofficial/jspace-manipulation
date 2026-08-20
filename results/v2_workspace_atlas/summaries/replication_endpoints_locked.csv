@@ -1,0 +1,12 @@
+endpoint,unit,primary_value,secondary_value,tertiary_value,pass,detail
+H1_generic_optimization_workspace,kuhn,1.0,27.5,1.0,True,presence; median best rank; fraction before commitment
+H1_generic_optimization_workspace,signaling,1.0,11.0,1.0,True,presence; median best rank; fraction before commitment
+H2_strategy_routing_game,inspection,1.0,0.5,1.0,False,residual; J-space; output balanced accuracy
+H2_strategy_routing_game,kuhn,0.375,0.25,0.3125,True,residual; J-space; output balanced accuracy
+H2_strategy_routing_game,cheap_talk,0.8333333333333333,0.5,0.5,True,residual; J-space; output balanced accuracy
+H2_strategy_routing_game,signaling,0.38888888888888884,0.3333333333333333,0.3333333333333333,True,residual; J-space; output balanced accuracy
+H2_strategy_routing_game,disclosure,1.0,0.5,1.0,False,residual; J-space; output balanced accuracy
+H2_strategy_routing,five_game_mean,0.7194444444444443,0.09027777777777776,3.0,False,mean residual BA; mean advantage; games won
+H3_same_action_kuhn_strategy,kuhn_A,0.3333333333333333,0.3333333333333333,0.4166666666666667,False,residual; J-space; output BA; advantage=-0.083
+H4_late_action_commitment,kuhn,63.0,0.5833333333333334,12.0,True,censored median layer; uncommitted fraction; rows
+H4_late_action_commitment,signaling,60.0,0.08333333333333333,12.0,True,censored median layer; uncommitted fraction; rows

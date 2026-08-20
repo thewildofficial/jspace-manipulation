@@ -8,10 +8,12 @@ This repository tests that narrow mechanistic question in
 instructed concealment with real-world deception, model intent, or
 consciousness.
 
-> **Current status: Stage 1 is complete and the causal branch remains blocked.**
-> The locked Stage 1 behavioral tasks passed, and independent residual probes
-> recovered state on unseen families, but the preregistered vocabulary-grounded
-> J-space retention endpoint failed in both substages. Stage 2 is not licensed.
+> **Current status: V2-E1 is complete; the causal branch remains blocked.**
+> Stage 1's J-space retention endpoint failed. The separate observational
+> Strategic Workspace Atlas then found a prospectively replicated generic
+> optimization readout before late action commitment, but did not replicate
+> specific strategy decoding or same-action bluff/value distinctions. Stage 2
+> is still not licensed.
 
 ## What happened
 
@@ -55,6 +57,11 @@ V2 then required a causal instrumentation gate before any strategic task:
    However, transformed-report J-space K was -0.108 (95% CI -0.142 to -0.073)
    in Stage 1A and -0.017 (95% CI -0.043 to 0.008) in Stage 1B. Neither met the
    frozen positive-retention criterion.
+6. **V2-E1 found a generic decision abstraction, not strategic intent.** Across
+   locked Kuhn and signaling renderings, `optimal`/`optimize` J-lens tokens
+   appeared in every row at layer 43 and preceded late action commitment. The
+   five-game residual-over-J-space/output strategy contrast failed, and
+   same-action Kuhn bluff/thin/value decoding was at chance.
 
 The strong directional effect is a useful mechanistic diagnostic, but it does
 not satisfy the locked criterion for reliable counterfactual control. H0R-D
@@ -77,6 +84,7 @@ on the strategic task.
 | Replacement H0R-C | Failed 20% target-top-1 criterion | [`results/v2_h0r_argument_validation_v2/`](results/v2_h0r_argument_validation_v2/README.md) |
 | H0R-D / strategic V2 | Not run | [`docs/v2/h0r-final-report.md`](docs/v2/h0r-final-report.md) |
 | Stage 1 state-report dissociation | J-space criterion failed; residual probes positive | [`docs/v2/stage1-final-report.md`](docs/v2/stage1-final-report.md) |
+| V2-E1 Strategic Workspace Atlas | Generic optimization signal replicated; specific strategy endpoints failed | [`docs/v2/strategic-workspace-atlas-final-report.md`](docs/v2/strategic-workspace-atlas-final-report.md) |
 
 The append-only methodological record is in
 [`docs/v2/decision-log.md`](docs/v2/decision-log.md). The original H0 and H0R
@@ -92,7 +100,7 @@ The project required both unseen argument substitution (H0R-C) and a computed
 intermediate (H0R-D) to pass prospectively before testing latent truth and
 strategic reporting. That conjunction was not met.
 
-The repository therefore supports four narrow conclusions:
+The repository therefore supports six narrow conclusions:
 
 - the pinned J-lens transport and coordinate-write implementation are
   numerically sound;
@@ -103,6 +111,11 @@ The repository therefore supports four narrow conclusions:
 - task-state information is prospectively decodable from the residual stream
   on Stage 1's controlled held-out families, but the pinned J-space readout did
   not retain positive true-state evidence under transformed reporting.
+- in V2-E1, a prompt-absent generic optimization token family became J-space
+  visible before stable output-action preparation in locked Kuhn and signaling
+  renderings;
+- V2-E1 did not show reliable, rendering-general decoding of the specific
+  strategy behind a shared action.
 
 ## Repository map
 
@@ -115,15 +128,18 @@ src/jspace_policy/
   h0r_diagnostics.py       coordinate, conditioning, and reconstruction checks
   stage1.py                frozen four-state Stage 1 corpus
   stage1_analysis.py       bootstrap and probe metrics
+  workspace_atlas.py       exact game solvers and atlas corpus
 scripts/
   analyze_results.py       V1 summaries and figures
   analyze_v2_h0.py         original H0 summaries and figures
   analyze_h0r.py           H0R-B selection tables and nine diagnostic figures
   analyze_stage1.py        Stage 1 tables, figure, and generated report
+  analyze_workspace_atlas.py V2-E1 atlas and locked endpoints
 modal_app.py               V1 benchmark/readout entry points
 modal_v2.py                original bounded H0 GPU runner
 modal_h0r.py               H0R freeze, diagnostic, and prospective runners
 modal_stage1.py            separated Stage 1 behavior/readout entry points
+modal_workspace_atlas.py   V2-E1 behavior and all-layer readout runner
 configs/v2/                preregistered gates and immutable H0R controls
 docs/v2/                   V2/H0/H0R plans, decisions, and reports
 results/                   committed raw evidence, summaries, and figures
@@ -144,6 +160,8 @@ Regenerate committed analyses from their immutable raw rows:
 uv run python scripts/analyze_v2_h0.py
 uv run python scripts/analyze_h0r.py
 uv run python scripts/analyze_stage1.py --phase locked
+uv run python scripts/analyze_workspace_atlas.py --phase open
+uv run python scripts/analyze_workspace_atlas.py --phase locked
 ```
 
 The H0R analysis emits the full layer curve, top-1 curve, position and strength

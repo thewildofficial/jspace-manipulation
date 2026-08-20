@@ -1,0 +1,192 @@
+{
+  "analysis_class": "exploratory_open_inspection_no_formal_onset_statistic",
+  "dataset_sha256": "1a4a81f14454d8dd1d2e6bca83eba62dbf20ab723cf8d1397c4924df2ee0c187",
+  "expected_label_top20_visibility": {
+    "direct": {
+      "final_prompt": {
+        "any_selected_layer": 0,
+        "layer_60": 0,
+        "n": 24
+      },
+      "pre_final": {
+        "any_selected_layer": 24,
+        "layer_60": 24,
+        "n": 24
+      }
+    },
+    "short_cot": {
+      "final_prompt": {
+        "any_selected_layer": 0,
+        "layer_60": 0,
+        "n": 24
+      },
+      "pre_final": {
+        "any_selected_layer": 24,
+        "layer_60": 24,
+        "n": 24
+      }
+    }
+  },
+  "final_classification": "generic_task_semantics_and_action_preparation_without_decisive-pathway readout",
+  "integrity": {
+    "failures": [],
+    "pass": true
+  },
+  "interpretation_boundary": "This classifies only the stored top-k J-lens readouts; it does not establish absence from the residual stream or causal non-use.",
+  "legal_action_readout": {
+    "direct": {
+      "final_prompt": {
+        "legal_argmax_correct": 23,
+        "mean_expected_legal_probability": 0.8936502585670502,
+        "minimum_expected_legal_probability": 0.22087253554997577,
+        "n": 24
+      },
+      "pre_final": {
+        "legal_argmax_correct": 24,
+        "mean_expected_legal_probability": 0.9478916518356706,
+        "minimum_expected_legal_probability": 0.5903092839893905,
+        "n": 24
+      }
+    },
+    "short_cot": {
+      "final_prompt": {
+        "legal_argmax_correct": 22,
+        "mean_expected_legal_probability": 0.7931932086676925,
+        "minimum_expected_legal_probability": 0.17782545650378023,
+        "n": 24
+      },
+      "pre_final": {
+        "legal_argmax_correct": 24,
+        "mean_expected_legal_probability": 0.9999982714754118,
+        "minimum_expected_legal_probability": 0.9999856950894335,
+        "n": 24
+      }
+    }
+  },
+  "mechanistic_run_id": "3007f6b56637442d953b4a6f6804c10e",
+  "same_action_certification": {
+    "all_pairs_valid": true,
+    "certified_pairs": 4,
+    "details": [
+      {
+        "checks": {
+          "costs_same": true,
+          "decisive_fraction_at_least_half_both": true,
+          "decisive_response_different": true,
+          "expected_label_same": true,
+          "margin_at_least_three_both": true,
+          "payoffs_same": true,
+          "probability_matrix_different": true,
+          "runner_up_label_same": true,
+          "runner_up_signal_same": true,
+          "signal_to_label_same": true,
+          "winner_signal_same": true
+        },
+        "decisive_responses": [
+          "R1",
+          "R2"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-01-receiver_causal",
+        "pair_kind": "receiver_causal",
+        "valid": true
+      },
+      {
+        "checks": {
+          "costs_same": true,
+          "decisive_fraction_at_least_half_both": true,
+          "decisive_response_different": true,
+          "expected_label_same": true,
+          "margin_at_least_three_both": true,
+          "payoffs_same": true,
+          "probability_matrix_different": true,
+          "runner_up_label_same": true,
+          "runner_up_signal_same": true,
+          "signal_to_label_same": true,
+          "winner_signal_same": true
+        },
+        "decisive_responses": [
+          "R2",
+          "R1"
+        ],
+        "expected_label": "C",
+        "pair_id": "v3-pair-02-receiver_causal",
+        "pair_kind": "receiver_causal",
+        "valid": true
+      },
+      {
+        "checks": {
+          "costs_same": true,
+          "decisive_fraction_at_least_half_both": true,
+          "decisive_response_different": true,
+          "expected_label_same": true,
+          "margin_at_least_three_both": true,
+          "payoffs_different": true,
+          "probability_matrix_same": true,
+          "runner_up_label_same": true,
+          "runner_up_signal_same": true,
+          "signal_to_label_same": true,
+          "winner_signal_same": true
+        },
+        "decisive_responses": [
+          "R2",
+          "R1"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-03-payoff_causal",
+        "pair_kind": "payoff_causal",
+        "valid": true
+      },
+      {
+        "checks": {
+          "costs_same": true,
+          "decisive_fraction_at_least_half_both": true,
+          "decisive_response_different": true,
+          "expected_label_same": true,
+          "margin_at_least_three_both": true,
+          "payoffs_different": true,
+          "probability_matrix_same": true,
+          "runner_up_label_same": true,
+          "runner_up_signal_same": true,
+          "signal_to_label_same": true,
+          "winner_signal_same": true
+        },
+        "decisive_responses": [
+          "R2",
+          "R3"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-04-payoff_causal",
+        "pair_kind": "payoff_causal",
+        "valid": true
+      }
+    ],
+    "expected_pairs": 4
+  },
+  "schema_version": 1,
+  "selected_top20": {
+    "agent_noun_occurrences": {
+      "non_strategic": {
+        "responder": 1
+      },
+      "strategic": {}
+    },
+    "direct_relational_occurrences": {},
+    "pre_surface_occurrence_limitation": "Exact lexical comparison only; no minimum lead time is required and the statistic does not establish anticipation of reasoning.",
+    "rows_with_exact_concept_before_first_surface_occurrence": {
+      "expected": 24,
+      "likely": 24,
+      "payoff": 24,
+      "probabilities": 24,
+      "probability": 24,
+      "responder": 1,
+      "response": 16,
+      "responses": 9,
+      "value": 24
+    },
+    "single_token_exact_response_identifier_diagnostic_only": true,
+    "single_token_exact_response_identifier_limitation": "R1/R2/R3 may be split across tokenizer tokens; this count cannot support representational absence.",
+    "single_token_exact_response_identifier_occurrences": 0
+  },
+  "study_id": "V2-E2-MVP"
+}

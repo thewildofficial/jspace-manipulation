@@ -1,0 +1,346 @@
+CONDITION e2t-2dd5e9a4e771f493
+PAIR v3-pair-05-action_change member=1 kind=action_change
+FRAMING strategic | MODE short_cot
+EXPECTED A | DECISIVE R3
+
+SURFACE
+Signal A yields the highest expected payoff (6.25) due to the high probability of R3 (+8). Signals B and C result in negative expected payoffs. Therefore, A is the optimal choice.
+
+FINAL: A
+
+TRAJECTORY
+t=0 token=<FINAL_PROMPT>
+L34: <|endoftext|> |   \n\n | \n\n | <|im_end|> | \n\n |  \n\n | <|file_sep|> | ...** |  .** |   \n\n |  \n\n | …** | \n\n\n\n | \n\n\n |  ** | 。** | </think> | ？** |  **“ |    \n\n
+L42: <|endoftext|> |  flawed |  logic |  targeting |  swiftly |  reasoning |  inefficient |  because | 只因 |  Logic |  efficiently |  flawless |  punishing |  selfish |  paralyzed | <|file_sep|> |  .** |  Pun |  harsh |  efficient
+L46:   \n\n |  \n\n | 因爲 |  priorit | <|im_end|> |  favor | 因为 |  targeting |  Favor |  optimal |  because |  strategically |  favored |  risks |  Because |  optimized |  favorable |   \n\n |  maximizing |  risk
+L54:  Choose |  Choosing |  choose | 选择 |  choosing | choose | 应选择 |  chooses | Choose | 选择了 | Choosing |  selecting | 会选择 |  Choice | 选 | 中选择 | 要选择 | _choose | 选择的 | 選擇
+L60:  Signal |  signal | Signal | _signal | signal | 信号 |  SIGNAL | .signal |  Signals | .Signal | (signal | ignal |  signals | 的信号 |  signaling |  choosing | _SIGNAL |  choose | 	signal |  Choosing
+
+t=1 token='Signal'
+L34: <|endoftext|> |  targeting |  optimal |  choice | 的最佳 |  effectiveness |  balanced |  targeted |  strongest |  unmatched |  preference |  priorit |  ... |  balance |  weighted |  target | _strength | _candidate | 选择不 |  optim
+L42:  Choice |  optimal |  choice |  maximizing |  choices |  Reward |  optimized |  Option |  Strategy |  maximize |  rewards |  Candidate |  best |  optim | 的最佳 | 的选择 |  Choices |  maxim |  Advantage |  Optimization
+L46:  choice |  Choice |  optimal |  choices |  maximize |  maximizing |  Reward |  Option |  rewards |  Average |  reward |  options |  yields |  option | 最大化 |  maxim |  Advantage |  Highest |  benefits |  optimized
+L54:  yields |  yield | yield |  predicts |  Yield |  yielding |  yielded | 的预期 |  guarantees |  produces | 提供最 |  maxim | 预期 | 的收益 |  Guaranteed | 最大化 | 的概率 |  incentiv |  maximizing |  maximize
+L60:  yields |  yield |  Yield |  yielding | yield |  A |  yielded |  Y |  C |  maxim |  guarantees | 	yield | _yield |  offers | -y |  maximizing |  maximize |  А | 的收益 |  B
+
+t=2 token=' A'
+L34:  only |  ... | <|endoftext|> |  because |  lacks |  is |  , |  despite |  was |  lacked |  without |  disproportionately |  alone |  and |  instead |  favor |  avoids |  vs |  weaker |  lacking
+L42:  favor |  probability |  yields |  overwhelmingly |  favors |  maximizing |  favorable |  favored |  disproportionately |  dominant |  highest |  probabilities |  maxim |  yield | 的概率 |  risk |  strongest |  maximize |  probabil |  dominates
+L46:  highest |  overwhelmingly |  disproportionately |  dominant |  favor |  yields |  significantly |  favored |  predominantly |  strongest |  probability |  maxim |  maximizing |  because |  majority |  dominated |  favorable |  most |  promising |  dominates
+L54:  yields |  yield |  maxim | 的概率 |  maximize |  maximizing |  yielding |  yielded |  produces | 提供最 | 概率 |  favors | yield |  offers |  gives |  dominates | 最大化 |  probability | 大概率 |  highest
+L60:  yields |  yield |  maxim |  yielded |  yielding |  offers |  Yield | yield |  maximize |  maximizing |  favors |  gives |  expects | /y |  favor |  highest | 	yield | 最大化 | _yield |  dominates
+
+t=3 token=' yields'
+L34:  <$ |  favorable |  outweigh |  costly |  balanced |  profitable |  overwhelmingly |  swiftly |  lucrative |  optimal |  disproportionately |  yield |  profits |  fewer |  maxim |  profit |  balance |  richer |  markedly |  merely
+L42:  average |  averages |  avg |  averaged |  Average | 平均 | Average | 平均值 | 的平均 | average |  averaging |  calculated | avg |  probabilities |  weighted |  probability | -average |  expected |  calculation |  Expected
+L46:  average |  calculated |  avg |  calculation |  averaged |  highest |  averages |  calculations |  weighted |  Average | 的平均 | avg | average |  expected |  calcul |  calculates |  averaging |  favorable | 平均 |  calculate
+L54:  highest | 最高的 | highest |  Highest | Highest | 最高 |  average | 的平均 |  avg | 平均 | 的最高 | avg | 最多的 | 最大的 | ighest | Avg |  largest | average |  Avg |  Average
+L60:  highest |  expected |  Expected |  EV |  high | 最高的 |  + | highest |  Highest |  (+ |  expectation | Expected | 期望 |  positive |  +( |  **+ | Highest |  expect |  Expect | expected
+
+t=4 token=' the'
+L34:  best |  strongest |  highest |  strategically |  favor |  strong |  valuable |  superior |  optimal |  high |  winning |  favorable |  stronger |  decisive |  fastest |  overwhelmingly |  lowest |  crucial |  profitable |  higher
+L42:  highest |  Highest | highest |  optimal |  lowest | Highest |  strongest |  probability |  favorable |  best |  largest |  greatest | 最高的 |  maximum |  profitable |  optimum |  maximizing |  safest |  average |  high
+L46:  highest | highest |  Highest |  greatest |  largest |  maximum | Highest |  optimal | 最高的 |  strongest |  best |  average |  lowest |  favorable |  most |  maximizing |  maxim |  biggest |  maximize | 最高
+L54:  highest | highest | 最高的 | Highest |  Highest | 最高 |  largest |  greatest |  lowest | ighest | 最多的 | 的最高 |  strongest | 最大的 |  tertinggi |  tallest |  biggest | lowest | 最 | 最有
+L60:  highest | highest | Highest |  Highest | 最高的 |  lowest | 最高 |  high |  expected | 的最高 |  higher |  best | ighest |  höchste |  greatest | lowest |  strongest |  tertinggi |  höchsten |  most
+
+t=5 token=' highest'
+L34:  highest | <|endoftext|> |  overall |  ranking |  potential | highest |  strongest |  lowest |  winning |  consistently |  favor | Highest |  value |  contender |  favored |  higher |  strategically |  significantly |  benefits |  compared
+L42:  average |  highest |  value |  probability |  Average |  averages | 平均值 |  overall |  probabilities |  avg |  profitability |  averaged |  expected | Average |  rewards |  Highest |  profit |  score |  expectations | -average
+L46:  average |  avg |  highest |  calculated |  averages |  Average | 平均值 |  probability |  expected | 的平均 | 平均 |  averaged |  value | average |  calculation | -average | Average |  optimal |  favorable |  expectation
+L54:  average |  probability | 平均 | 概率 |  expected |  avg |  Expected | 平均值 | Average | average | 预期 | 的平均 |  Average |  payoff | Expected |  probabilities | 期望 | _expected | 均值 | -average
+L60:  expected |  Expected | Expected |  expectation |  payoff | expected | _expected | .expected |  expectancy | 期望 | 预期 |  EV | (expected |  expect |  expectations |  Expect |  EXPECT |  payout | 	expected | Expect
+
+t=6 token=' expected'
+L34:  calculation |  calculated |  calculations |  expectation |  probability |  average |  value |  expectations |  payout |  calculating |  risk |  probabilities |  calculate |  gamble |  calculus |  calcul |  earnings | 的预期 |  odds |  expected
+L42:  calculation |  average |  calculated |  calculations |  probability |  value |  Expected |  probabilities |  probabil |  Average |  expectation |  expected |  avg |  averages | 平均值 |  calculating | 的预期 |  weighted |  calculate |  expectations
+L46:  calculation |  calculated |  calculations |  calcul |  calculating |  calculate |  value |  average |  calculates |  Calculation |  Calcul | 的计算 |  avg |  probability |  Calculate | 计算的 | 计算 |  calculus |  weighted | 計算
+L54:  payoff | 收益 |  payout |  (+ |  value | 值为 |  ($ |  winnings |  (\ |  profit |  (${ |  payouts | 值 | -value |  reward | 的收益 |  outcome |  earnings |  benefit |  (-
+L60:  payoff |  value |  payout |  (+ |  pay |  payload |  utility | pay |  Pay | _pay |  payday |  paying | -pay | /pay | 收益 |  reward | Pay |  pays |  profit |  Value
+
+t=7 token=' payoff'
+L34:  due |  .** |  against |  , |  despite |  for |  because |  under |  through |  by |  owing |  calculated |  alongside |  outweigh |  ,$ |  over |  ___ |  swiftly |  . |  winning
+L42:  due |  because |  calculated |  compared |  . |  highest |  owing |  surpass |  since |  calculation |  , |  exceeding |  for |  among |  best |  with |  against |  : |  outweigh |  value
+L46:  due |  because |  compared |  calculated |  owing |  ($ | due |  among |  calculation |  since |  highest |  (+ |  surpass |  favor |  comparing |  thanks |  calculating |  calculations | because |  (~
+L54:  ($ |  (+ |  ($( |  (\ |  (£ |  (${ |  ({ |  (- |  (. |  $( | ($ |  (~ | (+ |  because |  ($. |  (< | $( |  due |  (++ |  (%
+L60:  (+ |  ($ |  $( |  ( |  (. |  ($( |  (- |  because |  (\ |  (${ |  ({ | (+ |  due |  (~ |  (( |  (++ | : |  since |  (£ |  (...
+
+t=8 token=' ('
+L34:  calculated | due | calcul |  outweigh |  due | 六成 |  avg |  capped | favor |  .** |  odds | highest |  triple |  average | 七成 | balanced | lowest | six |  balanced | balance
+L42: weighted | average | 加权 | Average | 平均 |  weighted |  average |  avg |  calculated |  Average |  calculation | 平均值 | 计算 | -weight | Calcul | .average |  계산 | avg | 的平均 |  Calculation
+L46:  calculated |  calculation |  계산 | 计算 |  Calculation | 加权 | weighted |  calculates | calculate |  calculate |  weighted |  calcul |  calculations | calcul | 七成 | 計算 |  Calcul | 的计算 | (\$ |  calcular
+L54: :+ | (+ | ,+ | 平均 |  avg |  <+ | weighted |  Avg | average | ++) |  [+ | >+ |  (+ | avg | 加权 |  NOI |  +% | Avg |  Average | 约为
+L60:  + |  **+ |  (+ | ,+ | :+ | +) | +$ | +E | + | 6 |  '+ |  +' |  +( |  "+ |  += |  +/- | (+ |  $ | +: | ++)
+
+t=9 token='6'
+L34:  .** |  . | illion |  , |  minus | psilon | ish |  six | -six |  .' | _minus |  - |  ; | 富翁 |  -- | � | 六级 |  calculated | six |  ~
+L42:  average | average | 平均 | Average |  avg | -average | 的平均 | 平均值 | _average | 扣除 |  averaged | avg |  Average |  averages | .average |  minus | 净值 | .avg | 平均水平 |  -$
+L46:  + |  minus |  calculated |  plus | plus | _minus |  PLUS | 净值 |  net |  avg |  weighted | 安全评分 |  calcul | minus |  moo | 加权 |  average | Minus | -minus |  Plus
+L54: (net | -net | ষ্ঠ | 净 | /net |  net | ) | 金币 | weighted | net |  nets | .Promise | -score | +) | -pe | _net | -weight | Net | -os |  Nets
+L60: ) | . | +) | ). | .) | ), |  + |  dollars |  euros |  ) |  cents | ​​ |  points | 4 | + |  lbs |  pounds | , |  Watts |  watts
+
+t=10 token='.'
+L34: 7 | 3 | 8 | 5 | 6 | 9 | 4 | 2 | 1 | 0 | calculate |  ... | 计算 | Calculate |  ...) |  ...... | 值为 | Calcul |  … | ‑
+L42: 8 | weighted | 平均 | -weight | average | 6 | 加权 | Average | 计算 | 7 | Calcul | ； | Weight | 扣除 | 5 | 概率 | 净 | 9 | 平均值 | avg
+L46: 8 | 6 | 7 | 9 | 4 | 5 | 2 | 3 | plus | 0 | minus | Minus | 十 | 1 | 混合 |  + | Calculate | Score | calculate |  moo
+L54: weighted | oran | indo | -Ta | indow | .discount | ষ্ঠ | Own | 差 | (net | -popup | bran | -fill | Weight |  INDUS | 提 | 在线阅读 | 民主党 | Discount | exo
+L60: 5 | 4 | 3 | 8 | 2 | 7 | 6 | 1 | 9 | 0 |  + |  minus | minus |  (+ | +. |  max |  miser |  fours |  prob |  mons
+
+t=11 token='2'
+L34:  . |  compared |  , |  due |  ." |  vs |  calculated |  surpass |  while |  by |  over |  against |  because |  ; |  favor |  .* |  rival | ly |  via |  after
+L42:  compared |  surpass |  due |  comparing |  compare |  highest |  calculated |  compares |  Compared |  comparison |  , |  superior |  . |  comparisons |  Compare |  score |  ." |  مقارنة |  rival |  scores
+L46:  compared |  vs |  Compared |  compare |  comparing |  versus |  compares | 相比 |  highest |  surpass | 相比之下 |  Compare |  due |  مقارنة |  superior | compare | 优于 |  comparison |  while | 相较于
+L54:  versus |  compared |  because |  vs | ) | 相比 | 因为有 | 因为 |  due | vs | due | because | _vs |  karena | 因为他 |  Compared | 相较于 | 因为其 |  devido | 因为你
+L60: ) | 5 | 0 | ), |  versus | ). |  vs |  ) | ] | ） | 6 | 4 | vs |  ), |  compared | 7 | 8 |  cents |  due | 9
+
+t=12 token='5'
+L34:  , |  . |  due |  and |  by |  as |  because |  after |  while |  compared |  to |  in |  via |  with |  over |  alongside |  for |  on |  under |  through
+L42:  due |  compared |  . |  , |  because |  best |  by |  owing |  calculated |  surpass |  superior |  while |  with |  among |  highest |  rival |  against |  as |  via |  through
+L46:  compared |  due |  while |  compare |  vs |  comparing |  versus |  surpass |  highest |  , |  Compared |  among |  compares |  because |  owing |  superior |  . |  by |  comparable |  calculated
+L54:  compared |  because |  due | 因为 | due | 相比 | because | 因为其 | 因为有 |  owing |  Compared |  versus | 因其 |  karena |  Because |  favor | 因为他 | 因為 | 因为它 |  via
+L60: ) | ), |  compared |  versus | ). |  due |  by |  vs |  because |  ) |  since | ] |  favor | ） |  ), |  cents | due |  favors |  dominated |  favored
+
+t=13 token=')'
+L34:  due |  , |  because |  compared |  . |  among |  while |  as |  despite |  with |  only |  since |  for |  against |  by |  to |  and |  under |  over |  in
+L42:  compared |  due |  because |  comparing |  among |  since |  comparison |  surpass |  despite |  against |  . |  with |  by |  owing |  compare |  through |  superior |  comparisons |  calculated |  best
+L46:  compared |  due |  because |  comparing |  among |  surpass |  despite |  compare |  comparison |  owing |  since |  outweigh |  compares |  with |  Compared |  highest |  calculated |  comparisons |  comparable |  superior
+L54:  due |  because | due | because |  owing | 因其 | 因为其 | 因为 |  Due | 主要是因为 |  devido | 由于其 |  mostly | Due | _due |  debido | 由于 |  karena | 主要来自 | 因為
+L60:  due |  because |  compared |  since | due |  by |  favor |  owing |  dominated |  Due |  primarily | 由于其 | 由于 |  devido |  driven |  debido | Due |  versus |  mostly |  probability
+
+t=14 token=' due'
+L34: favor |  favor |  disproportionately |  dominance |  reliance |  outweigh |  favorable | <|endoftext|> |  favored |  lack | due |  priorit |  heavily |  lacking |  dominant | 缺乏 |  significantly |  largely |  predomin |  primarily
+L42:  dominance |  disproportionately |  favorable |  dominant |  favor |  weighting |  probability |  predominant |  disproportionate |  predomin |  dominating |  proportion |  outweigh |  high |  strong |  favored |  advantageous |  probabilities | favor |  weighted
+L46:  dominance |  disproportionately |  dominant |  predominant |  favorable |  predomin |  outweigh |  dominating | 占比 |  disproportionate |  predominantly |  strong |  overwhelmingly |  percentage |  percentages |  favor |  weighting |  majority |  proportion |  high
+L54: 概率 | 的概率 |  probability | Probability |  high | 大概率 |  Probability |  probabilities | 较高的 | probability | 极高的 |  высокой | high | 的高 | 高额 |  probabil | 极高 |  likelihood |  heavily |  높은
+L60:  high | 到高 | high |  High |  probability |  probable |  Prob | 概率 | 的高 | High |  frequent |  Probability |  prob |  to | -high |  probabil |  probabilities | 的概率 |  strong |  its
+
+t=15 token=' to'
+L34:  ... | <|endoftext|> |  disproportionately |  dominant |  heavily |  significantly |  strong |  overwhelmingly |  … |  ..." |  high |  favor |  dominance |  significant |  […] |  ...... |  dominating |  predominantly |  prominent |  favored
+L42:  probability |  probabilities | 概率 |  Probability | 的概率 | probability | Probability |  risk |  probabil |  dominant |  chance |  high |  dominance |  disproportionately |  odds |  overwhelmingly |  favorable |  favor |  likelihood |  percentage
+L46:  probability |  probabilities |  percentage | 概率 |  dominant |  majority |  chance |  high |  Probability |  disproportionately |  strong |  predominant | probability |  dominance | 的概率 |  predomin |  percentages |  favorable |  overwhelmingly |  likelihood
+L54: 概率 | 的概率 |  probability |  Probability |  high | 大概率 |  probabilities | Probability | probability |  likelihood |  probabil |  probabilità | 高风险 | 的高 | 高い | high | 高频 | 较高的 | prob |  Prob
+L60:  high |  probability |  Prob |  Probability |  its |  High |  frequent |  probabilities |  probable | 概率 |  prob |  probabil | 的概率 | prob | high |  strong | -high | 的高 | probability |  likelihood
+
+t=16 token=' the'
+L34:  favor |  strong |  favorable |  disproportionately |  heavily |  ... |  significantly |  high |  dominant |  increased |  risk | <|endoftext|> |  priorit |  favored |  lack |  stronger |  crucial |  significant |  powerful |  potential
+L42:  high |  rewards |  higher |  reward |  positive |  lucrative |  favorable |  costly |  highest |  risk |  value |  penalty |  disproportionately |  expensive |  extreme |  negative |  risky |  rewarding |  strong |  large
+L46:  lucrative |  favorable |  positive |  disproportionately |  high |  rewards |  strong |  large |  reward |  favourable |  higher |  highest |  outweigh |  advantageous |  dominant |  disproportionate |  rewarding |  penalty |  significantly |  powerful
+L54: 概率 |  high |  probability | 的概率 | 高额 |  likelihood |  probabilities | probability |  Probability | Probability | 大概率 | 高风险 | 极高 |  chance | 高い |  lucrative | 极高的 | high | 较高的 |  probabilità
+L60:  high |  probability |  probable |  probabil |  strong |  likelihood | 概率 |  probabilities |  dominant |  frequent | high |  Probability |  prob | probability | -high |  High |  dominance | 的概率 |  lucrative |  favorable
+
+t=17 token=' high'
+L34:  high |  High |  ‘ | /high |  dominance | High | ‑ | high | -high |  low |  ​ | -low |  quality |  emphasis |  Low |  risk |  concentration |  “ |  popularity | Low
+L42:  probability |  probabilities | 概率 |  Probability | probability | Probability | 的概率 |  likelihood |  risk |  probabil |  percentage | -risk |  chance |  risks |  odds |  percentages |  вероятность |  gamble |  Risk |  high
+L46:  probability |  probabilities | probability | 概率 |  Probability |  likelihood |  percentage | Probability |  chance | 的概率 |  risk |  percentages | -risk |  chances |  odds | percentage |  probabil |  risks |  вероятность | likelihood
+L54:  probability | 概率 | probability |  Probability | Probability |  probabilities |  likelihood | 的概率 |  chance |  probabilità | 几率 | _probability |  вероятность |  chances | likelihood | 機率 |  вероят | Chance |  Chance |  probabil
+L60:  probability | 概率 | probability |  Probability |  prob | Probability | prob |  probabilities |  Prob | _probability | Prob | .prob |  PROB | 的概率 | -pro |  probabilità | _prob |  probabil |  likelihood | (prob
+
+t=18 token=' probability'
+L34:  of | of |  favor |  chance |  favorable |  Chance |  thereof |  probability |  winning |  của | -of |  encountering |  risk | favor |  achieving | <|endoftext|> | _of |  Of | probability |  aiding
+L42:  probability |  Probability | 概率 |  probabilities | probability | Probability | 的概率 |  chance |  probabil |  Chance |  of |  likelihood |  risk |  chances |  вероятность |  favorable |  favor | Chance |  odds |  gamble
+L46:  probability |  chance |  Probability | probability | 概率 |  probabilities |  Chance | Probability |  likelihood |  of | 的概率 |  chances |  favorable | likelihood |  probabil |  шанс |  favor |  risk |  вероятность | Chance
+L54:  yielding |  selecting |  lucrative |  rewarding | 收益 |  triggering |  payout |  favorable |  obtaining |  of |  Outcome |  choosing |  outcome |  outcomes |  profitable |  payoff | Outcome |  costly |  maximizing |  achieving
+L60:  (+ |  of |  + | (+ |  selecting |  [+ | ,+ | /+ | + |  **+ |  "+ |  choosing |  '+ |  triggering | of | .+ |  rewarding | +r |  Of | _of
+
+t=19 token=' of'
+L34:  winning |  . |  being |  .** |  successful |  earning |  supporting |  losing |  achieving |  potential |  future |  # |  “ |  receiving |  ." |  。 |  hitting |  becoming |  favor |  opposing
+L42:  reward |  rewards |  rewarding |  winning |  payout |  rewarded |  payoff |  outcomes |  outcome |  Reward |  lucrative |  favorable |  achieving |  successful |  Rewards |  earning |  payouts |  success | 奖励 |  receiving
+L46:  winning |  rewarding |  reward |  rewards |  achieving |  favorable |  rewarded |  payout |  outcome |  lucrative |  outcomes |  yielding |  receiving |  earning |  Reward |  payoff |  favourable |  award |  payouts |  successful
+L54:  lucrative | 收益 |  profitable |  rewarding | 的收益 |  favorable |  beneficial |  selecting |  costly |  benefiting |  Outcome |  payout |  payoff |  receiving |  yielding |  outcome |  advantageous |  obtaining |  choosing |  outcomes
+L60:  selecting |  choosing |  rewarding |  R |  receiving |  triggering |  Reward |  reward |  + |  lucrative |  obtaining |  gaining |  achieving |  outcome |  winning |  (+ |  favorable |  Choosing |  selection |  Select
+
+t=20 token=' R'
+L34: <|endoftext|> | 1 |  . | 2 | 3 |   | 8 | 7 |  \n\n | 9 | 4 | & | 0 | un | 5 | 6 | @ | ‑ | a | #
+L42:  reward |  rewarded |  jackpot |  rewards |  payoff | 的收益 |  payout |  profitable |  . |  positive |  lucrative |  scoring |  outcomes | reward |  winnings | -positive |  gamble |  Reward |  rewarding |  payouts
+L46:  \n\n |  (+ |  (£ |   |  . |  (> |  which |  (# |  (- |   \n\n |  disproportionately |  rewarded |  (~ |  outweigh | which |  reward |  significantly |  positive |  favourable |  favorable
+L54:  (+ | (+ | +. |  (). |  (£ |  (- |  (. | 奖励 |  rewards |  ($ | 收益 |  yielding |  payout |  reward |  payouts |  rewarded | (). |  which |  payoff |  (^
+L60:  (+ | (+ |  + | +. |  [+ | ,+ | /+ |  **+ | + | 3 | 8 |  '+ | :+ |  "+ | .+ | +, | ('+ | +' | '+ |  +'
+
+t=21 token='3'
+L34:  . | <|endoftext|> |  , |  despite |  while |  ... |  and |  only |  ." |  but |  in |  which |  due |  among |  as |  under |  instead |  over |   |  that
+L42:  . |  ." |  , |  despite |  .** |  which |  。 |  outweigh |  reward |  rewards |  cost |  .* |  lucrative |  only |  favored |  significantly |  while |  ). |  valued |  instead
+L46:  . |  outweigh |  despite |  ." |  significantly |  which |  while |  , |  disproportionately |  favor |  compared |  ). |  valued |  costly |  (+ |  favored |  value |  combined |  favorable |  whose
+L54: . |  Other |  (). | 其他 | (). | .Other | 应选择 | 相比之下 |  (+ |  other | Other | .\ | +. |  Unlike |  unlike | 任何其他 |  compared |  outweigh | other | 比其他
+L60:  (+ |  choosing | . |  Signals |  signals |  Choosing |  choose |  selecting | (+ |  Choose |  chosen |  earning | Choosing | +. |  yielding |  gaining | signals |  avoiding |  signaling | Signals
+
+t=22 token=' (+'
+L34: /+ | s | +. |  + |  +% |  +# | @ |  ...) | +) | )... |  -. | (+ | >+ |  **+ | +$ |  [+] | ‑ |  += | 8 | 6
+L42: /+ |  + | (+ |  (+ | +. |  **+ | +) |  bonus | ,+ |  rewards | +$ |  |+ |  [+ | >+ |  bonuses |  '+ |  +% |  [+] |  "+ |  +=
+L46:  + | +) | ). | /+ | +. |  bonus |  += |  +% |  (+ |  [+ |  ¥ | (+ |  ). |  PLUS | ++. |  [+] | bonus |  ++) | 不胜收 | !).
+L54: /+ | +. | ,+ | ). | ++. | (+ |  **+ | +) | :+ | /- | )+ | ), | .+ | >+ | ","+ | )。 |  (+ |  {}). | .). |  [+
+L60: 8 |  payoff | ). | ), |  payout |  pay | 9 | 7 | ) | 6 |  Pay | . | pay |  ). | .). |  reward | 5 | Pay | 4 | 1
+
+t=23 token='8'
+L34:  . |  , |  while |  ." |  despite |  but |  instead | <|endoftext|> |  outweigh |  against |  to |  over |  due |  ! |  only |  after |  plus |  with |  ; |  for
+L42:  . |  ." | . |  outweigh | .\" | .\ |  , | ." |  risk |  despite |  ). |  。 |  instead |  losses |  cost |  combined | ). |  while |  compens |  other
+L46:  . |  compared |  outweigh | . |  despite |  while |  contrast |  surpass |  highest |  ). |  vs |  others |  versus | 相比之下 |  significantly | ). |  wins |  cost |  unlike |  risk
+L54: 选择 | 应选择 | . | ). |  choosing |  Choosing | 建议选择 | 相比之下 |  choose |  selecting | 选 |  Choose | 中选择 | 选择了 | 的选择 | 其他 | 选择的 | choose | 优于 |  chooses
+L60:  Signals |  signals | signals | Signals | ). |  SIGNAL |  choose | 信号的 |  signal |  choosing |  Choosing | 信号 |  Signal | _signals | ), | .signals |  Choose | 选择 |  ). | .
+
+t=24 token=').'
+L34: <|endoftext|> |  ... |  . |  subsequently |  despite |  therefore |  similarly |  priorit |  remaining |  also |  ultimately |  remains |  other |  subsequent |  due |  swiftly |  further |  because |  rivals |  consequently
+L42: <|endoftext|> |  other |  choice |  compared |  choices |  choosing |  alternatives |  others |  superior |  therefore |  rivals |  alternative |  surpass |  superiority |  optimal |  similarly |  rival |  despite |  comparisons |  Other
+L46:  compared |  other |  comparison |  others |  therefore | 相比之下 |  Other |  comparisons |  Compared |  choice |  choices | 比其他 |  outweigh |  Therefore |  superior |  compare |  surpass |  compares |  rivals |  comparing
+L54:  Therefore | 其他 | 因此 |  Other |  therefore | 应选择 | 选择 | 故选 | Therefore |  other | 相比之下 |  Choosing | 建议选择 | 其他的 |  سایر |  Others | others |  autres |  anderen | 的其他
+L60:  Signals |  signals | Signals | signals |  Signal |  SIGNAL | _signals | 信号的 | 信号 |  signal | .signals |  Choosing | 的信号 |  signaling |  сигна |  señales | signal | Signal | _SIGNAL | _signal
+
+t=25 token=' Signals'
+L34: <|endoftext|> |  weaker |  lacks | 缺乏 |  lacking | 较弱 | 仅剩 |  lacked | 其他 |  poorer |  ineffective |  лишь | fails | อื่นๆ | 无法满足 | 其余 | 等其他 | 仅为 | failed |  lack
+L42:  weaker |  poorer |  other |  worse | 其余 |  alternatives | 其他 |  negatively |  ineffective |  unfavor |  mediocre | 等其他 |  Other |  inferior |  similarly | อื่น | 的其他 |  autres | 较弱 |  opposing
+L46:  other |  weaker |  worse |  others |  alternatives |  Other |  poorer |  unfavor | 其余 |  similarly |  unfavorable | 其他 |  negatively |  autres |  negative | 等其他 | อื่น |  Worse |  Others |  risks
+L54: �� | .getB | 月和 | _BGR | yield |  BGB |  BCH | .beta | %B | 组和 |  Yield | /button | 乙 | 大学和 |  B |  unfavor | 'b |  yields |  yielding | /bg
+L60:  B |  BC |  Б |  Bs | 	B |  BMC | 'B | -B | .getB | .B |  BCH | _B |  BB | :B | ,B |  BGB |  BCE | Ｂ | [B |  yield
+
+t=26 token=' B'
+L34:  and |  ... | <|endoftext|> | and |  и |  ..." |  lacks |  ...) |   \n\n | ... |  và |  failed |  [...] | ...* |  or | และ | ...** |  fails | failed |  lacking
+L42:  and |  unfavorable |  negative |  negatively |  reversed |  worse |  worst |  opposing |  unfavor |  (- |  opposite |  predominantly |  favor |  harms |  opposes |  dominated |  negatives |  favors |  mostly |  average
+L46:  and |  negative |  (- |  negatively |  negatives |  negativ |  worse |  (~ |  unfavorable |  worst |  reversed |  unfavor |  neg | negative | 负面 | -negative |  Negative |  negativity |  net |  (+
+L54:  (- |  and |  и | (- | 和 |  và | และ |  και |  (~ |  (+ |  और | =(- |  [- | *(- |  এবং |  și | ((- |  ("- |  (-- |  {-
+L60:  (- |  and | (- |  [- |  {- | /- |  и |  ("- |  (+ |  (~ | ,- | =- |  **- | /C |  và | *(- | =(- | |- | {- | [-
+
+t=27 token=' and'
+L34:  lacking |  lacks |  weaker | <|endoftext|> |  failed |  lack |  ineffective |  insufficient |  lacked |  only | 缺乏 |  rivals |  fewer |  unsuccessful |  fails |  poorly |  inadequate |  inferior |  unfavor |  disproportionately
+L42:  weaker |  inferior |  poorer |  worse |  unfavorable |  unfavor |  negatively |  insufficient |  poorly |  negative |  less |  ineffective |  losses |  inefficient |  rivals |  failed |  alternatives |  fewer |  lesser |  poor
+L46:  weaker |  worse |  poorer |  respectively |  inferior |  less |  fewer |  unfavor |  unfavorable |  lesser |  significantly |  cheaper |  negatively |  negative |  comparatively |  similarly |  respective | 更低 |  lower | 分别为
+L54:  yields |  yield | yield |  yielded |  yielding |  Yield | 更低 | 不利 | _yield | 远低于 |  inferior |  unfavor | 	yield |  resulted | 得不偿 |  produces | 劣 |  unfavorable | 较低 | 收益
+L60:  result |  C |  Result |  resulted |  resulting | 结果 | 的结果 | ,result |  offer | -result |  yield | result | 结果的 | 结果是 | 結果 | 结果为 |  have | .result |  produce | /result
+
+t=28 token=' C'
+L34:  only |  due |  because |  despite |  were |  lacking |  failed |  neither |  respectively |  similarly |  disproportionately |  heavily |  merely |  primarily |  significantly |  lack |  lacks |  are |  instead |  lacked
+L42:  predominantly |  predomin |  primarily |  overwhelmingly |  disproportionately |  dominant |  dominated |  unfavorable |  opposing |  favor |  favored |  heavily |  only |  predominant |  significantly |  mostly |  negatively |  mainly |  favors |  dominating
+L46:  respectively |  predominantly |  respective |  unfavorable |  mostly |  disproportionately |  unfavor |  predomin |  primarily |  significantly |  largely |  dominant |  dominated |  mainly |  overwhelmingly |  undesirable |  only |  heavily |  favored |  favor
+L54:  yields |  yield |  yielded |  favors | yield |  yielding |  unfavor |  unfavorable |  favor |  inferior | 更低 |  poorer |  favored |  resulted |  dominated | 较低 | 不利 |  averages | 较低的 | favor
+L60:  favor |  result |  resulted |  prioritize |  offer |  have |  favored |  favors |  unfavor |  maximize | result | favor |  resulting |  yield |  Result |  heavily |  penal |  dominate | -result |  rely
+
+t=29 token=' result'
+L34: 无法满足 |  unfavor |  losses |  outcomes |  disproportionately |  resulting |  ineffective |  unfavorable | /result |  significantly |  fewer |  poorer |  overwhelmingly |  worse |  shortfall |  weaker |  fatalities |  detriment |  insufficient |  flawed
+L42:  negative |  losses |  Negative |  negatively |  unfavorable | 亏损 |  negatives | -negative | Negative |  loss |  negativity | negative |  worse |  negativ | 负面 |  poorer | _negative | 负的 | egative |  positive
+L46:  negative |  Negative |  negatively |  unfavorable |  negatives |  negativ | -negative | negative |  worse |  losses | 负面 |  negativity | Negative | egative |  unfavor |  positive | _negative |  poorer | 负 | 亏损
+L54:  negative | 负面 | negative | Negative |  Negative | -negative | _negative | egative | 负 |  negatives | 亏损 | 负的 |  negativa |  negatively |  negativo |  negatif |  negativ | 净 |  negativos |  losses
+L60:  negative | -negative |  Negative | negative | 负 |  negatives | Negative |  negatif |  negatively | 负的 | 负面 |  significantly | egative |  negativa | _negative |  lower |  negativ |  negativo |  losses |  net
+
+t=30 token=' in'
+L34:  negative |  losses |  worse |  poor |  poorer |  only |  fewer |  badly |  disastrous |  poorly |  lack |  disproportionately |  loss |  negligible |  starvation |  barely |  average |  balance |  heavily |  less
+L42:  negative |  Negative |  average | Negative |  negativ |  negatives | negative | -negative |  losses |  negatively |  negativity | 负面 |  worse |  weighted | 负的 |  unfavorable | average | 负 |  Average |  net
+L46:  negative |  Negative |  negativ |  negatives | negative | Negative |  negatively | egative | -negative | 负面 |  negativity |  worse |  unfavorable |  average |  disappointing | 负 |  negativo | 负的 |  mostly |  net
+L54:  negative | negative |  Negative | 负面 | -negative | Negative | 负 |  negatives | _negative | 负的 |  negatively | egative | 亏损 |  negativo |  negativa |  negativ |  losses |  negativos |  negatif |  unfavorable
+L60:  negative |  negatives | negative | -negative |  Negative |  losses | 负 |  negatively |  negativ |  lower |  significantly | Negative |  nég |  negatif |  negativa | 负的 | _negative |  NEG | 负面 |  negativo
+
+t=31 token=' negative'
+L34:  negative |  losses |  negativity | -negative |  debts |  wages |  Negative |  negatives |  due |  earnings |  risks |  financial |  odds | <|endoftext|> |  morale | Negative |  loss |  debt | negative |  worse
+L42:  negative |  Negative | -negative |  negativity | Negative | negative |  losses |  negatives |  negativ | egative | _negative |  positive |  negatively | 负面 |  (- | 负的 |  net |  earnings | 亏损 |  unfavorable
+L46:  negative |  losses |  negatives |  Negative | -negative |  or |  negativity |  negativ |  net |  (- | negative | Negative |  scores | egative |  due |  overall |  negatively |  positive |  average |  averages
+L54:  outcomes |  average |  averages |  payouts | 平均 |  or | 或 |  avg | 平均值 |  Average | average | -average | Average |  expectations |  payoff |  expected | 收益 | 的平均 | Expected |  Expected
+L60:  expectations |  expected |  expectation |  Expected | 期望 | Expected | expected |  payouts |  Expect |  expectancy |  expect |  outcomes | 预期 | _expected |  EXPECT | (expected | Expect | .expected |  payoff | expect
+
+t=32 token=' expected'
+L34:  expectations |  calculations |  odds |  losses |  value |  expectation |  risk |  values |  outcomes |  average |  calculation |  risks |  calculated |  earnings |  costs |  probabilities |  payout |  loss |  expected |  results
+L42:  average |  calculations |  value |  expectations |  averages |  losses |  costs |  calculated |  expected |  values |  probabilities |  expectation |  calculation |  Expected |  probability |  outcomes |  due |  Average |  negative |  cost
+L46:  calculations |  calculated |  calculation |  value |  due |  values |  losses |  averages |  calcul |  costs |  negative |  average |  respective |  probabilities |  outcomes |  risks |  expectations |  calculate |  negativity |  respectively
+L54:  outcomes |  payouts |  due |  (- |  payoff | 收益 |  values |  earnings | Due |  losses | due |  profits |  Due |  debido |  winnings |  payout |  value |  devido |  outcome | 值
+L60:  payoff |  pay |  (- |  payouts |  values |  value | pay |  Pay |  payloads |  pays |  returns | -pay |  outcomes | (- | /pay |  payout | _pay | Pay |  Value |  [-
+
+t=33 token=' pay'
+L34: <|endoftext|> |  . | o | able | i |  ... | ings |  due | ably | e | d | \n\n | worth | due | ed |  owing | a | so | w |  likely
+L42:  due | due |  owing |  because |  Due |  negative | Due | because |  . |  losses |  worse |  unfavorable |  despite |  debido | 因为有 | negative |  negatively |  outweigh |  Because |  since
+L46:  due | due |  owing |  respectively |  because |  respective |  Due | 分别为 |  debido | because | 因为有 |  despite |  unfavorable |  devido |  negative |  worse | 分别是 |  unfavor | Due | _due
+L54:  due | due | Due |  (- |  Due |  devido | 因 |  debido | (- | 由于 |  owing | 。 | (). | 因为 |  (). | . | _due | =(- | 因为有 | ((-
+L60:  (- | offs | ments | (- |  [- | .- | -offs |  {- | . | =- |  **- | rolls |  ("- | backs | outs | /- | off | ,- | =(- | ings
+
+t=34 token='offs'
+L34:  . | <|endoftext|> |  due |  .** |  owing |  ." |  despite |  , |  against |  lacking |  ._ | due |  for |  because |  .* |  only |  remaining |  significantly |  heavily |  under
+L42:  due |  . |  owing |  .** |  because | due |  Due |  ." |  despite |  unfavorable | Due |  compared |  against |  negative |  devido |  worse |  debido |  opposing |  。 |  since
+L46:  due |  . |  owing | due |  because |  respectively |  compared |  Due |  despite |  respective | .\ |  therefore |  devido |  unfavorable |  ." | . |  debido | 分别为 |  worse |  consequently
+L54:  Therefore | 因此 |  therefore | . | Therefore | .** |  due |  (). | .< | (). | .\ | 应选择 |  Thus | **. | 故选 |  {}. |  Due | .</ | due | 因此在
+L60:  (- | . | .- |  [- |  FINAL |  `- |  {- |  Therefore |  ("- | FINAL |  **- | /- | (- |  therefore |  (). |  Final |  because |  finalize |  due | =-
+
+t=35 token='.'
+L34: <|endoftext|> | \n\n | <|im_end|> |  \n\n |   \n\n | \n\n | <|file_sep|> | Therefore | \n\n\n | <|fim_middle|> | 因此 |    \n\n |     \n\n | 	\n\n | \n\n\n\n |  therefore |  ... |      \n\n |       \n\n |  \n\n
+L42: <|endoftext|> |  choice | \n\n |  choosing | 选择 |  choices |  therefore | 应选择 | 的选择 |  optimal | 选择的 |  Choice |  choose |  maximizing |  chosen | 選擇 |  Therefore | Choice | choice |  decision
+L46: \n\n | <|endoftext|> |  therefore |  Therefore | 因此 | Therefore |  choice | 选择 |  choosing | 应选择 | 故选 |  Choice |  maximizing |  optimal |  choices |   \n\n |  choose | 的选择 |  \n\n |  thus
+L54: 因此 |  Therefore |  therefore | 选择 | Therefore | 应选择 |  choose |  Choose | 故选 | choose |  choosing | 选择了 |  Choosing | Choose |  chooses |  Thus | 中选择 |  daher |  selecting |  donc
+L60:  Therefore |  FINAL |  therefore |  Choose |  choose |  Choosing |  choosing |  finalize | Therefore | 因此 |  Final | FINAL |  Thus | choose |  final | \n\n | Choose |  chooses | 选择 | finalize
+
+t=36 token=' Therefore'
+L34: <|endoftext|> | <|im_end|> | \n\n |  … |   \n\n |  .** |  ... |  . | \n\n |  […] |  \n\n |  ." |  ...\ |  。 | <|im_start|> | \n\n\n |  ______ | <|fim_middle|> | 选择 |   \n\n\n
+L42:  choice | 的选择 |  Choice | 选择 |  choosing |  optimal | 选择的 | 应选择 |  choices | 選擇 |  decision | Choice |  choose | 选择了 | choice |  выбора |  chosen |  chooses |  Choosing | _choice
+L46:  choice | 应选择 |  optimal | 选择 |  Choice |  choosing | 的选择 |  choose |  choices | 会选择 | 選擇 | 选择了 |  chooses | 选择的 | choice | Choice | choose |  selection |  Choose |  Choosing
+L54: 应选择 | 选择 |  choosing |  choose |  Choose |  selecting | choose | 选择了 | 会选择 |  Choosing | 中选择 | _choose | 选择的 |  chooses | Choose | 选择一个 | 要选择 | 选择和 | 请选择 | 選擇
+L60:  choosing |  Signal |  choose |  selecting |  signal | Signal |  Choose | choose |  Choosing | 选择 |  chooses | _SIGNAL | _signal |  Select |  signaling |  select | .signal | ignal | Choose | 应选择
+
+t=37 token=','
+L34: <|endoftext|> | \n\n | <|im_end|> |  ... |   \n\n |  choice |  . |  \n\n |  best |    |  the |  .** |  ...\ |  should |  ..." |  choose | 选择 | \n\n\n |     |  will
+L42:  choice |  Choice |  choosing |  choices | 的选择 |  optimal | 选择 |  choose | 选择的 |  selection |  chosen |  decision |  chooses |  Choosing |  Choose | 選擇 | 选择了 | choice | Choice |  chose
+L46:  choice |  Choice |  choices |  choosing | 选择 |  choose | 的选择 |  optimal |  selection | 选择的 |  chooses | choice |  chose |  Choose | Choice | 选择了 | 選擇 | 应选择 |  selecting |  chosen
+L54:  choosing | 应选择 | 选择 |  selecting |  choose |  Choose | 选择了 | choose |  chooses |  Choosing | 中选择 | _choose | 选择的 | 会选择 | 選擇 | 选择一个 |  maximizing | Choose |  Choice |  choice
+L60:  Signal |  choosing |  choose |  selecting |  signal | Signal | _signal |  Choose |  signaling |  Choosing | choose |  chooses | 选择 |  SIGNAL | _SIGNAL |  signals | (signal |  select | .Signal |  Signals
+
+t=38 token=' A'
+L34: <|endoftext|> | \n\n | <|im_end|> |  ... |  \n\n |   \n\n |  . |  ..." | ... |  ...\ |    \n\n |  … | \n\n\n | \n\n |     \n\n |  ." |  .... |  is |  ...... |   \n\n\n
+L42:  choice |  optimal |  best |  choices | 的选择 |  chosen |  preferred |  Choice | 最优 | 的最佳 | 最佳 |  preferable |  maximizing |  decision | 应选择 |  profitable |  maxim |  maximize |  choosing |  optimum
+L46:  optimal |  choice |  best | \n\n |  preferable |  choices |  preferred |  \n\n | <|endoftext|> |  is |  superior | 最优 |  maxim |  optimum |  maximize |  safest |  advantageous | 的选择 | 的最佳 |  chosen
+L54: 最优 |  optimal | 最佳 | 是最好的 | 最佳的 | 的最佳 |  best | best | 是最 | -best |  maxim | _best |  بهترین |  maximize | Best |  maximizing | 最好的 |  optimum |  опт | .best
+L60:  is |  optimal |  maxim |  optim |  maximize | 最优 |  maximizing |  Opt | Opt | opt | _opt |  dominates | -opt |  optimize |  Maxim | optim | /opt |  optimizing |  strictly | max
+
+t=39 token=' is'
+L34: <|endoftext|> |  best |  . |  priorit | <|im_end|> |  choice |  likely |  favor |  optimal |  favored |  superior |  .** |  strategically |   \n\n |  viable |  favorable |  uniquely |  chosen |  better |  potential
+L42:  choice |  optimal |  choices | 的选择 |  Choice | 的選擇 |  decision |  best | choice | 选择的 |  chosen |  choosing | 选择 |  optimum | 最优 | Choice | 選擇 |  preferred |  advantageous |  selection
+L46:  optimal |  choice |  choices |  best | 的选择 |  optimum | 最优 |  preferred |  Choice |  preferable | choice | 的最佳 | 最佳 |  superior |  advantageous |  optim | Choice | 最佳的 |  chosen | 的選擇
+L54:  optimal | 最优 | 最佳 | 的最佳 | 最佳的 |  опт |  optimum |  best |  optimale | best | 优选 | 最適な |  최적 | _best | 最好的 | 最適 | -best | 最佳答案 | Best | .best
+L60:  optimal | opt |  Opt | 最优 | Opt | _opt | -opt |  optim |  opt | ,opt | (opt | /opt | .opt |  optimum |  опт | 优 | OPT |  OPT |  최적 |  optimale
+
+t=40 token=' the'
+L34: <|endoftext|> |  choice | <|im_end|> |  . |  best |  decision |   \n\n |  choices |  optimal |  favor |  \n\n |  strategy | 选择 |  potential |  ... |  selection |  Choice |  ." |  risk |  choose
+L42:  choice |  choices |  optimal |  Choice |  decision | 的选择 | 选择 |  choosing | choice | -choice |  choose | 选择的 |  strategy | Choice |  Choices |  Decision |  profitable |  chosen |  selection |  optim
+L46:  choice |  optimal |  choices |  Choice | 的选择 |  optimum | choice | 最优 |  best |  decision |  profitable |  advantageous |  optim |  choose | 选择 |  choosing |  maximizing | Choice |  preferred |  chosen
+L54:  optimal | 最优 | 最佳 |  optimum | 最佳的 | 的最佳 |  best |  опт |  optimale | best | 最適な | -best | _best | 优选 | 最好的 |  최적 | Best |  choice | .best |  optim
+L60:  optimal | 最优 | opt |  Opt | Opt | _opt |  optim | -opt |  optimum |  rational |  opt | /opt | .opt | ,opt | (opt | 优 |  опт |  optimale |  best |  최적
+
+t=41 token=' optimal'
+L34:  choice |  decision | <|endoftext|> |  strategy |  optimal |  . |  selection |  choices |  \n\n |   \n\n |  performance |  strategic |  solution | 选择 |  .** |  Strategy |  priorit |  optim |  decisions |  response
+L42:  choice |  choices |  decision |  Choice | 的选择 | 选择 | choice |  selection |  choosing | 选择的 | Choice |  strategy | 選擇 |  Choices |  choose |  optimal | -choice |  decisions |  choix |  chosen
+L46:  choice |  choices | 的选择 |  Choice | 选择 | choice |  decision |  selection |  choosing | Choice |  optimal |  choose |  strategy | 选择的 | 選擇 | choices |  Choices | _choice |  choix |  option
+L54:  choice |  choices | choice | Choice | 选择 |  Choice | 的选择 | _choice |  choix |  Choices | -choice | 选择的 | choices | .choice | 选择了 | 選擇 | Choices |  lựa | 的選擇 |  escolha
+L60:  choice |  Choice | choice |  choices | Choice | 选择 | _choice | 的选择 | -choice |  choix | .Cho |  choose | .choice |  choosing |  CHO |  cho | 選擇 |  escolha |  Cho | (choice
+
+t=42 token=' choice'
+L34: <|endoftext|> |  . | \n\n |   \n\n | <|im_end|> |  ." |  \n\n |  for |  .** | \n\n\n |  。 |  ? |  choice |  despite | .\ | ｡ |  due |  .* |  ._ |    \n\n
+L42:  . |  ." |  choice | .\" | . |  for | .\ |  maximizing | ." | <|endoftext|> |  .** |  optimal |  despite | .| |  Choice |  。 |  cost |  best |  due | .*
+L46: \n\n | <|endoftext|> |  . | . |   \n\n |  \n\n |  ." | ." |  choice | <|im_end|> |  maximizing | .\ |  。 | .</ |  despite |  maximize |  for |  maxim | .* | .]
+L54: . | .** | .</ | .\ | .] | 。 | (). | **. | ." | .< | .) | ． | .| | \. |  **.** | .” | .$$ | .` | .( | .).
+L60:  FINAL | . | FINAL | .` |  final |  Final | .final | Final |  finalize |  finalized | final |  finale | -final |  . | \n\n |  FIN |  maximizing | finalize | _FINAL |  finalist
+
+t=43 token='.'
+L34: <|endoftext|> | \n\n | <|im_end|> |  \n\n |   \n\n | \n\n | <|file_sep|> |  ... | \n\n\n | 	\n\n | ... |    \n\n | \n\n\n\n |     \n\n | <|fim_middle|> |  \n\n | ...** |         \n\n |       \n\n | \n\n\n\n\n
+L42: <|endoftext|> | \n\n | <|im_end|> |  \n\n |   \n\n | <|file_sep|> | \n\n | \n\n\n\n |    \n\n | 	\n\n | \n\n\n |     \n\n | <|fim_middle|> |      \n\n |         \n\n | \n\n\n\n\n |       \n\n |  \n\n | </think> |   \n\n\n
+L46: <|endoftext|> | \n\n | <|im_end|> |   \n\n |  \n\n | <|file_sep|> |    \n\n |     \n\n | 	\n\n | </think> | \n\n |      \n\n |         \n\n |       \n\n | <|fim_middle|> |  \n\n |   \n\n | <|im_start|> | \n\n\n\n |             \n\n
+L54: <|im_end|> | \n\n |   \n\n |   \n |  \n\n |   \n  \n |    \n | ** | </think> |    \n\n | <br |     \n | 	\n |  \n | **) | **), |  | <pre | 	\n\n |       \n
+L60:  FINAL | FINAL | \n\n |  Final |  finalize |  final | Final | -final | final | .final | _final | finalize |  finalized |  FIN | _FINAL | _Final | \n | (final |  фина |  finalist
+
+t=44 token='\n\n'
+L34: <|endoftext|> | \n\n |   \n\n |  \n\n | <|im_end|> | <|file_sep|> | \n\n |    \n\n | 	\n\n |     \n\n |  \n\n | \n\n\n\n |   \n\n |         \n\n |       \n\n |      \n\n | \n\n\n |             \n\n |        \n\n | \n\n\n\n
+L42: <|endoftext|> | <|im_end|> | \n\n |   \n\n |  \n\n | <|file_sep|> | ?** |    \n\n |  **[ | 	\n\n |   \n\n | \n\n | ？** |      \n\n |       \n\n |         \n\n |  \n\n |     \n\n |  ** |  **#
+L46: <|endoftext|> | <|im_end|> |   \n\n |  \n\n | \n\n | <|file_sep|> |    \n\n | 	\n\n | \n\n |       \n\n |      \n\n |     \n\n |   \n\n |         \n\n |  \n\n |             \n\n | </think> |        \n\n | <|fim_middle|> | <|im_start|>
+L54: </think> | <|im_end|> | **: |  **: | ** |  FINAL | <|endoftext|> | ;** | ：** |  **:** |  ANSW | **) | >** | **), | <tool_call> | !** |  *: |  FAILED | **! | :F
+L60:  FINAL | FINAL |  Final | Final | -final | final |  final | .final |  finalize | _final | finalize | _FINAL |  finalized |  фина | (final |  finale | 	final |  FIN |  finali | _Final
+
+t=45 token='FINAL'
+L34: <|endoftext|> | \n\n |   \n\n |  \n\n | <|im_end|> | 	\n\n | <|file_sep|> | \n\n\n\n\n | \n\n\n |     \n\n | <|fim_middle|> | \n\n\n\n | \n\n |    \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |         \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |       \n\n |      \n\n |        \n\n
+L42: <|endoftext|> | \n\n |  \n\n |   \n\n | <|im_end|> | <|fim_middle|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n |  @[ | <|file_sep|> |    \n\n | 	\n\n |     \n\n | \n\n\n\n\n |         \n\n |      \n\n |       \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n
+L46: <|endoftext|> |   \n\n | <|im_end|> | <|file_sep|> |  \n\n | <|fim_middle|> |     \n\n | 	\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |    \n\n | \n\n |      \n\n |       \n\n |         \n\n | 		\n\n | <|im_start|> |        \n\n |  Subset |                 \n\n | \:
+L54: <|endoftext|> | :X | : |  #: | :F | ： |  **:** | <|im_end|> | ：** | :A | :j | *: | :C | **: | +: |  **: | :text | :B | :v | #:
+L60: : | :A |  : |  A | ： | <|im_end|> |  #: | :C |  **:** | =A | :X | -A | :B | .: | AAAA |  ： | :: |  AA | :, | _A
+
+t=46 token=':'
+L34: \n\n | <|endoftext|> |  \n\n | <|im_end|> | \n\n\n |   \n\n | \n\n\n\n | \n\n\n\n\n | \n\n |    \n\n |     \n\n | 	\n\n |  \n\n\n |  ... | \n\n\n\n\n\n |         \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|file_sep|> | \n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+L42: \n\n | <|endoftext|> | <|im_end|> |  \n\n |   \n\n | \n\n\n\n | \n\n\n | \n\n\n\n\n |    \n\n |     \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |  \n\n\n | \n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |         \n\n | \n\n |  Choice | 	\n\n | \n\n\n\n\n\n\n
+L46: <|endoftext|> |  \n\n | \n\n |   \n\n | <|im_end|> |    \n\n |     \n\n | 	\n\n | <|im_start|> |      \n\n |  \n\n\n |  Choice | \n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|file_sep|> |  \n\n\n\n |         \n\n |   \n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | </think>
+L54: <|endoftext|> | <|im_end|> | <|file_sep|> | <|im_start|> | </think> | <|fim_middle|> | <think> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | </tool_call> | \n\n | <tool_call> | \n\n\n\n | 展开全文 | 甲等 | 甲 | 字母 |   | \n\n\n\n\n | 更多回答 | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+L60: <|im_end|> | <|endoftext|> |  A | </think> |  AA | </tool_call> | <|im_start|> |  Α |  А | <|fim_middle|> |  AAA |  ASA |  OA | >A | =A | _A | 	A |  ACA |  APA |  SSA
+
+t=47 token=' A'
+L34: <|endoftext|> | \n\n | <|im_end|> |  \n\n | \n\n\n |   \n\n | \n\n\n\n | \n\n | <|file_sep|> | 	\n\n | \n\n\n\n\n | <|fim_middle|> |     \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |    \n\n |  ... | <|im_start|> | ... |         \n\n
+L42: <|endoftext|> | \n\n | <|im_end|> |  \n\n | \n\n\n | \n\n\n\n | <|file_sep|> |   \n\n | </think> | \n\n\n\n\n | <|fim_middle|> | \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|im_start|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |     \n\n | 。 | 	\n\n |    \n\n |         \n\n
+L46: <|endoftext|> | <|im_end|> | \n\n | <|file_sep|> |  \n\n |   \n\n | </think> | <|im_start|> | \n\n\n\n | 	\n\n | <|fim_middle|> |     \n\n |    \n\n | 。 | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n | \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <think> |         \n\n
+L54: <|endoftext|> | <|im_end|> | <|im_start|> | \n\n | </think> | <|file_sep|> | <think> | <|fim_middle|> | ** | "/> | 。 | EOF | \n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | ]() | **? |  @} | <tool_call> |  /> | 万方
+L60: <|im_end|> | <|endoftext|> | </think> | </ | "/> | <|im_start|> |  /> | '/> | <|fim_middle|> | <|file_sep|> | ``` | ** | .kwargs | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | [/ |  |  kwargs | kwargs | _kwargs | $$
