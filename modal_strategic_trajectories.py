@@ -1,4 +1,7 @@
-"""Gated execution for the V2-E2 MVP Strategic J-Space Trajectories study.
+"""Gated execution for the V2-E2 MVP Strategic J-Lens Trajectories study.
+
+The instrument is a pinned top-k Jacobian-Lens readout proxy, not a formal sparse
+nonnegative J-space decomposition.
 
 Execution order:
 

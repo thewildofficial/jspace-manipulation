@@ -1,4 +1,7 @@
-"""Frozen local protocol machinery for V2-E2 Strategic J-Space Trajectories.
+"""Frozen local protocol machinery for V2-E2 Strategic J-Lens Trajectories.
+
+The measured object is a pinned top-k Jacobian-Lens readout proxy, not a formal
+sparse nonnegative J-space decomposition.
 
 The module deliberately contains no model or lens dependencies.  It defines the
 exact numerical corpus, prompt renderings, parsers, and behavioral gate that must

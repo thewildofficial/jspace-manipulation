@@ -1,7 +1,16 @@
-# V2-E2 MVP — Strategic J-Space Trajectories
+# V2-E2 MVP — Strategic J-Lens Trajectories
 
-Implementation, behavior gating, the cheap mechanistic pass, and initial open
-inspection are complete. Patchscope was not run.
+**Project state: COMPLETE — EXPLORATORY NEGATIVE.**
+
+V2-E2 measured a pinned top-k Jacobian-Lens readout proxy. It did not implement
+the formal sparse nonnegative J-space decomposition, so the result should not be
+described as a failure of J-space. Implementation, behavior gating, the cheap
+mechanistic pass, and open inspection are complete. Patchscope was disabled and
+was not run.
+
+The frozen execution config retains its original `study_name` string so its
+recorded config SHA-256 continues to match the archived run. That string is a
+historical label, not the final name of the measured object.
 
 ## Frozen v3 corpus
 
@@ -16,9 +25,12 @@ inspection are complete. Patchscope was not run.
 - Minimum top-two margin after behavior-only redesign: `3.0`
 - Action-label counts across numerical instances: A=8, B=1, C=3
 
-All four same-action pairs keep the winner, runner-up, and label permutation fixed
-while changing the unique decisive response pathway. The decisive response contributes
-at least 50% of total positive support in every numerical instance.
+All four same-action pairs pass the strengthened certificate: winner signal,
+runner-up signal, expected label, runner-up label, and signal-to-label mapping are
+fixed; the decisive response changes; each decisive fraction is at least 50%; and
+each margin is at least 3.0. Receiver-causal pairs change only the probability
+matrix among payoffs, costs, and probabilities; payoff-causal pairs change only
+payoffs among those quantities.
 
 ## Behavioral development record
 
@@ -45,7 +57,7 @@ The pass records top-20 J-lens trajectories at layers 34, 42, 46, 54, and 60;
 an all-fitted-layer top-50 final-prompt diagnostic; contextual A/B/C logits; and FP16
 residual audit artifacts. The downloaded payload passed its checksum and schema checks.
 
-## Initial open inspection
+## Open inspection
 
 The initial classification is:
 
@@ -54,19 +66,63 @@ The initial classification is:
 Within the stored selected-layer top-20 readouts:
 
 - Direct runs contain no exact response/value/probability/payoff terms.
-- No rollout contains an exact `R1`, `R2`, or `R3` token.
-- Agent nouns do not favor the strategic condition; the sole `responder` occurrence
-  is in a non-strategic rollout.
+- The single-token exact response-identifier count is retained only as a tokenizer-
+  dependent diagnostic. An identifier can split (for example, ` R` plus `2`), so
+  this statistic is not evidence that a response representation is absent.
+- Inspection did not reveal an early, coherent, human-readable distinction between
+  the changing R1/R2/R3 decisive pathways.
+- Strategic and isomorphic non-agentic framings show no compelling agent-specific
+  difference in this top-k readout. Agent-noun counts are descriptive only and do
+  not imply that opponent representations are absent.
 - The expected action label is absent at the final prompt in all 48 rollouts but is
   present at layer 60 immediately before the answer in all 48.
 - Legal-action logits already select the answer in 23/24 direct and 22/24 short-CoT
   final-prompt states, reaching 24/24 in both modes immediately before the answer.
-- Short-CoT trajectories anticipate generic words such as `probability`, `expected`,
-  `payoff`, and `value`, but these do not identify the changing decisive response.
+- Short-CoT trajectories contain generic expected-value vocabulary shortly before
+  its first surface occurrence. This exact lexical statistic imposes no minimum
+  lead time and is not evidence that the readout anticipated reasoning.
 
-This is an exploratory negative for the human-readable monitoring objective. It does
-not establish that decisive variables are absent from residual activations or causally
-unused. No residual probe, causal intervention, or formal onset statistic was added.
+The clean action-readout dissociation is narrow: output-facing action preference
+was usually aligned before the literal answer label became top-k J-lens-visible.
+It does not establish when the decision was made. A compact description of the
+observed trajectory is generic task semantics, then answer-format preparation,
+then literal action-token preparation.
+
+## Final conclusion
+
+> **V2-E2 was a controlled exploratory test of whether temporally resolved top-k
+> Jacobian-Lens readouts could expose the response-conditioned computation
+> underlying simple strategic choices. Behavior was perfect on the final corpus,
+> and four same-action matched pairs changed the quantitatively decisive response
+> pathway while preserving the winning and runner-up actions. The pinned J-lens
+> trajectories showed generic calculation/choice semantics and reliable late
+> answer preparation, but did not provide a coherent human-readable readout
+> distinguishing those decisive pathways. Strategic and isomorphic non-agentic
+> framings also showed no compelling agent-specific readout. The result constrains
+> this top-k J-lens monitoring method; it does not establish absence of the relevant
+> variables from residual activations or causal computation.**
+
+Secondary observation:
+
+> **Legal-action logits were usually action-aligned at the final prompt before the
+> literal answer label became top-k J-lens-visible, suggesting that answer-token
+> visibility in this readout can lag an output-facing preference for the eventual
+> action.**
+
+The `optim*` family is retired as substantive evidence: model-generated short CoT
+uses `highest expected payoff`, `optimal`, and `maximize` even after those terms
+were removed from prompts. `optim*` should not be reused as a substantive
+strategic-monitoring token family without a much stronger matched control.
+
+Several correct short-CoT decisions also state inaccurate expected values. This is
+an unquantified exploratory lead for later offline work, not a CoT-faithfulness
+claim. The absolute action-preparation result may also reflect the imbalanced
+numerical-instance labels (A=8, B=1, C=3); no post hoc redesign was performed.
+
+Residual artifacts remain archival only. No probe, sparse pursuit, Patchscope run,
+causal intervention, or formal onset statistic was added. H0/H0R are not overridden:
+the result makes no claim about causal use or absence, a strategic/opponent circuit,
+deceptive intent, or CoT faithfulness.
 
 See `summaries/exploratory_summary.json` for the reproducible checks.
 

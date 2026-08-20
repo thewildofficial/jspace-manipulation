@@ -1,4 +1,4 @@
-"""Integrity checks and deliberately modest open inspection for V2-E2 MVP."""
+"""Integrity checks for the V2-E2 Strategic J-Lens Trajectories MVP."""
 
 from __future__ import annotations
 
@@ -171,17 +171,64 @@ def _same_action_certification(dataset_rows: list[dict[str, Any]]) -> dict[str, 
     certified = 0
     details = []
     for pair_id, pair in sorted(by_pair.items()):
+        if len(pair) != 2:
+            details.append(
+                {
+                    "pair_id": pair_id,
+                    "valid": False,
+                    "failure": f"expected two numerical instances, found {len(pair)}",
+                }
+            )
+            continue
         left, right = sorted(pair, key=lambda row: row["pair_member"])
-        valid = bool(
-            left["expected_label"] == right["expected_label"]
-            and left["runner_up_label"] == right["runner_up_label"]
-            and left["decisive_response"] != right["decisive_response"]
-        )
+        shared_checks = {
+            "winner_signal_same": left["winner_signal"] == right["winner_signal"],
+            "runner_up_signal_same": (
+                left["runner_up_signal"] == right["runner_up_signal"]
+            ),
+            "expected_label_same": left["expected_label"] == right["expected_label"],
+            "runner_up_label_same": (
+                left["runner_up_label"] == right["runner_up_label"]
+            ),
+            "signal_to_label_same": (
+                left["signal_to_label"] == right["signal_to_label"]
+            ),
+            "decisive_response_different": (
+                left["decisive_response"] != right["decisive_response"]
+            ),
+            "decisive_fraction_at_least_half_both": all(
+                float(row["decisive_fraction"]) >= 0.50 for row in pair
+            ),
+            "margin_at_least_three_both": all(
+                float(row["margin"]) >= 3.0 for row in pair
+            ),
+            "costs_same": left["costs"] == right["costs"],
+        }
+        if left["pair_kind"] == "receiver_causal":
+            causal_checks = {
+                "payoffs_same": left["payoffs"] == right["payoffs"],
+                "probability_matrix_different": (
+                    left["probabilities"] != right["probabilities"]
+                ),
+            }
+        elif left["pair_kind"] == "payoff_causal":
+            causal_checks = {
+                "probability_matrix_same": (
+                    left["probabilities"] == right["probabilities"]
+                ),
+                "payoffs_different": left["payoffs"] != right["payoffs"],
+            }
+        else:
+            causal_checks = {"recognized_pair_kind": False}
+        checks = {**shared_checks, **causal_checks}
+        valid = all(checks.values())
         certified += valid
         details.append(
             {
                 "pair_id": pair_id,
+                "pair_kind": left["pair_kind"],
                 "valid": valid,
+                "checks": checks,
                 "expected_label": left["expected_label"],
                 "decisive_responses": [
                     left["decisive_response"],
@@ -189,7 +236,12 @@ def _same_action_certification(dataset_rows: list[dict[str, Any]]) -> dict[str, 
                 ],
             }
         )
-    return {"certified_pairs": certified, "expected_pairs": 4, "details": details}
+    return {
+        "certified_pairs": certified,
+        "expected_pairs": 4,
+        "all_pairs_valid": certified == 4 and len(details) == 4,
+        "details": details,
+    }
 
 
 def analyze(mechanistic: dict[str, Any], dataset: dict[str, Any]) -> dict[str, Any]:
@@ -206,12 +258,21 @@ def analyze(mechanistic: dict[str, Any], dataset: dict[str, Any]) -> dict[str, A
         "same_action_certification": _same_action_certification(dataset["rows"]),
         "selected_top20": {
             "direct_relational_occurrences": dict(sorted(direct_concepts.items())),
-            "response_identifier_occurrences_all_modes": sum(
+            "single_token_exact_response_identifier_occurrences": sum(
                 all_concepts[term] for term in RESPONSE_IDENTIFIERS
             ),
+            "single_token_exact_response_identifier_diagnostic_only": True,
+            "single_token_exact_response_identifier_limitation": (
+                "R1/R2/R3 may be split across tokenizer tokens; this count cannot "
+                "support representational absence."
+            ),
             "agent_noun_occurrences": _agent_noun_counts(rows),
-            "short_cot_rows_with_concepts_before_surface_mention": (
+            "rows_with_exact_concept_before_first_surface_occurrence": (
                 _short_cot_presurface_rows(rows)
+            ),
+            "pre_surface_occurrence_limitation": (
+                "Exact lexical comparison only; no minimum lead time is required and "
+                "the statistic does not establish anticipation of reasoning."
             ),
         },
         "legal_action_readout": {
@@ -228,7 +289,7 @@ def analyze(mechanistic: dict[str, Any], dataset: dict[str, Any]) -> dict[str, A
             }
             for mode in ("direct", "short_cot")
         },
-        "initial_classification": (
+        "final_classification": (
             "generic_task_semantics_and_action_preparation_without_decisive-pathway readout"
         ),
         "interpretation_boundary": (
