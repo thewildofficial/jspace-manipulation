@@ -1,0 +1,132 @@
+{
+  "analysis_class": "exploratory_open_inspection_no_formal_onset_statistic",
+  "dataset_sha256": "1a4a81f14454d8dd1d2e6bca83eba62dbf20ab723cf8d1397c4924df2ee0c187",
+  "expected_label_top20_visibility": {
+    "direct": {
+      "final_prompt": {
+        "any_selected_layer": 0,
+        "layer_60": 0,
+        "n": 24
+      },
+      "pre_final": {
+        "any_selected_layer": 24,
+        "layer_60": 24,
+        "n": 24
+      }
+    },
+    "short_cot": {
+      "final_prompt": {
+        "any_selected_layer": 0,
+        "layer_60": 0,
+        "n": 24
+      },
+      "pre_final": {
+        "any_selected_layer": 24,
+        "layer_60": 24,
+        "n": 24
+      }
+    }
+  },
+  "initial_classification": "generic_task_semantics_and_action_preparation_without_decisive-pathway readout",
+  "integrity": {
+    "failures": [],
+    "pass": true
+  },
+  "interpretation_boundary": "This classifies only the stored top-k J-lens readouts; it does not establish absence from the residual stream or causal non-use.",
+  "legal_action_readout": {
+    "direct": {
+      "final_prompt": {
+        "legal_argmax_correct": 23,
+        "mean_expected_legal_probability": 0.8936502585670502,
+        "minimum_expected_legal_probability": 0.22087253554997577,
+        "n": 24
+      },
+      "pre_final": {
+        "legal_argmax_correct": 24,
+        "mean_expected_legal_probability": 0.9478916518356709,
+        "minimum_expected_legal_probability": 0.5903092839893905,
+        "n": 24
+      }
+    },
+    "short_cot": {
+      "final_prompt": {
+        "legal_argmax_correct": 22,
+        "mean_expected_legal_probability": 0.7931932086676924,
+        "minimum_expected_legal_probability": 0.17782545650378023,
+        "n": 24
+      },
+      "pre_final": {
+        "legal_argmax_correct": 24,
+        "mean_expected_legal_probability": 0.9999982714754118,
+        "minimum_expected_legal_probability": 0.9999856950894335,
+        "n": 24
+      }
+    }
+  },
+  "mechanistic_run_id": "3007f6b56637442d953b4a6f6804c10e",
+  "same_action_certification": {
+    "certified_pairs": 4,
+    "details": [
+      {
+        "decisive_responses": [
+          "R1",
+          "R2"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-01-receiver_causal",
+        "valid": true
+      },
+      {
+        "decisive_responses": [
+          "R2",
+          "R1"
+        ],
+        "expected_label": "C",
+        "pair_id": "v3-pair-02-receiver_causal",
+        "valid": true
+      },
+      {
+        "decisive_responses": [
+          "R2",
+          "R1"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-03-payoff_causal",
+        "valid": true
+      },
+      {
+        "decisive_responses": [
+          "R2",
+          "R3"
+        ],
+        "expected_label": "A",
+        "pair_id": "v3-pair-04-payoff_causal",
+        "valid": true
+      }
+    ],
+    "expected_pairs": 4
+  },
+  "schema_version": 1,
+  "selected_top20": {
+    "agent_noun_occurrences": {
+      "non_strategic": {
+        "responder": 1
+      },
+      "strategic": {}
+    },
+    "direct_relational_occurrences": {},
+    "response_identifier_occurrences_all_modes": 0,
+    "short_cot_rows_with_concepts_before_surface_mention": {
+      "expected": 24,
+      "likely": 24,
+      "payoff": 24,
+      "probabilities": 24,
+      "probability": 24,
+      "responder": 1,
+      "response": 16,
+      "responses": 9,
+      "value": 24
+    }
+  },
+  "study_id": "V2-E2-MVP"
+}

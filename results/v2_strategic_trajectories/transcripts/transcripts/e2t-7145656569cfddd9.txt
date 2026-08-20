@@ -1,0 +1,36 @@
+CONDITION e2t-7145656569cfddd9
+PAIR v3-pair-05-action_change member=2 kind=action_change
+FRAMING non_strategic | MODE direct
+EXPECTED B | DECISIVE R3
+
+SURFACE
+FINAL: B
+
+TRAJECTORY
+t=0 token=<FINAL_PROMPT>
+L34: <|endoftext|> | \n\n | <|im_end|> |   \n\n |  \n\n | \n\n | \n\n\n\n | <|file_sep|> | \n\n\n | \n\n\n\n | 	\n\n | \n\n\n\n\n | \n\n\n |     \n\n |    \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |         \n\n |  \n\n | <|fim_middle|> | ...**
+L42: <|endoftext|> | <|im_end|> | \n\n | <|file_sep|> |   \n\n | \n\n\n\n | \n\n |  \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | <|fim_middle|> | \n\n\n\n | </think> |  ANSW |   \n\n | \n\n\n\n\n\n\n\n\n\n | <|im_start|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n |  Answer | \n\n\n\n\n\n\n\n\n\n\n\n
+L46: <|endoftext|> | <|im_end|> |   \n\n |  Winner |   \n\n |  Calcul |  Decision |  Calculation | <|file_sep|> | </think> | .argmax |  Billion |  CALC |  \n\n |  Arithmetic |  Analysis |  Sentence |  Arbit |  Determin |  Calculate
+L54: <|im_end|> | 计算 | ： |  Calculate | : |  CALC |  Calculation | <think> | calculate |  calculate | </think> |  Calcul | Calcul | calcul | 的计算 | Calculate |  calculations |  calculation |  calculating |  calculates
+L60:  FINAL | FINAL |  Final | Final |  finalize | final |  final | -final | finalize | _final | .final | _FINAL |  finalized |  finalist |  фина |  finale |  FIN |  finalists |  Finale |  SIGNAL
+
+t=1 token='FINAL'
+L34: \n\n | <|endoftext|> | <|im_end|> |   \n\n |  \n\n | \n\n\n\n\n | \n\n\n | \n\n\n\n | 	\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n |     \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |         \n\n | <|fim_middle|> | \n\n\n\n\n\n\n\n\n\n |    \n\n | \n\n\n\n\n\n | <|file_sep|> |        \n\n
+L42: <|endoftext|> | \n\n | <|im_end|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | 选择不 | <|fim_middle|> |   \n\n |  \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |  Choice | 选择 |  @[ | <|file_sep|> |  LETTER | \n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n | _choice |  ANSW | \n\n\n\n | \n\n\n\n\n
+L46: <|endoftext|> |   \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n |  Choice | <|im_end|> |    \n\n |  \n\n |     \n\n | 选择不 | _choice | <|fim_middle|> | .argmax |  \n\n\n\n |   \n\n |      \n\n |   \n\n\n | 	\n\n | stype | uppercase | <|file_sep|>
+L54: : | :B | :F | :X | :C | :b | <|endoftext|> | :j | ： | :D | =F | :class | :f | :A | :NO | :P | :y | :+ | :text | :v
+L60: : | :B |  B | :C |  : | =B | :A | :b | B |  Signal |  C | 	B |  A | .getB |  Bs |  signal | -B |  SIGNAL | .B | ：
+
+t=2 token=':'
+L34: \n\n | <|endoftext|> |  \n\n |   \n\n |  ... |  . | \n\n\n | <|im_end|> |  # | \n\n\n\n |    \n\n | \n\n |     \n\n |  .... |  ? |  \n\n\n | \n\n\n\n\n | 	\n\n |  choice |         \n\n
+L42: \n\n | <|endoftext|> |  \n\n |  ... |  Choice |  BEST |  Best |  choice |  best |  maximize |  optimal |  maxim |  Favor |  maximizing | 最大化 |  Maxim |  Highest |   \n\n |  Max |  MAX
+L46:  \n\n |   \n\n | \n\n |  Choice |  Favor |  choice |  maximize |    \n\n |  \n\n\n |     \n\n | choice |  Preference |  preference |  favor | 首选 | 最大化 | favor | 	\n\n | Choice |         \n\n
+L54: <|endoftext|> | <|im_end|> | <|im_start|> |  B |  EITHER |  Either | >B | =B | either | \n\n | BBBB | 要么 | 乙 |  BB | &B | </think> | 	B | (beta | +B | $b
+L60:  B |  Signal |  A |  signal |  BB | 	B |  Bs |  BA |  SIGNAL | Ｂ | signal |  BC | _B | B |  AB |  Б |  C | -B | _signal |  BS
+
+t=3 token=' B'
+L34: <|endoftext|> | \n\n | <|im_end|> |  \n\n | \n\n\n |   \n\n |  ... | \n\n\n\n | ... | \n\n | <|fim_middle|> | <|file_sep|> | \n\n\n\n\n |  . | 	\n\n |     \n\n | 。 |  ..." |    \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+L42: <|endoftext|> | \n\n | <|im_end|> | \n\n\n |  \n\n | \n\n\n\n | <|file_sep|> |   \n\n | <|fim_middle|> | \n\n\n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | </think> | <|im_start|> | \n\n |  ... | Answer | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n\n\n\n\n |     \n\n | \n
+L46: <|endoftext|> | \n\n | <|im_end|> |   \n\n |  \n\n | \n\n\n\n |     \n\n | 	\n\n | <|file_sep|> | </think> |    \n\n | <|im_start|> |         \n\n | 。 |   \n\n\n | <|fim_middle|> | \n\n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | \n\n | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+L54: <|endoftext|> | <|im_end|> | \n\n | <|im_start|> | </think> | \n\n\n\n | <|file_sep|> | <think> | \n\n\n | <|fim_middle|> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | 。 | ** | \n\n\n\n\n | <tool_call> |  \n\n | </tool_call> | ]() | "/> | \n
+L60: <|im_end|> | <|endoftext|> | </think> | <|im_start|> | </ |  /> | ``` |  ``` | "/> | <|fim_middle|> | \n\n | </tool_call> | \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n | ** | <tool_call> | <|file_sep|> | .kwargs | "> |  </ |  kwargs
