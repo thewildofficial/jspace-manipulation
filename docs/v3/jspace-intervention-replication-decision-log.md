@@ -67,3 +67,16 @@ decisions were recorded.
 - The same first burned-analysis attempt then stopped while serializing a NumPy
   boolean from the frozen power calculation. Convert NumPy scalars to native JSON
   types; no statistic or decision rule changes.
+
+## 2026-08-21 -- JI1-D007 -- Amend candidates after behavior-only v1 failure
+
+- Candidate v1 produced 77/90 tokenization-eligible and 36/90 clean-correct
+  cells. The deterministic selector found no feasible countries 4x4 block and
+  refused to freeze. No fresh intervention had been generated.
+- Preserve the v1 baseline artifact. Candidate v2 uses exact upstream-style
+  country prompts, adds Australia for a fourth distinct one-token continent,
+  replaces weak month facts with fixed month offsets, and replaces weak number
+  templates with simple successor/predecessor and multiplication forms.
+- The selector, tokenizer rules, requirement that every retained clean prompt be
+  top-1 correct, intervention configuration, outcomes, and thresholds do not
+  change. Candidate v2 is frozen before its clean-only run.

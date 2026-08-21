@@ -1,102 +1,43 @@
 {
   "schema_version": 1,
+  "candidate_version": 2,
   "study_id": "V3-JI1",
-  "status": "frozen_candidates_before_behavior_only_inference",
+  "status": "amended_after_v1_behavior_only_failure_interventions_unopened",
   "selection_rule": "Within each category, enumerate 4-argument combinations and then 4-function combinations in JSON order; select the first block for which every cell passes contextual tokenization, distinct-answer, and clean-top-1 gates.",
   "continuation_rule": "tokenize(prompt + ' ' + answer) == tokenize(prompt) + [answer_token_id]",
   "argument_rule": "The argument surface in its prompt must align to exactly one contextual token and the standalone leading-space form must be one token.",
   "categories": [
     {
       "name": "countries",
-      "arguments": ["Germany", "Japan", "Kenya", "Fiji", "Egypt", "Samoa"],
+      "arguments": ["Germany", "Japan", "Egypt", "Australia", "Italy", "India"],
       "functions": [
-        {
-          "name": "capital",
-          "template": "The capital of {arg} is the city of",
-          "answers": {"Germany": "Berlin", "Japan": "Tokyo", "Kenya": "Nairobi", "Fiji": "Suva", "Egypt": "Cairo", "Samoa": "Apia"}
-        },
-        {
-          "name": "language",
-          "template": "A widely used national language of {arg} is",
-          "answers": {"Germany": "German", "Japan": "Japanese", "Kenya": "Swahili", "Fiji": "Fijian", "Egypt": "Arabic", "Samoa": "Samoan"}
-        },
-        {
-          "name": "continent",
-          "template": "{arg} is a country on the continent of",
-          "answers": {"Germany": "Europe", "Japan": "Asia", "Kenya": "Africa", "Fiji": "Oceania", "Egypt": "Africa", "Samoa": "Oceania"}
-        },
-        {
-          "name": "currency",
-          "template": "The single-word currency name associated with {arg} is",
-          "answers": {"Germany": "Euro", "Japan": "Yen", "Kenya": "Shilling", "Fiji": "Dollar", "Egypt": "Pound", "Samoa": "Tala"}
-        },
-        {
-          "name": "nationality",
-          "template": "A person from {arg} may be described as",
-          "answers": {"Germany": "German", "Japan": "Japanese", "Kenya": "Kenyan", "Fiji": "Fijian", "Egypt": "Egyptian", "Samoa": "Samoan"}
-        }
+        {"name": "capital", "template": "The capital of {arg} is the city of", "answers": {"Germany": "Berlin", "Japan": "Tokyo", "Egypt": "Cairo", "Australia": "Canberra", "Italy": "Rome", "India": "Delhi"}},
+        {"name": "language", "template": "Most people in {arg} speak", "answers": {"Germany": "German", "Japan": "Japanese", "Egypt": "Arabic", "Australia": "English", "Italy": "Italian", "India": "Hindi"}},
+        {"name": "continent", "template": "{arg} is a country on the continent of", "answers": {"Germany": "Europe", "Japan": "Asia", "Egypt": "Africa", "Australia": "Australia", "Italy": "Europe", "India": "Asia"}},
+        {"name": "currency", "template": "The single-word name for the currency now used in {arg} is the", "answers": {"Germany": "Euro", "Japan": "Yen", "Egypt": "Pound", "Australia": "Dollar", "Italy": "Euro", "India": "Rupee"}},
+        {"name": "nationality", "template": "The single-word nationality adjective for a person from {arg} is", "answers": {"Germany": "German", "Japan": "Japanese", "Egypt": "Egyptian", "Australia": "Australian", "Italy": "Italian", "India": "Indian"}}
       ]
     },
     {
       "name": "months",
       "arguments": ["January", "May", "August", "November", "March", "July"],
       "functions": [
-        {
-          "name": "season",
-          "template": "In the northern hemisphere, {arg} is in the season of",
-          "answers": {"January": "winter", "May": "spring", "August": "summer", "November": "autumn", "March": "spring", "July": "summer"}
-        },
-        {
-          "name": "number",
-          "template": "Counting from January, {arg} is month number",
-          "answers": {"January": "one", "May": "five", "August": "eight", "November": "eleven", "March": "three", "July": "seven"}
-        },
-        {
-          "name": "next_month",
-          "template": "The month right after {arg} is",
-          "answers": {"January": "February", "May": "June", "August": "September", "November": "December", "March": "April", "July": "August"}
-        },
-        {
-          "name": "previous_month",
-          "template": "The month immediately before {arg} is",
-          "answers": {"January": "December", "May": "April", "August": "July", "November": "October", "March": "February", "July": "June"}
-        },
-        {
-          "name": "quarter",
-          "template": "In a calendar year, {arg} falls in the quarter numbered",
-          "answers": {"January": "one", "May": "two", "August": "three", "November": "four", "March": "one", "July": "three"}
-        }
+        {"name": "next_month", "template": "The month right after {arg} is", "answers": {"January": "February", "May": "June", "August": "September", "November": "December", "March": "April", "July": "August"}},
+        {"name": "previous_month", "template": "The month immediately before {arg} is", "answers": {"January": "December", "May": "April", "August": "July", "November": "October", "March": "February", "July": "June"}},
+        {"name": "two_months_after", "template": "The month two months after {arg} is", "answers": {"January": "March", "May": "July", "August": "October", "November": "January", "March": "May", "July": "September"}},
+        {"name": "two_months_before", "template": "The month two months before {arg} is", "answers": {"January": "November", "May": "March", "August": "June", "November": "September", "March": "January", "July": "May"}},
+        {"name": "three_months_after", "template": "The month three months after {arg} is", "answers": {"January": "April", "May": "August", "August": "November", "November": "February", "March": "June", "July": "October"}}
       ]
     },
     {
       "name": "number_words",
-      "arguments": ["two", "four", "six", "eight", "three", "five"],
+      "arguments": ["two", "three", "four", "six", "eight", "five"],
       "functions": [
-        {
-          "name": "double",
-          "template": "Twice the number {arg} is",
-          "answers": {"two": "four", "four": "eight", "six": "twelve", "eight": "sixteen", "three": "six", "five": "ten"}
-        },
-        {
-          "name": "successor",
-          "template": "The whole number immediately after {arg} is",
-          "answers": {"two": "three", "four": "five", "six": "seven", "eight": "nine", "three": "four", "five": "six"}
-        },
-        {
-          "name": "predecessor",
-          "template": "The whole number immediately before {arg} is",
-          "answers": {"two": "one", "four": "three", "six": "five", "eight": "seven", "three": "two", "five": "four"}
-        },
-        {
-          "name": "half",
-          "template": "Half of the number {arg} is",
-          "answers": {"two": "one", "four": "two", "six": "three", "eight": "four", "three": "one", "five": "two"}
-        },
-        {
-          "name": "first_letter",
-          "template": "The English word '{arg}' begins with the letter",
-          "answers": {"two": "t", "four": "f", "six": "s", "eight": "e", "three": "t", "five": "f"}
-        }
+        {"name": "successor", "template": "The number that comes right after {arg} is", "answers": {"two": "three", "three": "four", "four": "five", "six": "seven", "eight": "nine", "five": "six"}},
+        {"name": "predecessor", "template": "The number that comes right before {arg} is", "answers": {"two": "one", "three": "two", "four": "three", "six": "five", "eight": "seven", "five": "four"}},
+        {"name": "double", "template": "Two times {arg} equals", "answers": {"two": "four", "three": "six", "four": "eight", "six": "twelve", "eight": "sixteen", "five": "ten"}},
+        {"name": "triple", "template": "Three times {arg} equals", "answers": {"two": "six", "three": "nine", "four": "twelve", "six": "eighteen", "eight": "twenty", "five": "fifteen"}},
+        {"name": "plus_two", "template": "Two plus {arg} equals", "answers": {"two": "four", "three": "five", "four": "six", "six": "eight", "eight": "ten", "five": "seven"}}
       ]
     }
   ]

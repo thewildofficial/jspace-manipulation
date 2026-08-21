@@ -860,7 +860,8 @@ def behavior_only() -> None:
     candidates = json.loads((CONFIG_DIR / "fresh_candidates.json").read_text())
     context = _git_context(require_scoped_clean=True)
     payload = behavior_only_remote.remote(candidates, context)
-    output = RESULTS / "raw/fresh_baseline_candidates.json"
+    version = int(candidates.get("candidate_version", 1))
+    output = RESULTS / "raw" / f"fresh_baseline_candidates_v{version}.json"
     _write_json(output, payload)
     parsed = json.loads(payload)
     print(
