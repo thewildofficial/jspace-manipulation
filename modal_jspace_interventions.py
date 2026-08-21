@@ -831,6 +831,30 @@ def _write_gzip(path: Path, payload: str) -> None:
             compressed.write((payload + "\n").encode())
 
 
+def _category_names(dataset: dict[str, Any]) -> list[str]:
+    categories = dataset.get("data", {}).get("categories", dataset.get("categories", []))
+    return [str(category.get("name", category.get("category"))) for category in categories]
+
+
+def _category_shard(dataset: dict[str, Any], category_name: str) -> dict[str, Any]:
+    result = json.loads(json.dumps(dataset))
+    if "data" in result:
+        result["data"]["categories"] = [
+            category
+            for category in result["data"]["categories"]
+            if str(category.get("name", category.get("category"))) == category_name
+        ]
+    else:
+        result["categories"] = [
+            category
+            for category in result["categories"]
+            if str(category.get("name", category.get("category"))) == category_name
+        ]
+    if _category_names(result) != [category_name]:
+        raise RuntimeError(f"could not resolve exactly one category shard: {category_name}")
+    return result
+
+
 @app.local_entrypoint()
 def behavior_only() -> None:
     candidates = json.loads((CONFIG_DIR / "fresh_candidates.json").read_text())
@@ -857,32 +881,44 @@ def behavior_only() -> None:
 
 
 @app.local_entrypoint()
-def run_phase(phase: str) -> None:
+def run_phase(phase: str, shard: str) -> None:
     if phase not in {"burned", "fresh"}:
         raise ValueError("phase must be burned or fresh")
     experiment = json.loads((CONFIG_DIR / "experiment.json").read_text())
     if phase == "burned":
-        dataset = json.loads(Path("configs/v2/flexible_generalization_smoke.json").read_text())
-        output = RESULTS / "raw/burned_replication.json.gz"
+        full_dataset = json.loads(
+            Path("configs/v2/flexible_generalization_smoke.json").read_text()
+        )
         require_scoped_clean = True
     else:
-        dataset = json.loads((CONFIG_DIR / "fresh_frozen.json").read_text())
-        if dataset["status"] != "behavior_only_frozen_interventions_unopened":
+        full_dataset = json.loads((CONFIG_DIR / "fresh_frozen.json").read_text())
+        if full_dataset["status"] != "behavior_only_frozen_interventions_unopened":
             raise RuntimeError("fresh dataset status is not sealed")
-        output = RESULTS / "raw/fresh_interventions.json.gz"
         require_scoped_clean = True
+    if shard not in _category_names(full_dataset):
+        raise ValueError(
+            f"shard must be one of {_category_names(full_dataset)}, received {shard!r}"
+        )
+    dataset = _category_shard(full_dataset, shard)
+    prefix = "burned_replication" if phase == "burned" else "fresh_interventions"
+    output = RESULTS / "raw/shards" / f"{prefix}_{shard}.json.gz"
     context = _git_context(require_scoped_clean=require_scoped_clean)
+    context["category_shard"] = shard
+    context["full_dataset_sha256"] = _canonical_sha256(full_dataset)
     payload = study_remote.remote(phase, dataset, experiment, context)
     _write_gzip(output, payload)
     parsed = json.loads(payload)
     manifest = {key: value for key, value in parsed.items() if key != "rows"}
     manifest["raw_output_sha256"] = hashlib.sha256(output.read_bytes()).hexdigest()
-    manifest_path = RESULTS / "manifests" / f"phase_{'b' if phase == 'burned' else 'd'}.json"
+    manifest_path = (
+        RESULTS / "manifests/shards" / f"phase_{'b' if phase == 'burned' else 'd'}_{shard}.json"
+    )
     _write_json(manifest_path, json.dumps(manifest, indent=2, sort_keys=True))
     print(
         json.dumps(
             {
                 "phase": phase,
+                "shard": shard,
                 "output": str(output),
                 "manifest": str(manifest_path),
                 "run_id": parsed["run_id"],
@@ -890,6 +926,93 @@ def run_phase(phase: str) -> None:
                 "phase_a_pass": parsed["phase_a"]["all_pass"],
                 "elapsed_seconds": parsed["elapsed_seconds"],
                 "outcomes_not_summarized_by_runner": True,
+            },
+            indent=2,
+        )
+    )
+
+
+@app.local_entrypoint()
+def combine_phase(phase: str) -> None:
+    if phase not in {"burned", "fresh"}:
+        raise ValueError("phase must be burned or fresh")
+    experiment = json.loads((CONFIG_DIR / "experiment.json").read_text())
+    if phase == "burned":
+        full_dataset = json.loads(
+            Path("configs/v2/flexible_generalization_smoke.json").read_text()
+        )
+        prefix = "burned_replication"
+        output = RESULTS / "raw/burned_replication.json.gz"
+        manifest_path = RESULTS / "manifests/phase_b.json"
+    else:
+        full_dataset = json.loads((CONFIG_DIR / "fresh_frozen.json").read_text())
+        prefix = "fresh_interventions"
+        output = RESULTS / "raw/fresh_interventions.json.gz"
+        manifest_path = RESULTS / "manifests/phase_d.json"
+
+    expected_categories = _category_names(full_dataset)
+    artifacts = []
+    for category in expected_categories:
+        path = RESULTS / "raw/shards" / f"{prefix}_{category}.json.gz"
+        if not path.exists():
+            raise RuntimeError(f"missing sealed category shard: {path}")
+        with gzip.open(path, "rt") as handle:
+            artifacts.append(json.load(handle))
+    commits = {artifact["context"]["git_commit"] for artifact in artifacts}
+    experiment_hashes = {artifact["experiment_sha256"] for artifact in artifacts}
+    full_dataset_hashes = {artifact["context"]["full_dataset_sha256"] for artifact in artifacts}
+    shard_names = [artifact["context"]["category_shard"] for artifact in artifacts]
+    if len(commits) != 1 or experiment_hashes != {_canonical_sha256(experiment)}:
+        raise RuntimeError("shards do not share one frozen commit and experiment")
+    if full_dataset_hashes != {_canonical_sha256(full_dataset)}:
+        raise RuntimeError("shards do not match the current full frozen dataset")
+    if shard_names != expected_categories:
+        raise RuntimeError("shard category order/coverage does not match dataset")
+    if not all(artifact["phase_a"]["all_pass"] for artifact in artifacts):
+        raise RuntimeError("at least one shard failed Phase A")
+
+    combined = {
+        "schema_version": 1,
+        "study_id": "V3-JI1",
+        "run_id": uuid.uuid4().hex,
+        "created_at": datetime.now(UTC).isoformat(),
+        "phase": phase,
+        "phase_a": {
+            "all_pass": True,
+            "shards": {
+                artifact["context"]["category_shard"]: artifact["phase_a"]
+                for artifact in artifacts
+            },
+        },
+        "dataset_sha256": _canonical_sha256(full_dataset),
+        "experiment_sha256": _canonical_sha256(experiment),
+        "elapsed_seconds": sum(float(artifact["elapsed_seconds"]) for artifact in artifacts),
+        "context": {
+            "git_commit": next(iter(commits)),
+            "category_shards": shard_names,
+            "combined_without_outcome_inspection": True,
+        },
+        "metadata": artifacts[0]["metadata"],
+        "exclusions": [
+            exclusion for artifact in artifacts for exclusion in artifact["exclusions"]
+        ],
+        "rows": [row for artifact in artifacts for row in artifact["rows"]],
+    }
+    payload = json.dumps(combined, allow_nan=False)
+    _write_gzip(output, payload)
+    manifest = {key: value for key, value in combined.items() if key != "rows"}
+    manifest["raw_output_sha256"] = hashlib.sha256(output.read_bytes()).hexdigest()
+    _write_json(manifest_path, json.dumps(manifest, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "phase": phase,
+                "output": str(output),
+                "manifest": str(manifest_path),
+                "shards": shard_names,
+                "rows": len(combined["rows"]),
+                "exclusions": len(combined["exclusions"]),
+                "outcomes_not_summarized_by_combiner": True,
             },
             indent=2,
         )

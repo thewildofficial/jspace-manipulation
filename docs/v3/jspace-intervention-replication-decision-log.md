@@ -43,3 +43,16 @@ decisions were recorded.
   excluded burned cell or target in the raw artifact.
 - The stopped launch wrote no local result artifact and exposed no intervention
   row or summary.
+
+## 2026-08-21 -- JI1-D005 -- Shard transport after client heartbeat failure
+
+- A full burned run was cancelled after the local Modal client lost its
+  heartbeat. Modal killed the worker when the client disconnected. The remote
+  payload never returned, no local artifact was written, and no intervention
+  outcome was inspected.
+- Run each frozen category as a sealed shard. Each shard retains the complete
+  condition matrix and reruns Phase A. A deterministic local combiner requires
+  exact agreement on git commit, experiment hash, full-dataset hash, and category
+  coverage before producing the preregistered phase artifact.
+- This is an operational transport change only. Dataset contents, intervention
+  conditions, controls, estimands, thresholds, and analysis remain unchanged.
