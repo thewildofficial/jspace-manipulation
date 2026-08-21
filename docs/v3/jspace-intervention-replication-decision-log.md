@@ -80,3 +80,17 @@ decisions were recorded.
 - The selector, tokenizer rules, requirement that every retained clean prompt be
   top-1 correct, intervention configuration, outcomes, and thresholds do not
   change. Candidate v2 is frozen before its clean-only run.
+
+## 2026-08-21 -- JI1-D008 -- Amend candidates after behavior-only v2 failure
+
+- Candidate v2 produced 89/90 tokenization-eligible and 60/90 clean-correct
+  cells, but still had no feasible countries 4x4 block; month offsets also left
+  only two fully reliable functions. No fresh intervention had been generated.
+- Historical review additionally showed that several v2 country arguments had
+  prior H0/H0R intervention exposure. Candidate v3 replaces them with previously
+  unintervened Peru, Norway, Thailand, and Ghana (plus ordered fallbacks).
+- Express two-step month functions compositionally using the already reliable
+  immediate-next/immediate-previous wording. Retain the v2 number-word pool,
+  whose five functions were clean-correct for all six arguments.
+- Preserve v2's clean-only artifact. All selection, intervention, analysis, and
+  evidence rules remain frozen.

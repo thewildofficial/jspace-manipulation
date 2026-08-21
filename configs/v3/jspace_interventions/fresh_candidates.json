@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "candidate_version": 2,
+  "candidate_version": 3,
   "study_id": "V3-JI1",
-  "status": "amended_after_v1_behavior_only_failure_interventions_unopened",
+  "status": "amended_after_v2_behavior_only_failure_interventions_unopened",
   "selection_rule": "Within each category, enumerate 4-argument combinations and then 4-function combinations in JSON order; select the first block for which every cell passes contextual tokenization, distinct-answer, and clean-top-1 gates.",
   "continuation_rule": "tokenize(prompt + ' ' + answer) == tokenize(prompt) + [answer_token_id]",
   "argument_rule": "The argument surface in its prompt must align to exactly one contextual token and the standalone leading-space form must be one token.",
   "categories": [
     {
       "name": "countries",
-      "arguments": ["Germany", "Japan", "Egypt", "Australia", "Italy", "India"],
+      "arguments": ["Peru", "Norway", "Thailand", "Ghana", "Chile", "Poland"],
       "functions": [
-        {"name": "capital", "template": "The capital of {arg} is the city of", "answers": {"Germany": "Berlin", "Japan": "Tokyo", "Egypt": "Cairo", "Australia": "Canberra", "Italy": "Rome", "India": "Delhi"}},
-        {"name": "language", "template": "Most people in {arg} speak", "answers": {"Germany": "German", "Japan": "Japanese", "Egypt": "Arabic", "Australia": "English", "Italy": "Italian", "India": "Hindi"}},
-        {"name": "continent", "template": "{arg} is a country on the continent of", "answers": {"Germany": "Europe", "Japan": "Asia", "Egypt": "Africa", "Australia": "Australia", "Italy": "Europe", "India": "Asia"}},
-        {"name": "currency", "template": "The single-word name for the currency now used in {arg} is the", "answers": {"Germany": "Euro", "Japan": "Yen", "Egypt": "Pound", "Australia": "Dollar", "Italy": "Euro", "India": "Rupee"}},
-        {"name": "nationality", "template": "The single-word nationality adjective for a person from {arg} is", "answers": {"Germany": "German", "Japan": "Japanese", "Egypt": "Egyptian", "Australia": "Australian", "Italy": "Italian", "India": "Indian"}}
+        {"name": "capital", "template": "The capital of {arg} is the city of", "answers": {"Peru": "Lima", "Norway": "Oslo", "Thailand": "Bangkok", "Ghana": "Accra", "Chile": "Santiago", "Poland": "Warsaw"}},
+        {"name": "language", "template": "Most people in {arg} speak", "answers": {"Peru": "Spanish", "Norway": "Norwegian", "Thailand": "Thai", "Ghana": "English", "Chile": "Spanish", "Poland": "Polish"}},
+        {"name": "continent", "template": "{arg} is a country on the continent of", "answers": {"Peru": "South", "Norway": "Europe", "Thailand": "Asia", "Ghana": "Africa", "Chile": "South", "Poland": "Europe"}},
+        {"name": "demonym", "template": "A person from {arg} is called a", "answers": {"Peru": "Peruvian", "Norway": "Norwegian", "Thailand": "Thai", "Ghana": "Ghanaian", "Chile": "Chilean", "Poland": "Pole"}},
+        {"name": "currency", "template": "The single-word name for the currency now used in {arg} is the", "answers": {"Peru": "Sol", "Norway": "Krone", "Thailand": "Baht", "Ghana": "Cedi", "Chile": "Peso", "Poland": "Zloty"}}
       ]
     },
     {
@@ -24,9 +24,9 @@
       "functions": [
         {"name": "next_month", "template": "The month right after {arg} is", "answers": {"January": "February", "May": "June", "August": "September", "November": "December", "March": "April", "July": "August"}},
         {"name": "previous_month", "template": "The month immediately before {arg} is", "answers": {"January": "December", "May": "April", "August": "July", "November": "October", "March": "February", "July": "June"}},
-        {"name": "two_months_after", "template": "The month two months after {arg} is", "answers": {"January": "March", "May": "July", "August": "October", "November": "January", "March": "May", "July": "September"}},
-        {"name": "two_months_before", "template": "The month two months before {arg} is", "answers": {"January": "November", "May": "March", "August": "June", "November": "September", "March": "January", "July": "May"}},
-        {"name": "three_months_after", "template": "The month three months after {arg} is", "answers": {"January": "April", "May": "August", "August": "November", "November": "February", "March": "June", "July": "October"}}
+        {"name": "two_months_after", "template": "The month immediately after the month immediately after {arg} is", "answers": {"January": "March", "May": "July", "August": "October", "November": "January", "March": "May", "July": "September"}},
+        {"name": "two_months_before", "template": "The month immediately before the month immediately before {arg} is", "answers": {"January": "November", "May": "March", "August": "June", "November": "September", "March": "January", "July": "May"}},
+        {"name": "three_months_after", "template": "The month after the month after the month after {arg} is", "answers": {"January": "April", "May": "August", "August": "November", "November": "February", "March": "June", "July": "October"}}
       ]
     },
     {
