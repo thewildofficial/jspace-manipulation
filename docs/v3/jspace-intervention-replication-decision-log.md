@@ -56,3 +56,14 @@ decisions were recorded.
   coverage before producing the preregistered phase artifact.
 - This is an operational transport change only. Dataset contents, intervention
   conditions, controls, estimands, thresholds, and analysis remain unchanged.
+
+## 2026-08-21 -- JI1-D006 -- Lazy-load Torch in shared analysis helpers
+
+- The burned analyzer initially stopped before producing a summary because the
+  local analysis environment does not install Torch and the shared pure helper
+  module imported it eagerly.
+- Move Torch imports into GPU/numerical functions. Dataset hashing, bootstrap,
+  selection, recorded intervention rows, estimands, and gates are unchanged.
+- The same first burned-analysis attempt then stopped while serializing a NumPy
+  boolean from the frozen power calculation. Convert NumPy scalars to native JSON
+  types; no statistic or decision rule changes.

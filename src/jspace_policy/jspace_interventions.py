@@ -5,10 +5,12 @@ import itertools
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import torch
+
+if TYPE_CHECKING:
+    import torch
 
 FP32_SWAP_ATOL = 2e-5
 FP32_SWAP_RTOL = 2e-5
@@ -32,6 +34,8 @@ class SwapDiagnostics:
 
 
 def _basis(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    import torch
+
     if source.ndim != 1 or target.ndim != 1 or source.shape != target.shape:
         raise ValueError("source and target must be same-width vectors")
     matrix = torch.stack([source.float(), target.float()], dim=1)
@@ -41,6 +45,8 @@ def _basis(source: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 
 def projected_coordinates(hidden: torch.Tensor, matrix: torch.Tensor) -> torch.Tensor:
+    import torch
+
     return hidden.float() @ torch.linalg.pinv(matrix).T
 
 
@@ -57,6 +63,8 @@ def coordinate_swap_fp32(
     are not eligible for basis-conditioning summaries because ``[v, v]`` is rank
     deficient by construction.
     """
+    import torch
+
     original_dtype = hidden.dtype
     value = hidden.float()
     source_fp32 = source.float().to(value.device)
@@ -118,6 +126,8 @@ def matched_random_swap_fp32(
     Its swap delta is then rescaled independently for every patched activation so
     that its L2 norm equals the semantic swap delta at the same hook.
     """
+    import torch
+
     value = hidden.float()
     semantic, semantic_diagnostics = coordinate_swap_fp32(value, source, target, alpha=alpha)
     semantic_delta = semantic.float() - value

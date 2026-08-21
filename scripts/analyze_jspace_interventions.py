@@ -172,10 +172,14 @@ def power_grid(rows: pd.DataFrame) -> dict[str, Any]:
         ),
         "burned_cluster_sd": observed_sd,
         "grid": grid,
-        "minimum_effect_0_5_power_at_least_0_8": next(
-            row["estimated_detection_probability"] for row in grid if row["true_effect"] == 0.5
-        )
-        >= 0.8,
+        "minimum_effect_0_5_power_at_least_0_8": bool(
+            next(
+                row["estimated_detection_probability"]
+                for row in grid
+                if row["true_effect"] == 0.5
+            )
+            >= 0.8
+        ),
     }
 
 
@@ -287,10 +291,10 @@ def main() -> None:
         gate = experiment["phase_b_proceed_gate"]
         result = {
             "phase_a_all_pass": True,
-            "alpha1_semantic_mean_delta": semantic["mean_delta"],
-            "alpha1_positive_fraction": semantic["positive_fraction"],
-            "alpha1_random_mean_delta": control_means["random_delta_matched"],
-            "alpha1_unrelated_mean_delta": control_means["unrelated_semantic"],
+            "alpha1_semantic_mean_delta": float(semantic["mean_delta"]),
+            "alpha1_positive_fraction": float(semantic["positive_fraction"]),
+            "alpha1_random_mean_delta": float(control_means["random_delta_matched"]),
+            "alpha1_unrelated_mean_delta": float(control_means["unrelated_semantic"]),
         }
         result["proceed_to_fresh"] = bool(
             result["alpha1_semantic_mean_delta"] >= gate["minimum_alpha1_semantic_mean_delta"]

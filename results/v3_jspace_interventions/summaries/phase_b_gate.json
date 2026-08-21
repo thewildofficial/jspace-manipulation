@@ -1,0 +1,8 @@
+{
+  "phase_a_all_pass": true,
+  "alpha1_semantic_mean_delta": 0.5753472129503886,
+  "alpha1_positive_fraction": 0.8333333333333334,
+  "alpha1_random_mean_delta": 0.09479167064030965,
+  "alpha1_unrelated_mean_delta": 0.0690972367922465,
+  "proceed_to_fresh": true
+}
