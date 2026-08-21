@@ -18,7 +18,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--baseline",
         type=Path,
-        default=Path("results/v3_jspace_interventions/raw/fresh_baseline_candidates_v3.json"),
+        default=Path("results/v3_jspace_interventions/raw/fresh_baseline_candidates_v4.json"),
     )
     parser.add_argument(
         "--output",

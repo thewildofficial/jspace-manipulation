@@ -94,3 +94,16 @@ decisions were recorded.
   whose five functions were clean-correct for all six arguments.
 - Preserve v2's clean-only artifact. All selection, intervention, analysis, and
   evidence rules remain frozen.
+
+## 2026-08-21 -- JI1-D009 -- Final candidate amendment after v3 failure
+
+- Candidate v3 produced 76/90 tokenization-eligible and 56/90 clean-correct
+  cells, but country tokenization remained sparse and month offsets continued to
+  elicit punctuation. The unchanged selector again refused to freeze.
+- Replace the country family with previously unintervened lowercase alphabet
+  letters and five deterministic letter functions. Add an explicit month-name
+  response instruction to the multi-step month functions. Retain number words.
+- Candidate v4 is the final redesign attempt. If it lacks three feasible 4x4
+  blocks, stop the study rather than weakening the behavior/tokenization gate.
+- No fresh intervention has been generated. All causal and analysis parameters
+  remain unchanged.
