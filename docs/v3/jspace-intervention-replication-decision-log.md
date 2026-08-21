@@ -32,3 +32,14 @@ decisions were recorded.
 - Restore the already-validated H0/H0R rule: prefer a one-token leading-space
   form, then accept a one-token standalone form.
 - No V3 intervention result or summary artifact existed when this fix was made.
+
+## 2026-08-21 -- JI1-D004 -- Separate burned answer eligibility from directions
+
+- The second burned launch stopped before intervention because direction
+  precomputation unnecessarily requested an answer token for every argument.
+  Burned answer `savanna` has no suitable one-token form on the pinned tokenizer.
+- Precompute only argument-concept directions. Apply the preregistered
+  tokenization-permits rule to source/target answer scoring and record every
+  excluded burned cell or target in the raw artifact.
+- The stopped launch wrote no local result artifact and exposed no intervention
+  row or summary.

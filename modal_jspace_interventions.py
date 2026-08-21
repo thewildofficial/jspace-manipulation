@@ -459,7 +459,7 @@ def _loading(
 
 def _evaluate(
     model: Any, lens: Any, dataset: dict[str, Any], experiment: dict[str, Any], *, phase: str
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     import torch
 
     from jspace_policy.interventions import MultiLayerResidualIntervention
@@ -477,19 +477,30 @@ def _evaluate(
     )
     token_ids: set[int] = set()
     for category in categories:
-        for function in category["functions"]:
-            for argument in category["arguments"]:
-                concept, _ = _target_ids(model.tokenizer, function, argument)
-                token_ids.add(concept)
+        for argument in category["arguments"]:
+            token_ids.add(_single_token_id(model.tokenizer, argument))
     raw_directions = _directions(model, lens, all_layers, sorted(token_ids), unit_l2=False)
     unit_directions = _directions(model, lens, all_layers, sorted(token_ids), unit_l2=True)
     rows: list[dict[str, Any]] = []
+    exclusions: list[dict[str, Any]] = []
 
     for category in categories:
         arguments = category["arguments"]
         for function in category["functions"]:
             for source in arguments:
-                scenario = _scenario_metadata(model.tokenizer, category, function, source)
+                try:
+                    scenario = _scenario_metadata(model.tokenizer, category, function, source)
+                except RuntimeError as exc:
+                    exclusions.append(
+                        {
+                            "category": category["name"],
+                            "function": function["name"],
+                            "source_argument": source,
+                            "target_argument": None,
+                            "reason": str(exc),
+                        }
+                    )
+                    continue
                 input_ids = torch.tensor(
                     [scenario["prompt_token_ids"]], device="cuda", dtype=torch.long
                 )
@@ -509,9 +520,23 @@ def _evaluate(
                 for target in arguments:
                     if target == source:
                         continue
-                    target_id, target_answer_id = _target_ids(model.tokenizer, function, target)
+                    try:
+                        target_id, target_answer_id = _target_ids(
+                            model.tokenizer, function, target
+                        )
+                    except RuntimeError as exc:
+                        exclusions.append(
+                            {
+                                "category": category["name"],
+                                "function": function["name"],
+                                "source_argument": source,
+                                "target_argument": target,
+                                "reason": str(exc),
+                            }
+                        )
+                        continue
                     unrelated = balanced_unrelated_target(arguments, source, target)
-                    unrelated_id, _ = _target_ids(model.tokenizer, function, unrelated)
+                    unrelated_id = _single_token_id(model.tokenizer, unrelated)
                     for condition in conditions:
                         diagnostics: list[dict[str, Any]] = []
                         if condition["control_kind"] == "identity":
@@ -674,7 +699,7 @@ def _evaluate(
                             ),
                         }
                         rows.append(row)
-    return rows
+    return rows, exclusions
 
 
 def _phase_a(model: Any, lens: Any) -> dict[str, Any]:
@@ -749,7 +774,7 @@ def study_remote(
     phase_a = _phase_a(model, lens)
     if not phase_a["all_pass"]:
         raise RuntimeError(f"Phase A failed: {phase_a}")
-    rows = _evaluate(model, lens, dataset, experiment, phase=phase)
+    rows, exclusions = _evaluate(model, lens, dataset, experiment, phase=phase)
     torch.cuda.synchronize()
     cache.commit()
     artifact = {
@@ -764,6 +789,7 @@ def study_remote(
         "elapsed_seconds": time.perf_counter() - started,
         "context": context,
         "metadata": metadata,
+        "exclusions": exclusions,
         "rows": rows,
     }
     return json.dumps(artifact, allow_nan=False)
