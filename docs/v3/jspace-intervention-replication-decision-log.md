@@ -107,3 +107,18 @@ decisions were recorded.
   blocks, stop the study rather than weakening the behavior/tokenization gate.
 - No fresh intervention has been generated. All causal and analysis parameters
   remain unchanged.
+
+## 2026-08-21 -- JI1-D010 -- Stop after the final behavior-only freeze failure
+
+- Candidate v4 produced 90/90 tokenization-eligible and 42/90 clean-correct
+  cells. Alphabet letters contributed 0/30 clean-correct cells, months 12/30,
+  and number words 30/30.
+- The unchanged deterministic selector found no feasible alphabet-letters 4x4
+  block and refused to create `fresh_frozen.json`. Consequently the planned
+  three-category prospective corpus does not exist.
+- Per JI1-D009, stop rather than redesign candidates again or weaken the clean
+  top-1 gate. The v4 clean-only raw artifact has SHA-256
+  `3643121893c91f4698e721be081f859211ab1380cdfecb8b9684c892fc687375`.
+- No fresh intervention was generated or opened. The burned Phase B result
+  remains an engineering replication and cannot be promoted to prospective
+  evidence.

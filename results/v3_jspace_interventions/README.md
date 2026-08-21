@@ -1,7 +1,8 @@
 # V3-JI1 results
 
-Status: **Phase B passed its frozen proceed gate; fresh interventions remain
-unopened and have not yet been generated.**
+Status: **Phase B passed its frozen proceed gate; Phase C failed the final
+behavior-only corpus-freeze gate, so the study stopped before Phase D. No fresh
+intervention was generated or opened.**
 
 Generated artifacts are written under `manifests/`, `raw/`, `summaries/`, and
 `figures/`. The final classification must preserve the historical H0R-C failure.
@@ -33,3 +34,21 @@ that it is not a low-distortion regime on this Qwen stack.
 Phase B contains 2,550 condition rows and 14 recorded tokenization exclusions,
 all in the burned animal category. No exclusion was selected using an
 intervention outcome.
+
+## Prospective Phase C stop
+
+Four ordered candidate pools were evaluated using tokenizer checks and clean
+next-token inference only. None produced the required three feasible 4x4
+category blocks. The final v4 run (`e1544e72c6144b8c815a2b6274388989`)
+made all 90 cells tokenizer-eligible, but only 42 were clean top-1 correct:
+
+- alphabet letters: 0/30;
+- months: 12/30;
+- number words: 30/30.
+
+The selector therefore refused to write `fresh_frozen.json`. Under the final
+pre-intervention amendment JI1-D009, this is a mandatory study stop: no further
+prompt redesign, relaxed correctness rule, or rescue intervention sweep is
+permitted. The prospective causal hypotheses are untested, not rejected. The
+positive burned result remains useful implementation and instrument evidence,
+but it is not prospective confirmation.
