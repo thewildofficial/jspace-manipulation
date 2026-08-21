@@ -361,9 +361,9 @@ def _scenario_metadata(
         for index, (left, right) in enumerate(encoded["offset_mapping"])
         if int(left) < end and int(right) > start
     ]
-    source_ids = tokenizer.encode(f" {source}", add_special_tokens=False)
-    answer_ids = tokenizer.encode(f" {function['answers'][source]}", add_special_tokens=False)
-    if len(source_ids) != 1 or len(answer_ids) != 1 or not positions:
+    source_id = _single_token_id(tokenizer, source)
+    answer_id = _single_token_id(tokenizer, function["answers"][source])
+    if not positions:
         raise RuntimeError(
             "burned cell is not single-token compatible: "
             f"{category['name']} {function['name']} {source}"
@@ -372,20 +372,27 @@ def _scenario_metadata(
         "prompt": prompt,
         "prompt_token_ids": [int(value) for value in encoded["input_ids"]],
         "argument_positions": positions,
-        "source_concept_token_id": int(source_ids[0]),
-        "source_answer_token_id": int(answer_ids[0]),
+        "source_concept_token_id": source_id,
+        "source_answer_token_id": answer_id,
     }
+
+
+def _single_token_id(tokenizer: Any, value: str) -> int:
+    """Match H0/H0R: prefer the leading-space form, then standalone."""
+    for surface in (f" {value}", value):
+        token_ids = tokenizer.encode(surface, add_special_tokens=False)
+        if len(token_ids) == 1:
+            return int(token_ids[0])
+    raise RuntimeError(f"not a suitable single token in either surface form: {value}")
 
 
 def _target_ids(tokenizer: Any, function: dict[str, Any], target: str) -> tuple[int, int]:
     cell = function.get("cells", {}).get(target)
     if cell:
         return int(cell["canonical_argument_token_id"]), int(cell["answer_token_id"])
-    concept = tokenizer.encode(f" {target}", add_special_tokens=False)
-    answer = tokenizer.encode(f" {function['answers'][target]}", add_special_tokens=False)
-    if len(concept) != 1 or len(answer) != 1:
-        raise RuntimeError(f"target is not single-token compatible: {target}")
-    return int(concept[0]), int(answer[0])
+    return _single_token_id(tokenizer, target), _single_token_id(
+        tokenizer, function["answers"][target]
+    )
 
 
 def _conditions(experiment: dict[str, Any], *, phase: str) -> list[dict[str, Any]]:

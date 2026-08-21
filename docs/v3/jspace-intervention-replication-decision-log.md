@@ -22,3 +22,13 @@
 
 No new V3 intervention result had been generated or inspected when these
 decisions were recorded.
+
+## 2026-08-21 -- JI1-D003 -- Invalidate first Phase B launch before intervention
+
+- The first burned launch entered dataset preparation but stopped before
+  generating an intervention row because the new compatibility helper required
+  the leading-space token form. Burned argument `lion` is single-token only in
+  the standalone form under the pinned tokenizer.
+- Restore the already-validated H0/H0R rule: prefer a one-token leading-space
+  form, then accept a one-token standalone form.
+- No V3 intervention result or summary artifact existed when this fix was made.
