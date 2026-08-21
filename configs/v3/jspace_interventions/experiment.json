@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "study_id": "V3-JI1",
+  "status": "preregistered_before_new_intervention_results",
+  "seed": 1729,
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false,
+    "generation": "greedy"
+  },
+  "lens": {
+    "repository": "neuronpedia/jacobian-lens",
+    "revision": "qwen-n1000",
+    "filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+    "reference_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e"
+  },
+  "primary": {
+    "vector_semantics": "native_raw",
+    "layers": [36, 37, 38, 39, 40, 41, 42, 43],
+    "position_mask": "all_prompt_positions",
+    "alphas": [0.5, 1.0, 2.0],
+    "controls": ["identity", "random_delta_matched", "unrelated_semantic"]
+  },
+  "burned_diagnostics": [
+    {"id": "single_layer_40", "vector_semantics": "native_raw", "layers": [40], "position_mask": "all_prompt_positions", "alpha": 1.0},
+    {"id": "exclude_final", "vector_semantics": "native_raw", "layers": [36, 37, 38, 39, 40, 41, 42, 43], "position_mask": "all_except_final_position", "alpha": 1.0},
+    {"id": "old_h0r", "vector_semantics": "unit_l2", "layers": [36, 37, 38, 39, 40, 41, 42], "position_mask": "argument_through_end", "alpha": 0.5}
+  ],
+  "random_control": {
+    "algorithm": "deterministic_gaussian_2d_projected_out_of_semantic_span_qr_then_per_hook_per_position_delta_l2_match",
+    "seed": 1729,
+    "redraw_limit": 8
+  },
+  "unrelated_control": {
+    "algorithm": "source_specific_cyclic_derangement_of_three_targets"
+  },
+  "primary_estimand": "patched_minus_clean_target_vs_source_logodds",
+  "output_kl_direction": "KL(clean || patched)",
+  "loading": {
+    "paper_replication": "mean cosine over workspace layers and argument plus final prompt positions",
+    "mechanistic_robustness": "mean cosine over workspace layers at final prompt position only"
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 1729,
+    "cluster": ["category", "function", "source_argument"]
+  },
+  "tier_1": {
+    "semantic_mean_ci_above_zero": true,
+    "minimum_positive_trial_fraction": 0.7,
+    "both_paired_control_contrast_cis_above_zero": true,
+    "minimum_each_paired_control_contrast_mean": 0.5
+  },
+  "tier_2_legacy_mean_limits": {
+    "maximum_mean_output_kl_nats": 1.0,
+    "maximum_mean_delta_rms_ratio": 0.25,
+    "maximum_median_condition_number": 20.0,
+    "maximum_high_cosine_fraction": 0.05,
+    "maximum_absolute_cosine": 0.95,
+    "wording": "low distortion on average"
+  },
+  "tier_3": {
+    "minimum_target_top1_conversion": 0.2,
+    "minimum_target_top1_advantage_over_each_control": 0.1,
+    "minimum_positive_function_fraction": 0.75
+  },
+  "fresh_behavior_gate": {
+    "selection": "first feasible ordered 4x4 block per category",
+    "required_clean_top1_for_every_retained_prompt": true,
+    "manual_repair_after_run": false
+  },
+  "phase_b_proceed_gate": {
+    "phase_a_all_pass": true,
+    "minimum_alpha1_semantic_mean_delta": 0.5,
+    "minimum_alpha1_positive_fraction": 0.7,
+    "require_alpha1_semantic_mean_above_random": true,
+    "require_alpha1_semantic_mean_above_unrelated": true
+  }
+}

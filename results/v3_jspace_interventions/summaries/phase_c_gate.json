@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "study_id": "V3-JI1",
+  "phase": "C",
+  "status": "failed_final_behavior_only_freeze_gate",
+  "created_at": "2026-08-21T06:44:57.951767+00:00",
+  "git_commit": "a9b782ca210bc4566c399b89bae9e7e205fcfe99",
+  "candidate_version": 4,
+  "candidate_sha256": "98ce4a8148369f3233fb679b9ea81d4fa0b9085dd16a05981ac514a0a79a065a",
+  "baseline_artifact": "results/v3_jspace_interventions/raw/fresh_baseline_candidates_v4.json",
+  "baseline_artifact_sha256": "3643121893c91f4698e721be081f859211ab1380cdfecb8b9684c892fc687375",
+  "run_id": "e1544e72c6144b8c815a2b6274388989",
+  "rows": 90,
+  "tokenization_eligible": 90,
+  "clean_correct": 42,
+  "categories": {
+    "alphabet_letters": {"rows": 30, "tokenization_eligible": 30, "clean_correct": 0, "feasible_4x4": false},
+    "months": {"rows": 30, "tokenization_eligible": 30, "clean_correct": 12, "feasible_4x4": false},
+    "number_words": {"rows": 30, "tokenization_eligible": 30, "clean_correct": 30, "feasible_4x4": true}
+  },
+  "required_feasible_categories": 3,
+  "observed_feasible_categories": 1,
+  "fresh_frozen_created": false,
+  "fresh_intervention_generated": false,
+  "fresh_intervention_opened": false,
+  "decision": "stop_per_JI1-D009"
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "study_id": "V3-JI1",
+  "status": "burned_engineering_only",
+  "source_path": "configs/v2/flexible_generalization_smoke.json",
+  "source_sha256": "f48d8e877c7422e14fa60794984fde07bbd11acbda4030c0149ec0a593773fdd",
+  "categories": ["countries", "months", "animals", "numbers"],
+  "confirmatory_use": false
+}

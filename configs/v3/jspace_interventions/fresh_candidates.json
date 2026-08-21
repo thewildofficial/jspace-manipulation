@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "candidate_version": 4,
+  "study_id": "V3-JI1",
+  "status": "amended_after_v3_behavior_only_failure_interventions_unopened",
+  "selection_rule": "Within each category, enumerate 4-argument combinations and then 4-function combinations in JSON order; select the first block for which every cell passes contextual tokenization, distinct-answer, and clean-top-1 gates.",
+  "continuation_rule": "tokenize(prompt + ' ' + answer) == tokenize(prompt) + [answer_token_id]",
+  "argument_rule": "The argument surface in its prompt must align to exactly one contextual token and the standalone leading-space form must be one token.",
+  "categories": [
+    {
+      "name": "alphabet_letters",
+      "arguments": ["b", "d", "f", "h", "j", "l"],
+      "functions": [
+        {"name": "next_letter", "template": "Answer with one lowercase letter. The letter immediately after {arg} in the English alphabet is", "answers": {"b": "c", "d": "e", "f": "g", "h": "i", "j": "k", "l": "m"}},
+        {"name": "previous_letter", "template": "Answer with one lowercase letter. The letter immediately before {arg} in the English alphabet is", "answers": {"b": "a", "d": "c", "f": "e", "h": "g", "j": "i", "l": "k"}},
+        {"name": "two_letters_after", "template": "Answer with one lowercase letter. The letter after the letter after {arg} in the English alphabet is", "answers": {"b": "d", "d": "f", "f": "h", "h": "j", "j": "l", "l": "n"}},
+        {"name": "uppercase", "template": "Answer with one uppercase letter. The uppercase form of {arg} is", "answers": {"b": "B", "d": "D", "f": "F", "h": "H", "j": "J", "l": "L"}},
+        {"name": "alphabet_number", "template": "Answer with one number word. The position of {arg} in the English alphabet is", "answers": {"b": "two", "d": "four", "f": "six", "h": "eight", "j": "ten", "l": "twelve"}}
+      ]
+    },
+    {
+      "name": "months",
+      "arguments": ["January", "May", "August", "November", "March", "July"],
+      "functions": [
+        {"name": "next_month", "template": "The month right after {arg} is", "answers": {"January": "February", "May": "June", "August": "September", "November": "December", "March": "April", "July": "August"}},
+        {"name": "previous_month", "template": "The month immediately before {arg} is", "answers": {"January": "December", "May": "April", "August": "July", "November": "October", "March": "February", "July": "June"}},
+        {"name": "two_months_after", "template": "Answer with only a month name. The month immediately after the month immediately after {arg} is", "answers": {"January": "March", "May": "July", "August": "October", "November": "January", "March": "May", "July": "September"}},
+        {"name": "two_months_before", "template": "Answer with only a month name. The month immediately before the month immediately before {arg} is", "answers": {"January": "November", "May": "March", "August": "June", "November": "September", "March": "January", "July": "May"}},
+        {"name": "three_months_after", "template": "Answer with only a month name. The month after the month after the month after {arg} is", "answers": {"January": "April", "May": "August", "August": "November", "November": "February", "March": "June", "July": "October"}}
+      ]
+    },
+    {
+      "name": "number_words",
+      "arguments": ["two", "three", "four", "six", "eight", "five"],
+      "functions": [
+        {"name": "successor", "template": "The number that comes right after {arg} is", "answers": {"two": "three", "three": "four", "four": "five", "six": "seven", "eight": "nine", "five": "six"}},
+        {"name": "predecessor", "template": "The number that comes right before {arg} is", "answers": {"two": "one", "three": "two", "four": "three", "six": "five", "eight": "seven", "five": "four"}},
+        {"name": "double", "template": "Two times {arg} equals", "answers": {"two": "four", "three": "six", "four": "eight", "six": "twelve", "eight": "sixteen", "five": "ten"}},
+        {"name": "triple", "template": "Three times {arg} equals", "answers": {"two": "six", "three": "nine", "four": "twelve", "six": "eighteen", "eight": "twenty", "five": "fifteen"}},
+        {"name": "plus_two", "template": "Two plus {arg} equals", "answers": {"two": "four", "three": "five", "four": "six", "six": "eight", "eight": "ten", "five": "seven"}}
+      ]
+    }
+  ]
+}

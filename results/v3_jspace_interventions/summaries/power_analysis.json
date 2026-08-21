@@ -1,0 +1,23 @@
+{
+  "method": "normal simulation using burned alpha-1 source-prompt cluster SD and 48 planned fresh clusters",
+  "burned_cluster_sd": 0.6901152508349896,
+  "grid": [
+    {
+      "true_effect": 0.25,
+      "estimated_detection_probability": 0.6955
+    },
+    {
+      "true_effect": 0.5,
+      "estimated_detection_probability": 0.9985
+    },
+    {
+      "true_effect": 1.0,
+      "estimated_detection_probability": 1.0
+    },
+    {
+      "true_effect": 2.0,
+      "estimated_detection_probability": 1.0
+    }
+  ],
+  "minimum_effect_0_5_power_at_least_0_8": true
+}
