@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-4",
+  "status": "preregistered_after_rbg3_before_rbg4_dataset_or_model_execution",
+  "frozen_after": {
+    "rbg2_run_id": "e0f8fa12f60841b89b79669cbedc9adb",
+    "rbg3_run_id": "b5f9fae55ecf452aa9495be25793750c",
+    "cross_study_difference": "RBG-2 used redundant histories and prose mapping; RBG-3 used no history and a consequence table"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "base_games": 24,
+    "rendered_contexts": 768,
+    "frames": ["strategic", "device"],
+    "incentives": ["aligned", "opposed"],
+    "surface_kinds": ["assertion", "opaque_token"],
+    "histories": ["none", "redundant"],
+    "mapping_formats": ["prose", "table"],
+    "receiver_type": "contrarian",
+    "policy_access": "explicit"
+  },
+  "primary_hypotheses": {
+    "h1_control_competence": {
+      "minimum_opaque_action_accuracy": 0.95,
+      "minimum_all_option_report_accuracy": 0.95
+    },
+    "h2_inverse_evidence": {
+      "population": "opposed assertion rows",
+      "endpoint": "no-history action accuracy minus redundant-history action accuracy",
+      "minimum_gap": 0.20,
+      "maximum_absolute_report_gap": 0.05,
+      "test": "two-sided exact base-game cluster sign flip",
+      "alpha": 0.05
+    },
+    "h3_semantic_specificity": {
+      "endpoint": "history harm for assertions minus history harm for opaque tokens",
+      "minimum_difference_in_differences": 0.20,
+      "test": "two-sided exact base-game cluster sign flip",
+      "alpha": 0.05
+    },
+    "h4_rbg2_cell_replication": {
+      "population": "strategic opposed assertion with redundant history and prose mapping",
+      "maximum_action_accuracy": 0.50,
+      "minimum_option_report_accuracy": 0.90,
+      "matched_opaque_minimum": 0.90
+    }
+  },
+  "diagnostics": [
+    "history effect separately under prose and table mappings",
+    "mapping-format effect with and without history",
+    "aligned-goal null controls",
+    "both consequences reported correctly but action wrong",
+    "wrong assertion content equals target response"
+  ],
+  "interpretation": {
+    "inverse_evidence": "Additional correct demonstrations reduce strategic action accuracy without reducing consequence knowledge.",
+    "semantic_specificity": "The harm depends on meaningful assertion histories rather than length or repeated evidence alone.",
+    "kill": "If the within-study history contrast is small, archive the RBG-2/RBG-3 difference as prompt-family instability."
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "estimated_ceiling_seconds": 2400,
+    "hard_cost_limit_usd": 6.0,
+    "stop_before_mechanistic": true
+  }
+}
