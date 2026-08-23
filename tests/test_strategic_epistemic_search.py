@@ -75,7 +75,11 @@ def test_report_factorial_is_deterministic_and_forced_choice() -> None:
             "decision_prompt": "frozen decision prompt",
             "trajectory": f"reasoning\nFINAL: {row['expected_action']}",
             "matched_trajectory": f"control\nFINAL: {row['expected_action']}",
+            "ordinal_trajectory": (
+                f"the first signal wins\nFINAL: {row['expected_action']}"
+            ),
             "system_prompt": "system",
+            "report_labels": tuple(config["self_report"]["candidate_labels"]),
         }
         specs = {
             access: report_spec(
@@ -100,7 +104,7 @@ def test_report_factorial_is_deterministic_and_forced_choice() -> None:
             row["expected_action"],
             **common,
         )
-        assert set(retrospective["options"]) == {"A", "B", "C"}
+        assert set(retrospective["options"]) == {"X", "Y", "Z"}
         assert retrospective["expected_label"] in retrospective["options"]
         assert [message["role"] for message in retrospective["messages"]] == [
             "system",
@@ -115,6 +119,12 @@ def test_report_factorial_is_deterministic_and_forced_choice() -> None:
             "user",
         ]
         assert [message["role"] for message in specs["matched_trajectory"]["messages"]] == [
+            "system",
+            "user",
+            "assistant",
+            "user",
+        ]
+        assert [message["role"] for message in specs["ordinal_trajectory"]["messages"]] == [
             "system",
             "user",
             "assistant",

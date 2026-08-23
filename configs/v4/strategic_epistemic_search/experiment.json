@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "study_id": "V4-SES-1",
-  "status": "calibration_v3_passed_before_behavior_v2",
+  "status": "behavior_v2_passed_before_disjoint_label_report_replication",
   "model": {
     "id": "Qwen/Qwen3.6-27B",
     "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
@@ -39,6 +39,8 @@
     "batch_size": 8
   },
   "self_report": {
+    "version": "disjoint_labels_v1",
+    "candidate_labels": ["X", "Y", "Z"],
     "splits": ["discovery"],
     "query_types": [
       "decisive_response",
@@ -49,13 +51,29 @@
       "retrospective",
       "answer_only",
       "matched_trajectory",
+      "ordinal_trajectory",
       "reconstruction"
     ],
     "primary_contrasts": [
       "retrospective_minus_answer_only",
       "retrospective_minus_matched_trajectory",
+      "retrospective_minus_ordinal_trajectory",
       "retrospective_minus_reconstruction"
     ],
+    "analysis_plan": {
+      "primary_query": "predicted_response",
+      "primary_outcome": "legal_choice_correct",
+      "paired_test": "exact_mcnemar",
+      "primary_family_correction": "holm_across_four_access_contrasts",
+      "other_queries": "exploratory",
+      "logit_margins": "descriptive"
+    },
+    "interpretation_rules": {
+      "prior_label_collision": "disjoint labels remove the retrospective disadvantage",
+      "lexical_binding_interference": "retrospective remains below answer_only and ordinal_trajectory rescues it",
+      "broader_trajectory_interference": "retrospective remains below answer_only without ordinal rescue",
+      "no_replication": "retrospective and answer_only are practically similar under disjoint labels"
+    },
     "batch_size": 12
   },
   "mechanistic": {

@@ -6,6 +6,8 @@ Commands:
     modal run modal_strategic_epistemic_search.py::calibration_preflight
     modal run modal_strategic_epistemic_search.py::calibration
     modal run modal_strategic_epistemic_search.py::behavior
+    modal run modal_strategic_epistemic_search.py::report_preflight
+    modal run modal_strategic_epistemic_search.py::report
     modal run modal_strategic_epistemic_search.py::mechanistic
 
 The first mechanistic pass is observational.  Causal entrypoints are intentionally
@@ -120,9 +122,12 @@ def _validate_config(config: dict[str, Any]) -> None:
         "retrospective",
         "answer_only",
         "matched_trajectory",
+        "ordinal_trajectory",
         "reconstruction",
     }:
         raise RuntimeError("self-report access controls changed")
+    if config["self_report"]["candidate_labels"] != ["X", "Y", "Z"]:
+        raise RuntimeError("self-report labels must remain disjoint from signals")
     behavior = config["behavior"]
     if behavior["prompt_variant"] != "verbose_short_cot":
         raise RuntimeError("behavior prompt variant changed")
@@ -447,6 +452,21 @@ def _behavior_rows(
     return sorted(output, key=lambda row: row["condition_id"])
 
 
+def _ordinalize_trajectory(text: str) -> str:
+    import re
+
+    match = re.search(r"FINAL\s*:\s*[ABC]\b", text, re.I)
+    if match is None:
+        raise ValueError("cannot ordinalize an unparseable trajectory")
+    body = text[: match.start()]
+    final = text[match.start() :]
+    names = ("first signal", "second signal", "third signal")
+    for label, name in zip("ABC", names, strict=True):
+        body = re.sub(rf"\bSignal\s+{label}\b", name, body, flags=re.I)
+        body = re.sub(rf"\b{label}\b", name, body)
+    return body + final
+
+
 def _report_inputs(
     model: Any,
     dataset_rows: list[dict[str, Any]],
@@ -459,6 +479,7 @@ def _report_inputs(
 
     behavior_by_id = {row["condition_id"]: row for row in behavior_rows}
     report_config = config["self_report"]
+    report_labels = tuple(map(str, report_config["candidate_labels"]))
     output = []
     for row in dataset_rows:
         if row["split"] not in report_config["splits"]:
@@ -498,7 +519,11 @@ def _report_inputs(
                     decision_prompt=decision["decision_prompt"],
                     trajectory=decision["generated_text"],
                     matched_trajectory=matched["generated_text"],
+                    ordinal_trajectory=_ordinalize_trajectory(
+                        decision["generated_text"]
+                    ),
                     system_prompt=decision["decision_system_prompt"],
+                    report_labels=report_labels,
                 )
                 surface_pattern = (
                     rf"(?<![A-Za-z0-9]){re.escape(spec['correct_surface'])}"
@@ -544,8 +569,9 @@ def _report_inputs(
                         "prompt_token_ids": token_ids,
                         "candidate_token_ids": [
                             _continuation_id(model.tokenizer, rendered, label)
-                            for label in "ABC"
+                            for label in report_labels
                         ],
+                        "candidate_labels": list(report_labels),
                         "sequence_length": len(token_ids),
                     }
                 )
@@ -574,11 +600,12 @@ def _self_report_rows(
         for index, row in enumerate(part):
             final = logits[index]
             candidates = list(map(int, row["candidate_token_ids"]))
+            labels = list(map(str, row["candidate_labels"]))
             candidate_logits = final[candidates]
             legal_choice_index = int(candidate_logits.argmax().cpu())
             top1 = int(final.argmax().cpu())
             top1_label = (
-                "ABC"[candidates.index(top1)] if top1 in candidates else None
+                labels[candidates.index(top1)] if top1 in candidates else None
             )
             expected = str(row["expected_label"])
             output.append(
@@ -598,12 +625,12 @@ def _self_report_rows(
                     "formatting_compliant": top1 in candidates,
                     "top1_label": top1_label,
                     "correct": top1_label == expected,
-                    "legal_choice": "ABC"[legal_choice_index],
-                    "legal_choice_correct": "ABC"[legal_choice_index] == expected,
+                    "legal_choice": labels[legal_choice_index],
+                    "legal_choice_correct": labels[legal_choice_index] == expected,
                     "legal_action_logits": {
                         label: float(value)
                         for label, value in zip(
-                            "ABC", candidate_logits.detach().cpu(), strict=True
+                            labels, candidate_logits.detach().cpu(), strict=True
                         )
                     },
                 }
@@ -643,9 +670,18 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
             }
     contrasts = {}
     for query_type in sorted({row["query_type"] for row in rows}):
-        retrospective = cells[f"{query_type}:retrospective"]["strict_accuracy"]
-        for control in ("answer_only", "matched_trajectory", "reconstruction"):
-            control_accuracy = cells[f"{query_type}:{control}"]["strict_accuracy"]
+        retrospective = cells[f"{query_type}:retrospective"][
+            "legal_choice_accuracy"
+        ]
+        for control in (
+            "answer_only",
+            "matched_trajectory",
+            "ordinal_trajectory",
+            "reconstruction",
+        ):
+            control_accuracy = cells[f"{query_type}:{control}"][
+                "legal_choice_accuracy"
+            ]
             contrasts[f"{query_type}:retrospective_minus_{control}"] = (
                 retrospective - control_accuracy
                 if retrospective is not None and control_accuracy is not None
@@ -666,8 +702,8 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
                     for row in retrospective_rows
                     if row["target_surface_in_trajectory"] is present
                 ]),
-                "strict_accuracy": (
-                    sum(row["correct"] for row in selected) / len(selected)
+                "legal_choice_accuracy": (
+                    sum(row["legal_choice_correct"] for row in selected) / len(selected)
                     if selected
                     else None
                 ),
@@ -676,13 +712,14 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
         }
     return {
         "n_rows": len(rows),
-        "n_decision_correct_rows": len(eligible),
+        "n_decision_correct": len({row["condition_id"] for row in eligible}),
         "cell_accuracy": cells,
-        "primary_contrasts": contrasts,
+        "legal_choice_primary_contrasts": contrasts,
         "retrospective_copyability_strata": copyability,
         "interpretation": (
-            "A retrospective advantage is trajectory-specific only if it beats the "
-            "role-matched answer-only and same-action matched-trajectory controls."
+            "A trajectory effect is interpretable only if it survives disjoint report "
+            "labels and is localized against answer-only, matched-trajectory, "
+            "ordinal-rewrite, and reconstruction controls."
         ),
     }
 
@@ -1078,6 +1115,64 @@ def behavior_remote(
     )
 
 
+@app.function(
+    image=image,
+    volumes={"/cache": cache},
+    cpu=4.0,
+    memory=32768,
+    gpu="A100-80GB",
+    timeout=1800,
+    max_containers=1,
+    retries=0,
+)
+def report_remote(
+    dataset: dict[str, Any],
+    behavior_result: dict[str, Any],
+    config: dict[str, Any],
+    code_metadata: dict[str, str],
+) -> str:
+    """Run only the disjoint-label report fork over frozen behavior trajectories."""
+    import torch
+
+    _validate_config(config)
+    if not _hash_valid(dataset):
+        raise RuntimeError("source dataset hash mismatch")
+    if not behavior_result["summary"]["gate_pass"]:
+        raise RuntimeError("behavior gate failed; report run refused")
+    if behavior_result["metadata"]["source_dataset_sha256"] != dataset["content_sha256"]:
+        raise RuntimeError("behavior result does not match source dataset")
+    started = time.perf_counter()
+    model, _, metadata = _load_model(with_lens=False)
+    rows = _self_report_rows(
+        model,
+        dataset["rows"],
+        behavior_result["rows"],
+        config,
+    )
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - started
+    cache.commit()
+    return json.dumps(
+        {
+            "metadata": {
+                "schema_version": 1,
+                "run_id": uuid.uuid4().hex,
+                "created_at": datetime.now(UTC).isoformat(),
+                "source_dataset_sha256": dataset["content_sha256"],
+                "behavior_run_id": behavior_result["metadata"]["run_id"],
+                "config_sha256": _canonical_sha256(config),
+                "elapsed_seconds": elapsed,
+                **code_metadata,
+                **metadata,
+            },
+            "summary": _self_report_summary(rows),
+            "rows": rows,
+        },
+        allow_nan=False,
+        sort_keys=True,
+    )
+
+
 def _top_readout(model: Any, lens: Any, layer: int, residuals: Any, k: int) -> list[Any]:
     import torch
 
@@ -1441,6 +1536,34 @@ def behavior() -> None:
     target = RESULT_ROOT / "raw/behavior_v2.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "behavior", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report_preflight() -> None:
+    config = _load_json(CONFIG_PATH)
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    payload = json.loads(preflight_remote.remote(dataset, config))
+    target = RESULT_ROOT / "raw/report_disjoint_v1_preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report() -> None:
+    config = _load_json(CONFIG_PATH)
+    dataset = _load_json(DATASET_PATH)
+    behavior_result = _load_json(RESULT_ROOT / "raw/behavior_v2.json")
+    _validate_config(config)
+    ledger = _admit(config, "report_disjoint_v1", 1800, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(
+        report_remote.remote(dataset, behavior_result, config, code_metadata)
+    )
+    target = RESULT_ROOT / "raw/report_disjoint_v1.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "report_disjoint_v1", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 

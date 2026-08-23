@@ -25,10 +25,12 @@ REPORT_QUERY_TYPES = (
     "predicted_response",
     "decision_margin",
 )
+REPORT_LABELS = ("X", "Y", "Z")
 REPORT_ACCESS_CONDITIONS = (
     "retrospective",
     "answer_only",
     "matched_trajectory",
+    "ordinal_trajectory",
     "reconstruction",
 )
 
@@ -67,7 +69,9 @@ def report_spec(
     decision_prompt: str | None = None,
     trajectory: str | None = None,
     matched_trajectory: str | None = None,
+    ordinal_trajectory: str | None = None,
     system_prompt: str | None = None,
+    report_labels: tuple[str, str, str] = REPORT_LABELS,
 ) -> dict[str, Any]:
     """Build a deterministic forced-choice report and reconstruction control."""
     if query_type not in REPORT_QUERY_TYPES:
@@ -126,14 +130,17 @@ def report_spec(
     ordered_targets = tuple(targets[index] for index in permutation)
     ordered_rendered = tuple(rendered_values[index] for index in permutation)
     correct_index = ordered_targets.index(correct_value)
-    expected_label = SIGNALS[correct_index]
+    if len(set(report_labels)) != 3 or set(report_labels) & set(SIGNALS):
+        raise ValueError("report labels must be three distinct non-signal labels")
+    expected_label = report_labels[correct_index]
     options = "; ".join(
         f"{label}={value}"
-        for label, value in zip(SIGNALS, ordered_rendered, strict=True)
+        for label, value in zip(report_labels, ordered_rendered, strict=True)
     )
     correct_surface = ordered_rendered[correct_index]
     report_question = (
-        f"{question}\nOptions: {options}. Return only A, B, or C.\nAnswer:"
+        f"{question}\nOptions: {options}. Return only "
+        f"{', '.join(report_labels[:-1])}, or {report_labels[-1]}.\nAnswer:"
     )
     task = decision_prompt or row["prompt"]
     prefix = (
@@ -164,6 +171,15 @@ def report_spec(
             {"role": "assistant", "content": matched_trajectory},
             {"role": "user", "content": report_question},
         ]
+    elif access_condition == "ordinal_trajectory":
+        if ordinal_trajectory is None:
+            raise ValueError("ordinal trajectory control requires assistant content")
+        messages = [
+            *prefix,
+            {"role": "user", "content": task},
+            {"role": "assistant", "content": ordinal_trajectory},
+            {"role": "user", "content": report_question},
+        ]
     else:
         reconstruction = (
             f"{task}\n"
@@ -175,7 +191,11 @@ def report_spec(
         messages = [*prefix, {"role": "user", "content": reconstruction}]
     return {
         "report_id": _stable_id(
-            row["condition_id"], query_type, access_condition, selected_action
+            row["condition_id"],
+            query_type,
+            access_condition,
+            selected_action,
+            "".join(report_labels),
         ),
         "condition_id": row["condition_id"],
         "query_type": query_type,
@@ -184,8 +204,10 @@ def report_spec(
         "expected_label": expected_label,
         "correct_value": str(correct_value),
         "correct_surface": correct_surface,
+        "candidate_labels": list(report_labels),
         "options": {
-            label: value for label, value in zip(SIGNALS, ordered_rendered, strict=True)
+            label: value
+            for label, value in zip(report_labels, ordered_rendered, strict=True)
         },
         "messages": messages,
     }

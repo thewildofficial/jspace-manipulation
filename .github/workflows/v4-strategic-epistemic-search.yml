@@ -14,6 +14,7 @@ on:
         options:
           - behavior
           - calibration
+          - report
           - discovery
 
 permissions:
@@ -59,8 +60,12 @@ jobs:
           fi
 
       - name: Validate remote tokenization without GPU
-        if: ${{ inputs.stage != 'calibration' }}
+        if: ${{ inputs.stage == 'behavior' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::preflight
+
+      - name: Validate disjoint-label report prompts without GPU
+        if: ${{ inputs.stage == 'report' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_preflight
 
       - name: Validate calibration prompts without GPU
         if: ${{ inputs.stage == 'calibration' }}
@@ -71,8 +76,12 @@ jobs:
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration
 
       - name: Run behavior screen
-        if: ${{ inputs.stage != 'calibration' }}
+        if: ${{ inputs.stage == 'behavior' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
+
+      - name: Run disjoint-label report replication
+        if: ${{ inputs.stage == 'report' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report
 
       - name: Run observational discovery if behavior passed
         if: ${{ inputs.stage == 'discovery' }}
