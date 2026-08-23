@@ -1,0 +1,149 @@
+{
+  "behavior": {
+    "baseline_action_accuracy": 0.5208333333333334,
+    "gate_passed": false,
+    "minimum_cell_accuracy": 0.0,
+    "type_counterfactual_pair_pass_rate": 0.11458333333333333
+  },
+  "cells": {
+    "device:aligned:contrarian": {
+      "action_change_rate": 0.25,
+      "baseline_action_accuracy": 0.25,
+      "n": 24,
+      "post_action_report_accuracy": 0.08333333333333333,
+      "pre_probe_accuracy": 0.5416666666666666,
+      "report_before_action_accuracy": 0.08333333333333333
+    },
+    "device:aligned:literal": {
+      "action_change_rate": 0.0,
+      "baseline_action_accuracy": 1.0,
+      "n": 24,
+      "post_action_report_accuracy": 1.0,
+      "pre_probe_accuracy": 0.9583333333333334,
+      "report_before_action_accuracy": 1.0
+    },
+    "device:opposed:contrarian": {
+      "action_change_rate": 0.375,
+      "baseline_action_accuracy": 0.375,
+      "n": 24,
+      "post_action_report_accuracy": 0.16666666666666666,
+      "pre_probe_accuracy": 0.4166666666666667,
+      "report_before_action_accuracy": 0.08333333333333333
+    },
+    "device:opposed:literal": {
+      "action_change_rate": 0.4583333333333333,
+      "baseline_action_accuracy": 0.4583333333333333,
+      "n": 24,
+      "post_action_report_accuracy": 1.0,
+      "pre_probe_accuracy": 1.0,
+      "report_before_action_accuracy": 0.75
+    },
+    "strategic:aligned:contrarian": {
+      "action_change_rate": 0.5416666666666666,
+      "baseline_action_accuracy": 0.0,
+      "n": 24,
+      "post_action_report_accuracy": 0.375,
+      "pre_probe_accuracy": 0.7083333333333334,
+      "report_before_action_accuracy": 0.5416666666666666
+    },
+    "strategic:aligned:literal": {
+      "action_change_rate": 0.0,
+      "baseline_action_accuracy": 1.0,
+      "n": 24,
+      "post_action_report_accuracy": 1.0,
+      "pre_probe_accuracy": 1.0,
+      "report_before_action_accuracy": 1.0
+    },
+    "strategic:opposed:contrarian": {
+      "action_change_rate": 0.4583333333333333,
+      "baseline_action_accuracy": 0.375,
+      "n": 24,
+      "post_action_report_accuracy": 0.4166666666666667,
+      "pre_probe_accuracy": 0.5833333333333334,
+      "report_before_action_accuracy": 0.16666666666666666
+    },
+    "strategic:opposed:literal": {
+      "action_change_rate": 0.2916666666666667,
+      "baseline_action_accuracy": 0.7083333333333334,
+      "n": 24,
+      "post_action_report_accuracy": 1.0,
+      "pre_probe_accuracy": 1.0,
+      "report_before_action_accuracy": 1.0
+    }
+  },
+  "h2_revealed_stated_contradiction": {
+    "cluster_effect_opposed_minus_aligned": 0.18181818181818182,
+    "cluster_values": [
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      0.5,
+      0.0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "promoted": false,
+    "promotion_threshold_effect": 0.15,
+    "two_sided_exact_cluster_sign_flip_p": 0.0625
+  },
+  "h3_private_elicitation_changes_strategy": {
+    "cluster_effect_opposed_minus_aligned": 0.10416666666666667,
+    "cluster_values": [
+      -0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      0.5,
+      0.0,
+      0.0,
+      0.5,
+      -0.5,
+      -0.5,
+      0.0,
+      0.0,
+      -0.5,
+      0.5,
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      -0.5,
+      0.5
+    ],
+    "promoted": false,
+    "promotion_threshold_effect": 0.15,
+    "two_sided_exact_cluster_sign_flip_p": 0.3017578125
+  },
+  "n": 192,
+  "reports": {
+    "action_change_rate": 0.296875,
+    "direct_report_accuracy": 0.82,
+    "eligible_correct_baseline": 100,
+    "post_action_report_accuracy": 0.84,
+    "pre_action_probe_accuracy": 0.7760416666666666,
+    "report_before_action_accuracy": 0.578125
+  },
+  "schema_version": 1,
+  "source_dataset_sha256": "7c3764455c8d49f7fdbe377ab328d9fc84aa9c115854469df310e3e4a8aacd14",
+  "source_run_id": "5b10e27f3f91454e84c06d8acb43e78e",
+  "study_id": "V5-RBG-1"
+}
