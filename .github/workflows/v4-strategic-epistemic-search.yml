@@ -1,0 +1,73 @@
+name: V4 strategic epistemic search
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: Maximum stage to run
+        required: true
+        default: behavior
+        type: choice
+        options:
+          - behavior
+          - discovery
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v4-strategic-epistemic-search
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      UV_CACHE_DIR: /tmp/jspace-uv-cache
+
+    steps:
+      - name: Check out the frozen protocol
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Refuse missing Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID"
+          test -n "$MODAL_TOKEN_SECRET"
+
+      - name: Validate local protocol
+        run: uv run pytest -q
+
+      - name: Run behavior screen
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
+
+      - name: Run observational discovery if behavior passed
+        if: ${{ inputs.stage == 'discovery' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::mechanistic
+
+      - name: Download discovery artifacts from Modal
+        if: ${{ inputs.stage == 'discovery' && success() }}
+        shell: bash
+        run: |
+          remote_root="$(jq -r '.artifact.root' results/v4_strategic_epistemic_search/raw/mechanistic_manifest.json)"
+          volume_path="${remote_root#/artifacts/}"
+          mkdir -p results/v4_strategic_epistemic_search/modal_artifacts
+          uv run --extra modal modal volume get --force \
+            jspace-v4-strategic-epistemic-artifacts \
+            "$volume_path" \
+            results/v4_strategic_epistemic_search/modal_artifacts
+
+      - name: Upload immutable run outputs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: v4-strategic-epistemic-${{ inputs.stage }}-${{ github.run_id }}
+          path: results/v4_strategic_epistemic_search
+          if-no-files-found: warn
+          retention-days: 14
