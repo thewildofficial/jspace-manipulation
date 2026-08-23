@@ -1,0 +1,141 @@
+{
+  "accuracy_difference_in_differences": -0.04545454545454545,
+  "cells": {
+    "answer_only:arbitrary_alias": {
+      "legal_choice_accuracy": 0.9659090909090909,
+      "mean_correct_logit_margin": 3.102272727272727,
+      "n": 88,
+      "wrong_choice_response_distribution": {
+        "R3": 3
+      }
+    },
+    "answer_only:indexed": {
+      "legal_choice_accuracy": 0.9886363636363636,
+      "mean_correct_logit_margin": 3.0923295454545454,
+      "n": 88,
+      "wrong_choice_response_distribution": {
+        "R3": 1
+      }
+    },
+    "retrospective:arbitrary_alias": {
+      "legal_choice_accuracy": 0.7840909090909091,
+      "mean_correct_logit_margin": 1.2599431818181819,
+      "n": 88,
+      "wrong_choice_response_distribution": {
+        "R1": 2,
+        "R2": 9,
+        "R3": 8
+      }
+    },
+    "retrospective:indexed": {
+      "legal_choice_accuracy": 0.8522727272727273,
+      "mean_correct_logit_margin": 1.9786931818181819,
+      "n": 88,
+      "wrong_choice_response_distribution": {
+        "R1": 2,
+        "R2": 1,
+        "R3": 10
+      }
+    }
+  },
+  "eligible_decisions": 88,
+  "interpretation": "The ordinal-binding account requires alias rescue in retrospective reports without a comparable answer-only improvement.",
+  "logit_margin_difference_in_differences": -0.7286931818181818,
+  "metadata": {
+    "behavior_run_id": "7bb82d26fe0d4383be7ef53ea7a1dc38",
+    "config_sha256": "33a584dcc749dce26d7d63e1b0f515fa300727236009768ca8a9cb75d2ce0b59",
+    "created_at": "2026-08-23T18:31:58.084861+00:00",
+    "dtype": "bfloat16",
+    "elapsed_seconds": 92.11731445900001,
+    "git_commit": "2693da46c3657dcd4dba2a65b13f3f7093f231b5",
+    "gpu_actual": "NVIDIA A100-SXM4-80GB",
+    "lens_code_commit": null,
+    "lens_filename": null,
+    "lens_repo": null,
+    "lens_revision": null,
+    "model_id": "Qwen/Qwen3.6-27B",
+    "model_revision_requested": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "run_id": "56f00942b4f24b0e91d2f8c2a023ca44",
+    "schema_version": 1,
+    "source_dataset_sha256": "97de2055cc20de67a12476c5439efeb1d135e8fd9bc72edade70aa1646ef824b",
+    "torch_version": "2.13.0+cu130",
+    "transformers_version": "5.15.1",
+    "worktree_sha256": "73597741f961e90d4eb8d4a3b232ee263fb974ea80479d4206bd0ff3cabf796a"
+  },
+  "paired_tests": {
+    "alias_effect_answer_only": {
+      "accuracy_difference": -0.022727272727272728,
+      "both_correct": 85,
+      "both_wrong": 1,
+      "left": {
+        "access": "answer_only",
+        "response_naming": "arbitrary_alias"
+      },
+      "left_only_correct": 0,
+      "mean_correct_logit_margin_difference": 0.009943181818181818,
+      "n": 88,
+      "right": {
+        "access": "answer_only",
+        "response_naming": "indexed"
+      },
+      "right_only_correct": 2,
+      "two_sided_exact_mcnemar_p": 0.5
+    },
+    "primary_alias_rescue_with_rationale": {
+      "accuracy_difference": -0.06818181818181818,
+      "both_correct": 66,
+      "both_wrong": 10,
+      "left": {
+        "access": "retrospective",
+        "response_naming": "arbitrary_alias"
+      },
+      "left_only_correct": 3,
+      "mean_correct_logit_margin_difference": -0.71875,
+      "n": 88,
+      "right": {
+        "access": "retrospective",
+        "response_naming": "indexed"
+      },
+      "right_only_correct": 9,
+      "two_sided_exact_mcnemar_p": 0.14599609375
+    },
+    "trajectory_penalty_alias": {
+      "accuracy_difference": -0.18181818181818182,
+      "both_correct": 68,
+      "both_wrong": 2,
+      "left": {
+        "access": "retrospective",
+        "response_naming": "arbitrary_alias"
+      },
+      "left_only_correct": 1,
+      "mean_correct_logit_margin_difference": -1.8423295454545454,
+      "n": 88,
+      "right": {
+        "access": "answer_only",
+        "response_naming": "arbitrary_alias"
+      },
+      "right_only_correct": 17,
+      "two_sided_exact_mcnemar_p": 0.00014495849609375
+    },
+    "trajectory_penalty_indexed": {
+      "accuracy_difference": -0.13636363636363635,
+      "both_correct": 75,
+      "both_wrong": 1,
+      "left": {
+        "access": "retrospective",
+        "response_naming": "indexed"
+      },
+      "left_only_correct": 0,
+      "mean_correct_logit_margin_difference": -1.1136363636363635,
+      "n": 88,
+      "right": {
+        "access": "answer_only",
+        "response_naming": "indexed"
+      },
+      "right_only_correct": 12,
+      "two_sided_exact_mcnemar_p": 0.00048828125
+    }
+  },
+  "report_rows": 352
+}
