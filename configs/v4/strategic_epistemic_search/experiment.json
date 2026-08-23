@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "study_id": "V4-SES-1",
+  "status": "trajectory_interference_confirmed_alias_rescue_falsified",
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "seed": 82326,
+    "probability_grid": ["0.05", "0.15", "0.80"],
+    "payoff_low": -4,
+    "payoff_high": 10,
+    "signal_cost_grid": [0, 1, 2],
+    "minimum_margin": "1.5",
+    "compression_margin_tolerance": "0.25",
+    "pairs_per_type_per_split": 4,
+    "splits": ["discovery", "validation", "locked"],
+    "frames": ["strategic", "nonagentic"],
+    "pair_types": [
+      "receiver_pathway",
+      "payoff_pathway",
+      "receiver_action_change",
+      "payoff_action_change",
+      "compression"
+    ]
+  },
+  "behavior": {
+    "source_calibration_run_id": "51097dab64ca40d3a18017dd3863ea7d",
+    "source_calibration_accuracy": 0.975,
+    "source_calibration_parseability": 1.0,
+    "prompt_variant": "verbose_short_cot",
+    "max_new_tokens": 160,
+    "minimum_parseability": 0.95,
+    "minimum_overall_accuracy": 0.85,
+    "minimum_cell_accuracy": 0.70,
+    "batch_size": 8
+  },
+  "self_report": {
+    "version": "disjoint_labels_v1",
+    "candidate_labels": ["X", "Y", "Z"],
+    "splits": ["discovery"],
+    "query_types": [
+      "decisive_response",
+      "predicted_response",
+      "decision_margin"
+    ],
+    "access_conditions": [
+      "retrospective",
+      "answer_only",
+      "matched_trajectory",
+      "ordinal_trajectory",
+      "reconstruction"
+    ],
+    "primary_contrasts": [
+      "retrospective_minus_answer_only",
+      "retrospective_minus_matched_trajectory",
+      "retrospective_minus_ordinal_trajectory",
+      "retrospective_minus_reconstruction"
+    ],
+    "analysis_plan": {
+      "primary_query": "predicted_response",
+      "primary_outcome": "legal_choice_correct",
+      "paired_test": "exact_mcnemar",
+      "primary_family_correction": "holm_across_four_access_contrasts",
+      "other_queries": "exploratory",
+      "logit_margins": "descriptive"
+    },
+    "interpretation_rules": {
+      "prior_label_collision": "disjoint labels remove the retrospective disadvantage",
+      "lexical_binding_interference": "retrospective remains below answer_only and ordinal_trajectory rescues it",
+      "broader_trajectory_interference": "retrospective remains below answer_only without ordinal rescue",
+      "no_replication": "retrospective and answer_only are practically similar under disjoint labels"
+    },
+    "batch_size": 12
+  },
+  "mechanistic": {
+    "layers": [26, 34, 42, 46, 50, 54, 58, 60],
+    "j_lens_top_k": 40,
+    "store_residuals": true,
+    "residual_dtype": "float16",
+    "marker_names": [
+      "policy_end",
+      "payoff_end",
+      "final_prompt",
+      "first_reasoning_sentence",
+      "pre_final",
+      "final_answer"
+    ]
+  },
+  "causal": {
+    "layer_selection_source": "discovery_only",
+    "maximum_selected_layers": 3,
+    "patch_types": ["receiver_marker", "payoff_marker", "final_state"],
+    "controls": ["matched_shuffled", "cross_frame", "same_action"]
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "hard_cost_limit_usd": 18.5,
+    "refuse_result_overwrite": true
+  }
+}

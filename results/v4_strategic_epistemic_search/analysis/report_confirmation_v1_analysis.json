@@ -1,0 +1,118 @@
+{
+  "cells": {
+    "predicted_response:answer_only": {
+      "choice_distribution": {
+        "X": 17,
+        "Y": 20,
+        "Z": 17
+      },
+      "formatting_compliance": 1.0,
+      "legal_choice_accuracy": 0.9814814814814815,
+      "mean_correct_logit_margin": 3.2106481481481484,
+      "n": 54
+    },
+    "predicted_response:retrospective": {
+      "choice_distribution": {
+        "X": 15,
+        "Y": 22,
+        "Z": 17
+      },
+      "formatting_compliance": 1.0,
+      "legal_choice_accuracy": 0.8703703703703703,
+      "mean_correct_logit_margin": 2.127314814814815,
+      "n": 54
+    }
+  },
+  "decision_accuracy_was_conditioned_on": true,
+  "eligible_decisions": 54,
+  "frame_cells": {
+    "predicted_response:nonagentic:answer_only": {
+      "legal_choice_accuracy": 0.9629629629629629,
+      "n": 27
+    },
+    "predicted_response:nonagentic:retrospective": {
+      "legal_choice_accuracy": 0.9259259259259259,
+      "n": 27
+    },
+    "predicted_response:strategic:answer_only": {
+      "legal_choice_accuracy": 1.0,
+      "n": 27
+    },
+    "predicted_response:strategic:retrospective": {
+      "legal_choice_accuracy": 0.8148148148148148,
+      "n": 27
+    }
+  },
+  "inference_note": "Primary binary inference is paired exact McNemar for predicted_response with Holm correction over the present controls. The full query-control Holm family is also reported; other queries and logit margins are exploratory/descriptive.",
+  "metadata": {
+    "behavior_run_id": "7bb82d26fe0d4383be7ef53ea7a1dc38",
+    "config_sha256": "05fcc11dabc2be7113509565e90a10e5c524a8e5b6e75910fdec88676d8a3b49",
+    "created_at": "2026-08-23T18:22:37.205694+00:00",
+    "dtype": "bfloat16",
+    "elapsed_seconds": 70.64085901600001,
+    "git_commit": "93d2cacb00b50e39c6cc722ea2e6ac81138fde6a",
+    "gpu_actual": "NVIDIA A100-SXM4-80GB",
+    "lens_code_commit": null,
+    "lens_filename": null,
+    "lens_repo": null,
+    "lens_revision": null,
+    "model_id": "Qwen/Qwen3.6-27B",
+    "model_revision_requested": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "run_id": "acbb2031038d4573a88d3232cb39322b",
+    "schema_version": 1,
+    "source_dataset_sha256": "97de2055cc20de67a12476c5439efeb1d135e8fd9bc72edade70aa1646ef824b",
+    "torch_version": "2.13.0+cu130",
+    "transformers_version": "5.15.1",
+    "worktree_sha256": "5bcef019d71a5feffbf2d0fd777a0757f6ced27d31321e543902c77f0122191d"
+  },
+  "paired_legal_choice_tests": {
+    "predicted_response:retrospective_vs_answer_only": {
+      "accuracy_difference": -0.11111111111111116,
+      "both_correct": 47,
+      "both_wrong": 1,
+      "control_only_correct": 6,
+      "control_only_selected_actions": {
+        "C": 6
+      },
+      "exact_mcnemar_p": 0.03125,
+      "holm_p_across_all_tests": 0.03125,
+      "holm_p_primary_four_tests": 0.03125,
+      "mean_correct_logit_margin_difference": -1.0833333333333333,
+      "n": 54,
+      "retrospective_only_correct": 0,
+      "retrospective_only_selected_actions": {}
+    }
+  },
+  "posthoc_selected_action_cells": {
+    "predicted_response:C:answer_only": {
+      "choice_distribution": {
+        "X": 17,
+        "Y": 20,
+        "Z": 17
+      },
+      "expected_distribution": {
+        "X": 16,
+        "Y": 20,
+        "Z": 18
+      },
+      "legal_choice_accuracy": 0.9814814814814815,
+      "n": 54
+    },
+    "predicted_response:C:retrospective": {
+      "choice_distribution": {
+        "X": 15,
+        "Y": 22,
+        "Z": 17
+      },
+      "expected_distribution": {
+        "X": 16,
+        "Y": 20,
+        "Z": 18
+      },
+      "legal_choice_accuracy": 0.8703703703703703,
+      "n": 54
+    }
+  },
+  "report_rows": 108
+}

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "study_id": "V4-SES-2",
+  "status": "preregistered_before_dataset_freeze_or_model_execution",
+  "frozen_after": {
+    "confirmed_report_run_id": "acbb2031038d4573a88d3232cb39322b",
+    "alias_mechanism_commit": "b513bab",
+    "posthoc_observation": "Rationale errors after selecting C disproportionately chose R3; the report-only alias manipulation did not alter labels inside the decision prompt or rationale."
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "seed": 240826,
+    "probability_grid": ["0.05", "0.15", "0.80"],
+    "payoff_low": -4,
+    "payoff_high": 10,
+    "signal_cost_grid": [0, 1, 2],
+    "minimum_margin": "1.5",
+    "compression_margin_tolerance": "0.25",
+    "pairs_per_type_per_split": 2,
+    "splits": ["locked"],
+    "frames": ["strategic", "nonagentic"],
+    "pair_types": [
+      "receiver_pathway",
+      "payoff_pathway",
+      "receiver_action_change",
+      "payoff_action_change",
+      "compression"
+    ],
+    "ordinal_binding_oa": "OA(9,4,3,2)",
+    "base_games": 20,
+    "rendered_decisions": 360,
+    "counterbalance": {
+      "factors": [
+        "action_label_assignment",
+        "action_presentation_position",
+        "response_label_assignment",
+        "response_presentation_position"
+      ],
+      "levels_per_factor": 3,
+      "pairwise_orthogonal": true,
+      "orientation_frozen_per_base_game": true,
+      "strategic_nonagentic_mapping_matched": true
+    }
+  },
+  "behavior": {
+    "prompt_variant": "verbose_short_cot",
+    "max_new_tokens": 160,
+    "minimum_parseability": 0.95,
+    "minimum_overall_accuracy": 0.85,
+    "minimum_cell_accuracy": 0.70,
+    "batch_size": 8
+  },
+  "self_report": {
+    "version": "cross_role_ordinal_binding_v1",
+    "candidate_labels": ["X", "Y", "Z"],
+    "splits": ["locked"],
+    "eligible_selected_actions": ["A", "B", "C"],
+    "query_types": ["predicted_response"],
+    "access_conditions": ["retrospective", "answer_only"],
+    "primary_outcome": "rationale_induced_lure_logit_pull_relative_to_true_response",
+    "cluster_unit": "base_game_id",
+    "primary_tests": [
+      "action_label_to_response_label_lure",
+      "action_position_to_response_position_lure"
+    ],
+    "test": "two_sided_exact_cluster_sign_flip",
+    "family_correction": "holm_across_two_primary_lures",
+    "alpha": 0.05,
+    "eligibility": "correct_decision_and_lure_is_not_true_response",
+    "secondary_outcomes": [
+      "forced_choice_lure_intrusions",
+      "retrospective_minus_answer_only_accuracy",
+      "strategic_minus_nonagentic_difference"
+    ],
+    "interpretation_rules": {
+      "label_only": "Errors track A-to-R1, B-to-R2, C-to-R3 despite independent presentation positions: cross-role lexical binding leak.",
+      "position_only": "Errors track matched row/column positions despite independent labels: ordering-ID or positional-pointer collision.",
+      "both": "Both surface labels and ordinal positions contribute to a mixed binding code.",
+      "neither_but_penalty": "The rationale penalty survives full counterbalancing without an index-specific lure: generic relational interference.",
+      "no_penalty": "The prior C-stratum effect does not survive prospective counterbalancing."
+    },
+    "batch_size": 12
+  },
+  "mechanistic": {
+    "layers": [34, 42, 50, 58],
+    "j_lens_top_k": 40,
+    "store_residuals": false,
+    "residual_dtype": "float16",
+    "marker_names": ["policy_end", "payoff_end", "final_prompt"]
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "hard_cost_limit_usd": 18.5,
+    "refuse_result_overwrite": true,
+    "stage_order": [
+      "freeze_ordinal_dataset",
+      "ordinal_preflight",
+      "ordinal_behavior",
+      "ordinal_report"
+    ],
+    "stop_before_mechanistic": true
+  }
+}

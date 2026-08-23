@@ -1,0 +1,463 @@
+{
+  "behavior": {
+    "accuracy": 0.975,
+    "errors": [
+      {
+        "condition_id": "0709f690f143ee",
+        "expected_action": "C",
+        "frame": "strategic",
+        "generated_text": "Signal B yields the highest expected payoff: $(0.80 \\times 4) + (0.15 \\times 9) + (0.05 \\times -3) - 1 = 4.15$. This exceeds Signal A's 2.2 and Signal C's 4.1. Thus, B is optimal.\nFINAL: B",
+        "generated_tokens": 78,
+        "pair_type": "payoff_pathway",
+        "selected_action": "B",
+        "split": "validation"
+      },
+      {
+        "condition_id": "286c516cdd4c93",
+        "expected_action": "A",
+        "frame": "nonagentic",
+        "generated_text": "Signal A yields $7.15 - 2 = 5.15$. Signal B yields $2.05 - 0 = 2.05$. Signal C yields $6.85 - 1 = 5.85$. Signal C has the highest expected payoff.\n\nFINAL: C",
+        "generated_tokens": 66,
+        "pair_type": "compression",
+        "selected_action": "C",
+        "split": "locked"
+      },
+      {
+        "condition_id": "6831db14cb70eb",
+        "expected_action": "C",
+        "frame": "nonagentic",
+        "generated_text": "Signal B yields the highest expected payoff: (0.8*4 + 0.15*9 - 0.05*3) - 1 = 4.1. Signal A gives 3.1, and C gives -0.1. Thus, B is optimal.\nFINAL: B",
+        "generated_tokens": 66,
+        "pair_type": "payoff_pathway",
+        "selected_action": "B",
+        "split": "validation"
+      },
+      {
+        "condition_id": "d9a4138ab77922",
+        "expected_action": "C",
+        "frame": "strategic",
+        "generated_text": "Signal A yields $0.15(2)+0.8(8)+0.05(6)-2 = 5.4$. Signal B yields $0.15(2)+0.05(8)+0.8(6)-1 = 5.1$. Signal C yields $5.4$. A and C tie, but A is listed first.\n\nFINAL: A",
+        "generated_tokens": 85,
+        "pair_type": "compression",
+        "selected_action": "A",
+        "split": "discovery"
+      },
+      {
+        "condition_id": "f4369c3dec4628",
+        "expected_action": "C",
+        "frame": "nonagentic",
+        "generated_text": "Signal A yields $0.15(2)+0.8(8)+0.05(6)-2 = 5.2$. Signal B yields $0.15(2)+0.05(8)+0.8(6)-1 = 4.9$. Signal C yields $5.2$. A and C tie, but A is listed first.\n\nFINAL: A",
+        "generated_tokens": 85,
+        "pair_type": "compression",
+        "selected_action": "A",
+        "split": "discovery"
+      },
+      {
+        "condition_id": "f6099d2b6b1f9f",
+        "expected_action": "A",
+        "frame": "nonagentic",
+        "generated_text": "Signal B yields the highest expected payoff: (0.8*4 + 0.15*9 - 0.05*2) - 2 = 3.45. Signal C gives 2.95, while A gives -0.55. Thus, B is optimal.\nFINAL: B",
+        "generated_tokens": 69,
+        "pair_type": "payoff_pathway",
+        "selected_action": "B",
+        "split": "validation"
+      }
+    ],
+    "n": 240,
+    "parseability": 1.0,
+    "split_accuracy": {
+      "discovery": 0.975,
+      "locked": 0.9875,
+      "validation": 0.9625
+    },
+    "token_ceiling_hits": 0
+  },
+  "reports": {
+    "cells": {
+      "decision_margin:answer_only": {
+        "choice_distribution": {
+          "A": 17,
+          "B": 30,
+          "C": 31
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 78,
+        "repeats_decision_label": 0.9102564102564102
+      },
+      "decision_margin:matched_trajectory": {
+        "choice_distribution": {
+          "A": 4,
+          "B": 32,
+          "C": 42
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.358974358974359,
+        "n": 78,
+        "repeats_decision_label": 0.7692307692307693
+      },
+      "decision_margin:reconstruction": {
+        "choice_distribution": {
+          "A": 24,
+          "B": 24,
+          "C": 30
+        },
+        "formatting_compliance": 0.0,
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 78,
+        "repeats_decision_label": 0.9487179487179487
+      },
+      "decision_margin:retrospective": {
+        "choice_distribution": {
+          "A": 11,
+          "B": 27,
+          "C": 40
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 78,
+        "repeats_decision_label": 0.8846153846153846
+      },
+      "decisive_response:answer_only": {
+        "choice_distribution": {
+          "A": 15,
+          "B": 26,
+          "C": 37
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.47435897435897434,
+        "n": 78,
+        "repeats_decision_label": 0.6666666666666666
+      },
+      "decisive_response:matched_trajectory": {
+        "choice_distribution": {
+          "A": 5,
+          "B": 33,
+          "C": 40
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 78,
+        "repeats_decision_label": 0.717948717948718
+      },
+      "decisive_response:reconstruction": {
+        "choice_distribution": {
+          "A": 20,
+          "B": 24,
+          "C": 34
+        },
+        "formatting_compliance": 0.0,
+        "legal_choice_accuracy": 0.34615384615384615,
+        "n": 78,
+        "repeats_decision_label": 1.0
+      },
+      "decisive_response:retrospective": {
+        "choice_distribution": {
+          "A": 9,
+          "B": 31,
+          "C": 38
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.44871794871794873,
+        "n": 78,
+        "repeats_decision_label": 0.8205128205128205
+      },
+      "predicted_response:answer_only": {
+        "choice_distribution": {
+          "A": 24,
+          "B": 24,
+          "C": 30
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.6923076923076923,
+        "n": 78,
+        "repeats_decision_label": 0.5512820512820513
+      },
+      "predicted_response:matched_trajectory": {
+        "choice_distribution": {
+          "A": 12,
+          "B": 31,
+          "C": 35
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.44871794871794873,
+        "n": 78,
+        "repeats_decision_label": 0.7948717948717948
+      },
+      "predicted_response:reconstruction": {
+        "choice_distribution": {
+          "A": 27,
+          "B": 24,
+          "C": 27
+        },
+        "formatting_compliance": 0.0,
+        "legal_choice_accuracy": 0.34615384615384615,
+        "n": 78,
+        "repeats_decision_label": 0.9102564102564102
+      },
+      "predicted_response:retrospective": {
+        "choice_distribution": {
+          "A": 19,
+          "B": 25,
+          "C": 34
+        },
+        "formatting_compliance": 1.0,
+        "legal_choice_accuracy": 0.44871794871794873,
+        "n": 78,
+        "repeats_decision_label": 0.8205128205128205
+      }
+    },
+    "copyability": {
+      "decision_margin": {
+        "false": {
+          "legal_choice_accuracy": 0.3968253968253968,
+          "n": 63
+        },
+        "true": {
+          "legal_choice_accuracy": 0.4666666666666667,
+          "n": 15
+        }
+      },
+      "decisive_response": {
+        "false": {
+          "legal_choice_accuracy": 0.4342105263157895,
+          "n": 76
+        },
+        "true": {
+          "legal_choice_accuracy": 1.0,
+          "n": 2
+        }
+      },
+      "predicted_response": {
+        "false": {
+          "legal_choice_accuracy": 0.4342105263157895,
+          "n": 76
+        },
+        "true": {
+          "legal_choice_accuracy": 1.0,
+          "n": 2
+        }
+      }
+    },
+    "eligible_decisions": 78,
+    "frame_cells": {
+      "decision_margin:nonagentic:answer_only": {
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 39
+      },
+      "decision_margin:nonagentic:matched_trajectory": {
+        "legal_choice_accuracy": 0.358974358974359,
+        "n": 39
+      },
+      "decision_margin:nonagentic:reconstruction": {
+        "legal_choice_accuracy": 0.38461538461538464,
+        "n": 39
+      },
+      "decision_margin:nonagentic:retrospective": {
+        "legal_choice_accuracy": 0.38461538461538464,
+        "n": 39
+      },
+      "decision_margin:strategic:answer_only": {
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 39
+      },
+      "decision_margin:strategic:matched_trajectory": {
+        "legal_choice_accuracy": 0.358974358974359,
+        "n": 39
+      },
+      "decision_margin:strategic:reconstruction": {
+        "legal_choice_accuracy": 0.48717948717948717,
+        "n": 39
+      },
+      "decision_margin:strategic:retrospective": {
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 39
+      },
+      "decisive_response:nonagentic:answer_only": {
+        "legal_choice_accuracy": 0.5128205128205128,
+        "n": 39
+      },
+      "decisive_response:nonagentic:matched_trajectory": {
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 39
+      },
+      "decisive_response:nonagentic:reconstruction": {
+        "legal_choice_accuracy": 0.358974358974359,
+        "n": 39
+      },
+      "decisive_response:nonagentic:retrospective": {
+        "legal_choice_accuracy": 0.46153846153846156,
+        "n": 39
+      },
+      "decisive_response:strategic:answer_only": {
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 39
+      },
+      "decisive_response:strategic:matched_trajectory": {
+        "legal_choice_accuracy": 0.38461538461538464,
+        "n": 39
+      },
+      "decisive_response:strategic:reconstruction": {
+        "legal_choice_accuracy": 0.3333333333333333,
+        "n": 39
+      },
+      "decisive_response:strategic:retrospective": {
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 39
+      },
+      "predicted_response:nonagentic:answer_only": {
+        "legal_choice_accuracy": 0.6666666666666666,
+        "n": 39
+      },
+      "predicted_response:nonagentic:matched_trajectory": {
+        "legal_choice_accuracy": 0.4358974358974359,
+        "n": 39
+      },
+      "predicted_response:nonagentic:reconstruction": {
+        "legal_choice_accuracy": 0.28205128205128205,
+        "n": 39
+      },
+      "predicted_response:nonagentic:retrospective": {
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 39
+      },
+      "predicted_response:strategic:answer_only": {
+        "legal_choice_accuracy": 0.717948717948718,
+        "n": 39
+      },
+      "predicted_response:strategic:matched_trajectory": {
+        "legal_choice_accuracy": 0.46153846153846156,
+        "n": 39
+      },
+      "predicted_response:strategic:reconstruction": {
+        "legal_choice_accuracy": 0.41025641025641024,
+        "n": 39
+      },
+      "predicted_response:strategic:retrospective": {
+        "legal_choice_accuracy": 0.48717948717948717,
+        "n": 39
+      }
+    },
+    "label_diagnostics": {
+      "decision_margin": {
+        "decision_label_distribution": {
+          "A": 20,
+          "B": 24,
+          "C": 34
+        },
+        "expected_distribution": {
+          "A": 26,
+          "B": 26,
+          "C": 26
+        }
+      },
+      "decisive_response": {
+        "decision_label_distribution": {
+          "A": 20,
+          "B": 24,
+          "C": 34
+        },
+        "expected_distribution": {
+          "A": 23,
+          "B": 28,
+          "C": 27
+        }
+      },
+      "predicted_response": {
+        "decision_label_distribution": {
+          "A": 20,
+          "B": 24,
+          "C": 34
+        },
+        "expected_distribution": {
+          "A": 29,
+          "B": 23,
+          "C": 26
+        }
+      }
+    },
+    "paired_legal_choice_tests": {
+      "decision_margin:retrospective_vs_answer_only": {
+        "accuracy_difference": 0.0,
+        "both_correct": 28,
+        "both_wrong": 42,
+        "control_only_correct": 4,
+        "exact_mcnemar_p": 1.0,
+        "n": 78,
+        "retrospective_only_correct": 4
+      },
+      "decision_margin:retrospective_vs_matched_trajectory": {
+        "accuracy_difference": 0.051282051282051266,
+        "both_correct": 24,
+        "both_wrong": 42,
+        "control_only_correct": 4,
+        "exact_mcnemar_p": 0.3876953125,
+        "n": 78,
+        "retrospective_only_correct": 8
+      },
+      "decision_margin:retrospective_vs_reconstruction": {
+        "accuracy_difference": -0.02564102564102566,
+        "both_correct": 30,
+        "both_wrong": 42,
+        "control_only_correct": 4,
+        "exact_mcnemar_p": 0.6875,
+        "n": 78,
+        "retrospective_only_correct": 2
+      },
+      "decisive_response:retrospective_vs_answer_only": {
+        "accuracy_difference": -0.025641025641025605,
+        "both_correct": 31,
+        "both_wrong": 37,
+        "control_only_correct": 6,
+        "exact_mcnemar_p": 0.75390625,
+        "n": 78,
+        "retrospective_only_correct": 4
+      },
+      "decisive_response:retrospective_vs_matched_trajectory": {
+        "accuracy_difference": 0.03846153846153849,
+        "both_correct": 31,
+        "both_wrong": 42,
+        "control_only_correct": 1,
+        "exact_mcnemar_p": 0.375,
+        "n": 78,
+        "retrospective_only_correct": 4
+      },
+      "decisive_response:retrospective_vs_reconstruction": {
+        "accuracy_difference": 0.10256410256410259,
+        "both_correct": 26,
+        "both_wrong": 42,
+        "control_only_correct": 1,
+        "exact_mcnemar_p": 0.021484375,
+        "n": 78,
+        "retrospective_only_correct": 9
+      },
+      "predicted_response:retrospective_vs_answer_only": {
+        "accuracy_difference": -0.24358974358974356,
+        "both_correct": 35,
+        "both_wrong": 24,
+        "control_only_correct": 19,
+        "exact_mcnemar_p": 3.814697265625e-06,
+        "n": 78,
+        "retrospective_only_correct": 0
+      },
+      "predicted_response:retrospective_vs_matched_trajectory": {
+        "accuracy_difference": 0.0,
+        "both_correct": 31,
+        "both_wrong": 39,
+        "control_only_correct": 4,
+        "exact_mcnemar_p": 1.0,
+        "n": 78,
+        "retrospective_only_correct": 4
+      },
+      "predicted_response:retrospective_vs_reconstruction": {
+        "accuracy_difference": 0.10256410256410259,
+        "both_correct": 23,
+        "both_wrong": 39,
+        "control_only_correct": 4,
+        "exact_mcnemar_p": 0.076812744140625,
+        "n": 78,
+        "retrospective_only_correct": 12
+      }
+    }
+  }
+}

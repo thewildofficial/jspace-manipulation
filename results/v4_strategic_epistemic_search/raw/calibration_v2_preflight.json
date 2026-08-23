@@ -1,0 +1,8 @@
+{
+  "calibration_config_sha256": "004af8ae8c856abffbbbf5583e78e81a7f494f8aec2d0251011210dfa1eea58c",
+  "maximum_tokens": 253,
+  "minimum_tokens": 251,
+  "n": 80,
+  "source_dataset_sha256": "97de2055cc20de67a12476c5439efeb1d135e8fd9bc72edade70aa1646ef824b",
+  "status": "all_calibration_prompts_passed"
+}

@@ -1,0 +1,21 @@
+{
+  "base_prompts": {
+    "maximum_tokens": 252,
+    "minimum_tokens": 250,
+    "n": 240
+  },
+  "metadata": {
+    "created_at": "2026-08-23T18:30:15.081312+00:00",
+    "model_id": "Qwen/Qwen3.6-27B",
+    "model_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "schema_version": 1,
+    "source_dataset_sha256": "97de2055cc20de67a12476c5439efeb1d135e8fd9bc72edade70aa1646ef824b",
+    "tokenized_dataset_sha256": "f495da4f0032ad4b942d36db3645f433e0d307cafa9c107f08e5d648c9799cee"
+  },
+  "report_prompts": {
+    "maximum_tokens": 344,
+    "minimum_tokens": 306,
+    "n": 368
+  },
+  "status": "all_prompt_and_continuation_checks_passed"
+}
