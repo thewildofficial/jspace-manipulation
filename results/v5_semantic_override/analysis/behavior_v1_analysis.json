@@ -1,0 +1,279 @@
+{
+  "cells": {
+    "device:aligned:contrarian:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:contrarian:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:contrarian:inferred:claims": {
+      "action_accuracy": 0.625,
+      "actions_correct": 10,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:contrarian:inferred:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:literal:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:literal:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:literal:inferred:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:aligned:literal:inferred:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:opposed:contrarian:explicit:claims": {
+      "action_accuracy": 0.3125,
+      "actions_correct": 5,
+      "n": 16,
+      "option_report_accuracy": 0.9375,
+      "reports_correct": 30
+    },
+    "device:opposed:contrarian:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:opposed:contrarian:inferred:claims": {
+      "action_accuracy": 0.0,
+      "actions_correct": 0,
+      "n": 16,
+      "option_report_accuracy": 0.34375,
+      "reports_correct": 11
+    },
+    "device:opposed:contrarian:inferred:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 0.96875,
+      "reports_correct": 31
+    },
+    "device:opposed:literal:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:opposed:literal:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:opposed:literal:inferred:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "device:opposed:literal:inferred:opaque_tokens": {
+      "action_accuracy": 0.9375,
+      "actions_correct": 15,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:contrarian:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:contrarian:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:contrarian:inferred:claims": {
+      "action_accuracy": 0.4375,
+      "actions_correct": 7,
+      "n": 16,
+      "option_report_accuracy": 0.96875,
+      "reports_correct": 31
+    },
+    "strategic:aligned:contrarian:inferred:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:literal:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:literal:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:literal:inferred:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:aligned:literal:inferred:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:opposed:contrarian:explicit:claims": {
+      "action_accuracy": 0.0,
+      "actions_correct": 0,
+      "n": 16,
+      "option_report_accuracy": 0.96875,
+      "reports_correct": 31
+    },
+    "strategic:opposed:contrarian:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:opposed:contrarian:inferred:claims": {
+      "action_accuracy": 0.0,
+      "actions_correct": 0,
+      "n": 16,
+      "option_report_accuracy": 0.46875,
+      "reports_correct": 15
+    },
+    "strategic:opposed:contrarian:inferred:opaque_tokens": {
+      "action_accuracy": 0.9375,
+      "actions_correct": 15,
+      "n": 16,
+      "option_report_accuracy": 0.96875,
+      "reports_correct": 31
+    },
+    "strategic:opposed:literal:explicit:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:opposed:literal:explicit:opaque_tokens": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:opposed:literal:inferred:claims": {
+      "action_accuracy": 1.0,
+      "actions_correct": 16,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    },
+    "strategic:opposed:literal:inferred:opaque_tokens": {
+      "action_accuracy": 0.8125,
+      "actions_correct": 13,
+      "n": 16,
+      "option_report_accuracy": 1.0,
+      "reports_correct": 32
+    }
+  },
+  "diagnostics": {
+    "both_reports_correct_but_action_wrong": 24,
+    "explicit_contrarian_claim_rows": 64,
+    "of_those_claim_content_equals_target": 24
+  },
+  "h1_explicit_opaque_competence": {
+    "action_accuracy": 1.0,
+    "cells": {
+      "device:aligned:contrarian": 1.0,
+      "device:aligned:literal": 1.0,
+      "device:opposed:contrarian": 1.0,
+      "device:opposed:literal": 1.0,
+      "strategic:aligned:contrarian": 1.0,
+      "strategic:aligned:literal": 1.0,
+      "strategic:opposed:contrarian": 1.0,
+      "strategic:opposed:literal": 1.0
+    },
+    "minimum_cell_accuracy": 1.0,
+    "option_report_accuracy": 1.0,
+    "passed": true
+  },
+  "h2_semantic_action_override": {
+    "claim_option_report_accuracy": 0.9765625,
+    "cluster_values": [
+      0.5,
+      0.25,
+      0.25,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.25,
+      0.5,
+      0.25,
+      0.5,
+      0.5,
+      0.5,
+      0.25,
+      0.5
+    ],
+    "explicit_contrarian_claim_action_accuracy": 0.578125,
+    "explicit_contrarian_opaque_action_accuracy": 1.0,
+    "opaque_minus_claim_gap": 0.421875,
+    "promoted": true,
+    "two_sided_exact_cluster_sign_flip_p": 3.0517578125e-05
+  },
+  "n": 512,
+  "schema_version": 1,
+  "source_run_id": "e0f8fa12f60841b89b79669cbedc9adb",
+  "study_id": "V5-RBG-2"
+}

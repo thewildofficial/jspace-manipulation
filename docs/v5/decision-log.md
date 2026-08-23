@@ -24,3 +24,17 @@
   action-outcome override by crossing inferred/explicit policy access with
   meaningful claims/arbitrary tokens.
 - No RBG-1 activations will be inspected. RBG-2 is a new prospective study.
+
+## 2026-08-24 — V5-D003 — RBG-2 passed; require behavioral localization
+
+- Immutable run `e0f8fa12f60841b89b79669cbedc9adb` passed every frozen
+  competence and semantic-override gate.
+- Explicit contrarian opaque actions were 100% correct; meaningful-claim actions
+  were 57.81% correct while claim consequence reports remained 97.66% correct.
+  The 42.19-point paired gap had exact base-game sign-flip p=.0000305.
+- The error was selective: aligned meaningful-claim cells were 32/32 correct,
+  while opposed strategic and device cells were respectively 0/16 and 5/16.
+- The promoted result is behavioral only. It licenses a fresh localization study,
+  not an immediate claim about internal knowledge, deception, or safety training.
+- RBG-3 will prospectively distinguish lexical target matching, assertion/deception
+  semantics, and causal-map retrieval/rehearsal before any activation intervention.
