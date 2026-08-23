@@ -3,6 +3,9 @@
 **Status:** frozen after the positive RBG-2 result and before RBG-3 dataset
 materialization or model execution.
 
+The deterministic manifest freezes dataset SHA-256
+`c38769c84a1129e1ace7b44bc055be085fc6e087d360cd7efffbf8d85891ce3d`.
+
 RBG-2 established a 42.19-point action gap between meaningful claims and opaque
 tokens despite 97.66% claim-consequence report accuracy. The failure was confined
 to goals that required the receiver/device to produce the state opposite the

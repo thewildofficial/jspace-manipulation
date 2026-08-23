@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-3",
+  "generator": "jspace_policy.semantic_capture_localization.dataset_payload",
+  "expected_content_sha256": "c38769c84a1129e1ace7b44bc055be085fc6e087d360cd7efffbf8d85891ce3d",
+  "expected_contexts": 384,
+  "status": "frozen_before_model_execution"
+}
