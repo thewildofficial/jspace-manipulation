@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   run:
-    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v4-behavior]') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v4-behavior]') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') || contains(github.event.head_commit.message, '[run-v4-ordinal-behavior]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -81,7 +81,7 @@ jobs:
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias_preflight
 
       - name: Verify frozen ordinal-binding dataset
-        if: ${{ startsWith(inputs.stage, 'ordinal-') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') }}
+        if: ${{ startsWith(inputs.stage, 'ordinal-') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') || contains(github.event.head_commit.message, '[run-v4-ordinal-behavior]') }}
         shell: bash
         run: |
           uv run python -c 'import json; from pathlib import Path; from jspace_policy.strategic_epistemic_search import verify_dataset_payload; c=json.loads(Path("configs/v4/strategic_epistemic_search/ordinal_binding_permutation.json").read_text()); d=json.loads(Path("configs/v4/strategic_epistemic_search/ordinal_binding_dataset.json").read_text()); verify_dataset_payload(d, c)'
@@ -115,7 +115,7 @@ jobs:
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias
 
       - name: Run prospective ordinal-binding behavior
-        if: ${{ inputs.stage == 'ordinal-behavior' }}
+        if: ${{ inputs.stage == 'ordinal-behavior' || contains(github.event.head_commit.message, '[run-v4-ordinal-behavior]') }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::ordinal_behavior
 
       - name: Run prospective ordinal-binding report
