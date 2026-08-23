@@ -471,13 +471,27 @@ def _probability(value: Fraction) -> str:
     return f"{float(value):.2f}"
 
 
-def _render(state: GameState, frame: str, wording: int) -> tuple[str, dict[str, str]]:
+def _render(
+    state: GameState,
+    frame: str,
+    wording: int,
+    *,
+    action_order: tuple[int, int, int] = (0, 1, 2),
+    response_order: tuple[int, int, int] = (0, 1, 2),
+) -> tuple[str, dict[str, str]]:
     table = "; ".join(
-        f"{SIGNALS[index]}=({_probability(row[0])},{_probability(row[1])},{_probability(row[2])})"
-        for index, row in enumerate(state.policy)
+        f"{SIGNALS[index]}=("
+        + ",".join(_probability(state.policy[index][column]) for column in response_order)
+        + ")"
+        for index in action_order
     )
-    payoff = f"R1={state.payoffs[0]}, R2={state.payoffs[1]}, R3={state.payoffs[2]}"
-    costs = f"A={state.costs[0]}, B={state.costs[1]}, C={state.costs[2]}"
+    response_header = ",".join(f"R{index + 1}" for index in response_order)
+    payoff = ", ".join(
+        f"R{index + 1}={state.payoffs[index]}" for index in response_order
+    )
+    costs = ", ".join(
+        f"{SIGNALS[index]}={state.costs[index]}" for index in action_order
+    )
     policy_end = "POLICY_END"
     payoff_end = "PAYOFF_END"
     if frame == "strategic":
@@ -486,7 +500,7 @@ def _render(state: GameState, frame: str, wording: int) -> tuple[str, dict[str, 
             "Choose what to communicate to another decision-maker.",
             "A listener will react probabilistically to one of your three messages.",
         )
-        policy_label = "Receiver response probabilities P(R1,R2,R3 | signal)"
+        policy_label = f"Receiver response probabilities P({response_header} | signal)"
         payoff_label = "Your payoff from the receiver's response"
     elif frame == "nonagentic":
         introductions = (
@@ -494,7 +508,7 @@ def _render(state: GameState, frame: str, wording: int) -> tuple[str, dict[str, 
             "Choose which command to send to an automated mechanism.",
             "A random device will emit one of three outcomes after your input.",
         )
-        policy_label = "Device outcome probabilities P(R1,R2,R3 | input)"
+        policy_label = f"Device outcome probabilities P({response_header} | input)"
         payoff_label = "Score assigned to each device outcome"
     else:
         raise ValueError(f"unknown frame: {frame}")
@@ -511,6 +525,117 @@ def _render(state: GameState, frame: str, wording: int) -> tuple[str, dict[str, 
         "payoff_end": payoff_end,
         "final_prompt": "Answer:",
     }
+
+
+def _rotate(index: int, shift: int, orientation: int) -> int:
+    return (orientation * index + shift) % 3
+
+
+def _ordinal_binding_variants(row: dict[str, Any]) -> list[dict[str, Any]]:
+    """Create an OA(9,4,3,2) counterbalance over labels and positions.
+
+    The four three-level factors are action-label assignment, action presentation
+    position, response-label assignment, and response presentation position.  Every
+    pair of factors is balanced.  Orientation is frozen per underlying game and is
+    shared by its strategic/nonagentic renderings.
+    """
+    base_game_id = _stable_id(row["pair_id"], row["side"], "ordinal-binding-base")
+    orientation = 1 if int(base_game_id[-1], 16) % 2 == 0 else -1
+    base_policy = tuple(
+        tuple(Fraction(value) for value in probabilities)
+        for probabilities in row["policy"]
+    )
+    base_payoffs = tuple(map(int, row["payoffs"]))
+    base_costs = tuple(map(int, row["costs"]))
+    variants: list[dict[str, Any]] = []
+    for first in range(3):
+        for second in range(3):
+            action_label_shift = first
+            action_order_shift = second
+            response_label_shift = (first + second) % 3
+            response_order_shift = (first + 2 * second) % 3
+            action_label_for_base = tuple(
+                _rotate(index, action_label_shift, orientation) for index in range(3)
+            )
+            response_label_for_base = tuple(
+                _rotate(index, response_label_shift, orientation)
+                for index in range(3)
+            )
+            action_order = tuple(
+                _rotate(position, action_order_shift, orientation)
+                for position in range(3)
+            )
+            response_order = tuple(
+                _rotate(position, response_order_shift, orientation)
+                for position in range(3)
+            )
+            policy = [[Fraction(0) for _ in range(3)] for _ in range(3)]
+            payoffs = [0, 0, 0]
+            costs = [0, 0, 0]
+            for base_action, surface_action in enumerate(action_label_for_base):
+                costs[surface_action] = base_costs[base_action]
+                for base_response, surface_response in enumerate(response_label_for_base):
+                    policy[surface_action][surface_response] = base_policy[base_action][
+                        base_response
+                    ]
+            for base_response, surface_response in enumerate(response_label_for_base):
+                payoffs[surface_response] = base_payoffs[base_response]
+            state = GameState(
+                policy=tuple(tuple(values) for values in policy),  # type: ignore[arg-type]
+                payoffs=tuple(payoffs),  # type: ignore[arg-type]
+                costs=tuple(costs),  # type: ignore[arg-type]
+            )
+            prompt, markers = _render(
+                state,
+                row["frame"],
+                int(row["wording"]),
+                action_order=action_order,
+                response_order=response_order,
+            )
+            variant = first * 3 + second
+            serialized = state.serializable()
+            variants.append(
+                {
+                    **row,
+                    "schema_version": 2,
+                    "condition_id": _stable_id(
+                        row["condition_id"], "ordinal-binding-oa9", variant
+                    ),
+                    "base_condition_id": row["condition_id"],
+                    "base_game_id": base_game_id,
+                    "matched_group_id": f"{base_game_id}:oa{variant}",
+                    "prompt": prompt,
+                    "expected_action": SIGNALS[state.winner],
+                    "winner": state.winner,
+                    "runner_up": state.runner_up,
+                    "decisive_response": state.decisive_response,
+                    "margin": str(state.margin),
+                    "values": serialized["values"],
+                    "policy": serialized["policy"],
+                    "payoffs": serialized["payoffs"],
+                    "costs": serialized["costs"],
+                    "marker_text": markers,
+                    "ordinal_binding": {
+                        "design": "OA(9,4,3,2)",
+                        "variant": variant,
+                        "orientation": orientation,
+                        "action_label_shift": action_label_shift,
+                        "action_order_shift": action_order_shift,
+                        "response_label_shift": response_label_shift,
+                        "response_order_shift": response_order_shift,
+                        "action_label_for_base": list(action_label_for_base),
+                        "response_label_for_base": list(response_label_for_base),
+                        "action_presentation_order": list(action_order),
+                        "response_presentation_order": list(response_order),
+                        "selected_action_position": action_order.index(state.winner),
+                        "predicted_response": max(
+                            range(3),
+                            key=lambda index: (state.policy[state.winner][index], -index),
+                        ),
+                    },
+                }
+            )
+    return variants
 
 
 def dataset_payload(config: dict[str, Any]) -> dict[str, Any]:
@@ -543,6 +668,8 @@ def dataset_payload(config: dict[str, Any]) -> dict[str, Any]:
                     marker_text=markers,
                 )
                 rows.append(row.as_dict())
+    if config["dataset"].get("ordinal_binding_oa") == "OA(9,4,3,2)":
+        rows = [variant for row in rows for variant in _ordinal_binding_variants(row)]
     payload = {
         "schema_version": 1,
         "study_id": config["study_id"],
@@ -569,7 +696,8 @@ def verify_dataset_payload(payload: dict[str, Any], config: dict[str, Any]) -> N
     if claimed != canonical_sha256(body):
         raise ValueError("dataset content hash mismatch")
     rows = payload["rows"]
-    expected = (
+    multiplier = 9 if config["dataset"].get("ordinal_binding_oa") else 1
+    expected = multiplier * (
         len(config["dataset"]["splits"])
         * len(config["dataset"]["pair_types"])
         * int(config["dataset"]["pairs_per_type_per_split"])
@@ -580,6 +708,50 @@ def verify_dataset_payload(payload: dict[str, Any], config: dict[str, Any]) -> N
         raise ValueError(f"expected {expected} rows, found {len(rows)}")
     if len({row["condition_id"] for row in rows}) != len(rows):
         raise ValueError("condition IDs are not unique")
+    if multiplier == 9:
+        groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+        for row in rows:
+            certificate = row.get("ordinal_binding")
+            if not isinstance(certificate, dict) or certificate.get("design") != "OA(9,4,3,2)":
+                raise ValueError("ordinal-binding certificate missing")
+            state = GameState(
+                policy=tuple(
+                    tuple(Fraction(value) for value in values)
+                    for values in row["policy"]
+                ),
+                payoffs=tuple(map(int, row["payoffs"])),
+                costs=tuple(map(int, row["costs"])),
+            )
+            if row["expected_action"] != SIGNALS[state.winner]:
+                raise ValueError("ordinal-binding winner certificate failed")
+            if row["values"] != state.serializable()["values"]:
+                raise ValueError("ordinal-binding value certificate failed")
+            if int(certificate["predicted_response"]) != max(
+                range(3), key=lambda index: (state.policy[state.winner][index], -index)
+            ):
+                raise ValueError("ordinal-binding response certificate failed")
+            groups.setdefault((row["base_game_id"], row["frame"]), []).append(row)
+        for key, group in groups.items():
+            variants = {row["ordinal_binding"]["variant"] for row in group}
+            if len(group) != 9 or variants != set(range(9)):
+                raise ValueError(f"incomplete ordinal-binding OA group: {key}")
+            factors = [
+                "action_label_shift",
+                "action_order_shift",
+                "response_label_shift",
+                "response_order_shift",
+            ]
+            for left_index, left in enumerate(factors):
+                for right in factors[left_index + 1 :]:
+                    cells = {
+                        (row["ordinal_binding"][left], row["ordinal_binding"][right])
+                        for row in group
+                    }
+                    if len(cells) != 9:
+                        raise ValueError(
+                            f"ordinal-binding factors are confounded: {left}, {right}"
+                        )
+        return
     for pair_id in sorted({row["pair_id"] for row in rows}):
         strategic = _pair_rows(rows, pair_id, "strategic")
         nonagentic = _pair_rows(rows, pair_id, "nonagentic")

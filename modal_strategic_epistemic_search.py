@@ -12,6 +12,10 @@ Commands:
     modal run modal_strategic_epistemic_search.py::report_confirmation
     modal run modal_strategic_epistemic_search.py::report_alias_preflight
     modal run modal_strategic_epistemic_search.py::report_alias
+    modal run modal_strategic_epistemic_search.py::freeze_ordinal_dataset
+    modal run modal_strategic_epistemic_search.py::ordinal_preflight
+    modal run modal_strategic_epistemic_search.py::ordinal_behavior
+    modal run modal_strategic_epistemic_search.py::ordinal_report
     modal run modal_strategic_epistemic_search.py::mechanistic
 
 The first mechanistic pass is observational.  Causal entrypoints are intentionally
@@ -45,7 +49,13 @@ REPORT_CONFIRMATION_CONFIG_PATH = Path(
 REPORT_ALIAS_CONFIG_PATH = Path(
     "configs/v4/strategic_epistemic_search/report_alias_mechanism.json"
 )
+ORDINAL_CONFIG_PATH = Path(
+    "configs/v4/strategic_epistemic_search/ordinal_binding_permutation.json"
+)
 DATASET_PATH = Path("configs/v4/strategic_epistemic_search/dataset.json")
+ORDINAL_DATASET_PATH = Path(
+    "configs/v4/strategic_epistemic_search/ordinal_binding_dataset.json"
+)
 RESULT_ROOT = Path("results/v4_strategic_epistemic_search")
 
 MODEL_ID = "Qwen/Qwen3.6-27B"
@@ -162,6 +172,24 @@ def _validate_config(config: dict[str, Any]) -> None:
             raise RuntimeError("alias mechanism naming conditions changed")
         if report["response_aliases"] != ["Kestrel", "Lumen", "Quartz"]:
             raise RuntimeError("response aliases changed")
+    elif report["version"] == "cross_role_ordinal_binding_v1":
+        if config["dataset"].get("ordinal_binding_oa") != "OA(9,4,3,2)":
+            raise RuntimeError("ordinal-binding design changed")
+        if report["splits"] != ["locked"]:
+            raise RuntimeError("ordinal-binding study must use its fresh locked split")
+        if report["query_types"] != ["predicted_response"]:
+            raise RuntimeError("ordinal-binding query changed")
+        if set(report["access_conditions"]) != {"retrospective", "answer_only"}:
+            raise RuntimeError("ordinal-binding access contrast changed")
+        if report["eligible_selected_actions"] != ["A", "B", "C"]:
+            raise RuntimeError("ordinal-binding actions changed")
+        if report["primary_tests"] != [
+            "action_label_to_response_label_lure",
+            "action_position_to_response_position_lure",
+        ]:
+            raise RuntimeError("ordinal-binding primary family changed")
+        if report["test"] != "two_sided_exact_cluster_sign_flip":
+            raise RuntimeError("ordinal-binding test changed")
     else:
         raise RuntimeError("unknown self-report protocol version")
     behavior = config["behavior"]
@@ -626,6 +654,9 @@ def _report_inputs(
                                 matched["generated_tokens"] if matched is not None else None
                             ),
                             "target_surface_in_trajectory": target_surface_in_trajectory,
+                            "base_condition_id": row.get("base_condition_id"),
+                            "base_game_id": row.get("base_game_id"),
+                            "ordinal_binding": row.get("ordinal_binding"),
                             "prompt_token_ids": token_ids,
                             "candidate_token_ids": [
                                 _continuation_id(model.tokenizer, rendered, label)
@@ -802,20 +833,25 @@ def _verbose_task(row: dict[str, Any], *, short_cot: bool) -> tuple[str, dict[st
         if strategic
         else "Conditional mechanism output probabilities"
     )
+    certificate = row.get("ordinal_binding") or {}
+    action_order = list(map(int, certificate.get("action_presentation_order", [0, 1, 2])))
+    response_order = list(
+        map(int, certificate.get("response_presentation_order", [0, 1, 2]))
+    )
     policy_lines = []
-    for signal, probabilities in zip("ABC", row["policy"], strict=True):
+    for action_index in action_order:
+        probabilities = row["policy"][action_index]
         rendered = ", ".join(
-            f"R{index + 1}={float(Fraction(value)):.2f}"
-            for index, value in enumerate(probabilities)
+            f"R{index + 1}={float(Fraction(probabilities[index])):.2f}"
+            for index in response_order
         )
-        policy_lines.append(f"- Signal {signal}: {rendered}")
+        policy_lines.append(f"- Signal {'ABC'[action_index]}: {rendered}")
     payoff_rows = [
-        f"- R{index + 1}: {int(value):+d}"
-        for index, value in enumerate(row["payoffs"])
+        f"- R{index + 1}: {int(row['payoffs'][index]):+d}"
+        for index in response_order
     ]
     cost_rows = [
-        f"- {signal}: {int(value)}"
-        for signal, value in zip("ABC", row["costs"], strict=True)
+        f"- {'ABC'[index]}: {int(row['costs'][index])}" for index in action_order
     ]
     instruction = (
         "Reason through this in at most three short sentences and no more than "
@@ -1629,6 +1665,10 @@ def _alias_mechanism_config() -> dict[str, Any]:
     return config
 
 
+def _ordinal_binding_config() -> dict[str, Any]:
+    return _load_json(ORDINAL_CONFIG_PATH)
+
+
 @app.local_entrypoint()
 def report_preflight() -> None:
     config = _load_json(CONFIG_PATH)
@@ -1710,6 +1750,65 @@ def report_alias() -> None:
     target = RESULT_ROOT / "raw/report_alias_mechanism_v1.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "report_alias_mechanism_v1", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def freeze_ordinal_dataset() -> None:
+    from jspace_policy.strategic_epistemic_search import (
+        dataset_payload,
+        verify_dataset_payload,
+    )
+
+    config = _ordinal_binding_config()
+    _validate_config(config)
+    payload = dataset_payload(config)
+    verify_dataset_payload(payload, config)
+    _write_new(
+        ORDINAL_DATASET_PATH, json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    )
+    print(f"wrote {ORDINAL_DATASET_PATH} with {len(payload['rows'])} rows")
+
+
+@app.local_entrypoint()
+def ordinal_preflight() -> None:
+    config = _ordinal_binding_config()
+    dataset = _load_json(ORDINAL_DATASET_PATH)
+    _validate_config(config)
+    payload = json.loads(preflight_remote.remote(dataset, config))
+    target = RESULT_ROOT / "raw/ordinal_binding_v1_preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def ordinal_behavior() -> None:
+    config = _ordinal_binding_config()
+    dataset = _load_json(ORDINAL_DATASET_PATH)
+    _validate_config(config)
+    ledger = _admit(config, "ordinal_binding_behavior_v1", 1800, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(behavior_remote.remote(dataset, config, code_metadata))
+    target = RESULT_ROOT / "raw/ordinal_binding_behavior_v1.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "ordinal_binding_behavior_v1", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def ordinal_report() -> None:
+    config = _ordinal_binding_config()
+    dataset = _load_json(ORDINAL_DATASET_PATH)
+    behavior_result = _load_json(RESULT_ROOT / "raw/ordinal_binding_behavior_v1.json")
+    _validate_config(config)
+    ledger = _admit(config, "ordinal_binding_report_v1", 1200, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(
+        report_remote.remote(dataset, behavior_result, config, code_metadata)
+    )
+    target = RESULT_ROOT / "raw/ordinal_binding_report_v1.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "ordinal_binding_report_v1", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 

@@ -17,6 +17,9 @@ on:
           - report
           - confirmation
           - alias
+          - ordinal-preflight
+          - ordinal-behavior
+          - ordinal-report
           - discovery
 
 permissions:
@@ -28,7 +31,7 @@ concurrency:
 
 jobs:
   run:
-    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v4-behavior]') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v4-behavior]') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -77,6 +80,16 @@ jobs:
         if: ${{ inputs.stage == 'alias' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias_preflight
 
+      - name: Verify frozen ordinal-binding dataset
+        if: ${{ startsWith(inputs.stage, 'ordinal-') || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') }}
+        shell: bash
+        run: |
+          uv run python -c 'import json; from pathlib import Path; from jspace_policy.strategic_epistemic_search import verify_dataset_payload; c=json.loads(Path("configs/v4/strategic_epistemic_search/ordinal_binding_permutation.json").read_text()); d=json.loads(Path("configs/v4/strategic_epistemic_search/ordinal_binding_dataset.json").read_text()); verify_dataset_payload(d, c)'
+
+      - name: Validate ordinal-binding prompts without GPU
+        if: ${{ inputs.stage == 'ordinal-preflight' || contains(github.event.head_commit.message, '[run-v4-ordinal-preflight]') }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::ordinal_preflight
+
       - name: Validate calibration prompts without GPU
         if: ${{ inputs.stage == 'calibration' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration_preflight
@@ -100,6 +113,22 @@ jobs:
       - name: Run response-alias mechanism test
         if: ${{ inputs.stage == 'alias' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias
+
+      - name: Run prospective ordinal-binding behavior
+        if: ${{ inputs.stage == 'ordinal-behavior' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::ordinal_behavior
+
+      - name: Run prospective ordinal-binding report
+        if: ${{ inputs.stage == 'ordinal-report' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::ordinal_report
+
+      - name: Analyze prospective ordinal-binding report
+        if: ${{ inputs.stage == 'ordinal-report' }}
+        shell: bash
+        run: |
+          uv run python scripts/analyze_v4_ordinal_binding.py \
+            results/v4_strategic_epistemic_search/raw/ordinal_binding_report_v1.json \
+            --output results/v4_strategic_epistemic_search/analysis/ordinal_binding_report_v1_analysis.json
 
       - name: Run observational discovery if behavior passed
         if: ${{ inputs.stage == 'discovery' }}

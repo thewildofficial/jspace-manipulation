@@ -16,6 +16,9 @@ from jspace_policy.strategic_epistemic_search import (
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/v4/strategic_epistemic_search/experiment.json"
 CONFIRMATION = ROOT / "configs/v4/strategic_epistemic_search/report_confirmation.json"
+ORDINAL_BINDING = (
+    ROOT / "configs/v4/strategic_epistemic_search/ordinal_binding_permutation.json"
+)
 
 
 def _config() -> dict:
@@ -47,6 +50,68 @@ def test_arbitrary_response_aliases_preserve_the_target() -> None:
     assert indexed["expected_label"] == aliased["expected_label"]
     assert set(aliased["options"].values()) == {"Kestrel", "Lumen", "Quartz"}
     assert "Kestrel=R1" in aliased["messages"][-1]["content"]
+
+
+def test_ordinal_binding_protocol_is_prospective_and_clustered() -> None:
+    config = json.loads(ORDINAL_BINDING.read_text(encoding="utf-8"))
+    report = config["self_report"]
+    assert config["status"] == "preregistered_before_dataset_freeze_or_model_execution"
+    assert config["dataset"]["seed"] != _config()["dataset"]["seed"]
+    assert config["dataset"]["ordinal_binding_oa"] == "OA(9,4,3,2)"
+    assert report["primary_tests"] == [
+        "action_label_to_response_label_lure",
+        "action_position_to_response_position_lure",
+    ]
+    assert report["cluster_unit"] == "base_game_id"
+    assert report["test"] == "two_sided_exact_cluster_sign_flip"
+    assert report["family_correction"] == "holm_across_two_primary_lures"
+
+
+def test_ordinal_binding_dataset_is_pairwise_orthogonal() -> None:
+    config = json.loads(ORDINAL_BINDING.read_text(encoding="utf-8"))
+    payload = dataset_payload(config)
+    verify_dataset_payload(payload, config)
+    assert len(payload["rows"]) == 360
+    group = [
+        row
+        for row in payload["rows"]
+        if row["base_game_id"] == payload["rows"][0]["base_game_id"]
+        and row["frame"] == payload["rows"][0]["frame"]
+    ]
+    assert len(group) == 9
+    factors = (
+        "action_label_shift",
+        "action_order_shift",
+        "response_label_shift",
+        "response_order_shift",
+    )
+    for left_index, left in enumerate(factors):
+        for right in factors[left_index + 1 :]:
+            observed = {
+                (row["ordinal_binding"][left], row["ordinal_binding"][right])
+                for row in group
+            }
+            expected = {
+                (left_level, right_level)
+                for left_level in range(3)
+                for right_level in range(3)
+            }
+            assert observed == expected
+
+
+def test_ordinal_binding_prompt_obeys_frozen_presentation_orders() -> None:
+    config = json.loads(ORDINAL_BINDING.read_text(encoding="utf-8"))
+    row = dataset_payload(config)["rows"][0]
+    certificate = row["ordinal_binding"]
+    action_order = certificate["action_presentation_order"]
+    response_order = certificate["response_presentation_order"]
+    action_surfaces = [f"{label}=(" for label in "ABC"]
+    response_surfaces = [f"R{index + 1}" for index in range(3)]
+    assert [row["prompt"].index(action_surfaces[index]) for index in action_order] == sorted(
+        row["prompt"].index(action_surfaces[index]) for index in action_order
+    )
+    header = row["prompt"].split("P(", 1)[1].split(" |", 1)[0]
+    assert header.split(",") == [response_surfaces[index] for index in response_order]
 
 
 def test_game_state_exact_values_and_pathway() -> None:
