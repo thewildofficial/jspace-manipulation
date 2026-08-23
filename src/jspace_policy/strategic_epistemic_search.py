@@ -72,6 +72,7 @@ def report_spec(
     ordinal_trajectory: str | None = None,
     system_prompt: str | None = None,
     report_labels: tuple[str, str, str] = REPORT_LABELS,
+    response_aliases: tuple[str, str, str] | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic forced-choice report and reconstruction control."""
     if query_type not in REPORT_QUERY_TYPES:
@@ -112,12 +113,24 @@ def report_spec(
     elif query_type == "predicted_response":
         targets = (0, 1, 2)
         correct_value = predicted_response
-        rendered_values = tuple(f"R{index + 1}" for index in targets)
+        if response_aliases is not None:
+            if len(set(response_aliases)) != 3:
+                raise ValueError("response aliases must be distinct")
+            rendered_values = response_aliases
+            alias_key = ", ".join(
+                f"{alias}=R{index + 1}"
+                for index, alias in enumerate(response_aliases)
+            )
+        else:
+            rendered_values = tuple(f"R{index + 1}" for index in targets)
+            alias_key = None
         subject = "receiver" if row["frame"] == "strategic" else "device"
         question = (
             f"Under the selected option, which {subject} response/outcome had the "
             "highest predicted probability?"
         )
+        if alias_key is not None:
+            question += f" For this report only, use these aliases: {alias_key}."
     else:
         targets = (decision_margin - 1, decision_margin, decision_margin + 1)
         correct_value = decision_margin
@@ -196,6 +209,7 @@ def report_spec(
             access_condition,
             selected_action,
             "".join(report_labels),
+            "indexed" if response_aliases is None else "|".join(response_aliases),
         ),
         "condition_id": row["condition_id"],
         "query_type": query_type,
@@ -205,6 +219,7 @@ def report_spec(
         "correct_value": str(correct_value),
         "correct_surface": correct_surface,
         "candidate_labels": list(report_labels),
+        "response_aliases": list(response_aliases) if response_aliases else None,
         "options": {
             label: value
             for label, value in zip(report_labels, ordered_rendered, strict=True)

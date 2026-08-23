@@ -16,6 +16,7 @@ on:
           - calibration
           - report
           - confirmation
+          - alias
           - discovery
 
 permissions:
@@ -72,6 +73,10 @@ jobs:
         if: ${{ inputs.stage == 'confirmation' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_confirmation_preflight
 
+      - name: Validate response-alias mechanism prompts without GPU
+        if: ${{ inputs.stage == 'alias' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias_preflight
+
       - name: Validate calibration prompts without GPU
         if: ${{ inputs.stage == 'calibration' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration_preflight
@@ -91,6 +96,10 @@ jobs:
       - name: Run held-out trajectory-interference confirmation
         if: ${{ inputs.stage == 'confirmation' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_confirmation
+
+      - name: Run response-alias mechanism test
+        if: ${{ inputs.stage == 'alias' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_alias
 
       - name: Run observational discovery if behavior passed
         if: ${{ inputs.stage == 'discovery' }}

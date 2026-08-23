@@ -31,6 +31,24 @@ def test_confirmation_protocol_is_held_out_and_minimal() -> None:
     assert protocol["primary_test"] == "two_sided_exact_mcnemar"
 
 
+def test_arbitrary_response_aliases_preserve_the_target() -> None:
+    row = dataset_payload(_config())["rows"][0]
+    indexed = report_spec(
+        row, "predicted_response", "answer_only", row["expected_action"]
+    )
+    aliased = report_spec(
+        row,
+        "predicted_response",
+        "answer_only",
+        row["expected_action"],
+        response_aliases=("Kestrel", "Lumen", "Quartz"),
+    )
+    assert indexed["correct_value"] == aliased["correct_value"]
+    assert indexed["expected_label"] == aliased["expected_label"]
+    assert set(aliased["options"].values()) == {"Kestrel", "Lumen", "Quartz"}
+    assert "Kestrel=R1" in aliased["messages"][-1]["content"]
+
+
 def test_game_state_exact_values_and_pathway() -> None:
     state = GameState(
         policy=(

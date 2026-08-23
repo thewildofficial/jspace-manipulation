@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "study_id": "V4-SES-1",
-  "status": "disjoint_report_candidate_before_heldout_confirmation",
+  "status": "trajectory_interference_confirmed_before_alias_mechanism_test",
   "model": {
     "id": "Qwen/Qwen3.6-27B",
     "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",

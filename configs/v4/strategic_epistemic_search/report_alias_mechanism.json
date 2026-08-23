@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "protocol_id": "V4-SES-REPORT-ALIAS-1",
+  "frozen_after_confirmation_run_id": "acbb2031038d4573a88d3232cb39322b",
+  "confirmed_result": {
+    "heldout_n": 54,
+    "retrospective_correct": 47,
+    "answer_only_correct": 53,
+    "retrospective_only_correct": 0,
+    "answer_only_only_correct": 6,
+    "two_sided_exact_mcnemar_p": 0.03125,
+    "accuracy_difference": -0.11111111111111116
+  },
+  "self_report": {
+    "version": "response_alias_mechanism_v1",
+    "source_behavior_run_id": "7bb82d26fe0d4383be7ef53ea7a1dc38",
+    "candidate_labels": ["X", "Y", "Z"],
+    "splits": ["discovery", "validation", "locked"],
+    "eligible_selected_actions": ["C"],
+    "query_types": ["predicted_response"],
+    "access_conditions": ["retrospective", "answer_only"],
+    "response_naming_conditions": ["indexed", "arbitrary_alias"],
+    "response_aliases": ["Kestrel", "Lumen", "Quartz"],
+    "primary_mechanism_contrast": "retrospective_arbitrary_alias_minus_retrospective_indexed",
+    "primary_outcome": "legal_choice_correct",
+    "primary_test": "two_sided_exact_mcnemar",
+    "support_rule": "alias_rescues_retrospective_accuracy_without_materially_improving_answer_only",
+    "logit_difference_in_differences": "descriptive",
+    "batch_size": 12
+  }
+}

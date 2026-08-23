@@ -10,6 +10,8 @@ Commands:
     modal run modal_strategic_epistemic_search.py::report
     modal run modal_strategic_epistemic_search.py::report_confirmation_preflight
     modal run modal_strategic_epistemic_search.py::report_confirmation
+    modal run modal_strategic_epistemic_search.py::report_alias_preflight
+    modal run modal_strategic_epistemic_search.py::report_alias
     modal run modal_strategic_epistemic_search.py::mechanistic
 
 The first mechanistic pass is observational.  Causal entrypoints are intentionally
@@ -39,6 +41,9 @@ CALIBRATION_CONFIG_PATH = Path(
 )
 REPORT_CONFIRMATION_CONFIG_PATH = Path(
     "configs/v4/strategic_epistemic_search/report_confirmation.json"
+)
+REPORT_ALIAS_CONFIG_PATH = Path(
+    "configs/v4/strategic_epistemic_search/report_alias_mechanism.json"
 )
 DATASET_PATH = Path("configs/v4/strategic_epistemic_search/dataset.json")
 RESULT_ROOT = Path("results/v4_strategic_epistemic_search")
@@ -144,6 +149,19 @@ def _validate_config(config: dict[str, Any]) -> None:
             raise RuntimeError("confirmation access contrast changed")
         if report["eligible_selected_actions"] != ["C"]:
             raise RuntimeError("confirmation selected-action stratum changed")
+    elif report["version"] == "response_alias_mechanism_v1":
+        if report["splits"] != ["discovery", "validation", "locked"]:
+            raise RuntimeError("alias mechanism split set changed")
+        if report["query_types"] != ["predicted_response"]:
+            raise RuntimeError("alias mechanism query changed")
+        if set(report["access_conditions"]) != {"retrospective", "answer_only"}:
+            raise RuntimeError("alias mechanism access contrast changed")
+        if report["eligible_selected_actions"] != ["C"]:
+            raise RuntimeError("alias mechanism selected-action stratum changed")
+        if report["response_naming_conditions"] != ["indexed", "arbitrary_alias"]:
+            raise RuntimeError("alias mechanism naming conditions changed")
+        if report["response_aliases"] != ["Kestrel", "Lumen", "Quartz"]:
+            raise RuntimeError("response aliases changed")
     else:
         raise RuntimeError("unknown self-report protocol version")
     behavior = config["behavior"]
@@ -499,6 +517,7 @@ def _report_inputs(
     report_config = config["self_report"]
     report_labels = tuple(map(str, report_config["candidate_labels"]))
     eligible_actions = set(report_config.get("eligible_selected_actions", "ABC"))
+    naming_conditions = report_config.get("response_naming_conditions", ["indexed"])
     output = []
     for row in dataset_rows:
         if row["split"] not in report_config["splits"]:
@@ -534,78 +553,88 @@ def _report_inputs(
             )
         for query_type in report_config["query_types"]:
             for access_condition in report_config["access_conditions"]:
-                spec = report_spec(
-                    row,
-                    query_type,
-                    access_condition,
-                    selected_action,
-                    decision_prompt=decision["decision_prompt"],
-                    trajectory=decision["generated_text"],
-                    matched_trajectory=(
-                        matched["generated_text"] if matched is not None else None
-                    ),
-                    ordinal_trajectory=(
-                        _ordinalize_trajectory(decision["generated_text"])
-                        if "ordinal_trajectory" in report_config["access_conditions"]
+                for response_naming in naming_conditions:
+                    aliases = (
+                        tuple(map(str, report_config["response_aliases"]))
+                        if response_naming == "arbitrary_alias"
                         else None
-                    ),
-                    system_prompt=decision["decision_system_prompt"],
-                    report_labels=report_labels,
-                )
-                surface_pattern = (
-                    rf"(?<![A-Za-z0-9]){re.escape(spec['correct_surface'])}"
-                    r"(?![A-Za-z0-9])"
-                )
-                target_surface_in_trajectory = bool(
-                    re.search(
-                        surface_pattern,
-                        decision["generated_text"],
-                        flags=re.IGNORECASE,
                     )
-                )
-                rendered = model.tokenizer.apply_chat_template(
-                    spec["messages"],
-                    tokenize=False,
-                    add_generation_prompt=True,
-                    enable_thinking=False,
-                )
-                token_ids = list(
-                    map(
-                        int,
-                        model.tokenizer.encode(rendered, add_special_tokens=False),
+                    spec = report_spec(
+                        row,
+                        query_type,
+                        access_condition,
+                        selected_action,
+                        decision_prompt=decision["decision_prompt"],
+                        trajectory=decision["generated_text"],
+                        matched_trajectory=(
+                            matched["generated_text"] if matched is not None else None
+                        ),
+                        ordinal_trajectory=(
+                            _ordinalize_trajectory(decision["generated_text"])
+                            if "ordinal_trajectory"
+                            in report_config["access_conditions"]
+                            else None
+                        ),
+                        system_prompt=decision["decision_system_prompt"],
+                        report_labels=report_labels,
+                        response_aliases=aliases,
                     )
-                )
-                output.append(
-                    {
-                        **{
-                            key: value
-                            for key, value in spec.items()
-                            if key != "messages"
-                        },
-                        "pair_id": row["pair_id"],
-                        "pair_type": row["pair_type"],
-                        "side": row["side"],
-                        "split": row["split"],
-                        "frame": row["frame"],
-                        "decision_correct": bool(decision["correct"]),
-                        "decision_generated_tokens": decision["generated_tokens"],
-                        "decision_hit_token_ceiling": decision["hit_token_ceiling"],
-                        "matched_control_condition_id": (
-                            matched["condition_id"] if matched is not None else None
-                        ),
-                        "matched_control_generated_tokens": (
-                            matched["generated_tokens"] if matched is not None else None
-                        ),
-                        "target_surface_in_trajectory": target_surface_in_trajectory,
-                        "prompt_token_ids": token_ids,
-                        "candidate_token_ids": [
-                            _continuation_id(model.tokenizer, rendered, label)
-                            for label in report_labels
-                        ],
-                        "candidate_labels": list(report_labels),
-                        "sequence_length": len(token_ids),
-                    }
-                )
+                    spec["report_id"] = f"{spec['report_id']}:{response_naming}"
+                    spec["response_naming"] = response_naming
+                    surface_pattern = (
+                        rf"(?<![A-Za-z0-9]){re.escape(spec['correct_surface'])}"
+                        r"(?![A-Za-z0-9])"
+                    )
+                    target_surface_in_trajectory = bool(
+                        re.search(
+                            surface_pattern,
+                            decision["generated_text"],
+                            flags=re.IGNORECASE,
+                        )
+                    )
+                    rendered = model.tokenizer.apply_chat_template(
+                        spec["messages"],
+                        tokenize=False,
+                        add_generation_prompt=True,
+                        enable_thinking=False,
+                    )
+                    token_ids = list(
+                        map(
+                            int,
+                            model.tokenizer.encode(rendered, add_special_tokens=False),
+                        )
+                    )
+                    output.append(
+                        {
+                            **{
+                                key: value
+                                for key, value in spec.items()
+                                if key != "messages"
+                            },
+                            "pair_id": row["pair_id"],
+                            "pair_type": row["pair_type"],
+                            "side": row["side"],
+                            "split": row["split"],
+                            "frame": row["frame"],
+                            "decision_correct": bool(decision["correct"]),
+                            "decision_generated_tokens": decision["generated_tokens"],
+                            "decision_hit_token_ceiling": decision["hit_token_ceiling"],
+                            "matched_control_condition_id": (
+                                matched["condition_id"] if matched is not None else None
+                            ),
+                            "matched_control_generated_tokens": (
+                                matched["generated_tokens"] if matched is not None else None
+                            ),
+                            "target_surface_in_trajectory": target_surface_in_trajectory,
+                            "prompt_token_ids": token_ids,
+                            "candidate_token_ids": [
+                                _continuation_id(model.tokenizer, rendered, label)
+                                for label in report_labels
+                            ],
+                            "candidate_labels": list(report_labels),
+                            "sequence_length": len(token_ids),
+                        }
+                    )
     return output
 
 
@@ -672,49 +701,63 @@ def _self_report_rows(
 
 def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     eligible = [row for row in rows if row["decision_correct"]]
+    namings = sorted({row.get("response_naming", "indexed") for row in rows})
+
+    def cell_key(query_type: str, access_condition: str, naming: str) -> str:
+        base = f"{query_type}:{access_condition}"
+        return f"{base}:{naming}" if len(namings) > 1 else base
+
     cells = {}
-    for query_type in sorted({row["query_type"] for row in rows}):
-        for access_condition in sorted({row["access_condition"] for row in rows}):
-            cell = [
-                row
-                for row in eligible
-                if row["query_type"] == query_type
-                and row["access_condition"] == access_condition
-            ]
-            cells[f"{query_type}:{access_condition}"] = {
-                "n": len(cell),
-                "strict_accuracy": (
-                    sum(row["correct"] for row in cell) / len(cell) if cell else None
-                ),
-                "legal_choice_accuracy": sum(
-                    row["legal_choice_correct"] for row in cell
-                )
-                / len(cell)
-                if cell
-                else None,
-                "formatting_compliance": sum(
-                    row["formatting_compliant"] for row in cell
-                )
-                / len(cell)
-                if cell
-                else None,
-            }
+    for naming in namings:
+        for query_type in sorted({row["query_type"] for row in rows}):
+            for access_condition in sorted({row["access_condition"] for row in rows}):
+                cell = [
+                    row
+                    for row in eligible
+                    if row["query_type"] == query_type
+                    and row["access_condition"] == access_condition
+                    and row.get("response_naming", "indexed") == naming
+                ]
+                cells[cell_key(query_type, access_condition, naming)] = {
+                    "n": len(cell),
+                    "strict_accuracy": (
+                        sum(row["correct"] for row in cell) / len(cell)
+                        if cell
+                        else None
+                    ),
+                    "legal_choice_accuracy": sum(
+                        row["legal_choice_correct"] for row in cell
+                    )
+                    / len(cell)
+                    if cell
+                    else None,
+                    "formatting_compliance": sum(
+                        row["formatting_compliant"] for row in cell
+                    )
+                    / len(cell)
+                    if cell
+                    else None,
+                }
     accesses = sorted({row["access_condition"] for row in rows})
     controls = [access for access in accesses if access != "retrospective"]
     contrasts = {}
-    for query_type in sorted({row["query_type"] for row in rows}):
-        retrospective = cells[f"{query_type}:retrospective"][
-            "legal_choice_accuracy"
-        ]
-        for control in controls:
-            control_accuracy = cells[f"{query_type}:{control}"][
+    for naming in namings:
+        for query_type in sorted({row["query_type"] for row in rows}):
+            retrospective = cells[cell_key(query_type, "retrospective", naming)][
                 "legal_choice_accuracy"
             ]
-            contrasts[f"{query_type}:retrospective_minus_{control}"] = (
-                retrospective - control_accuracy
-                if retrospective is not None and control_accuracy is not None
-                else None
-            )
+            for control in controls:
+                control_accuracy = cells[cell_key(query_type, control, naming)][
+                    "legal_choice_accuracy"
+                ]
+                key = f"{query_type}:retrospective_minus_{control}"
+                if len(namings) > 1:
+                    key = f"{key}:{naming}"
+                contrasts[key] = (
+                    retrospective - control_accuracy
+                    if retrospective is not None and control_accuracy is not None
+                    else None
+                )
     copyability = {}
     for query_type in sorted({row["query_type"] for row in rows}):
         retrospective_rows = [
@@ -1579,6 +1622,13 @@ def _confirmation_config() -> dict[str, Any]:
     return config
 
 
+def _alias_mechanism_config() -> dict[str, Any]:
+    config = _load_json(CONFIG_PATH)
+    protocol = _load_json(REPORT_ALIAS_CONFIG_PATH)
+    config["self_report"] = protocol["self_report"]
+    return config
+
+
 @app.local_entrypoint()
 def report_preflight() -> None:
     config = _load_json(CONFIG_PATH)
@@ -1632,6 +1682,34 @@ def report_confirmation() -> None:
     target = RESULT_ROOT / "raw/report_confirmation_v1.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "report_confirmation_v1", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report_alias_preflight() -> None:
+    config = _alias_mechanism_config()
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    payload = json.loads(preflight_remote.remote(dataset, config))
+    target = RESULT_ROOT / "raw/report_alias_mechanism_v1_preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report_alias() -> None:
+    config = _alias_mechanism_config()
+    dataset = _load_json(DATASET_PATH)
+    behavior_result = _load_json(RESULT_ROOT / "raw/behavior_v2.json")
+    _validate_config(config)
+    ledger = _admit(config, "report_alias_mechanism_v1", 900, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(
+        report_remote.remote(dataset, behavior_result, config, code_metadata)
+    )
+    target = RESULT_ROOT / "raw/report_alias_mechanism_v1.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "report_alias_mechanism_v1", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 
