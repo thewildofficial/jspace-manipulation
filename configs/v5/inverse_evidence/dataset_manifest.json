@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-4",
+  "generator": "jspace_policy.inverse_evidence_games.dataset_payload",
+  "expected_content_sha256": "3fdc9977f03700dbfb2118414ec9602a4e76d9d6e2b35788a81bc6acf4a1f5d1",
+  "expected_contexts": 768,
+  "status": "frozen_before_model_execution"
+}

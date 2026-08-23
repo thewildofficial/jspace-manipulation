@@ -3,6 +3,9 @@
 **Status:** frozen after RBG-3 and before RBG-4 dataset materialization or model
 execution.
 
+The deterministic manifest freezes dataset SHA-256
+`3fdc9977f03700dbfb2118414ec9602a4e76d9d6e2b35788a81bc6acf4a1f5d1`.
+
 RBG-2 produced a large assertion/action dissociation with four redundant policy
 demonstrations and a prose mapping. RBG-3 used a history-free consequence table
 and produced only seven residual errors. Cross-study comparison cannot identify
