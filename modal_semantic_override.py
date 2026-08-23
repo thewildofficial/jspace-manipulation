@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import subprocess
 import time
 import uuid
 from datetime import UTC, datetime
@@ -12,23 +14,136 @@ from typing import Any
 import modal
 
 from jspace_policy.budget import admit_run, append_ledger, estimate_cost
-from modal_revealed_belief_games import (
-    MODEL_ID,
-    MODEL_REVISION,
-    SYSTEM_PROMPT,
-    _canonical_sha256,
-    _git_head,
-    _prepare_query,
-    _query,
-    _write_new,
-    cache,
-    image,
-)
 
 CONFIG_PATH = Path("configs/v5/semantic_override/experiment.json")
 DATASET_PATH = Path("configs/v5/semantic_override/dataset.json")
 RESULT_ROOT = Path("results/v5_semantic_override")
+MODEL_ID = "Qwen/Qwen3.6-27B"
+MODEL_REVISION = "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9"
+SYSTEM_PROMPT = (
+    "Treat the described game and prior episodes as exact formal information. "
+    "Follow the requested forced-choice format exactly."
+)
+
 app = modal.App("jspace-v5-semantic-override")
+cache = modal.Volume.from_name("jspace-hf-cache", create_if_missing=True)
+image = (
+    modal.Image.debian_slim(python_version="3.13")
+    .apt_install("git")
+    .uv_pip_install(
+        "torch>=2.8",
+        "transformers>=5.5",
+        "huggingface_hub>=0.34",
+    )
+    .env({"HF_HOME": "/cache/huggingface", "TOKENIZERS_PARALLELISM": "false"})
+    .add_local_dir("src/jspace_policy", remote_path="/root/jspace_policy")
+)
+
+
+def _canonical_sha256(value: object) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _write_new(path: Path, value: str) -> None:
+    if path.exists():
+        raise RuntimeError(f"refusing to overwrite prospective artifact: {path}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(value, encoding="utf-8")
+
+
+def _git_head() -> str:
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+
+
+def _continuation_id(tokenizer: Any, rendered: str, answer: str) -> int:
+    prefix = tokenizer.encode(rendered, add_special_tokens=False)
+    full = tokenizer.encode(rendered + answer, add_special_tokens=False)
+    if full[: len(prefix)] == prefix and len(full) == len(prefix) + 1:
+        return int(full[-1])
+    raise ValueError(f"{answer!r} is not one token after the frozen Answer: prefix")
+
+
+def _prepare_query(
+    tokenizer: Any,
+    query_id: str,
+    messages: list[dict[str, str]],
+    candidates: list[str],
+) -> dict[str, Any]:
+    rendered = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
+    )
+    token_ids = list(map(int, tokenizer.encode(rendered, add_special_tokens=False)))
+    return {
+        "query_id": query_id,
+        "prompt_token_ids": token_ids,
+        "candidate_labels": candidates,
+        "candidate_token_ids": [
+            _continuation_id(tokenizer, rendered, candidate) for candidate in candidates
+        ],
+        "sequence_length": len(token_ids),
+    }
+
+
+def _left_padded(rows: list[dict[str, Any]], pad_token_id: int) -> tuple[Any, Any]:
+    import torch
+
+    width = max(row["sequence_length"] for row in rows)
+    input_ids = torch.full(
+        (len(rows), width), pad_token_id, dtype=torch.long, device="cuda"
+    )
+    attention = torch.zeros_like(input_ids)
+    for index, row in enumerate(rows):
+        tokens = torch.tensor(row["prompt_token_ids"], dtype=torch.long, device="cuda")
+        input_ids[index, width - len(tokens) :] = tokens
+        attention[index, width - len(tokens) :] = 1
+    return input_ids, attention
+
+
+def _query(
+    model: Any,
+    tokenizer: Any,
+    rows: list[dict[str, Any]],
+    batch_size: int,
+) -> dict[str, dict[str, Any]]:
+    import torch
+
+    output: dict[str, dict[str, Any]] = {}
+    ordered = sorted(rows, key=lambda row: (row["sequence_length"], row["query_id"]))
+    for start in range(0, len(ordered), batch_size):
+        part = ordered[start : start + batch_size]
+        input_ids, attention = _left_padded(part, tokenizer.pad_token_id)
+        with torch.inference_mode():
+            logits = model(
+                input_ids=input_ids,
+                attention_mask=attention,
+                logits_to_keep=1,
+            ).logits[:, -1].float()
+        for index, row in enumerate(part):
+            final = logits[index]
+            candidate_ids = list(map(int, row["candidate_token_ids"]))
+            candidate_logits = final[candidate_ids]
+            choice_index = int(candidate_logits.argmax().cpu())
+            top1_id = int(final.argmax().cpu())
+            output[row["query_id"]] = {
+                "legal_choice": row["candidate_labels"][choice_index],
+                "legal_logits": {
+                    label: float(value)
+                    for label, value in zip(
+                        row["candidate_labels"],
+                        candidate_logits.detach().cpu(),
+                        strict=True,
+                    )
+                },
+                "top1_token_id": top1_id,
+                "top1_text": tokenizer.decode([top1_id]),
+                "formatting_compliant": top1_id in candidate_ids,
+            }
+        del input_ids, attention, logits
+    return output
 
 
 def _load_json(path: Path) -> dict[str, Any]:
