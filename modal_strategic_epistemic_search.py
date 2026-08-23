@@ -21,6 +21,7 @@ import subprocess
 import time
 import uuid
 from datetime import UTC, datetime
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -557,7 +558,7 @@ def _verbose_calibration_task(row: dict[str, Any]) -> str:
     policy_lines = []
     for signal, probabilities in zip("ABC", row["policy"], strict=True):
         rendered = ", ".join(
-            f"R{index + 1}={float(value):.2f}"
+            f"R{index + 1}={float(Fraction(value)):.2f}"
             for index, value in enumerate(probabilities)
         )
         policy_lines.append(f"- Signal {signal}: {rendered}")
