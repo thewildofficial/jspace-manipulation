@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "study_id": "V4-SES-1",
-  "status": "v2_reasoning_trajectory_controls_frozen_before_calibration_v3",
+  "status": "calibration_v3_passed_before_behavior_v2",
   "model": {
     "id": "Qwen/Qwen3.6-27B",
     "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
@@ -28,6 +28,9 @@
     ]
   },
   "behavior": {
+    "source_calibration_run_id": "51097dab64ca40d3a18017dd3863ea7d",
+    "source_calibration_accuracy": 0.975,
+    "source_calibration_parseability": 1.0,
     "prompt_variant": "verbose_short_cot",
     "max_new_tokens": 160,
     "minimum_parseability": 0.95,
