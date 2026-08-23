@@ -378,7 +378,10 @@ def _report_inputs(
         selected_action = str(decision["legal_choice"])
         for query_type in report_config["query_types"]:
             for access_condition in report_config["access_conditions"]:
-                spec = report_spec(row, query_type, access_condition, selected_action)
+                report_row = {**row, "prompt": row.get("task_text", row["prompt"])}
+                spec = report_spec(
+                    report_row, query_type, access_condition, selected_action
+                )
                 rendered = model.tokenizer.apply_chat_template(
                     spec["messages"],
                     tokenize=False,
