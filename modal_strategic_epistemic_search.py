@@ -8,6 +8,8 @@ Commands:
     modal run modal_strategic_epistemic_search.py::behavior
     modal run modal_strategic_epistemic_search.py::report_preflight
     modal run modal_strategic_epistemic_search.py::report
+    modal run modal_strategic_epistemic_search.py::report_confirmation_preflight
+    modal run modal_strategic_epistemic_search.py::report_confirmation
     modal run modal_strategic_epistemic_search.py::mechanistic
 
 The first mechanistic pass is observational.  Causal entrypoints are intentionally
@@ -34,6 +36,9 @@ from jspace_policy.budget import admit_run, append_ledger, estimate_cost
 CONFIG_PATH = Path("configs/v4/strategic_epistemic_search/experiment.json")
 CALIBRATION_CONFIG_PATH = Path(
     "configs/v4/strategic_epistemic_search/calibration.json"
+)
+REPORT_CONFIRMATION_CONFIG_PATH = Path(
+    "configs/v4/strategic_epistemic_search/report_confirmation.json"
 )
 DATASET_PATH = Path("configs/v4/strategic_epistemic_search/dataset.json")
 RESULT_ROOT = Path("results/v4_strategic_epistemic_search")
@@ -112,22 +117,35 @@ def _validate_config(config: dict[str, Any]) -> None:
     layers = list(map(int, config["mechanistic"]["layers"]))
     if not layers or min(layers) < 0 or max(layers) > 62:
         raise RuntimeError("mechanistic layer list is invalid")
-    if set(config["self_report"]["query_types"]) != {
-        "decisive_response",
-        "predicted_response",
-        "decision_margin",
-    }:
-        raise RuntimeError("self-report query set changed")
-    if set(config["self_report"]["access_conditions"]) != {
-        "retrospective",
-        "answer_only",
-        "matched_trajectory",
-        "ordinal_trajectory",
-        "reconstruction",
-    }:
-        raise RuntimeError("self-report access controls changed")
-    if config["self_report"]["candidate_labels"] != ["X", "Y", "Z"]:
+    report = config["self_report"]
+    if report["candidate_labels"] != ["X", "Y", "Z"]:
         raise RuntimeError("self-report labels must remain disjoint from signals")
+    if report["version"] == "disjoint_labels_v1":
+        if set(report["query_types"]) != {
+            "decisive_response",
+            "predicted_response",
+            "decision_margin",
+        }:
+            raise RuntimeError("discovery self-report query set changed")
+        if set(report["access_conditions"]) != {
+            "retrospective",
+            "answer_only",
+            "matched_trajectory",
+            "ordinal_trajectory",
+            "reconstruction",
+        }:
+            raise RuntimeError("discovery self-report access controls changed")
+    elif report["version"] == "trajectory_interference_confirmation_v1":
+        if report["splits"] != ["validation", "locked"]:
+            raise RuntimeError("confirmation must use only held-out splits")
+        if report["query_types"] != ["predicted_response"]:
+            raise RuntimeError("confirmation query changed")
+        if set(report["access_conditions"]) != {"retrospective", "answer_only"}:
+            raise RuntimeError("confirmation access contrast changed")
+        if report["eligible_selected_actions"] != ["C"]:
+            raise RuntimeError("confirmation selected-action stratum changed")
+    else:
+        raise RuntimeError("unknown self-report protocol version")
     behavior = config["behavior"]
     if behavior["prompt_variant"] != "verbose_short_cot":
         raise RuntimeError("behavior prompt variant changed")
@@ -480,6 +498,7 @@ def _report_inputs(
     behavior_by_id = {row["condition_id"]: row for row in behavior_rows}
     report_config = config["self_report"]
     report_labels = tuple(map(str, report_config["candidate_labels"]))
+    eligible_actions = set(report_config.get("eligible_selected_actions", "ABC"))
     output = []
     for row in dataset_rows:
         if row["split"] not in report_config["splits"]:
@@ -488,27 +507,31 @@ def _report_inputs(
         if not decision["parseable"]:
             continue
         selected_action = str(decision["selected_action"])
-        matched_candidates = [
-            candidate
-            for candidate in behavior_rows
-            if candidate["condition_id"] != decision["condition_id"]
-            and candidate["pair_id"] != decision["pair_id"]
-            and candidate["split"] == decision["split"]
-            and candidate["frame"] == decision["frame"]
-            and candidate["parseable"]
-            and candidate["selected_action"] == selected_action
-        ]
-        if not matched_candidates:
-            raise RuntimeError(
-                f"no same-action matched trajectory for {decision['condition_id']}"
+        if selected_action not in eligible_actions:
+            continue
+        matched = None
+        if "matched_trajectory" in report_config["access_conditions"]:
+            matched_candidates = [
+                candidate
+                for candidate in behavior_rows
+                if candidate["condition_id"] != decision["condition_id"]
+                and candidate["pair_id"] != decision["pair_id"]
+                and candidate["split"] == decision["split"]
+                and candidate["frame"] == decision["frame"]
+                and candidate["parseable"]
+                and candidate["selected_action"] == selected_action
+            ]
+            if not matched_candidates:
+                raise RuntimeError(
+                    f"no same-action matched trajectory for {decision['condition_id']}"
+                )
+            matched = min(
+                matched_candidates,
+                key=lambda candidate: (
+                    abs(candidate["generated_tokens"] - decision["generated_tokens"]),
+                    candidate["condition_id"],
+                ),
             )
-        matched = min(
-            matched_candidates,
-            key=lambda candidate: (
-                abs(candidate["generated_tokens"] - decision["generated_tokens"]),
-                candidate["condition_id"],
-            ),
-        )
         for query_type in report_config["query_types"]:
             for access_condition in report_config["access_conditions"]:
                 spec = report_spec(
@@ -518,9 +541,13 @@ def _report_inputs(
                     selected_action,
                     decision_prompt=decision["decision_prompt"],
                     trajectory=decision["generated_text"],
-                    matched_trajectory=matched["generated_text"],
-                    ordinal_trajectory=_ordinalize_trajectory(
-                        decision["generated_text"]
+                    matched_trajectory=(
+                        matched["generated_text"] if matched is not None else None
+                    ),
+                    ordinal_trajectory=(
+                        _ordinalize_trajectory(decision["generated_text"])
+                        if "ordinal_trajectory" in report_config["access_conditions"]
+                        else None
                     ),
                     system_prompt=decision["decision_system_prompt"],
                     report_labels=report_labels,
@@ -563,8 +590,12 @@ def _report_inputs(
                         "decision_correct": bool(decision["correct"]),
                         "decision_generated_tokens": decision["generated_tokens"],
                         "decision_hit_token_ceiling": decision["hit_token_ceiling"],
-                        "matched_control_condition_id": matched["condition_id"],
-                        "matched_control_generated_tokens": matched["generated_tokens"],
+                        "matched_control_condition_id": (
+                            matched["condition_id"] if matched is not None else None
+                        ),
+                        "matched_control_generated_tokens": (
+                            matched["generated_tokens"] if matched is not None else None
+                        ),
                         "target_surface_in_trajectory": target_surface_in_trajectory,
                         "prompt_token_ids": token_ids,
                         "candidate_token_ids": [
@@ -668,17 +699,14 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 if cell
                 else None,
             }
+    accesses = sorted({row["access_condition"] for row in rows})
+    controls = [access for access in accesses if access != "retrospective"]
     contrasts = {}
     for query_type in sorted({row["query_type"] for row in rows}):
         retrospective = cells[f"{query_type}:retrospective"][
             "legal_choice_accuracy"
         ]
-        for control in (
-            "answer_only",
-            "matched_trajectory",
-            "ordinal_trajectory",
-            "reconstruction",
-        ):
+        for control in controls:
             control_accuracy = cells[f"{query_type}:{control}"][
                 "legal_choice_accuracy"
             ]
@@ -718,8 +746,7 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "retrospective_copyability_strata": copyability,
         "interpretation": (
             "A trajectory effect is interpretable only if it survives disjoint report "
-            "labels and is localized against answer-only, matched-trajectory, "
-            "ordinal-rewrite, and reconstruction controls."
+            "labels and the frozen within-decision access contrast."
         ),
     }
 
@@ -1141,6 +1168,12 @@ def report_remote(
         raise RuntimeError("behavior gate failed; report run refused")
     if behavior_result["metadata"]["source_dataset_sha256"] != dataset["content_sha256"]:
         raise RuntimeError("behavior result does not match source dataset")
+    expected_behavior_run = config["self_report"].get("source_behavior_run_id")
+    if (
+        expected_behavior_run is not None
+        and behavior_result["metadata"]["run_id"] != expected_behavior_run
+    ):
+        raise RuntimeError("confirmation behavior source changed")
     started = time.perf_counter()
     model, _, metadata = _load_model(with_lens=False)
     rows = _self_report_rows(
@@ -1539,6 +1572,13 @@ def behavior() -> None:
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 
+def _confirmation_config() -> dict[str, Any]:
+    config = _load_json(CONFIG_PATH)
+    confirmation = _load_json(REPORT_CONFIRMATION_CONFIG_PATH)
+    config["self_report"] = confirmation["self_report"]
+    return config
+
+
 @app.local_entrypoint()
 def report_preflight() -> None:
     config = _load_json(CONFIG_PATH)
@@ -1564,6 +1604,34 @@ def report() -> None:
     target = RESULT_ROOT / "raw/report_disjoint_v1.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "report_disjoint_v1", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report_confirmation_preflight() -> None:
+    config = _confirmation_config()
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    payload = json.loads(preflight_remote.remote(dataset, config))
+    target = RESULT_ROOT / "raw/report_confirmation_v1_preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def report_confirmation() -> None:
+    config = _confirmation_config()
+    dataset = _load_json(DATASET_PATH)
+    behavior_result = _load_json(RESULT_ROOT / "raw/behavior_v2.json")
+    _validate_config(config)
+    ledger = _admit(config, "report_confirmation_v1", 900, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(
+        report_remote.remote(dataset, behavior_result, config, code_metadata)
+    )
+    target = RESULT_ROOT / "raw/report_confirmation_v1.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "report_confirmation_v1", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 

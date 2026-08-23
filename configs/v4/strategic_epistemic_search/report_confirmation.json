@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "protocol_id": "V4-SES-REPORT-CONFIRM-1",
+  "frozen_after_discovery_run_id": "2ae0cb48e3c24cc5bda87eefa60d507b",
+  "discovery_result": {
+    "eligible_n": 78,
+    "retrospective_correct": 70,
+    "answer_only_correct": 77,
+    "retrospective_only_correct": 0,
+    "answer_only_only_correct": 7,
+    "two_sided_exact_mcnemar_p": 0.015625,
+    "holm_p_across_four_discovery_contrasts": 0.0625,
+    "selected_action_of_all_seven_discordant_cases": "C"
+  },
+  "self_report": {
+    "version": "trajectory_interference_confirmation_v1",
+    "source_behavior_run_id": "7bb82d26fe0d4383be7ef53ea7a1dc38",
+    "candidate_labels": ["X", "Y", "Z"],
+    "splits": ["validation", "locked"],
+    "eligible_selected_actions": ["C"],
+    "query_types": ["predicted_response"],
+    "access_conditions": ["retrospective", "answer_only"],
+    "primary_contrast": "retrospective_minus_answer_only",
+    "primary_outcome": "legal_choice_correct",
+    "primary_test": "two_sided_exact_mcnemar",
+    "alpha": 0.05,
+    "success_rule": "p_below_0.05_and_effect_direction_matches_discovery",
+    "batch_size": 12
+  }
+}

@@ -54,7 +54,9 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         for row in rows
     }
     queries = sorted({row["query_type"] for row in rows})
-    accesses = ("retrospective", *CONTROLS)
+    present_accesses = {row["access_condition"] for row in rows}
+    controls = tuple(control for control in CONTROLS if control in present_accesses)
+    accesses = ("retrospective", *controls)
     cells: dict[str, Any] = {}
     paired: dict[str, Any] = {}
     raw_p: dict[str, float] = {}
@@ -82,9 +84,11 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
                 / len(selected),
             }
 
-        for control in CONTROLS:
+        for control in controls:
             retro_only = control_only = both_correct = both_wrong = 0
             margin_differences = []
+            retro_only_actions: Counter[str] = Counter()
+            control_only_actions: Counter[str] = Counter()
             for condition_id in condition_ids:
                 retro = indexed[(condition_id, query, "retrospective")]
                 other = indexed[(condition_id, query, control)]
@@ -94,8 +98,10 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
                     both_correct += 1
                 elif left:
                     retro_only += 1
+                    retro_only_actions[str(retro["selected_action"])] += 1
                 elif right:
                     control_only += 1
+                    control_only_actions[str(retro["selected_action"])] += 1
                 else:
                     both_wrong += 1
                 margin_differences.append(
@@ -117,12 +123,18 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
                 "mean_correct_logit_margin_difference": (
                     sum(margin_differences) / len(margin_differences)
                 ),
+                "retrospective_only_selected_actions": dict(
+                    sorted(retro_only_actions.items())
+                ),
+                "control_only_selected_actions": dict(
+                    sorted(control_only_actions.items())
+                ),
                 "exact_mcnemar_p": p_value,
             }
 
     adjusted = holm_adjust(raw_p)
     for name, value in adjusted.items():
-        paired[name]["holm_p_across_12_tests"] = value
+        paired[name]["holm_p_across_all_tests"] = value
     primary_p = {
         name: value
         for name, value in raw_p.items()
@@ -146,6 +158,33 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         for frame in sorted({row["frame"] for row in rows})
         for access in accesses
     }
+    selected_action_cells = {
+        f"{query}:{action}:{access}": {
+            "n": len(selected := [
+                row
+                for row in rows
+                if row["query_type"] == query
+                and row["selected_action"] == action
+                and row["access_condition"] == access
+            ]),
+            "legal_choice_accuracy": accuracy(selected),
+            "choice_distribution": dict(
+                sorted(Counter(row["legal_choice"] for row in selected).items())
+            ),
+            "expected_distribution": dict(
+                sorted(Counter(row["expected_label"] for row in selected).items())
+            ),
+        }
+        for query in queries
+        for action in sorted({row["selected_action"] for row in rows})
+        for access in accesses
+        if any(
+            row["query_type"] == query
+            and row["selected_action"] == action
+            and row["access_condition"] == access
+            for row in rows
+        )
+    }
     return {
         "metadata": payload["metadata"],
         "eligible_decisions": len({row["condition_id"] for row in rows}),
@@ -153,11 +192,13 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
         "cells": cells,
         "paired_legal_choice_tests": paired,
         "frame_cells": frame_cells,
+        "posthoc_selected_action_cells": selected_action_cells,
         "decision_accuracy_was_conditioned_on": True,
         "inference_note": (
             "Primary binary inference is paired exact McNemar for predicted_response "
-            "with Holm correction over four controls. The 12-test Holm family is also "
-            "reported; other queries and logit margins are exploratory/descriptive."
+            "with Holm correction over the present controls. The full query-control "
+            "Holm family is also reported; other queries and logit margins are "
+            "exploratory/descriptive."
         ),
     }
 

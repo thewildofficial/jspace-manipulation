@@ -15,10 +15,20 @@ from jspace_policy.strategic_epistemic_search import (
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/v4/strategic_epistemic_search/experiment.json"
+CONFIRMATION = ROOT / "configs/v4/strategic_epistemic_search/report_confirmation.json"
 
 
 def _config() -> dict:
     return json.loads(CONFIG.read_text(encoding="utf-8"))
+
+
+def test_confirmation_protocol_is_held_out_and_minimal() -> None:
+    protocol = json.loads(CONFIRMATION.read_text(encoding="utf-8"))["self_report"]
+    assert protocol["splits"] == ["validation", "locked"]
+    assert protocol["eligible_selected_actions"] == ["C"]
+    assert protocol["query_types"] == ["predicted_response"]
+    assert set(protocol["access_conditions"]) == {"retrospective", "answer_only"}
+    assert protocol["primary_test"] == "two_sided_exact_mcnemar"
 
 
 def test_game_state_exact_values_and_pathway() -> None:

@@ -15,6 +15,7 @@ on:
           - behavior
           - calibration
           - report
+          - confirmation
           - discovery
 
 permissions:
@@ -67,6 +68,10 @@ jobs:
         if: ${{ inputs.stage == 'report' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_preflight
 
+      - name: Validate held-out confirmation prompts without GPU
+        if: ${{ inputs.stage == 'confirmation' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_confirmation_preflight
+
       - name: Validate calibration prompts without GPU
         if: ${{ inputs.stage == 'calibration' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration_preflight
@@ -82,6 +87,10 @@ jobs:
       - name: Run disjoint-label report replication
         if: ${{ inputs.stage == 'report' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report
+
+      - name: Run held-out trajectory-interference confirmation
+        if: ${{ inputs.stage == 'confirmation' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::report_confirmation
 
       - name: Run observational discovery if behavior passed
         if: ${{ inputs.stage == 'discovery' }}
