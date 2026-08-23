@@ -49,7 +49,13 @@ jobs:
         run: uv run pytest -q
 
       - name: Materialize the preregistered dataset
-        run: uv run --extra modal python -c 'import modal_strategic_epistemic_search as m; m.freeze_dataset()'
+        shell: bash
+        run: |
+          if test -f configs/v4/strategic_epistemic_search/dataset.json; then
+            uv run python -c 'import json; from pathlib import Path; from jspace_policy.strategic_epistemic_search import verify_dataset_payload; c=json.loads(Path("configs/v4/strategic_epistemic_search/experiment.json").read_text()); d=json.loads(Path("configs/v4/strategic_epistemic_search/dataset.json").read_text()); verify_dataset_payload(d, c)'
+          else
+            uv run --extra modal python -c 'import modal_strategic_epistemic_search as m; m.freeze_dataset()'
+          fi
 
       - name: Run behavior screen
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
