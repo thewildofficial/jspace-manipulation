@@ -2,6 +2,7 @@
 
 Commands:
     modal run modal_strategic_epistemic_search.py::freeze_dataset
+    modal run modal_strategic_epistemic_search.py::preflight
     modal run modal_strategic_epistemic_search.py::behavior
     modal run modal_strategic_epistemic_search.py::mechanistic
 
@@ -126,15 +127,24 @@ def _continuation_id(tokenizer: Any, prompt: str, answer: str) -> int:
     raise ValueError(f"{answer!r} is not one token after the frozen Answer: prefix")
 
 
-def _find_last_subsequence(sequence: list[int], needle: list[int]) -> int:
-    matches = [
-        index + len(needle) - 1
-        for index in range(len(sequence) - len(needle) + 1)
-        if sequence[index : index + len(needle)] == needle
+def _marker_token_position(
+    rendered: str, offsets: list[tuple[int, int]], marker: str
+) -> int:
+    marker_start = rendered.rfind(marker)
+    if marker_start < 0:
+        raise ValueError(f"marker text not found: {marker!r}")
+    final_character = marker_start + len(marker) - 1
+    positions = [
+        index
+        for index, (start, end) in enumerate(offsets)
+        if start <= final_character < end
     ]
-    if not matches:
-        raise ValueError(f"marker token sequence not found: {needle}")
-    return matches[-1]
+    if len(positions) != 1:
+        raise ValueError(
+            f"marker {marker!r} maps to {len(positions)} tokens at character "
+            f"{final_character}"
+        )
+    return positions[0]
 
 
 def _tokenize_dataset(dataset: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
@@ -152,7 +162,13 @@ def _tokenize_dataset(dataset: dict[str, Any], config: dict[str, Any]) -> dict[s
             add_generation_prompt=True,
             enable_thinking=False,
         )
-        token_ids = list(map(int, tokenizer.encode(rendered, add_special_tokens=False)))
+        encoding = tokenizer(
+            rendered,
+            add_special_tokens=False,
+            return_offsets_mapping=True,
+        )
+        token_ids = list(map(int, encoding["input_ids"]))
+        offsets = [tuple(map(int, pair)) for pair in encoding["offset_mapping"]]
         row["task_text"] = row["prompt"]
         row["prompt"] = rendered
         row["prompt_token_ids"] = token_ids
@@ -163,15 +179,7 @@ def _tokenize_dataset(dataset: dict[str, Any], config: dict[str, Any]) -> dict[s
             "ABC".index(row["expected_action"])
         ]
         row["marker_positions"] = {
-            name: _find_last_subsequence(
-                token_ids,
-                list(
-                    map(
-                        int,
-                        tokenizer.encode(text, add_special_tokens=False),
-                    )
-                ),
-            )
+            name: _marker_token_position(rendered, offsets, text)
             for name, text in row["marker_text"].items()
         }
         row["marker_positions"]["final_prompt"] = len(token_ids) - 1
@@ -183,6 +191,71 @@ def _tokenize_dataset(dataset: dict[str, Any], config: dict[str, Any]) -> dict[s
     )
     cache.commit()
     return payload
+
+
+@app.function(
+    image=image,
+    volumes={"/cache": cache},
+    cpu=2.0,
+    memory=8192,
+    timeout=600,
+    max_containers=1,
+    retries=0,
+)
+def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
+    import types
+
+    import transformers
+
+    _validate_config(config)
+    tokenized = _tokenize_dataset(dataset, config)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+        MODEL_ID, revision=MODEL_REVISION
+    )
+    dummy_behavior = [
+        {
+            "condition_id": row["condition_id"],
+            "legal_choice": row["expected_action"],
+            "correct": True,
+        }
+        for row in tokenized["rows"]
+    ]
+    report_inputs = _report_inputs(
+        types.SimpleNamespace(tokenizer=tokenizer),
+        tokenized["rows"],
+        dummy_behavior,
+        config,
+    )
+    cache.commit()
+    return json.dumps(
+        {
+            "metadata": {
+                "schema_version": 1,
+                "created_at": datetime.now(UTC).isoformat(),
+                "source_dataset_sha256": dataset["content_sha256"],
+                "tokenized_dataset_sha256": tokenized["content_sha256"],
+                "model_id": MODEL_ID,
+                "model_revision": MODEL_REVISION,
+            },
+            "base_prompts": {
+                "n": len(tokenized["rows"]),
+                "minimum_tokens": min(
+                    row["sequence_length"] for row in tokenized["rows"]
+                ),
+                "maximum_tokens": max(
+                    row["sequence_length"] for row in tokenized["rows"]
+                ),
+            },
+            "report_prompts": {
+                "n": len(report_inputs),
+                "minimum_tokens": min(row["sequence_length"] for row in report_inputs),
+                "maximum_tokens": max(row["sequence_length"] for row in report_inputs),
+            },
+            "status": "all_prompt_and_continuation_checks_passed",
+        },
+        allow_nan=False,
+        sort_keys=True,
+    )
 
 
 def _load_model(*, with_lens: bool) -> tuple[Any, Any | None, dict[str, Any]]:
@@ -755,6 +828,17 @@ def freeze_dataset() -> None:
     verify_dataset_payload(payload, config)
     _write_new(DATASET_PATH, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(f"wrote {DATASET_PATH} with {len(payload['rows'])} rows")
+
+
+@app.local_entrypoint()
+def preflight() -> None:
+    config = _load_json(CONFIG_PATH)
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    payload = json.loads(preflight_remote.remote(dataset, config))
+    target = RESULT_ROOT / "raw/preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
 
 
 @app.local_entrypoint()

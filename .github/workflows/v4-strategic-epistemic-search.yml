@@ -57,6 +57,9 @@ jobs:
             uv run --extra modal python -c 'import modal_strategic_epistemic_search as m; m.freeze_dataset()'
           fi
 
+      - name: Validate remote tokenization without GPU
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::preflight
+
       - name: Run behavior screen
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
 
