@@ -1,5 +1,12 @@
 # V4 strategic epistemic search plan
 
+> **Historical planning document.** This file preserves the agenda before the V4
+> runs. For the current evidence, corrections, protocol deviation, and next
+> decisions, see [`research-status.md`](research-status.md),
+> [`decision-log.md`](decision-log.md), and
+> [`open-hypotheses.md`](open-hypotheses.md). In particular, V4 has not established
+> theory of mind, deception, or a J-space mechanism.
+
 ## Aim
 
 V4 searches for an unexpected computational account of strategic cognition rather

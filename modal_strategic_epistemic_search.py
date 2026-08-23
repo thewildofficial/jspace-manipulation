@@ -1169,7 +1169,10 @@ def _behavior_summary(rows: list[dict[str, Any]], config: dict[str, Any]) -> dic
     retries=0,
 )
 def behavior_remote(
-    dataset: dict[str, Any], config: dict[str, Any], code_metadata: dict[str, str]
+    dataset: dict[str, Any],
+    config: dict[str, Any],
+    code_metadata: dict[str, str],
+    include_self_report: bool,
 ) -> str:
     import torch
 
@@ -1191,31 +1194,37 @@ def behavior_remote(
         ]
     )
     rows = _behavior_rows(model, decision_inputs, config)
-    report_rows = _self_report_rows(model, dataset["rows"], rows, config)
+    report_rows = (
+        _self_report_rows(model, dataset["rows"], rows, config)
+        if include_self_report
+        else None
+    )
     torch.cuda.synchronize()
     elapsed = time.perf_counter() - started
     cache.commit()
-    return json.dumps(
-        {
-            "metadata": {
-                "schema_version": 1,
-                "run_id": uuid.uuid4().hex,
-                "created_at": datetime.now(UTC).isoformat(),
-                "source_dataset_sha256": dataset["content_sha256"],
-                "tokenized_dataset_sha256": tokenized["content_sha256"],
-                "decision_inputs_sha256": decision_inputs_sha256,
-                "config_sha256": _canonical_sha256(config),
-                "elapsed_seconds": elapsed,
-                **code_metadata,
-                **metadata,
-            },
-            "summary": {
-                **_behavior_summary(rows, config),
-                "self_report": _self_report_summary(report_rows),
-            },
-            "rows": rows,
-            "self_report_rows": report_rows,
+    summary = _behavior_summary(rows, config)
+    if report_rows is not None:
+        summary["self_report"] = _self_report_summary(report_rows)
+    result = {
+        "metadata": {
+            "schema_version": 1,
+            "run_id": uuid.uuid4().hex,
+            "created_at": datetime.now(UTC).isoformat(),
+            "source_dataset_sha256": dataset["content_sha256"],
+            "tokenized_dataset_sha256": tokenized["content_sha256"],
+            "decision_inputs_sha256": decision_inputs_sha256,
+            "config_sha256": _canonical_sha256(config),
+            "elapsed_seconds": elapsed,
+            **code_metadata,
+            **metadata,
         },
+        "summary": summary,
+        "rows": rows,
+    }
+    if report_rows is not None:
+        result["self_report_rows"] = report_rows
+    return json.dumps(
+        result,
         allow_nan=False,
         sort_keys=True,
     )
@@ -1644,7 +1653,14 @@ def behavior() -> None:
     _validate_config(config)
     ledger = _admit(config, "behavior", 1800, 32)
     code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
-    payload = json.loads(behavior_remote.remote(dataset, config, code_metadata))
+    payload = json.loads(
+        behavior_remote.remote(
+            dataset,
+            config,
+            code_metadata,
+            include_self_report=False,
+        )
+    )
     target = RESULT_ROOT / "raw/behavior_v2.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "behavior", 32)
@@ -1788,7 +1804,14 @@ def ordinal_behavior() -> None:
     _validate_config(config)
     ledger = _admit(config, "ordinal_binding_behavior_v1", 1800, 32)
     code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
-    payload = json.loads(behavior_remote.remote(dataset, config, code_metadata))
+    payload = json.loads(
+        behavior_remote.remote(
+            dataset,
+            config,
+            code_metadata,
+            include_self_report=False,
+        )
+    )
     target = RESULT_ROOT / "raw/ordinal_binding_behavior_v1.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "ordinal_binding_behavior_v1", 32)

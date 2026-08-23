@@ -1,0 +1,136 @@
+{
+  "base_game_clusters": 20,
+  "eligible_correct_decisions": 345,
+  "interpretation": "Label-only support indicates cross-role lexical binding; position-only support indicates an ordering-ID collision; support for both indicates a mixed binding code; neither with a surviving accuracy penalty indicates generic relational interference.",
+  "metadata": {
+    "artifact_kind": "lossless_embedded_report_extraction",
+    "behavior_run_id": "02c5739b615b4cf9911c26c9ff7f7f53",
+    "config_sha256": "5ee24bcb7f0b8a117c2bfc6cba9cfd38608d73a6fe4e1df18bb98a865d2e5123",
+    "created_at": "2026-08-23T19:42:04.872027+00:00",
+    "decision_inputs_sha256": "58a9c1461868e1f399a9e5ee5890e936f91df9dfdebefdd09385a2f0df79ad0e",
+    "dtype": "bfloat16",
+    "elapsed_seconds": 750.8812067780001,
+    "git_commit": "db454aa6e28848fe8538a1db7d7d530c2b817b42",
+    "gpu_actual": "NVIDIA A100 80GB PCIe",
+    "lens_code_commit": null,
+    "lens_filename": null,
+    "lens_repo": null,
+    "lens_revision": null,
+    "model_id": "Qwen/Qwen3.6-27B",
+    "model_revision_requested": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "protocol_deviation": "The ordinal behavior entrypoint called behavior_remote(), which generated the preregistered self-report rows in the same Modal invocation. The named ordinal-report workflow step was therefore skipped, but its outcomes were already present in the immutable behavior artifact.",
+    "run_id": "02c5739b615b4cf9911c26c9ff7f7f53",
+    "schema_version": 1,
+    "source_behavior_payload_sha256": "7331a6b0f8fc594388c0605142f7db07f617c29e0fcc9051e0f57a7eb6d55a0c",
+    "source_dataset_sha256": "6c23f1c0f4d2fe85e2be7a341bfcd485de6621d228545c0a6f78fb66bfafb318",
+    "source_stage": "ordinal_binding_behavior_v1",
+    "tokenized_dataset_sha256": "ff795be9cd8ea61efe322d3c8b0fc5998a6438347c1e0257b0cd3beeed274091",
+    "torch_version": "2.13.0+cu130",
+    "transformers_version": "5.15.1",
+    "worktree_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "primary_tests": {
+    "action_label_to_response_label_lure": {
+      "cluster_scores": {
+        "03dc86f021bd4d": 1.0,
+        "472a904d25bce2": 0.9772727272727273,
+        "4b14fa9d8dc728": 1.75,
+        "4d3bff84e7eef9": 2.25,
+        "5fcee481cdd97e": 1.5,
+        "601b607bbfd1f8": 1.2708333333333333,
+        "690cd6e23d78fe": 1.6770833333333333,
+        "6b123463c28a0e": 1.2083333333333333,
+        "761a1d54034f9b": 0.8020833333333334,
+        "7beee4c6f28446": 1.4166666666666667,
+        "817dd2b55f7612": 1.2232142857142858,
+        "85695965bd0bb5": 2.2395833333333335,
+        "a817da5eeeb6e9": 1.2604166666666667,
+        "c187da524da93e": 1.1770833333333333,
+        "cd4e4504ba5418": 0.55625,
+        "d7e26115f37572": 0.2840909090909091,
+        "de51d6d4a7b227": 0.875,
+        "e55003ecced18a": 1.5416666666666667,
+        "f108078bfc3685": 0.375,
+        "f88dc204e5f1df": 0.96875
+      },
+      "clusters": 20,
+      "eligible_n": 229,
+      "forced_choice_lure_intrusions": {
+        "answer_only_only": 0,
+        "both": 2,
+        "neither": 221,
+        "retrospective_only": 6,
+        "two_sided_exact_mcnemar_p_unclustered_secondary": 0.03125
+      },
+      "holm_p_across_two_primary_lures": 3.814697265625e-06,
+      "mean_rationale_induced_lure_logit_pull": 1.2176663961038963,
+      "two_sided_exact_cluster_sign_flip_p": 1.9073486328125e-06
+    },
+    "action_position_to_response_position_lure": {
+      "cluster_scores": {
+        "03dc86f021bd4d": 1.46875,
+        "472a904d25bce2": 0.2,
+        "4b14fa9d8dc728": 1.4895833333333333,
+        "4d3bff84e7eef9": 1.75,
+        "5fcee481cdd97e": 1.4090909090909092,
+        "601b607bbfd1f8": 1.1510416666666667,
+        "690cd6e23d78fe": 1.5833333333333333,
+        "6b123463c28a0e": 1.625,
+        "761a1d54034f9b": 1.0104166666666667,
+        "7beee4c6f28446": 1.25,
+        "817dd2b55f7612": 1.6875,
+        "85695965bd0bb5": 1.6145833333333333,
+        "a817da5eeeb6e9": 1.7291666666666667,
+        "c187da524da93e": 1.46875,
+        "cd4e4504ba5418": 0.9010416666666666,
+        "d7e26115f37572": 0.5625,
+        "de51d6d4a7b227": 1.0104166666666667,
+        "e55003ecced18a": 0.9479166666666666,
+        "f108078bfc3685": 0.7604166666666666,
+        "f88dc204e5f1df": 0.7604166666666666
+      },
+      "clusters": 20,
+      "eligible_n": 229,
+      "forced_choice_lure_intrusions": {
+        "answer_only_only": 1,
+        "both": 1,
+        "neither": 225,
+        "retrospective_only": 2,
+        "two_sided_exact_mcnemar_p_unclustered_secondary": 1.0
+      },
+      "holm_p_across_two_primary_lures": 3.814697265625e-06,
+      "mean_rationale_induced_lure_logit_pull": 1.2189962121212121,
+      "two_sided_exact_cluster_sign_flip_p": 1.9073486328125e-06
+    }
+  },
+  "trajectory_accuracy_penalty": {
+    "accuracy_difference": -0.028985507246376812,
+    "answer_only_only_correct": 11,
+    "both_correct": 331,
+    "both_wrong": 2,
+    "n": 345,
+    "retrospective_only_correct": 1,
+    "two_sided_exact_mcnemar_p_unclustered_secondary": 0.00634765625
+  },
+  "trajectory_accuracy_penalty_by_frame": {
+    "nonagentic": {
+      "accuracy_difference": -0.005780346820809248,
+      "answer_only_only_correct": 2,
+      "both_correct": 170,
+      "both_wrong": 0,
+      "n": 173,
+      "retrospective_only_correct": 1,
+      "two_sided_exact_mcnemar_p_unclustered_secondary": 1.0
+    },
+    "strategic": {
+      "accuracy_difference": -0.05232558139534884,
+      "answer_only_only_correct": 9,
+      "both_correct": 161,
+      "both_wrong": 2,
+      "n": 172,
+      "retrospective_only_correct": 0,
+      "two_sided_exact_mcnemar_p_unclustered_secondary": 0.00390625
+    }
+  }
+}

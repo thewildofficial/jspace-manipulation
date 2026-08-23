@@ -8,12 +8,14 @@ This repository tests that narrow mechanistic question in
 instructed concealment with real-world deception, model intent, or
 consciousness.
 
-> **Current status: V2-E1 is complete; the causal branch remains blocked.**
-> Stage 1's J-space retention endpoint failed. The separate observational
-> Strategic Workspace Atlas then found a prospectively replicated generic
-> optimization readout before late action commitment, but did not replicate
-> specific strategy decoding or same-action bluff/value distinctions. Stage 2
-> is still not licensed.
+> **Current status: V2 remains a blocked causal branch; V4 has one replicated
+> behavioral effect but no J-space mechanism.** Stage 1's J-space retention
+> endpoint failed. V2-E1 found a replicated generic optimization readout but no
+> robust strategy-specific representation. V4 then found that retaining a correct
+> rationale can impair later report of the selected action's likely response. A
+> fresh counterbalanced study localized the main effect to broad false-vs-true
+> report distortion, not a confirmed binding pointer. An exploratory strategic
+> versus device-frame interaction is the next cheap replication target.
 
 ## What happened
 
@@ -85,11 +87,19 @@ on the strategic task.
 | H0R-D / strategic V2 | Not run | [`docs/v2/h0r-final-report.md`](docs/v2/h0r-final-report.md) |
 | Stage 1 state-report dissociation | J-space criterion failed; residual probes positive | [`docs/v2/stage1-final-report.md`](docs/v2/stage1-final-report.md) |
 | V2-E1 Strategic Workspace Atlas | Generic optimization signal replicated; specific strategy endpoints failed | [`docs/v2/strategic-workspace-atlas-final-report.md`](docs/v2/strategic-workspace-atlas-final-report.md) |
+| V4 strategic epistemic search | Correct-rationale report penalty replicated; binding mechanism not established | [`docs/v4/research-status.md`](docs/v4/research-status.md) |
+| V4 ordinal permutation | Behavior 345/360; broad truth suppression; strategic-frame lead is exploratory | [`results/v4_strategic_epistemic_search/FINDINGS.md`](results/v4_strategic_epistemic_search/FINDINGS.md) |
 
 The append-only methodological record is in
 [`docs/v2/decision-log.md`](docs/v2/decision-log.md). The original H0 and H0R
 preregistrations, analysis rules, diagnostic interpretation, and terminal
 report are under [`docs/v2/`](docs/v2/).
+
+V4 has a separate append-only record in
+[`docs/v4/decision-log.md`](docs/v4/decision-log.md), a ruthless current-state
+audit in [`docs/v4/research-status.md`](docs/v4/research-status.md), and a ranked
+literature-facing agenda in
+[`docs/v4/open-hypotheses.md`](docs/v4/open-hypotheses.md).
 
 ## Claim boundary
 

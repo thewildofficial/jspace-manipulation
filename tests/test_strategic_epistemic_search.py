@@ -67,6 +67,20 @@ def test_ordinal_binding_protocol_is_prospective_and_clustered() -> None:
     assert report["family_correction"] == "holm_across_two_primary_lures"
 
 
+def test_behavior_and_report_stages_are_separated_in_remote_entrypoints() -> None:
+    source = (ROOT / "modal_strategic_epistemic_search.py").read_text(
+        encoding="utf-8"
+    )
+    behavior_block = source.split("def behavior() -> None:", 1)[1].split(
+        "def _confirmation_config", 1
+    )[0]
+    ordinal_block = source.split("def ordinal_behavior() -> None:", 1)[1].split(
+        "def ordinal_report()", 1
+    )[0]
+    assert "include_self_report=False" in behavior_block
+    assert "include_self_report=False" in ordinal_block
+
+
 def test_ordinal_binding_dataset_is_pairwise_orthogonal() -> None:
     config = json.loads(ORDINAL_BINDING.read_text(encoding="utf-8"))
     payload = dataset_payload(config)
