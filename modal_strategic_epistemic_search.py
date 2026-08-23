@@ -126,10 +126,10 @@ def _validate_calibration(
         raise RuntimeError("calibration does not match frozen source dataset")
     if calibration["splits"] != ["discovery"]:
         raise RuntimeError("calibration may use only the discovery split")
-    if calibration["variants"] != ["concise_generated", "verbose_generated"]:
+    if calibration["variants"] != ["verbose_short_cot"]:
         raise RuntimeError("calibration prompt variants changed")
-    if int(calibration["max_new_tokens"]) > 24:
-        raise RuntimeError("calibration generation budget exceeds 24 tokens")
+    if int(calibration["max_new_tokens"]) > 96:
+        raise RuntimeError("calibration generation budget exceeds 96 tokens")
 
 
 def _hash_valid(payload: dict[str, Any]) -> bool:
@@ -605,6 +605,11 @@ def _calibration_inputs(
                 "letter is A, B, or C."
             ),
             "verbose_generated": _verbose_calibration_task(row),
+            "verbose_short_cot": _verbose_calibration_task(row).replace(
+                "Do not show your work. End with exactly",
+                "Reason through this in at most three short sentences and no more "
+                "than 40 words. Then end with exactly",
+            ),
         }
         for variant in calibration["variants"]:
             rendered = tokenizer.apply_chat_template(

@@ -1,14 +1,13 @@
 {
   "schema_version": 1,
-  "status": "single_redesign_after_v1_parse_failure_before_v2_calibration",
-  "study_id": "V4-SES-1-CAL-V2",
+  "status": "failed_parse_all_generations_truncated_at_24_tokens",
+  "study_id": "V4-SES-1-CAL",
   "source_behavior_run_id": "daa4d2cf2461493f9e5e3978bf2bed6f",
-  "source_calibration_run_id": "859fd3da78374e3b8118c1ef8659aeca",
   "source_dataset_sha256": "97de2055cc20de67a12476c5439efeb1d135e8fd9bc72edade70aa1646ef824b",
   "splits": ["discovery"],
-  "variants": ["verbose_short_cot"],
+  "variants": ["concise_generated", "verbose_generated"],
   "batch_size": 8,
-  "max_new_tokens": 96,
+  "max_new_tokens": 24,
   "minimum_variant_accuracy": 0.80,
   "minimum_frame_accuracy": 0.70
 }
