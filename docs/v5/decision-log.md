@@ -38,3 +38,16 @@
   not an immediate claim about internal knowledge, deception, or safety training.
 - RBG-3 will prospectively distinguish lexical target matching, assertion/deception
   semantics, and causal-map retrieval/rehearsal before any activation intervention.
+
+## 2026-08-24 — V5-D004 — RBG-3 magnitude failed; ablate history and format
+
+- Immutable run `b5f9fae55ecf452aa9495be25793750c` failed the frozen RBG-3
+  replication magnitude: opposed assertion accuracy was 85.42%, not at most 50%.
+- Seven strategic assertion errors survived. Every one had both option reports
+  correct, selected target-matching content, and was repaired by causal rehearsal.
+  The 14.58-point repair had p=.015625 but missed the frozen 25-point threshold.
+- Quoted strings, labeled buttons, and opaque tokens were 100% correct, making a
+  broad lexical-capture explanation unlikely within the RBG-3 prompt family.
+- Cross-study inspection identifies demonstration history and mapping format as
+  the main uncontrolled differences. RBG-4 will cross both factors within fresh
+  matched games before any mechanistic intervention.

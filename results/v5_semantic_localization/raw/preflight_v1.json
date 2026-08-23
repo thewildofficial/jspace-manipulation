@@ -1,0 +1,9 @@
+{
+  "created_at": "2026-08-23T21:02:24.048927+00:00",
+  "maximum_tokens": 333,
+  "minimum_tokens": 164,
+  "queries_checked": 1536,
+  "schema_version": 1,
+  "source_dataset_sha256": "c38769c84a1129e1ace7b44bc055be085fc6e087d360cd7efffbf8d85891ce3d",
+  "status": "all_prompt_and_one_token_continuation_checks_passed"
+}
