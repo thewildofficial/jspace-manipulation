@@ -128,8 +128,8 @@ def _validate_calibration(
         raise RuntimeError("calibration may use only the discovery split")
     if calibration["variants"] != ["verbose_short_cot"]:
         raise RuntimeError("calibration prompt variants changed")
-    if int(calibration["max_new_tokens"]) > 96:
-        raise RuntimeError("calibration generation budget exceeds 96 tokens")
+    if int(calibration["max_new_tokens"]) > 160:
+        raise RuntimeError("calibration generation budget exceeds 160 tokens")
 
 
 def _hash_valid(payload: dict[str, Any]) -> bool:
@@ -1147,7 +1147,7 @@ def calibration_preflight() -> None:
     payload = json.loads(
         calibration_preflight_remote.remote(dataset, config, calibration_config)
     )
-    target = RESULT_ROOT / "raw/calibration_v2_preflight.json"
+    target = RESULT_ROOT / "raw/calibration_v3_preflight.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))
 
@@ -1166,7 +1166,7 @@ def calibration() -> None:
             dataset, config, calibration_config, code_metadata
         )
     )
-    target = RESULT_ROOT / "raw/calibration_v2.json"
+    target = RESULT_ROOT / "raw/calibration_v3.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "calibration", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
