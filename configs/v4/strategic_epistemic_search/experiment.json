@@ -32,6 +32,16 @@
     "minimum_cell_accuracy": 0.70,
     "batch_size": 12
   },
+  "self_report": {
+    "splits": ["discovery"],
+    "query_types": [
+      "decisive_response",
+      "predicted_response",
+      "decision_margin"
+    ],
+    "access_conditions": ["retrospective", "reconstruction"],
+    "batch_size": 12
+  },
   "mechanistic": {
     "layers": [26, 34, 42, 46, 50, 54, 58, 60],
     "j_lens_top_k": 40,

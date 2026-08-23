@@ -55,6 +55,16 @@ Every remote entrypoint refuses to overwrite results and writes a measured cost
 row.  Failed behavior gates stop mechanistic execution but do not prohibit a
 redesigned future study.
 
+The behavior screen also runs a prospectively frozen self-report fork on the
+discovery split.  After each forced-choice decision, the same conversation is
+queried for (a) the response that contributed most to the winner/runner-up
+difference, (b) the most likely receiver response under the chosen signal, and
+(c) the decision margin.  Each query has a matched fresh-context reconstruction
+condition containing the same game and selected action but no access to the
+original decision trajectory.  Answers are randomized forced choices, not
+free-form explanations.  Only rows with a correct, formatting-compliant original
+decision contribute to report accuracy; all rows remain archived.
+
 ## Dataset structure
 
 Each numeric instance is a three-signal, three-response decision problem.  A

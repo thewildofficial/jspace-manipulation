@@ -5,9 +5,11 @@ from fractions import Fraction
 from pathlib import Path
 
 from jspace_policy.strategic_epistemic_search import (
+    REPORT_QUERY_TYPES,
     GameState,
     canonical_sha256,
     dataset_payload,
+    report_spec,
     verify_dataset_payload,
 )
 
@@ -63,3 +65,50 @@ def test_tampering_is_detected() -> None:
         assert "hash" in str(error)
     else:
         raise AssertionError("tampered dataset was accepted")
+
+
+def test_report_factorial_is_deterministic_and_forced_choice() -> None:
+    config = _config()
+    row = dataset_payload(config)["rows"][0]
+    for query_type in REPORT_QUERY_TYPES:
+        retrospective = report_spec(
+            row, query_type, "retrospective", row["expected_action"]
+        )
+        reconstruction = report_spec(
+            row, query_type, "reconstruction", row["expected_action"]
+        )
+        assert retrospective["expected_label"] == reconstruction["expected_label"]
+        assert retrospective["options"] == reconstruction["options"]
+        assert retrospective == report_spec(
+            row, query_type, "retrospective", row["expected_action"]
+        )
+        assert set(retrospective["options"]) == {"A", "B", "C"}
+        assert retrospective["expected_label"] in retrospective["options"]
+        assert [message["role"] for message in retrospective["messages"]] == [
+            "user",
+            "assistant",
+            "user",
+        ]
+        assert [message["role"] for message in reconstruction["messages"]] == ["user"]
+        assert "hidden computation" in reconstruction["messages"][0]["content"]
+
+
+def test_report_target_matches_frozen_game_certificates() -> None:
+    config = _config()
+    for row in dataset_payload(config)["rows"][:20]:
+        decisive = report_spec(
+            row, "decisive_response", "retrospective", row["expected_action"]
+        )
+        predicted = report_spec(
+            row, "predicted_response", "retrospective", row["expected_action"]
+        )
+        margin = report_spec(
+            row, "decision_margin", "retrospective", row["expected_action"]
+        )
+        assert decisive["correct_value"] == str(row["decisive_response"])
+        selected = int(row["winner"])
+        expected_prediction = max(
+            range(3), key=lambda index: Fraction(row["policy"][selected][index])
+        )
+        assert predicted["correct_value"] == str(expected_prediction)
+        assert margin["correct_value"] == row["margin"]

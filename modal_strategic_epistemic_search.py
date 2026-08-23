@@ -99,6 +99,17 @@ def _validate_config(config: dict[str, Any]) -> None:
     layers = list(map(int, config["mechanistic"]["layers"]))
     if not layers or min(layers) < 0 or max(layers) > 62:
         raise RuntimeError("mechanistic layer list is invalid")
+    if set(config["self_report"]["query_types"]) != {
+        "decisive_response",
+        "predicted_response",
+        "decision_margin",
+    }:
+        raise RuntimeError("self-report query set changed")
+    if set(config["self_report"]["access_conditions"]) != {
+        "retrospective",
+        "reconstruction",
+    }:
+        raise RuntimeError("self-report access controls changed")
 
 
 def _hash_valid(payload: dict[str, Any]) -> bool:
@@ -276,6 +287,171 @@ def _behavior_rows(
     return sorted(output, key=lambda row: row["condition_id"])
 
 
+def _report_inputs(
+    model: Any,
+    dataset_rows: list[dict[str, Any]],
+    behavior_rows: list[dict[str, Any]],
+    config: dict[str, Any],
+) -> list[dict[str, Any]]:
+    from jspace_policy.strategic_epistemic_search import report_spec
+
+    behavior_by_id = {row["condition_id"]: row for row in behavior_rows}
+    report_config = config["self_report"]
+    output = []
+    for row in dataset_rows:
+        if row["split"] not in report_config["splits"]:
+            continue
+        decision = behavior_by_id[row["condition_id"]]
+        selected_action = str(decision["legal_choice"])
+        for query_type in report_config["query_types"]:
+            for access_condition in report_config["access_conditions"]:
+                spec = report_spec(row, query_type, access_condition, selected_action)
+                rendered = model.tokenizer.apply_chat_template(
+                    spec["messages"],
+                    tokenize=False,
+                    add_generation_prompt=True,
+                    enable_thinking=False,
+                )
+                token_ids = list(
+                    map(
+                        int,
+                        model.tokenizer.encode(rendered, add_special_tokens=False),
+                    )
+                )
+                output.append(
+                    {
+                        **{
+                            key: value
+                            for key, value in spec.items()
+                            if key != "messages"
+                        },
+                        "pair_id": row["pair_id"],
+                        "pair_type": row["pair_type"],
+                        "side": row["side"],
+                        "split": row["split"],
+                        "frame": row["frame"],
+                        "decision_correct": bool(decision["correct"]),
+                        "prompt_token_ids": token_ids,
+                        "candidate_token_ids": [
+                            _continuation_id(model.tokenizer, rendered, label)
+                            for label in "ABC"
+                        ],
+                        "sequence_length": len(token_ids),
+                    }
+                )
+    return output
+
+
+def _self_report_rows(
+    model: Any,
+    dataset_rows: list[dict[str, Any]],
+    behavior_rows: list[dict[str, Any]],
+    config: dict[str, Any],
+) -> list[dict[str, Any]]:
+    import torch
+
+    inputs = _report_inputs(model, dataset_rows, behavior_rows, config)
+    output = []
+    ordered = sorted(inputs, key=lambda row: (row["sequence_length"], row["report_id"]))
+    batch_size = int(config["self_report"]["batch_size"])
+    for start in range(0, len(ordered), batch_size):
+        part = ordered[start : start + batch_size]
+        input_ids, attention, _ = _left_padded_batch(part)
+        with torch.inference_mode():
+            logits = model._hf_model(
+                input_ids, attention_mask=attention, logits_to_keep=1
+            ).logits[:, -1].float()
+        for index, row in enumerate(part):
+            final = logits[index]
+            candidates = list(map(int, row["candidate_token_ids"]))
+            candidate_logits = final[candidates]
+            legal_choice_index = int(candidate_logits.argmax().cpu())
+            top1 = int(final.argmax().cpu())
+            top1_label = (
+                "ABC"[candidates.index(top1)] if top1 in candidates else None
+            )
+            expected = str(row["expected_label"])
+            output.append(
+                {
+                    key: value
+                    for key, value in row.items()
+                    if key
+                    not in {
+                        "prompt_token_ids",
+                        "candidate_token_ids",
+                        "sequence_length",
+                    }
+                }
+                | {
+                    "top1_token_id": top1,
+                    "top1_text": model.tokenizer.decode([top1]),
+                    "formatting_compliant": top1 in candidates,
+                    "top1_label": top1_label,
+                    "correct": top1_label == expected,
+                    "legal_choice": "ABC"[legal_choice_index],
+                    "legal_choice_correct": "ABC"[legal_choice_index] == expected,
+                    "legal_action_logits": {
+                        label: float(value)
+                        for label, value in zip(
+                            "ABC", candidate_logits.detach().cpu(), strict=True
+                        )
+                    },
+                }
+            )
+        del input_ids, attention, logits
+    return sorted(output, key=lambda row: row["report_id"])
+
+
+def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    eligible = [row for row in rows if row["decision_correct"]]
+    cells = {}
+    for query_type in sorted({row["query_type"] for row in rows}):
+        for access_condition in sorted({row["access_condition"] for row in rows}):
+            cell = [
+                row
+                for row in eligible
+                if row["query_type"] == query_type
+                and row["access_condition"] == access_condition
+            ]
+            cells[f"{query_type}:{access_condition}"] = {
+                "n": len(cell),
+                "strict_accuracy": (
+                    sum(row["correct"] for row in cell) / len(cell) if cell else None
+                ),
+                "legal_choice_accuracy": sum(
+                    row["legal_choice_correct"] for row in cell
+                )
+                / len(cell)
+                if cell
+                else None,
+                "formatting_compliance": sum(
+                    row["formatting_compliant"] for row in cell
+                )
+                / len(cell)
+                if cell
+                else None,
+            }
+    advantages = {}
+    for query_type in sorted({row["query_type"] for row in rows}):
+        retrospective = cells[f"{query_type}:retrospective"]["strict_accuracy"]
+        reconstruction = cells[f"{query_type}:reconstruction"]["strict_accuracy"]
+        advantages[query_type] = (
+            retrospective - reconstruction
+            if retrospective is not None and reconstruction is not None
+            else None
+        )
+    return {
+        "n_rows": len(rows),
+        "n_decision_correct_rows": len(eligible),
+        "cell_accuracy": cells,
+        "retrospective_minus_reconstruction": advantages,
+        "interpretation": (
+            "Positive values are consistent with privileged trajectory access; "
+            "zero values are consistent with prompt-only reconstruction."
+        ),
+    }
+
+
 def _behavior_summary(rows: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
     overall = sum(row["correct"] for row in rows) / len(rows)
     cells = {
@@ -332,6 +508,7 @@ def behavior_remote(
     tokenized = _tokenize_dataset(dataset, config)
     model, _, metadata = _load_model(with_lens=False)
     rows = _behavior_rows(model, tokenized["rows"], int(config["behavior"]["batch_size"]))
+    report_rows = _self_report_rows(model, tokenized["rows"], rows, config)
     torch.cuda.synchronize()
     elapsed = time.perf_counter() - started
     cache.commit()
@@ -348,8 +525,12 @@ def behavior_remote(
                 **code_metadata,
                 **metadata,
             },
-            "summary": _behavior_summary(rows, config),
+            "summary": {
+                **_behavior_summary(rows, config),
+                "self_report": _self_report_summary(report_rows),
+            },
             "rows": rows,
+            "self_report_rows": report_rows,
         },
         allow_nan=False,
         sort_keys=True,

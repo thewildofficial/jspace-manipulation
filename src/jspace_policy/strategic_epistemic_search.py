@@ -20,6 +20,12 @@ PAIR_TYPES = (
     "payoff_action_change",
     "compression",
 )
+REPORT_QUERY_TYPES = (
+    "decisive_response",
+    "predicted_response",
+    "decision_margin",
+)
+REPORT_ACCESS_CONDITIONS = ("retrospective", "reconstruction")
 
 _PAIR_CACHE: dict[str, tuple[MatchedPair, ...]] = {}
 
@@ -31,6 +37,127 @@ def canonical_sha256(value: object) -> str:
 
 def _stable_id(*parts: object) -> str:
     return hashlib.sha256(":".join(map(str, parts)).encode()).hexdigest()[:14]
+
+
+def _stable_permutation(*parts: object) -> tuple[int, int, int]:
+    digest = hashlib.sha256(":".join(map(str, parts)).encode()).digest()
+    rng = random.Random(int.from_bytes(digest[:8], "big"))
+    values = [0, 1, 2]
+    rng.shuffle(values)
+    return tuple(values)  # type: ignore[return-value]
+
+
+def _display_fraction(value: Fraction) -> str:
+    if value.denominator == 1:
+        return str(value.numerator)
+    return f"{float(value):.2f}".rstrip("0").rstrip(".")
+
+
+def _task_body(prompt: str) -> str:
+    suffix = "\nAnswer:"
+    if not prompt.endswith(suffix):
+        raise ValueError("task prompt does not end in the frozen answer suffix")
+    return prompt[: -len(suffix)]
+
+
+def report_spec(
+    row: dict[str, Any], query_type: str, access_condition: str, selected_action: str
+) -> dict[str, Any]:
+    """Build a deterministic forced-choice report and reconstruction control."""
+    if query_type not in REPORT_QUERY_TYPES:
+        raise ValueError(f"unknown report query: {query_type}")
+    if access_condition not in REPORT_ACCESS_CONDITIONS:
+        raise ValueError(f"unknown report access condition: {access_condition}")
+    if selected_action not in SIGNALS:
+        raise ValueError(f"invalid selected action: {selected_action}")
+
+    selected_index = SIGNALS.index(selected_action)
+    policy = tuple(tuple(Fraction(value) for value in values) for values in row["policy"])
+    values = tuple(Fraction(value) for value in row["values"])
+    ranked = sorted(range(3), key=lambda index: (-values[index], index))
+    comparison_index = next(index for index in ranked if index != selected_index)
+    contributions = [
+        (policy[selected_index][index] - policy[comparison_index][index])
+        * int(row["payoffs"][index])
+        for index in range(3)
+    ]
+    decisive_response = max(
+        range(3), key=lambda index: (abs(contributions[index]), -index)
+    )
+    predicted_response = max(
+        range(3), key=lambda index: (policy[selected_index][index], -index)
+    )
+    decision_margin = values[selected_index] - values[comparison_index]
+
+    permutation = _stable_permutation(row["condition_id"], query_type)
+    if query_type == "decisive_response":
+        targets: tuple[Any, Any, Any] = (0, 1, 2)
+        correct_value: Any = decisive_response
+        rendered_values = tuple(f"R{index + 1}" for index in targets)
+        question = (
+            "Looking back at the choice, which response made the largest absolute "
+            "contribution to the expected-payoff difference between the selected "
+            "option and its strongest alternative?"
+        )
+    elif query_type == "predicted_response":
+        targets = (0, 1, 2)
+        correct_value = predicted_response
+        rendered_values = tuple(f"R{index + 1}" for index in targets)
+        subject = "receiver" if row["frame"] == "strategic" else "device"
+        question = (
+            f"Under the selected option, which {subject} response/outcome had the "
+            "highest predicted probability?"
+        )
+    else:
+        targets = (decision_margin - 1, decision_margin, decision_margin + 1)
+        correct_value = decision_margin
+        rendered_values = tuple(_display_fraction(value) for value in targets)
+        question = (
+            "What was the expected-payoff difference between the selected option "
+            "and its strongest alternative?"
+        )
+
+    ordered_targets = tuple(targets[index] for index in permutation)
+    ordered_rendered = tuple(rendered_values[index] for index in permutation)
+    correct_index = ordered_targets.index(correct_value)
+    expected_label = SIGNALS[correct_index]
+    options = "; ".join(
+        f"{label}={value}"
+        for label, value in zip(SIGNALS, ordered_rendered, strict=True)
+    )
+    report_question = (
+        f"{question}\nOptions: {options}. Return only A, B, or C.\nAnswer:"
+    )
+    if access_condition == "retrospective":
+        messages = [
+            {"role": "user", "content": row["prompt"]},
+            {"role": "assistant", "content": selected_action},
+            {"role": "user", "content": report_question},
+        ]
+    else:
+        reconstruction = (
+            f"{_task_body(row['prompt'])}\n"
+            f"A prior decision-maker selected option {selected_action}. Independently "
+            "reconstruct the requested quantity from the problem statement; you do "
+            "not have access to that decision-maker's hidden computation.\n"
+            f"{report_question}"
+        )
+        messages = [{"role": "user", "content": reconstruction}]
+    return {
+        "report_id": _stable_id(
+            row["condition_id"], query_type, access_condition, selected_action
+        ),
+        "condition_id": row["condition_id"],
+        "query_type": query_type,
+        "access_condition": access_condition,
+        "selected_action": selected_action,
+        "expected_label": expected_label,
+        "correct_value": str(correct_value),
+        "options": {
+            label: value for label, value in zip(SIGNALS, ordered_rendered, strict=True)
+        },
+        "messages": messages,
+    }
 
 
 @dataclass(frozen=True)

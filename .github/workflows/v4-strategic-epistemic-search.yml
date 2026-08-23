@@ -1,6 +1,9 @@
 name: V4 strategic epistemic search
 
 on:
+  push:
+    branches:
+      - research/v4-strategic-epistemic-search
   workflow_dispatch:
     inputs:
       stage:
@@ -21,6 +24,7 @@ concurrency:
 
 jobs:
   run:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v4-behavior]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -43,6 +47,9 @@ jobs:
 
       - name: Validate local protocol
         run: uv run pytest -q
+
+      - name: Materialize the preregistered dataset
+        run: uv run --extra modal python -c 'import modal_strategic_epistemic_search as m; m.freeze_dataset()'
 
       - name: Run behavior screen
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
@@ -67,7 +74,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: v4-strategic-epistemic-${{ inputs.stage }}-${{ github.run_id }}
+          name: v4-strategic-epistemic-${{ inputs.stage || 'behavior' }}-${{ github.run_id }}
           path: results/v4_strategic_epistemic_search
           if-no-files-found: warn
           retention-days: 14
