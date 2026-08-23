@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-2",
+  "status": "preregistered_after_rbg1_before_rbg2_dataset_or_model_execution",
+  "frozen_after": {
+    "rbg1_run_id": "5b10e27f3f91454e84c06d8acb43e78e",
+    "rbg1_verdict": "receiver-policy use gate failed",
+    "posthoc_lead": "claim content often matched desired receiver conclusion while contrarian response mapping was ignored"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "base_games": 16,
+    "rendered_contexts": 512,
+    "frames": ["strategic", "device"],
+    "incentives": ["aligned", "opposed"],
+    "receiver_types": ["literal", "contrarian"],
+    "policy_access": ["inferred", "explicit"],
+    "message_semantics": ["claims", "opaque_tokens"],
+    "action_labels": ["A", "B"],
+    "report_labels": ["X", "Y"]
+  },
+  "primary_hypotheses": {
+    "h1_explicit_opaque_competence": {
+      "population": "explicit policy and opaque tokens",
+      "minimum_action_accuracy": 0.90,
+      "minimum_cell_accuracy": 0.80,
+      "minimum_option_report_accuracy": 0.90
+    },
+    "h2_semantic_action_override": {
+      "population": "explicit policy, contrarian receiver",
+      "endpoint": "opaque-token action accuracy minus meaningful-claim action accuracy",
+      "required_opaque_accuracy": 0.85,
+      "required_claim_accuracy_maximum": 0.65,
+      "required_claim_option_report_accuracy": 0.85,
+      "minimum_gap": 0.20,
+      "test": "two-sided exact base-game cluster sign flip",
+      "alpha": 0.05
+    }
+  },
+  "diagnostics": [
+    "both option consequences reported correctly but action wrong",
+    "wrong action claim content equals target response",
+    "strategic versus device interaction",
+    "inferred versus explicit policy gap",
+    "literal receiver semantic null control"
+  ],
+  "interpretation": {
+    "promotion": "The model can state an explicit causal option map but meaningful message content selectively overrides that map during strategic choice.",
+    "kill": "If opaque controls also fail, reports fail, or the claim gap is small, archive the RBG-1 pattern as ordinary task failure."
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "estimated_ceiling_seconds": 1800,
+    "hard_cost_limit_usd": 6.0,
+    "stop_before_mechanistic": true
+  }
+}
