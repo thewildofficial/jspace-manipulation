@@ -51,3 +51,18 @@
 - Cross-study inspection identifies demonstration history and mapping format as
   the main uncontrolled differences. RBG-4 will cross both factors within fresh
   matched games before any mechanistic intervention.
+
+## 2026-08-24 — V5-D005 — RBG-4 inverse-evidence effect passed
+
+- Immutable run `7c06999f4ad54d06b4454584e04faf9d` passed all frozen gates.
+- Four correct redundant demonstrations reduced opposed assertion action accuracy
+  from 79.17% to 55.21% with no report-accuracy change (gap 23.96 points,
+  p=.000244).
+- The assertion-minus-opaque history-harm difference-in-differences was 23.96
+  points (p=.000244); opaque actions remained 100% correct.
+- The effect was concentrated in prose mappings: 75.00% without history versus
+  27.08% with history. Table mappings were 83.33% in both conditions.
+- The prospectively frozen RBG-2-like strategic cell replicated at 37.50% action
+  accuracy with 91.67% consequence reports and 100% matched opaque actions.
+- Natural activation interchange and multi-model replication are now licensed.
+  No arbitrary steering, broad layer search, or scheming claim is licensed.
