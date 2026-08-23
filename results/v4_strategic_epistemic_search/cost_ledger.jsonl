@@ -1,0 +1,1 @@
+{"buffered_usd": 0.14098452812796727, "cpu_usd": 0.0141550731052176, "created_at": "2026-08-23T16:58:31.515447+00:00", "gpu": "A100-80GB", "gpu_usd": 0.09373683907462799, "memory_usd": 0.009595194593460478, "run_id": "daa4d2cf2461493f9e5e3978bf2bed6f", "schema_version": 1, "seconds": 135.067491462, "stage": "behavior", "status": "measured", "subtotal_usd": 0.11748710677330607}

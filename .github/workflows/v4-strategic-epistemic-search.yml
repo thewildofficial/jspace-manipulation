@@ -13,6 +13,7 @@ on:
         type: choice
         options:
           - behavior
+          - calibration
           - discovery
 
 permissions:
@@ -58,9 +59,19 @@ jobs:
           fi
 
       - name: Validate remote tokenization without GPU
+        if: ${{ inputs.stage != 'calibration' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::preflight
 
+      - name: Validate calibration prompts without GPU
+        if: ${{ inputs.stage == 'calibration' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration_preflight
+
+      - name: Run discovery-only competence calibration
+        if: ${{ inputs.stage == 'calibration' }}
+        run: uv run --extra modal modal run modal_strategic_epistemic_search.py::calibration
+
       - name: Run behavior screen
+        if: ${{ inputs.stage != 'calibration' }}
         run: uv run --extra modal modal run modal_strategic_epistemic_search.py::behavior
 
       - name: Run observational discovery if behavior passed

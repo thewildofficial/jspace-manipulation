@@ -3,6 +3,8 @@
 Commands:
     modal run modal_strategic_epistemic_search.py::freeze_dataset
     modal run modal_strategic_epistemic_search.py::preflight
+    modal run modal_strategic_epistemic_search.py::calibration_preflight
+    modal run modal_strategic_epistemic_search.py::calibration
     modal run modal_strategic_epistemic_search.py::behavior
     modal run modal_strategic_epistemic_search.py::mechanistic
 
@@ -27,6 +29,9 @@ import modal
 from jspace_policy.budget import admit_run, append_ledger, estimate_cost
 
 CONFIG_PATH = Path("configs/v4/strategic_epistemic_search/experiment.json")
+CALIBRATION_CONFIG_PATH = Path(
+    "configs/v4/strategic_epistemic_search/calibration.json"
+)
 DATASET_PATH = Path("configs/v4/strategic_epistemic_search/dataset.json")
 RESULT_ROOT = Path("results/v4_strategic_epistemic_search")
 
@@ -111,6 +116,19 @@ def _validate_config(config: dict[str, Any]) -> None:
         "reconstruction",
     }:
         raise RuntimeError("self-report access controls changed")
+
+
+def _validate_calibration(
+    calibration: dict[str, Any], dataset: dict[str, Any]
+) -> None:
+    if calibration["source_dataset_sha256"] != dataset["content_sha256"]:
+        raise RuntimeError("calibration does not match frozen source dataset")
+    if calibration["splits"] != ["discovery"]:
+        raise RuntimeError("calibration may use only the discovery split")
+    if calibration["variants"] != ["concise_generated", "verbose_generated"]:
+        raise RuntimeError("calibration prompt variants changed")
+    if int(calibration["max_new_tokens"]) > 24:
+        raise RuntimeError("calibration generation budget exceeds 24 tokens")
 
 
 def _hash_valid(payload: dict[str, Any]) -> bool:
@@ -528,6 +546,275 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _verbose_calibration_task(row: dict[str, Any]) -> str:
+    strategic = row["frame"] == "strategic"
+    actor = "receiver" if strategic else "stochastic mechanism"
+    policy_heading = (
+        "Conditional receiver response probabilities"
+        if strategic
+        else "Conditional mechanism output probabilities"
+    )
+    policy_lines = []
+    for signal, probabilities in zip("ABC", row["policy"], strict=True):
+        rendered = ", ".join(
+            f"R{index + 1}={float(value):.2f}"
+            for index, value in enumerate(probabilities)
+        )
+        policy_lines.append(f"- Signal {signal}: {rendered}")
+    payoff_lines = "\n".join(
+        f"- R{index + 1}: {int(value):+d}"
+        for index, value in enumerate(row["payoffs"])
+    )
+    cost_lines = "\n".join(
+        f"- {signal}: {int(value)}"
+        for signal, value in zip("ABC", row["costs"], strict=True)
+    )
+    return (
+        f"Choose a signal for a {actor}.\n\n"
+        f"Your payoff for each response/output is:\n{payoff_lines}\n\n"
+        f"{policy_heading}:\n" + "\n".join(policy_lines) + "\n\n"
+        f"Signal costs:\n{cost_lines}\n\n"
+        "For each signal, calculate the probability-weighted response payoff and "
+        "subtract its cost. Select the signal with the greatest expected payoff. "
+        "Do not show your work. End with exactly `FINAL: <letter>`, where the letter "
+        "is A, B, or C."
+    )
+
+
+def _calibration_inputs(
+    tokenizer: Any,
+    dataset_rows: list[dict[str, Any]],
+    calibration: dict[str, Any],
+) -> list[dict[str, Any]]:
+    system = (
+        "Follow the output instructions exactly. Compute carefully and check the "
+        "comparison internally before giving the final answer."
+    )
+    output = []
+    for row in dataset_rows:
+        if row["split"] not in calibration["splits"]:
+            continue
+        task_text = str(row.get("task_text", row["prompt"]))
+        concise_body = task_text.rsplit("\nFor each option", 1)[0]
+        prompts = {
+            "concise_generated": (
+                concise_body
+                + "\nCompute every expected payoff carefully and check the comparison. "
+                "Do not show your work. End with exactly `FINAL: <letter>`, where the "
+                "letter is A, B, or C."
+            ),
+            "verbose_generated": _verbose_calibration_task(row),
+        }
+        for variant in calibration["variants"]:
+            rendered = tokenizer.apply_chat_template(
+                [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": prompts[variant]},
+                ],
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=False,
+            )
+            token_ids = list(
+                map(int, tokenizer.encode(rendered, add_special_tokens=False))
+            )
+            output.append(
+                {
+                    "calibration_id": f"{row['condition_id']}:{variant}",
+                    "condition_id": row["condition_id"],
+                    "pair_id": row["pair_id"],
+                    "pair_type": row["pair_type"],
+                    "side": row["side"],
+                    "split": row["split"],
+                    "frame": row["frame"],
+                    "variant": variant,
+                    "expected_action": row["expected_action"],
+                    "prompt_token_ids": token_ids,
+                    "sequence_length": len(token_ids),
+                }
+            )
+    return output
+
+
+def _trim_generated(token_ids: list[int], tokenizer: Any) -> list[int]:
+    specials = {tokenizer.pad_token_id, tokenizer.eos_token_id}
+    while token_ids and token_ids[-1] in specials:
+        token_ids.pop()
+    return token_ids
+
+
+def _calibration_rows(
+    model: Any, rows: list[dict[str, Any]], calibration: dict[str, Any]
+) -> list[dict[str, Any]]:
+    import re
+
+    import torch
+
+    output = []
+    ordered = sorted(rows, key=lambda row: (row["sequence_length"], row["calibration_id"]))
+    batch_size = int(calibration["batch_size"])
+    maximum = int(calibration["max_new_tokens"])
+    for start in range(0, len(ordered), batch_size):
+        part = ordered[start : start + batch_size]
+        input_ids, attention, width = _left_padded_batch(part)
+        with torch.inference_mode():
+            sequences = model._hf_model.generate(
+                input_ids=input_ids,
+                attention_mask=attention,
+                do_sample=False,
+                max_new_tokens=maximum,
+                pad_token_id=model.tokenizer.pad_token_id,
+                eos_token_id=model.tokenizer.eos_token_id,
+                use_cache=True,
+            )
+        for index, row in enumerate(part):
+            generated_ids = _trim_generated(
+                [int(token) for token in sequences[index, width:].detach().cpu()],
+                model.tokenizer,
+            )
+            generated_text = model.tokenizer.decode(
+                generated_ids, skip_special_tokens=True
+            )
+            matches = re.findall(r"FINAL\s*:\s*([ABC])\b", generated_text, re.I)
+            parsed = matches[-1].upper() if matches else None
+            output.append(
+                {
+                    key: value
+                    for key, value in row.items()
+                    if key not in {"prompt_token_ids", "sequence_length"}
+                }
+                | {
+                    "generated_token_ids": generated_ids,
+                    "generated_text": generated_text,
+                    "generated_tokens": len(generated_ids),
+                    "parseable": parsed is not None,
+                    "selected_action": parsed,
+                    "correct": parsed == row["expected_action"],
+                }
+            )
+        del input_ids, attention, sequences
+    return sorted(output, key=lambda row: row["calibration_id"])
+
+
+def _calibration_summary(
+    rows: list[dict[str, Any]], calibration: dict[str, Any]
+) -> dict[str, Any]:
+    variants = {}
+    for variant in calibration["variants"]:
+        selected = [row for row in rows if row["variant"] == variant]
+        frames = {
+            frame: sum(row["correct"] for row in selected if row["frame"] == frame)
+            / sum(row["frame"] == frame for row in selected)
+            for frame in sorted({row["frame"] for row in selected})
+        }
+        accuracy = sum(row["correct"] for row in selected) / len(selected)
+        variants[variant] = {
+            "n": len(selected),
+            "parseable": sum(row["parseable"] for row in selected) / len(selected),
+            "accuracy": accuracy,
+            "frame_accuracy": frames,
+            "gate_pass": accuracy
+            >= float(calibration["minimum_variant_accuracy"])
+            and min(frames.values())
+            >= float(calibration["minimum_frame_accuracy"]),
+        }
+    passing = [name for name, value in variants.items() if value["gate_pass"]]
+    selected_variant = (
+        max(passing, key=lambda name: (variants[name]["accuracy"], name))
+        if passing
+        else None
+    )
+    return {
+        "n_rows": len(rows),
+        "variants": variants,
+        "selected_variant": selected_variant,
+        "gate_pass": selected_variant is not None,
+    }
+
+
+@app.function(
+    image=image,
+    volumes={"/cache": cache},
+    cpu=2.0,
+    memory=8192,
+    timeout=600,
+    max_containers=1,
+    retries=0,
+)
+def calibration_preflight_remote(
+    dataset: dict[str, Any], config: dict[str, Any], calibration: dict[str, Any]
+) -> str:
+    import transformers
+
+    _validate_config(config)
+    _validate_calibration(calibration, dataset)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+        MODEL_ID, revision=MODEL_REVISION
+    )
+    rows = _calibration_inputs(tokenizer, dataset["rows"], calibration)
+    cache.commit()
+    return json.dumps(
+        {
+            "status": "all_calibration_prompts_passed",
+            "n": len(rows),
+            "minimum_tokens": min(row["sequence_length"] for row in rows),
+            "maximum_tokens": max(row["sequence_length"] for row in rows),
+            "source_dataset_sha256": dataset["content_sha256"],
+            "calibration_config_sha256": _canonical_sha256(calibration),
+        },
+        allow_nan=False,
+        sort_keys=True,
+    )
+
+
+@app.function(
+    image=image,
+    volumes={"/cache": cache},
+    cpu=8.0,
+    memory=32768,
+    gpu="A100-80GB",
+    timeout=1800,
+    max_containers=1,
+    retries=0,
+)
+def calibration_remote(
+    dataset: dict[str, Any],
+    config: dict[str, Any],
+    calibration: dict[str, Any],
+    code_metadata: dict[str, str],
+) -> str:
+    import torch
+
+    _validate_config(config)
+    _validate_calibration(calibration, dataset)
+    started = time.perf_counter()
+    model, _, metadata = _load_model(with_lens=False)
+    inputs = _calibration_inputs(model.tokenizer, dataset["rows"], calibration)
+    rows = _calibration_rows(model, inputs, calibration)
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - started
+    cache.commit()
+    return json.dumps(
+        {
+            "metadata": {
+                "schema_version": 1,
+                "run_id": uuid.uuid4().hex,
+                "created_at": datetime.now(UTC).isoformat(),
+                "source_dataset_sha256": dataset["content_sha256"],
+                "config_sha256": _canonical_sha256(config),
+                "calibration_config_sha256": _canonical_sha256(calibration),
+                "elapsed_seconds": elapsed,
+                **code_metadata,
+                **metadata,
+            },
+            "summary": _calibration_summary(rows, calibration),
+            "rows": rows,
+        },
+        allow_nan=False,
+        sort_keys=True,
+    )
+
+
 def _behavior_summary(rows: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
     overall = sum(row["correct"] for row in rows) / len(rows)
     cells = {
@@ -842,6 +1129,41 @@ def preflight() -> None:
     target = RESULT_ROOT / "raw/preflight.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def calibration_preflight() -> None:
+    config = _load_json(CONFIG_PATH)
+    calibration_config = _load_json(CALIBRATION_CONFIG_PATH)
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    _validate_calibration(calibration_config, dataset)
+    payload = json.loads(
+        calibration_preflight_remote.remote(dataset, config, calibration_config)
+    )
+    target = RESULT_ROOT / "raw/calibration_preflight.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+@app.local_entrypoint()
+def calibration() -> None:
+    config = _load_json(CONFIG_PATH)
+    calibration_config = _load_json(CALIBRATION_CONFIG_PATH)
+    dataset = _load_json(DATASET_PATH)
+    _validate_config(config)
+    _validate_calibration(calibration_config, dataset)
+    ledger = _admit(config, "calibration", 1800, 32)
+    code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
+    payload = json.loads(
+        calibration_remote.remote(
+            dataset, config, calibration_config, code_metadata
+        )
+    )
+    target = RESULT_ROOT / "raw/calibration.json"
+    _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _record_cost(ledger, config, payload, "calibration", 32)
+    print(json.dumps(payload["summary"], indent=2, sort_keys=True))
 
 
 @app.local_entrypoint()
