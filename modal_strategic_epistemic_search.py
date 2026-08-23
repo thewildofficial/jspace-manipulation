@@ -44,6 +44,10 @@ LENS_REVISION = "qwen-n1000"
 LENS_FILENAME = (
     "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt"
 )
+DECISION_SYSTEM_PROMPT = (
+    "Follow the output instructions exactly. Compute carefully and check the "
+    "comparison before giving the final answer."
+)
 
 app = modal.App("jspace-v4-strategic-epistemic-search")
 cache = modal.Volume.from_name("jspace-hf-cache", create_if_missing=True)
@@ -114,9 +118,16 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise RuntimeError("self-report query set changed")
     if set(config["self_report"]["access_conditions"]) != {
         "retrospective",
+        "answer_only",
+        "matched_trajectory",
         "reconstruction",
     }:
         raise RuntimeError("self-report access controls changed")
+    behavior = config["behavior"]
+    if behavior["prompt_variant"] != "verbose_short_cot":
+        raise RuntimeError("behavior prompt variant changed")
+    if int(behavior["max_new_tokens"]) > 160:
+        raise RuntimeError("behavior generation budget exceeds 160 tokens")
 
 
 def _validate_calibration(
@@ -231,13 +242,21 @@ def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         MODEL_ID, revision=MODEL_REVISION
     )
+    decision_inputs = _decision_inputs(tokenizer, tokenized["rows"], config)
     dummy_behavior = [
         {
-            "condition_id": row["condition_id"],
-            "legal_choice": row["expected_action"],
+            **row,
+            "parseable": True,
+            "selected_action": row["expected_action"],
             "correct": True,
+            "generated_text": (
+                "I compared the three expected payoffs.\n\n"
+                f"FINAL: {row['expected_action']}"
+            ),
+            "generated_tokens": 16,
+            "hit_token_ceiling": False,
         }
-        for row in tokenized["rows"]
+        for row in decision_inputs
     ]
     report_inputs = _report_inputs(
         types.SimpleNamespace(tokenizer=tokenizer),
@@ -257,12 +276,12 @@ def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
                 "model_revision": MODEL_REVISION,
             },
             "base_prompts": {
-                "n": len(tokenized["rows"]),
+                "n": len(decision_inputs),
                 "minimum_tokens": min(
-                    row["sequence_length"] for row in tokenized["rows"]
+                    row["sequence_length"] for row in decision_inputs
                 ),
                 "maximum_tokens": max(
-                    row["sequence_length"] for row in tokenized["rows"]
+                    row["sequence_length"] for row in decision_inputs
                 ),
             },
             "report_prompts": {
@@ -332,50 +351,99 @@ def _left_padded_batch(rows: list[dict[str, Any]]) -> tuple[Any, Any, int]:
     return input_ids, attention, width
 
 
-def _behavior_rows(
-    model: Any, rows: list[dict[str, Any]], batch_size: int
+def _decision_inputs(
+    tokenizer: Any, rows: list[dict[str, Any]], config: dict[str, Any]
 ) -> list[dict[str, Any]]:
+    output = []
+    for row in rows:
+        task, marker_text = _verbose_task(row, short_cot=True)
+        rendered = tokenizer.apply_chat_template(
+            [
+                {"role": "system", "content": DECISION_SYSTEM_PROMPT},
+                {"role": "user", "content": task},
+            ],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        encoding = tokenizer(
+            rendered,
+            add_special_tokens=False,
+            return_offsets_mapping=True,
+        )
+        token_ids = list(map(int, encoding["input_ids"]))
+        offsets = [tuple(map(int, pair)) for pair in encoding["offset_mapping"]]
+        output.append(
+            {
+                **row,
+                "decision_system_prompt": DECISION_SYSTEM_PROMPT,
+                "decision_prompt": task,
+                "prompt_token_ids": token_ids,
+                "candidate_token_ids": [
+                    _continuation_id(tokenizer, rendered, label) for label in "ABC"
+                ],
+                "marker_positions": {
+                    name: _marker_token_position(rendered, offsets, text)
+                    for name, text in marker_text.items()
+                },
+                "sequence_length": len(token_ids),
+            }
+        )
+    return output
+
+
+def _behavior_rows(
+    model: Any, rows: list[dict[str, Any]], config: dict[str, Any]
+) -> list[dict[str, Any]]:
+    import re
+
     import torch
 
     output: list[dict[str, Any]] = []
     ordered = sorted(rows, key=lambda row: (row["sequence_length"], row["condition_id"]))
+    batch_size = int(config["behavior"]["batch_size"])
+    maximum = int(config["behavior"]["max_new_tokens"])
     for start in range(0, len(ordered), batch_size):
         part = ordered[start : start + batch_size]
-        input_ids, attention, _ = _left_padded_batch(part)
+        input_ids, attention, width = _left_padded_batch(part)
         with torch.inference_mode():
-            logits = model._hf_model(
-                input_ids, attention_mask=attention, logits_to_keep=1
-            ).logits[:, -1].float()
+            sequences = model._hf_model.generate(
+                input_ids=input_ids,
+                attention_mask=attention,
+                do_sample=False,
+                max_new_tokens=maximum,
+                pad_token_id=model.tokenizer.pad_token_id,
+                eos_token_id=model.tokenizer.eos_token_id,
+                use_cache=True,
+            )
         for index, row in enumerate(part):
-            final = logits[index]
-            candidates = list(map(int, row["candidate_token_ids"]))
-            candidate_logits = final[candidates]
-            legal_choice = int(candidate_logits.argmax().cpu())
-            top1 = int(final.argmax().cpu())
+            generated_ids = _trim_generated(
+                [int(token) for token in sequences[index, width:].detach().cpu()],
+                model.tokenizer,
+            )
+            generated_text = model.tokenizer.decode(
+                generated_ids, skip_special_tokens=True
+            )
+            matches = re.findall(r"FINAL\s*:\s*([ABC])\b", generated_text, re.I)
+            selected = matches[-1].upper() if matches else None
             output.append(
                 {
-                    "condition_id": row["condition_id"],
-                    "pair_id": row["pair_id"],
-                    "pair_type": row["pair_type"],
-                    "side": row["side"],
-                    "split": row["split"],
-                    "frame": row["frame"],
-                    "expected_action": row["expected_action"],
-                    "top1_token_id": top1,
-                    "top1_text": model.tokenizer.decode([top1]),
-                    "formatting_compliant": top1 in candidates,
-                    "correct": top1 == int(row["expected_action_token_id"]),
-                    "legal_choice": "ABC"[legal_choice],
-                    "legal_choice_correct": "ABC"[legal_choice] == row["expected_action"],
-                    "legal_action_logits": {
-                        label: float(value)
-                        for label, value in zip(
-                            "ABC", candidate_logits.detach().cpu(), strict=True
-                        )
-                    },
+                    key: value
+                    for key, value in row.items()
+                    if key not in {"sequence_length"}
+                }
+                | {
+                    "generated_token_ids": generated_ids,
+                    "generated_text": generated_text,
+                    "generated_tokens": len(generated_ids),
+                    "hit_token_ceiling": len(generated_ids) == maximum,
+                    "parseable": selected is not None,
+                    "formatting_compliant": selected is not None,
+                    "selected_action": selected,
+                    "correct": selected == row["expected_action"],
                 }
             )
-        del input_ids, attention, logits
+        del input_ids, attention, sequences
     return sorted(output, key=lambda row: row["condition_id"])
 
 
@@ -385,6 +453,8 @@ def _report_inputs(
     behavior_rows: list[dict[str, Any]],
     config: dict[str, Any],
 ) -> list[dict[str, Any]]:
+    import re
+
     from jspace_policy.strategic_epistemic_search import report_spec
 
     behavior_by_id = {row["condition_id"]: row for row in behavior_rows}
@@ -394,12 +464,52 @@ def _report_inputs(
         if row["split"] not in report_config["splits"]:
             continue
         decision = behavior_by_id[row["condition_id"]]
-        selected_action = str(decision["legal_choice"])
+        if not decision["parseable"]:
+            continue
+        selected_action = str(decision["selected_action"])
+        matched_candidates = [
+            candidate
+            for candidate in behavior_rows
+            if candidate["condition_id"] != decision["condition_id"]
+            and candidate["pair_id"] != decision["pair_id"]
+            and candidate["split"] == decision["split"]
+            and candidate["frame"] == decision["frame"]
+            and candidate["parseable"]
+            and candidate["selected_action"] == selected_action
+        ]
+        if not matched_candidates:
+            raise RuntimeError(
+                f"no same-action matched trajectory for {decision['condition_id']}"
+            )
+        matched = min(
+            matched_candidates,
+            key=lambda candidate: (
+                abs(candidate["generated_tokens"] - decision["generated_tokens"]),
+                candidate["condition_id"],
+            ),
+        )
         for query_type in report_config["query_types"]:
             for access_condition in report_config["access_conditions"]:
-                report_row = {**row, "prompt": row.get("task_text", row["prompt"])}
                 spec = report_spec(
-                    report_row, query_type, access_condition, selected_action
+                    row,
+                    query_type,
+                    access_condition,
+                    selected_action,
+                    decision_prompt=decision["decision_prompt"],
+                    trajectory=decision["generated_text"],
+                    matched_trajectory=matched["generated_text"],
+                    system_prompt=decision["decision_system_prompt"],
+                )
+                surface_pattern = (
+                    rf"(?<![A-Za-z0-9]){re.escape(spec['correct_surface'])}"
+                    r"(?![A-Za-z0-9])"
+                )
+                target_surface_in_trajectory = bool(
+                    re.search(
+                        surface_pattern,
+                        decision["generated_text"],
+                        flags=re.IGNORECASE,
+                    )
                 )
                 rendered = model.tokenizer.apply_chat_template(
                     spec["messages"],
@@ -426,6 +536,11 @@ def _report_inputs(
                         "split": row["split"],
                         "frame": row["frame"],
                         "decision_correct": bool(decision["correct"]),
+                        "decision_generated_tokens": decision["generated_tokens"],
+                        "decision_hit_token_ceiling": decision["hit_token_ceiling"],
+                        "matched_control_condition_id": matched["condition_id"],
+                        "matched_control_generated_tokens": matched["generated_tokens"],
+                        "target_surface_in_trajectory": target_surface_in_trajectory,
                         "prompt_token_ids": token_ids,
                         "candidate_token_ids": [
                             _continuation_id(model.tokenizer, rendered, label)
@@ -526,28 +641,53 @@ def _self_report_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 if cell
                 else None,
             }
-    advantages = {}
+    contrasts = {}
     for query_type in sorted({row["query_type"] for row in rows}):
         retrospective = cells[f"{query_type}:retrospective"]["strict_accuracy"]
-        reconstruction = cells[f"{query_type}:reconstruction"]["strict_accuracy"]
-        advantages[query_type] = (
-            retrospective - reconstruction
-            if retrospective is not None and reconstruction is not None
-            else None
-        )
+        for control in ("answer_only", "matched_trajectory", "reconstruction"):
+            control_accuracy = cells[f"{query_type}:{control}"]["strict_accuracy"]
+            contrasts[f"{query_type}:retrospective_minus_{control}"] = (
+                retrospective - control_accuracy
+                if retrospective is not None and control_accuracy is not None
+                else None
+            )
+    copyability = {}
+    for query_type in sorted({row["query_type"] for row in rows}):
+        retrospective_rows = [
+            row
+            for row in eligible
+            if row["query_type"] == query_type
+            and row["access_condition"] == "retrospective"
+        ]
+        copyability[query_type] = {
+            str(present).lower(): {
+                "n": len(selected := [
+                    row
+                    for row in retrospective_rows
+                    if row["target_surface_in_trajectory"] is present
+                ]),
+                "strict_accuracy": (
+                    sum(row["correct"] for row in selected) / len(selected)
+                    if selected
+                    else None
+                ),
+            }
+            for present in (False, True)
+        }
     return {
         "n_rows": len(rows),
         "n_decision_correct_rows": len(eligible),
         "cell_accuracy": cells,
-        "retrospective_minus_reconstruction": advantages,
+        "primary_contrasts": contrasts,
+        "retrospective_copyability_strata": copyability,
         "interpretation": (
-            "Positive values are consistent with privileged trajectory access; "
-            "zero values are consistent with prompt-only reconstruction."
+            "A retrospective advantage is trajectory-specific only if it beats the "
+            "role-matched answer-only and same-action matched-trajectory controls."
         ),
     }
 
 
-def _verbose_calibration_task(row: dict[str, Any]) -> str:
+def _verbose_task(row: dict[str, Any], *, short_cot: bool) -> tuple[str, dict[str, str]]:
     strategic = row["frame"] == "strategic"
     actor = "receiver" if strategic else "stochastic mechanism"
     policy_heading = (
@@ -562,24 +702,39 @@ def _verbose_calibration_task(row: dict[str, Any]) -> str:
             for index, value in enumerate(probabilities)
         )
         policy_lines.append(f"- Signal {signal}: {rendered}")
-    payoff_lines = "\n".join(
+    payoff_rows = [
         f"- R{index + 1}: {int(value):+d}"
         for index, value in enumerate(row["payoffs"])
-    )
-    cost_lines = "\n".join(
+    ]
+    cost_rows = [
         f"- {signal}: {int(value)}"
         for signal, value in zip("ABC", row["costs"], strict=True)
+    ]
+    instruction = (
+        "Reason through this in at most three short sentences and no more than "
+        "40 words. Then end with exactly"
+        if short_cot
+        else "Do not show your work. End with exactly"
     )
-    return (
+    final_marker = "is A, B, or C."
+    task = (
         f"Choose a signal for a {actor}.\n\n"
-        f"Your payoff for each response/output is:\n{payoff_lines}\n\n"
+        f"Your payoff for each response/output is:\n" + "\n".join(payoff_rows) + "\n\n"
         f"{policy_heading}:\n" + "\n".join(policy_lines) + "\n\n"
-        f"Signal costs:\n{cost_lines}\n\n"
+        "Signal costs:\n" + "\n".join(cost_rows) + "\n\n"
         "For each signal, calculate the probability-weighted response payoff and "
         "subtract its cost. Select the signal with the greatest expected payoff. "
-        "Do not show your work. End with exactly `FINAL: <letter>`, where the letter "
-        "is A, B, or C."
+        f"{instruction} `FINAL: <letter>`, where the letter {final_marker}"
     )
+    return task, {
+        "payoff_end": payoff_rows[-1],
+        "policy_end": policy_lines[-1],
+        "final_prompt": final_marker,
+    }
+
+
+def _verbose_calibration_task(row: dict[str, Any]) -> str:
+    return _verbose_task(row, short_cot=False)[0]
 
 
 def _calibration_inputs(
@@ -587,10 +742,7 @@ def _calibration_inputs(
     dataset_rows: list[dict[str, Any]],
     calibration: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    system = (
-        "Follow the output instructions exactly. Compute carefully and check the "
-        "comparison internally before giving the final answer."
-    )
+    system = DECISION_SYSTEM_PROMPT
     output = []
     for row in dataset_rows:
         if row["split"] not in calibration["splits"]:
@@ -605,11 +757,7 @@ def _calibration_inputs(
                 "letter is A, B, or C."
             ),
             "verbose_generated": _verbose_calibration_task(row),
-            "verbose_short_cot": _verbose_calibration_task(row).replace(
-                "Do not show your work. End with exactly",
-                "Reason through this in at most three short sentences and no more "
-                "than 40 words. Then end with exactly",
-            ),
+            "verbose_short_cot": _verbose_task(row, short_cot=True)[0],
         }
         for variant in calibration["variants"]:
             rendered = tokenizer.apply_chat_template(
@@ -719,8 +867,9 @@ def _calibration_summary(
             "parseable": sum(row["parseable"] for row in selected) / len(selected),
             "accuracy": accuracy,
             "frame_accuracy": frames,
-            "gate_pass": accuracy
-            >= float(calibration["minimum_variant_accuracy"])
+            "gate_pass": sum(row["parseable"] for row in selected) / len(selected)
+            >= float(calibration["minimum_parseability"])
+            and accuracy >= float(calibration["minimum_variant_accuracy"])
             and min(frames.values())
             >= float(calibration["minimum_frame_accuracy"]),
         }
@@ -822,7 +971,14 @@ def calibration_remote(
 
 
 def _behavior_summary(rows: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
+    parseable = sum(row["parseable"] for row in rows) / len(rows)
     overall = sum(row["correct"] for row in rows) / len(rows)
+    parsed_rows = [row for row in rows if row["parseable"]]
+    conditional = (
+        sum(row["correct"] for row in parsed_rows) / len(parsed_rows)
+        if parsed_rows
+        else None
+    )
     cells = {
         f"{split}:{frame}:{pair_type}": sum(
             row["correct"]
@@ -843,12 +999,16 @@ def _behavior_summary(rows: list[dict[str, Any]], config: dict[str, Any]) -> dic
     }
     minimum_cell = min(cells.values())
     gate = (
-        overall >= float(config["behavior"]["minimum_overall_accuracy"])
+        parseable >= float(config["behavior"]["minimum_parseability"])
+        and overall >= float(config["behavior"]["minimum_overall_accuracy"])
         and minimum_cell >= float(config["behavior"]["minimum_cell_accuracy"])
     )
     return {
         "n_rows": len(rows),
+        "parseability": parseable,
         "overall_accuracy": overall,
+        "accuracy_given_parseable": conditional,
+        "token_ceiling_hits": sum(row["hit_token_ceiling"] for row in rows),
         "minimum_cell_accuracy": minimum_cell,
         "cell_accuracy": cells,
         "gate_pass": gate,
@@ -876,8 +1036,19 @@ def behavior_remote(
     started = time.perf_counter()
     tokenized = _tokenize_dataset(dataset, config)
     model, _, metadata = _load_model(with_lens=False)
-    rows = _behavior_rows(model, tokenized["rows"], int(config["behavior"]["batch_size"]))
-    report_rows = _self_report_rows(model, tokenized["rows"], rows, config)
+    decision_inputs = _decision_inputs(model.tokenizer, tokenized["rows"], config)
+    decision_inputs_sha256 = _canonical_sha256(
+        [
+            {
+                "condition_id": row["condition_id"],
+                "prompt_token_ids": row["prompt_token_ids"],
+                "marker_positions": row["marker_positions"],
+            }
+            for row in decision_inputs
+        ]
+    )
+    rows = _behavior_rows(model, decision_inputs, config)
+    report_rows = _self_report_rows(model, dataset["rows"], rows, config)
     torch.cuda.synchronize()
     elapsed = time.perf_counter() - started
     cache.commit()
@@ -889,6 +1060,7 @@ def behavior_remote(
                 "created_at": datetime.now(UTC).isoformat(),
                 "source_dataset_sha256": dataset["content_sha256"],
                 "tokenized_dataset_sha256": tokenized["content_sha256"],
+                "decision_inputs_sha256": decision_inputs_sha256,
                 "config_sha256": _canonical_sha256(config),
                 "elapsed_seconds": elapsed,
                 **code_metadata,
@@ -935,6 +1107,33 @@ def _top_readout(model: Any, lens: Any, layer: int, residuals: Any, k: int) -> l
     return result
 
 
+def _generated_synchronization(
+    generated_ids: list[int], tokenizer: Any
+) -> dict[str, int]:
+    import re
+
+    first_sentence = None
+    pre_final = None
+    final_answer = None
+    for end in range(1, len(generated_ids) + 1):
+        prefix = tokenizer.decode(generated_ids[:end], skip_special_tokens=True)
+        if first_sentence is None and re.search(r"[.!?](?:\s|$)", prefix):
+            first_sentence = end - 1
+        if pre_final is None and re.search(r"FINAL\s*:\s*$", prefix, re.I):
+            pre_final = end - 1
+        if final_answer is None and re.search(r"FINAL\s*:\s*[ABC]\b", prefix, re.I):
+            final_answer = end - 1
+    if pre_final is None or final_answer is None:
+        raise RuntimeError("parseable behavior lacks FINAL synchronization tokens")
+    if first_sentence is None or first_sentence >= pre_final:
+        first_sentence = pre_final
+    return {
+        "first_reasoning_sentence": first_sentence,
+        "pre_final": pre_final,
+        "final_answer": final_answer,
+    }
+
+
 @app.function(
     image=image,
     volumes={"/cache": cache, "/artifacts": artifacts},
@@ -961,9 +1160,19 @@ def mechanistic_remote(
     if behavior_result["metadata"]["source_dataset_sha256"] != dataset["content_sha256"]:
         raise RuntimeError("behavior result does not match source dataset")
     started = time.perf_counter()
-    tokenized = _tokenize_dataset(dataset, config)
-    if behavior_result["metadata"]["tokenized_dataset_sha256"] != tokenized["content_sha256"]:
-        raise RuntimeError("tokenized dataset changed after behavior")
+    behavior_rows = behavior_result["rows"]
+    decision_inputs_sha256 = _canonical_sha256(
+        [
+            {
+                "condition_id": row["condition_id"],
+                "prompt_token_ids": row["prompt_token_ids"],
+                "marker_positions": row["marker_positions"],
+            }
+            for row in behavior_rows
+        ]
+    )
+    if decision_inputs_sha256 != behavior_result["metadata"]["decision_inputs_sha256"]:
+        raise RuntimeError("decision inputs changed after behavior")
     model, lens, metadata = _load_model(with_lens=True)
     layers = list(map(int, config["mechanistic"]["layers"]))
     markers = list(config["mechanistic"]["marker_names"])
@@ -973,16 +1182,44 @@ def mechanistic_remote(
     residual_root = remote_root / "residuals"
     residual_root.mkdir(parents=True, exist_ok=True)
     output_rows = []
-    ordered = sorted(tokenized["rows"], key=lambda row: row["condition_id"])
+    ordered = sorted(
+        [row for row in behavior_rows if row["parseable"]],
+        key=lambda row: (
+            len(row["prompt_token_ids"]) + len(row["generated_token_ids"]),
+            row["condition_id"],
+        ),
+    )
     batch_size = int(config["behavior"]["batch_size"])
     for start in range(0, len(ordered), batch_size):
         part = ordered[start : start + batch_size]
-        input_ids, attention, width = _left_padded_batch(part)
+        sequence_rows = [
+            {
+                "prompt_token_ids": [
+                    *map(int, row["prompt_token_ids"]),
+                    *map(int, row["generated_token_ids"]),
+                ]
+            }
+            for row in part
+        ]
+        input_ids, attention, width = _left_padded_batch(sequence_rows)
         with torch.inference_mode(), ActivationRecorder(model.layers, at=layers) as recorder:
             outputs = model._hf_model(input_ids, attention_mask=attention)
         for batch_index, row in enumerate(part):
-            offset = width - len(row["prompt_token_ids"])
-            positions = [offset + int(row["marker_positions"][name]) for name in markers]
+            prompt_ids = list(map(int, row["prompt_token_ids"]))
+            generated_ids = list(map(int, row["generated_token_ids"]))
+            sequence_length = len(prompt_ids) + len(generated_ids)
+            offset = width - sequence_length
+            generated_sync = _generated_synchronization(generated_ids, model.tokenizer)
+            synchronization = {
+                "policy_end": int(row["marker_positions"]["policy_end"]),
+                "payoff_end": int(row["marker_positions"]["payoff_end"]),
+                "final_prompt": len(prompt_ids) - 1,
+                **{
+                    name: len(prompt_ids) + index
+                    for name, index in generated_sync.items()
+                },
+            }
+            positions = [offset + synchronization[name] for name in markers]
             residual_array = np.stack(
                 [
                     recorder.activations[layer][batch_index, positions]
@@ -1003,8 +1240,15 @@ def mechanistic_remote(
                 readouts[str(layer)] = {
                     marker: layer_rows[index] for index, marker in enumerate(markers)
                 }
-            final_logits = outputs.logits[batch_index, -1].float()
             candidate_ids = list(map(int, row["candidate_token_ids"]))
+            trajectory_positions = [
+                offset + len(prompt_ids) - 1,
+                *range(offset + len(prompt_ids), offset + sequence_length),
+            ]
+            trajectory_logits = outputs.logits[batch_index, trajectory_positions].float()[
+                :, candidate_ids
+            ]
+            trajectory_log_probs = trajectory_logits.log_softmax(-1).detach().cpu()
             output_rows.append(
                 {
                     "condition_id": row["condition_id"],
@@ -1022,12 +1266,26 @@ def mechanistic_remote(
                     "policy": row["policy"],
                     "payoffs": row["payoffs"],
                     "costs": row["costs"],
-                    "legal_action_logits": {
-                        label: float(value)
-                        for label, value in zip(
-                            "ABC", final_logits[candidate_ids].detach().cpu(), strict=True
-                        )
-                    },
+                    "generated_text": row["generated_text"],
+                    "selected_action": row["selected_action"],
+                    "correct": row["correct"],
+                    "synchronization": synchronization,
+                    "trajectory_action_log_probs": [
+                        {
+                            "trace_index": trace_index,
+                            "kind": "final_prompt" if trace_index == 0 else "generated_token",
+                            "generated_index": trace_index - 1 if trace_index else None,
+                            "surface_token": (
+                                model.tokenizer.decode([generated_ids[trace_index - 1]])
+                                if trace_index
+                                else None
+                            ),
+                            "legal_action_log_probs": dict(
+                                zip("ABC", map(float, values), strict=True)
+                            ),
+                        }
+                        for trace_index, values in enumerate(trajectory_log_probs)
+                    ],
                     "residual_artifact": {
                         "path": str(residual_path),
                         "sha256": hashlib.sha256(residual_path.read_bytes()).hexdigest(),
@@ -1046,7 +1304,7 @@ def mechanistic_remote(
             "run_id": run_id,
             "created_at": datetime.now(UTC).isoformat(),
             "source_dataset_sha256": dataset["content_sha256"],
-            "tokenized_dataset_sha256": tokenized["content_sha256"],
+            "decision_inputs_sha256": decision_inputs_sha256,
             "behavior_run_id": behavior_result["metadata"]["run_id"],
             "config_sha256": _canonical_sha256(config),
             **code_metadata,
@@ -1132,7 +1390,7 @@ def preflight() -> None:
     dataset = _load_json(DATASET_PATH)
     _validate_config(config)
     payload = json.loads(preflight_remote.remote(dataset, config))
-    target = RESULT_ROOT / "raw/preflight.json"
+    target = RESULT_ROOT / "raw/preflight_v2.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))
 
@@ -1180,7 +1438,7 @@ def behavior() -> None:
     ledger = _admit(config, "behavior", 1800, 32)
     code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
     payload = json.loads(behavior_remote.remote(dataset, config, code_metadata))
-    target = RESULT_ROOT / "raw/behavior.json"
+    target = RESULT_ROOT / "raw/behavior_v2.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "behavior", 32)
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
@@ -1190,14 +1448,14 @@ def behavior() -> None:
 def mechanistic() -> None:
     config = _load_json(CONFIG_PATH)
     dataset = _load_json(DATASET_PATH)
-    behavior_result = _load_json(RESULT_ROOT / "raw/behavior.json")
+    behavior_result = _load_json(RESULT_ROOT / "raw/behavior_v2.json")
     _validate_config(config)
     ledger = _admit(config, "mechanistic", 3600, 64)
     code_metadata = {"git_commit": _git_head(), "worktree_sha256": _worktree_sha256()}
     payload = json.loads(
         mechanistic_remote.remote(dataset, behavior_result, config, code_metadata)
     )
-    target = RESULT_ROOT / "raw/mechanistic_manifest.json"
+    target = RESULT_ROOT / "raw/mechanistic_v2_manifest.json"
     _write_new(target, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     _record_cost(ledger, config, payload, "mechanistic", 64)
     print(json.dumps(payload, indent=2, sort_keys=True))

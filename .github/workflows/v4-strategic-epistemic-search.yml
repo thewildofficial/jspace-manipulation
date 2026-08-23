@@ -82,7 +82,7 @@ jobs:
         if: ${{ inputs.stage == 'discovery' && success() }}
         shell: bash
         run: |
-          remote_root="$(jq -r '.artifact.root' results/v4_strategic_epistemic_search/raw/mechanistic_manifest.json)"
+          remote_root="$(jq -r '.artifact.root' results/v4_strategic_epistemic_search/raw/mechanistic_v2_manifest.json)"
           volume_path="${remote_root#/artifacts/}"
           mkdir -p results/v4_strategic_epistemic_search/modal_artifacts
           uv run --extra modal modal volume get --force \

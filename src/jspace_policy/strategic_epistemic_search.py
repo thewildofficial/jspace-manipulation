@@ -25,7 +25,12 @@ REPORT_QUERY_TYPES = (
     "predicted_response",
     "decision_margin",
 )
-REPORT_ACCESS_CONDITIONS = ("retrospective", "reconstruction")
+REPORT_ACCESS_CONDITIONS = (
+    "retrospective",
+    "answer_only",
+    "matched_trajectory",
+    "reconstruction",
+)
 
 _PAIR_CACHE: dict[str, tuple[MatchedPair, ...]] = {}
 
@@ -53,15 +58,16 @@ def _display_fraction(value: Fraction) -> str:
     return f"{float(value):.2f}".rstrip("0").rstrip(".")
 
 
-def _task_body(prompt: str) -> str:
-    suffix = "\nAnswer:"
-    if not prompt.endswith(suffix):
-        raise ValueError("task prompt does not end in the frozen answer suffix")
-    return prompt[: -len(suffix)]
-
-
 def report_spec(
-    row: dict[str, Any], query_type: str, access_condition: str, selected_action: str
+    row: dict[str, Any],
+    query_type: str,
+    access_condition: str,
+    selected_action: str,
+    *,
+    decision_prompt: str | None = None,
+    trajectory: str | None = None,
+    matched_trajectory: str | None = None,
+    system_prompt: str | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic forced-choice report and reconstruction control."""
     if query_type not in REPORT_QUERY_TYPES:
@@ -125,24 +131,48 @@ def report_spec(
         f"{label}={value}"
         for label, value in zip(SIGNALS, ordered_rendered, strict=True)
     )
+    correct_surface = ordered_rendered[correct_index]
     report_question = (
         f"{question}\nOptions: {options}. Return only A, B, or C.\nAnswer:"
     )
+    task = decision_prompt or row["prompt"]
+    prefix = (
+        [{"role": "system", "content": system_prompt}] if system_prompt else []
+    )
     if access_condition == "retrospective":
+        if trajectory is None:
+            trajectory = selected_action
         messages = [
-            {"role": "user", "content": row["prompt"]},
-            {"role": "assistant", "content": selected_action},
+            *prefix,
+            {"role": "user", "content": task},
+            {"role": "assistant", "content": trajectory},
+            {"role": "user", "content": report_question},
+        ]
+    elif access_condition == "answer_only":
+        messages = [
+            *prefix,
+            {"role": "user", "content": task},
+            {"role": "assistant", "content": f"FINAL: {selected_action}"},
+            {"role": "user", "content": report_question},
+        ]
+    elif access_condition == "matched_trajectory":
+        if matched_trajectory is None:
+            raise ValueError("matched trajectory control requires assistant content")
+        messages = [
+            *prefix,
+            {"role": "user", "content": task},
+            {"role": "assistant", "content": matched_trajectory},
             {"role": "user", "content": report_question},
         ]
     else:
         reconstruction = (
-            f"{_task_body(row['prompt'])}\n"
+            f"{task}\n"
             f"A prior decision-maker selected option {selected_action}. Independently "
             "reconstruct the requested quantity from the problem statement; you do "
             "not have access to that decision-maker's hidden computation.\n"
             f"{report_question}"
         )
-        messages = [{"role": "user", "content": reconstruction}]
+        messages = [*prefix, {"role": "user", "content": reconstruction}]
     return {
         "report_id": _stable_id(
             row["condition_id"], query_type, access_condition, selected_action
@@ -153,6 +183,7 @@ def report_spec(
         "selected_action": selected_action,
         "expected_label": expected_label,
         "correct_value": str(correct_value),
+        "correct_surface": correct_surface,
         "options": {
             label: value for label, value in zip(SIGNALS, ordered_rendered, strict=True)
         },

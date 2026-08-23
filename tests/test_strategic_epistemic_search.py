@@ -71,26 +71,61 @@ def test_report_factorial_is_deterministic_and_forced_choice() -> None:
     config = _config()
     row = dataset_payload(config)["rows"][0]
     for query_type in REPORT_QUERY_TYPES:
-        retrospective = report_spec(
-            row, query_type, "retrospective", row["expected_action"]
+        common = {
+            "decision_prompt": "frozen decision prompt",
+            "trajectory": f"reasoning\nFINAL: {row['expected_action']}",
+            "matched_trajectory": f"control\nFINAL: {row['expected_action']}",
+            "system_prompt": "system",
+        }
+        specs = {
+            access: report_spec(
+                row,
+                query_type,
+                access,
+                row["expected_action"],
+                **common,
+            )
+            for access in config["self_report"]["access_conditions"]
+        }
+        retrospective = specs["retrospective"]
+        assert all(
+            retrospective["expected_label"] == spec["expected_label"]
+            for spec in specs.values()
         )
-        reconstruction = report_spec(
-            row, query_type, "reconstruction", row["expected_action"]
-        )
-        assert retrospective["expected_label"] == reconstruction["expected_label"]
-        assert retrospective["options"] == reconstruction["options"]
+        assert all(retrospective["options"] == spec["options"] for spec in specs.values())
         assert retrospective == report_spec(
-            row, query_type, "retrospective", row["expected_action"]
+            row,
+            query_type,
+            "retrospective",
+            row["expected_action"],
+            **common,
         )
         assert set(retrospective["options"]) == {"A", "B", "C"}
         assert retrospective["expected_label"] in retrospective["options"]
         assert [message["role"] for message in retrospective["messages"]] == [
+            "system",
             "user",
             "assistant",
             "user",
         ]
-        assert [message["role"] for message in reconstruction["messages"]] == ["user"]
-        assert "hidden computation" in reconstruction["messages"][0]["content"]
+        assert [message["role"] for message in specs["answer_only"]["messages"]] == [
+            "system",
+            "user",
+            "assistant",
+            "user",
+        ]
+        assert [message["role"] for message in specs["matched_trajectory"]["messages"]] == [
+            "system",
+            "user",
+            "assistant",
+            "user",
+        ]
+        reconstruction = specs["reconstruction"]
+        assert [message["role"] for message in reconstruction["messages"]] == [
+            "system",
+            "user",
+        ]
+        assert "hidden computation" in reconstruction["messages"][-1]["content"]
 
 
 def test_report_target_matches_frozen_game_certificates() -> None:
