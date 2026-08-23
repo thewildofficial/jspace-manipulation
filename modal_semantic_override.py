@@ -9,6 +9,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import modal
+
 from jspace_policy.budget import admit_run, append_ledger, estimate_cost
 from modal_revealed_belief_games import (
     MODEL_ID,
@@ -19,7 +21,6 @@ from modal_revealed_belief_games import (
     _prepare_query,
     _query,
     _write_new,
-    app,
     cache,
     image,
 )
@@ -27,6 +28,7 @@ from modal_revealed_belief_games import (
 CONFIG_PATH = Path("configs/v5/semantic_override/experiment.json")
 DATASET_PATH = Path("configs/v5/semantic_override/dataset.json")
 RESULT_ROOT = Path("results/v5_semantic_override")
+app = modal.App("jspace-v5-semantic-override")
 
 
 def _load_json(path: Path) -> dict[str, Any]:
