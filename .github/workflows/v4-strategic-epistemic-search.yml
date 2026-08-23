@@ -46,7 +46,7 @@ jobs:
           test -n "$MODAL_TOKEN_SECRET"
 
       - name: Validate local protocol
-        run: uv run pytest -q
+        run: uv run --extra dev pytest -q
 
       - name: Materialize the preregistered dataset
         shell: bash
