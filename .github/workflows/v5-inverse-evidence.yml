@@ -1,0 +1,65 @@
+name: V5 inverse evidence
+
+on:
+  push:
+    branches:
+      - research/v5-revealed-belief-games
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v5-inverse-evidence
+  cancel-in-progress: false
+
+jobs:
+  run:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-v5-inverse-evidence]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      UV_CACHE_DIR: /tmp/jspace-uv-cache
+
+    steps:
+      - name: Check out frozen protocol
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Refuse missing Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID"
+          test -n "$MODAL_TOKEN_SECRET"
+
+      - name: Validate repository
+        run: uv run --extra dev pytest -q
+
+      - name: Materialize and verify frozen dataset
+        run: |
+          uv run python scripts/freeze_v5_inverse_evidence.py
+          uv run python -c 'import json; from pathlib import Path; from jspace_policy.inverse_evidence_games import verify_dataset_payload; c=json.loads(Path("configs/v5/inverse_evidence/experiment.json").read_text()); d=json.loads(Path("configs/v5/inverse_evidence/dataset.json").read_text()); m=json.loads(Path("configs/v5/inverse_evidence/dataset_manifest.json").read_text()); verify_dataset_payload(d,c); assert d["content_sha256"] == m["expected_content_sha256"]; assert len(d["rows"]) == m["expected_contexts"]'
+
+      - name: Validate every prompt and continuation
+        run: uv run --extra modal modal run modal_inverse_evidence.py::preflight
+
+      - name: Run inverse-evidence screen
+        run: uv run --extra modal modal run modal_inverse_evidence.py::behavior
+
+      - name: Analyze frozen outcomes
+        run: |
+          uv run python scripts/analyze_v5_inverse_evidence.py \
+            results/v5_inverse_evidence/raw/behavior_v1.json \
+            --output results/v5_inverse_evidence/analysis/behavior_v1_analysis.json
+
+      - name: Upload immutable outputs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: v5-inverse-evidence-${{ github.run_id }}
+          path: results/v5_inverse_evidence
+          if-no-files-found: warn
+          retention-days: 14

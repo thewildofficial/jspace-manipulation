@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-2",
+  "expected_content_sha256": "4e5b1c12ae40889fdcbb23c2226e3deaf5ac6027644f481cce92b3866ab2d9f6",
+  "expected_contexts": 512,
+  "materialization": "deterministic generator committed before RBG-2 GPU execution"
+}

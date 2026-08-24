@@ -1,0 +1,100 @@
+{
+  "diagnostics": {
+    "both_reports_correct_direct_action_wrong": 7,
+    "forced_choice_formatting_compliance": 1.0,
+    "of_those_rehearsal_repaired": 7,
+    "of_those_selected_content_equals_target": 7,
+    "opposed_assertion_direct_accuracy_by_frame": {
+      "device": 1.0,
+      "strategic": 0.7083333333333334
+    }
+  },
+  "h1_replication": {
+    "aligned_minus_opposed_gap": 0.14583333333333337,
+    "assertion_aligned_action_accuracy": 1.0,
+    "assertion_opposed_action_accuracy": 0.8541666666666666,
+    "assertion_option_report_accuracy": 0.984375,
+    "cluster_values": [
+      0.0,
+      0.5,
+      0.5,
+      0.0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.0,
+      0.0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "opaque_direct_action_accuracy": 1.0,
+    "opaque_option_report_accuracy": 1.0,
+    "passed": false,
+    "two_sided_exact_cluster_sign_flip_p": 0.015625
+  },
+  "h2_surface_localization": {
+    "assertion_specific_signature": false,
+    "cluster_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      0.0,
+      0.5,
+      0.0,
+      0.0,
+      0.5,
+      0.0,
+      0.0,
+      0.5,
+      0.0,
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.0
+    ],
+    "lexical_capture_signature": false,
+    "nonassertive_lexical_minus_assertion_gap": 0.14583333333333337,
+    "opposed_direct_action_accuracies": {
+      "assertion": 0.8541666666666666,
+      "labeled_button": 1.0,
+      "opaque_token": 1.0,
+      "quoted_string": 1.0
+    },
+    "two_sided_exact_cluster_sign_flip_p": 0.015625
+  },
+  "h3_causal_rehearsal": {
+    "gain": 0.14583333333333337,
+    "opaque_change": 0.0,
+    "opaque_direct_accuracy": 1.0,
+    "opaque_rehearsed_accuracy": 1.0,
+    "opposed_assertion_direct_accuracy": 0.8541666666666666,
+    "opposed_assertion_rehearsed_accuracy": 1.0,
+    "promoted": false,
+    "two_sided_exact_paired_sign_flip_p": 0.015625
+  },
+  "n": 384,
+  "schema_version": 1,
+  "source_run_id": "b5f9fae55ecf452aa9495be25793750c",
+  "study_id": "V5-RBG-3"
+}

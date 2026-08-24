@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-3",
+  "status": "preregistered_after_rbg2_before_rbg3_dataset_or_model_execution",
+  "frozen_after": {
+    "rbg2_run_id": "e0f8fa12f60841b89b79669cbedc9adb",
+    "rbg2_verdict": "semantic action-outcome override passed",
+    "lead": "explicit consequence reports remained correct while opposed meaningful-claim actions failed"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "base_games": 24,
+    "rendered_contexts": 384,
+    "frames": ["strategic", "device"],
+    "incentives": ["aligned", "opposed"],
+    "receiver_type": "contrarian",
+    "policy_access": "explicit",
+    "surface_kinds": ["assertion", "quoted_string", "labeled_button", "opaque_token"],
+    "action_modes": ["direct", "causal_rehearsal"],
+    "action_labels": ["A", "B"],
+    "report_labels": ["X", "Y"]
+  },
+  "primary_hypotheses": {
+    "h1_replication": {
+      "opaque_direct_action_minimum": 0.95,
+      "opaque_report_minimum": 0.95,
+      "assertion_report_minimum": 0.90,
+      "assertion_aligned_action_minimum": 0.90,
+      "assertion_opposed_action_maximum": 0.50,
+      "minimum_aligned_minus_opposed_gap": 0.40,
+      "test": "two-sided exact base-game cluster sign flip",
+      "alpha": 0.05
+    },
+    "h2_surface_localization": {
+      "assertion_specific_signature": "opposed assertion accuracy <=0.50, mean quoted-string/labeled-button accuracy >=0.80, gap >=0.25, exact clustered p<.05",
+      "lexical_capture_signature": "each meaningful surface accuracy <=0.65 while opaque accuracy >=0.90 and each opaque gap >=0.20",
+      "otherwise": "mixed surface effect; report descriptively without mechanism label"
+    },
+    "h3_causal_rehearsal": {
+      "population": "opposed assertion rows",
+      "minimum_rehearsed_accuracy": 0.75,
+      "minimum_direct_to_rehearsed_gain": 0.25,
+      "maximum_absolute_opaque_change": 0.10,
+      "test": "two-sided exact paired sign flip",
+      "alpha": 0.05
+    }
+  },
+  "diagnostics": [
+    "both option reports correct, direct action wrong, rehearsed action correct",
+    "strategic versus device effect within opposed assertions",
+    "selected wrong surface contains the target-response concept",
+    "forced-choice formatting compliance and action logit margins"
+  ],
+  "interpretation": {
+    "assertion_specific": "A deception/assertion script overrides the explicit causal policy.",
+    "lexical_capture": "Target-concept overlap captures action selection beyond assertion semantics.",
+    "rehearsal_rescue": "Causal knowledge is available but not spontaneously controlling direct action selection.",
+    "rehearsal_persistence": "The semantic policy conflict persists even after the correct consequences are activated in the same trajectory."
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "estimated_ceiling_seconds": 1800,
+    "hard_cost_limit_usd": 6.0,
+    "stop_before_mechanistic": true
+  }
+}
