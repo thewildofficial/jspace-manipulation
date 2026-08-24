@@ -8,14 +8,53 @@ This repository tests that narrow mechanistic question in
 instructed concealment with real-world deception, model intent, or
 consciousness.
 
-> **Current status: V2 remains a blocked causal branch; V4 has one replicated
-> behavioral effect but no J-space mechanism.** Stage 1's J-space retention
-> endpoint failed. V2-E1 found a replicated generic optimization readout but no
-> robust strategy-specific representation. V4 then found that retaining a correct
-> rationale can impair later report of the selected action's likely response. A
-> fresh counterbalanced study localized the main effect to broad false-vs-true
-> report distortion, not a confirmed binding pointer. An exploratory strategic
-> versus device-frame interaction is the next cheap replication target.
+> **Current headline: V5 found a prospectively confirmed inverse-evidence effect.**
+> In explicit contrarian games, adding four correct redundant demonstrations
+> selectively made meaningful strategic actions worse without making consequence
+> reports worse. The harm was specific to prose/assertion representations and
+> disappeared with an equivalent consequence table or opaque actions. This is a
+> behavioral knowledge/action dissociation in one model, not yet an internal
+> mechanism or evidence of scheming.
+
+## Headline result: more correct evidence can impair strategic action
+
+V5 asks whether a model can correctly state what each action will cause yet fail
+to use that causal knowledge when choosing strategically. The cleanest example uses
+a contrarian receiver:
+
+- claiming `RED` makes the receiver choose `BLUE`;
+- claiming `BLUE` makes the receiver choose `RED`; and
+- the sender is rewarded if the receiver chooses a specified target.
+
+Qwen3.6-27B could report these option consequences at 98.96% accuracy. However,
+for opposed goals with meaningful assertions, adding four perfectly correct and
+redundant demonstrations reduced action accuracy from 79.17% to 55.21%. The
+23.96-point paired effect passed its frozen threshold and exact base-game test
+(`p=.000244`), while the consequence-report gap was exactly zero.
+
+The representation interaction was larger:
+
+| Explicit contrarian opposed assertions | No history | Four correct demonstrations |
+|---|---:|---:|
+| Prose causal rule | 75.00% | 27.08% |
+| Consequence table | 83.33% | 83.33% |
+
+Matched opaque-token actions remained 100% correct. Fifty-two trials had both
+option consequences reported correctly but a wrong action; all 52 selected the
+assertion whose words matched the desired response even though the stated
+contrarian rule implied the opposite outcome.
+
+The supported claim is narrow: **in this Qwen checkpoint and forced-choice game
+family, redundant correct narrative evidence can worsen assertion-based strategic
+action without degrading independent causal reports, and tabularizing the same rule
+removes the harm.** It does not establish consciousness, deliberate deception,
+scheming, or cross-model generality.
+
+- [RBG-4 frozen findings](results/v5_inverse_evidence/FINDINGS.md)
+- [V5 research status and open hypotheses](docs/v5/RESEARCH_STATUS.md)
+- [Preregistration](docs/v5/inverse-evidence-preregistration.md)
+- [Literature positioning](docs/v5/literature-positioning.md)
+- [Append-only V5 decision log](docs/v5/decision-log.md)
 
 ## What happened
 
@@ -89,6 +128,10 @@ on the strategic task.
 | V2-E1 Strategic Workspace Atlas | Generic optimization signal replicated; specific strategy endpoints failed | [`docs/v2/strategic-workspace-atlas-final-report.md`](docs/v2/strategic-workspace-atlas-final-report.md) |
 | V4 strategic epistemic search | Correct-rationale report penalty replicated; binding mechanism not established | [`docs/v4/research-status.md`](docs/v4/research-status.md) |
 | V4 ordinal permutation | Behavior 345/360; broad truth suppression; strategic-frame lead is exploratory | [`results/v4_strategic_epistemic_search/FINDINGS.md`](results/v4_strategic_epistemic_search/FINDINGS.md) |
+| V5 RBG-1 | Receiver-policy competence gate failed; no strategic claim | [`results/v5_revealed_belief_games/FINDINGS.md`](results/v5_revealed_belief_games/FINDINGS.md) |
+| V5 RBG-2 | Explicit consequence reports diverged from meaningful action; 42.19-point semantic gap | [`results/v5_semantic_override/FINDINGS.md`](results/v5_semantic_override/FINDINGS.md) |
+| V5 RBG-3 | Strong replication magnitude failed; seven assertion-specific errors were rehearsal-repaired | [`results/v5_semantic_localization/FINDINGS.md`](results/v5_semantic_localization/FINDINGS.md) |
+| V5 RBG-4 | Inverse-evidence and semantic-specificity gates passed prospectively | [`results/v5_inverse_evidence/FINDINGS.md`](results/v5_inverse_evidence/FINDINGS.md) |
 
 The append-only methodological record is in
 [`docs/v2/decision-log.md`](docs/v2/decision-log.md). The original H0 and H0R
@@ -101,6 +144,12 @@ audit in [`docs/v4/research-status.md`](docs/v4/research-status.md), and a ranke
 literature-facing agenda in
 [`docs/v4/open-hypotheses.md`](docs/v4/open-hypotheses.md).
 
+V5 has an append-only record in
+[`docs/v5/decision-log.md`](docs/v5/decision-log.md), a reader-facing synthesis in
+[`docs/v5/RESEARCH_STATUS.md`](docs/v5/RESEARCH_STATUS.md), and explicit novelty
+boundaries in
+[`docs/v5/literature-positioning.md`](docs/v5/literature-positioning.md).
+
 ## Claim boundary
 
 A readable J-space feature without a selective causal effect is observational,
@@ -110,7 +159,7 @@ The project required both unseen argument substitution (H0R-C) and a computed
 intermediate (H0R-D) to pass prospectively before testing latent truth and
 strategic reporting. That conjunction was not met.
 
-The repository therefore supports six narrow conclusions:
+The V1--V2 mechanistic work supports six narrow conclusions:
 
 - the pinned J-lens transport and coordinate-write implementation are
   numerically sound;
@@ -126,6 +175,11 @@ The repository therefore supports six narrow conclusions:
   renderings;
 - V2-E1 did not show reliable, rendering-general decoding of the specific
   strategy behind a shared action.
+
+Separately, V5 supports a behavioral conclusion: redundant correct narrative
+evidence can selectively impair meaningful assertion-based action while independent
+consequence reports remain stable, and an equivalent table representation can
+remove that impairment. V5 has not yet established the internal mechanism.
 
 ## Repository map
 
