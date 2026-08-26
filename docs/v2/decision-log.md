@@ -1,4 +1,4 @@
-# V2 append-only decision log
+# Protocol V2 append-only decision log
 
 ## 2026-08-17 — V2-D001 — Execute H0 before strategic tasks
 

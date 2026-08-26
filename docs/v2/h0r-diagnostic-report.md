@@ -1,4 +1,4 @@
-# H0R-B diagnostic report: Qwen causal-write topology
+# Protocol V2 H0R-B diagnostic report: Qwen causal-write topology
 
 Status: **exploratory diagnostic complete; candidate frozen; prospective controls unopened**.
 

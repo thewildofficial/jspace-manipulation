@@ -1,4 +1,4 @@
-# V3-JI1 results
+# V3-JI1 — J-space intervention replication
 
 Status: **Phase B passed its frozen proceed gate; Phase C failed the final
 behavior-only corpus-freeze gate, so the study stopped before Phase D. No fresh

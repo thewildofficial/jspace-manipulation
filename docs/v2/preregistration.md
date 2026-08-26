@@ -1,4 +1,4 @@
-# V2 preregistration
+# Protocol V2 preregistration — H0 gate
 
 ## H0 instrumentation gate
 
@@ -26,8 +26,9 @@ H0 includes:
 - all 192 released flexible-generalization source-target trials where
   tokenization permits, under four intervention topologies.
 
-The reference topology is workspace-band/all-prompt-positions. The weakened V1
-comparison is single-layer/final-position. Baseline-incompetent items remain in
+The reference topology is workspace-band/all-prompt-positions. The earlier
+exploratory comparison (from the V1 foundation protocol) is
+single-layer/final-position. Baseline-incompetent items remain in
 raw data and are excluded only from conditional swap success. Numeric pass
 thresholds are in `configs/v2/flexible_generalization_smoke.json`.
 

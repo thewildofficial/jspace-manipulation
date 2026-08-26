@@ -1,4 +1,4 @@
-# J-Space Manipulation V2 research specification
+# Protocol V2 research specification — Stage 1 causal instrument
 
 V2 asks whether J-space exposes a task-relevant latent state `X` when a model's
 selected report `R` differs from it under policy context `U`. The target is a

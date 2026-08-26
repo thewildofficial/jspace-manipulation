@@ -1,4 +1,4 @@
-# H0R preregistration: Qwen causal-instrument recovery
+# Protocol V2 H0R preregistration: Qwen causal-instrument recovery
 
 H0R resolves the failed V2 causal-instrument gate without retroactively changing
 H0. The failed result is preserved at commit

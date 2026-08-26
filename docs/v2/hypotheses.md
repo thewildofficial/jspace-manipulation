@@ -1,4 +1,4 @@
-# V2 hypotheses and claim gates
+# Protocol V2 hypotheses and claim gates
 
 - **H0:** the local pipeline reproduces numerical semantics and a causal
   flexible-generalization effect, with band/all-position clamping stronger than

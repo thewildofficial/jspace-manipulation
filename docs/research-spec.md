@@ -63,7 +63,11 @@ Every intervention records `||delta h|| / RMS(h)` and downstream entropy/KL. Alp
 
 All four conditions and both policy phrasings for a base scenario stay in the same split and bootstrap unit. Splitting individual rows would leak names, facts, and templates across train/test.
 
-## Experiment stages
+## Scientific stages and gates
+
+The word “stage” is reserved for the three scientific questions below. Model
+replacements, prompt revisions, protocol versions, and recovery phases are
+named separately in the documentation guide.
 
 ### Research ladder
 

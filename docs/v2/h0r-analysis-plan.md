@@ -1,4 +1,4 @@
-# H0R analysis and protocol-selection plan
+# Protocol V2 H0R analysis and protocol-selection plan
 
 ## Diagnostic estimands
 

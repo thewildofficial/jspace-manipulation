@@ -1,12 +1,8 @@
-# Causal manipulation of reporting policies in J-space
+# J-Space Manipulation
 
-Can a language model continue to represent what is true while a causal
-intervention changes the policy it uses to report that truth?
+This repository asks a simple question about language models:
 
-This repository tests that narrow mechanistic question in
-`Qwen/Qwen3.6-27B` with the pinned Anthropic Jacobian Lens. It does not equate
-instructed concealment with real-world deception, model intent, or
-consciousness.
+> Can a model keep one fact in mind while changing the answer it gives because a reporting rule changed?
 
 > **Current headline: V5 found a prospectively confirmed inverse-evidence effect.**
 > In explicit contrarian games, adding four correct redundant demonstrations
@@ -56,169 +52,162 @@ scheming, or cross-model generality.
 - [Literature positioning](docs/v5/literature-positioning.md)
 - [Append-only V5 decision log](docs/v5/decision-log.md)
 
-## What happened
+Here is the same question in its smallest form. The hidden fact is **A** or
+**B**. Under a **COPY** rule the model should say the fact; under a **FLIP** rule
+it should say the other answer. We want to know whether the model keeps the
+fact and the reporting rule separate, and whether we can change one without
+destroying the other.
 
-The early V1 work established useful but observational prerequisites:
+The project looks for those two pieces inside the model using a tool called a
+**Jacobian Lens**. The lens gives us a vocabulary for looking at intermediate
+states in the model. We then make small, carefully controlled changes in that
+space and check what changes in the answer.
 
-- the initial 4B candidate failed its balanced behavioral screen and was
-  retired;
-- Qwen3.6-27B passed the toy behavioral gate (192/192 rows);
-- the released 27B lens passed structural/reference checks;
-- a balanced discovery pilot found a middle-layer policy-family signal under
-  named and unlabeled rules.
-- a separate 27B causal-discovery study found the candidate signal readable but
-  not writable: no practically meaningful, fact-preserving reporting-policy
-  mechanism was established.
+This is a research record. It does not claim that the model is conscious,
+deceptive, or “lying” in a human sense.
 
-V2 then required a causal instrumentation gate before any strategic task:
+## The short version
 
-1. **Original H0 failed.** Numerical transport, direction, and analytic-swap
-   checks passed, but the preregistered workspace-band/all-position topology
-   produced 0/90 target-answer top-1 outcomes. An exploratory one-layer,
-   all-position topology produced 25/90 overall and 24/33 on countries. The
-   original verdict remains: **no strategic-reporting experiment is licensed
-   or was run**.
-2. **H0R diagnosed the topology.** Three burned-country GPU diagnostics found
-   exact fp32 coordinate exchange and a dose-responsive lower-strength regime.
-   The frozen selection rule chose layers 36--42, argument-through-end
-   positions, and alpha 0.5. On burned data it produced mean target-vs-source
-   log-odds gain +4.34 with low KL and displacement.
-3. **The first fresh H0R-C corpus was invalid.** Baseline accuracy was 60.8%,
-   below the frozen 80% gate, so its runner stopped before intervention.
-4. **Replacement H0R-C failed prospectively.** The simplified fresh corpus
-   passed baseline at 125/130 (96.2%). The frozen semantic intervention had
-   mean log-odds gain +3.53 (95% scenario-bootstrap interval +2.68 to +4.29),
-   91.2% positive direction, and a +2.82 advantage over random/unrelated
-   controls, while remaining inside all validity limits. However, only 4/125
-   eligible trials made the target answer top-1 (3.2%), below the
-   preregistered 20% minimum. Because the gate was conjunctive, H0R-C failed.
-5. **Stage 1 found residual state information but failed its J-space endpoint.**
-   Locked behavior passed at 100% for explicit state and 98.75% for inferred
-   state. Locked residual state probes reached 100% and 99.2%, respectively.
-   However, transformed-report J-space K was -0.108 (95% CI -0.142 to -0.073)
-   in Stage 1A and -0.017 (95% CI -0.043 to 0.008) in Stage 1B. Neither met the
-   frozen positive-retention criterion.
-6. **V2-E1 found a generic decision abstraction, not strategic intent.** Across
-   locked Kuhn and signaling renderings, `optimal`/`optimize` J-lens tokens
-   appeared in every row at layer 43 and preceded late action commitment. The
-   five-game residual-over-J-space/output strategy contrast failed, and
-   same-action Kuhn bluff/thin/value decoding was at chance.
+The project contains both positive and negative results, and the order matters:
 
-The strong directional effect is a useful mechanistic diagnostic, but it does
-not satisfy the locked criterion for reliable counterfactual control. H0R-D
-was prohibited by design. Continuing the causal study now requires a new
-preregistration, model/lens change, or redesigned instrument—not further tuning
-on the strategic task.
+| Question | What happened |
+|---|---|
+| Can the smaller 4B model follow the toy reporting task? | No. One balanced cell failed, so we retired it. |
+| Can the 27B model follow the same task? | Yes: 192/192 rows. |
+| Does the released lens look structurally sound? | Yes, on structural and reference checks. |
+| Is there an observable policy-related signal? | Yes, in an exploratory pilot; this was not causal evidence. |
+| Can the original V2 intervention reliably swap an answer? | No: 0/90 target top-1 outcomes for the required topology. |
+| Did the V2 recovery fix that? | No: 4/125 target top-1 outcomes, below the locked 20% gate. |
+| Was the original strategic J-space experiment run? | No. The gates stopped it. |
+| Did later behavioral game studies find anything? | Yes. V5-RBG-4 found the inverse-evidence effect described above. |
 
-## Evidence map
+The V2 causal-instrument branch is closed. The later V3–V5 protocols are
+separate follow-on studies and must not be used to rewrite the V2 verdict.
 
-| Stage | Result | Evidence |
+## How the names work
+
+The repository uses different labels for different kinds of change. They are
+not interchangeable:
+
+| Label | Meaning | Example |
 |---|---|---|
-| 4B behavioral screen | Failed and retired | [`results/4b_behavioral_screen/`](results/4b_behavioral_screen/README.md) |
-| 27B behavioral gate | Passed, 192/192 | [`results/27b_behavioral_gate/`](results/27b_behavioral_gate/README.md) |
-| 27B lens integrity | Passed structural/reference checks | [`results/27b_lens_integrity/`](results/27b_lens_integrity/README.md) |
-| Observational pilot | Candidate signal; no causal claim | [`results/27b_observational_pilot/`](results/27b_observational_pilot/README.md) |
-| Causal discovery | Readable, not writable; clean negative | [`results/27b_causal_discovery/`](results/27b_causal_discovery/README.md) |
-| V2 H0 | Failed causal topology | [`results/v2_smoke_tests/`](results/v2_smoke_tests/README.md) |
-| H0R-B diagnostic | Candidate selected on burned controls | [`results/v2_h0r_diagnostic/`](results/v2_h0r_diagnostic/) |
-| First H0R-C corpus | Invalid 60.8% baseline; intervention unopened | [`results/v2_h0r_argument_validation/`](results/v2_h0r_argument_validation/README.md) |
-| Replacement H0R-C | Failed 20% target-top-1 criterion | [`results/v2_h0r_argument_validation_v2/`](results/v2_h0r_argument_validation_v2/README.md) |
-| H0R-D / strategic V2 | Not run | [`docs/v2/h0r-final-report.md`](docs/v2/h0r-final-report.md) |
-| Stage 1 state-report dissociation | J-space criterion failed; residual probes positive | [`docs/v2/stage1-final-report.md`](docs/v2/stage1-final-report.md) |
-| V2-E1 Strategic Workspace Atlas | Generic optimization signal replicated; specific strategy endpoints failed | [`docs/v2/strategic-workspace-atlas-final-report.md`](docs/v2/strategic-workspace-atlas-final-report.md) |
-| V4 strategic epistemic search | Correct-rationale report penalty replicated; binding mechanism not established | [`docs/v4/research-status.md`](docs/v4/research-status.md) |
-| V4 ordinal permutation | Behavior 345/360; broad truth suppression; strategic-frame lead is exploratory | [`results/v4_strategic_epistemic_search/FINDINGS.md`](results/v4_strategic_epistemic_search/FINDINGS.md) |
-| V5 RBG-1 | Receiver-policy competence gate failed; no strategic claim | [`results/v5_revealed_belief_games/FINDINGS.md`](results/v5_revealed_belief_games/FINDINGS.md) |
-| V5 RBG-2 | Explicit consequence reports diverged from meaningful action; 42.19-point semantic gap | [`results/v5_semantic_override/FINDINGS.md`](results/v5_semantic_override/FINDINGS.md) |
-| V5 RBG-3 | Strong replication magnitude failed; seven assertion-specific errors were rehearsal-repaired | [`results/v5_semantic_localization/FINDINGS.md`](results/v5_semantic_localization/FINDINGS.md) |
-| V5 RBG-4 | Inverse-evidence and semantic-specificity gates passed prospectively | [`results/v5_inverse_evidence/FINDINGS.md`](results/v5_inverse_evidence/FINDINGS.md) |
+| **Research Stage** | The scientific difficulty ladder. | Stage 1: toy mechanism |
+| **Protocol generation** | A chronological experimental program. | V2: causal instrument |
+| **Study** | One concrete question inside a protocol. | V5-RBG-4: inverse evidence |
+| **Phase** | A step inside one study. | V3-JI1 Phase C: fresh corpus freeze |
+| **Gate** | A pass/fail checkpoint. | V2-H0 |
+| **Hypothesis / recovery** | A locked claim or a recovery attempt. | H0R-B, H0R-C |
+| **Prompt revision** | A wording change inside one experiment. | P1–P6; historical files use `v1`–`v6` |
 
-The append-only methodological record is in
-[`docs/v2/decision-log.md`](docs/v2/decision-log.md). The original H0 and H0R
-preregistrations, analysis rules, diagnostic interpretation, and terminal
-report are under [`docs/v2/`](docs/v2/).
+The three scientific stages are:
 
-V4 has a separate append-only record in
-[`docs/v4/decision-log.md`](docs/v4/decision-log.md), a ruthless current-state
-audit in [`docs/v4/research-status.md`](docs/v4/research-status.md), and a ranked
-literature-facing agenda in
-[`docs/v4/open-hypotheses.md`](docs/v4/open-hypotheses.md).
+1. **Stage 1 — Toy mechanism:** an explicit fact plus a simple reporting rule. This is the stage documented here; it currently ends with a failed causal-instrument gate.
+2. **Stage 2 — Controlled composition:** the model must infer the fact from a short story and then apply the reporting rule. Not reached.
+3. **Stage 3 — Naturalistic behavior:** the model must infer both the relevant fact and an instrumentally useful reporting policy. Not reached.
 
-V5 has an append-only record in
-[`docs/v5/decision-log.md`](docs/v5/decision-log.md), a reader-facing synthesis in
-[`docs/v5/RESEARCH_STATUS.md`](docs/v5/RESEARCH_STATUS.md), and explicit novelty
-boundaries in
-[`docs/v5/literature-positioning.md`](docs/v5/literature-positioning.md).
+The 4B and 27B behavioral experiments are therefore both part of Stage 1. The
+27B experiment is **Stage 1B**, a scale-up after the 4B attempt, not a separate
+scientific stage. The names `V1` through `V5` refer to protocol generations,
+not additional research stages. V4 and V5 are later behavioral follow-ons; they
+do not retroactively open Stage 2 or Stage 3 of the original mechanistic ladder.
 
-## Claim boundary
+| Protocol | What it did |
+|---|---|
+| **V1 — foundation** | Checked task competence, lens integrity, and observable policy signals. |
+| **V2 — causal instrument** | Tested whether a J-space edit could reliably change a fresh answer; added controlled workspace follow-ons. |
+| **V3 — intervention replication** | Tried to characterize the edit on a new clean corpus; stopped before fresh intervention. |
+| **V4 — rationale interference** | Tested whether keeping a correct explanation harms a later relational report. |
+| **V5 — revealed-belief / inverse evidence** | Tested whether consequence knowledge can stay accurate while strategic action fails. |
 
-A readable J-space feature without a selective causal effect is observational,
-not a mechanism. A directional log-odds change without reliable target-answer
-conversion is evidence of partial causal access, not a validated instrument.
-The project required both unseen argument substitution (H0R-C) and a computed
-intermediate (H0R-D) to pass prospectively before testing latent truth and
-strategic reporting. That conjunction was not met.
+## Read the project as a story
 
-The V1--V2 mechanistic work supports six narrow conclusions:
+If you are new to the project, use this order:
 
-- the pinned J-lens transport and coordinate-write implementation are
-  numerically sound;
-- Qwen has a measurable, selective, strength-dependent response to the frozen
-  J-space write;
-- that write did not achieve the preregistered level of reliable
-  counterfactual control needed for the strategic study.
-- task-state information is prospectively decodable from the residual stream
-  on Stage 1's controlled held-out families, but the pinned J-space readout did
-  not retain positive true-state evidence under transformed reporting.
-- in V2-E1, a prompt-absent generic optimization token family became J-space
-  visible before stable output-action preparation in locked Kuhn and signaling
-  renderings;
-- V2-E1 did not show reliable, rendering-general decoding of the specific
-  strategy behind a shared action.
+1. [`results/README.md`](results/README.md) is the visual table of contents for every experiment and result.
+2. [`docs/README.md`](docs/README.md) explains the research question, rules, plans, and decisions.
+3. Pick a stage from the table below and read its folder README.
+4. Open the linked raw data, summary tables, figures, code, or technical report when you want to check the details.
 
-Separately, V5 supports a behavioral conclusion: redundant correct narrative
-evidence can selectively impair meaningful assertion-based action while independent
-consequence reports remain stable, and an equivalent table representation can
-remove that impairment. V5 has not yet established the internal mechanism.
+## Research path
+
+The work was deliberately staged. Each stage had to earn the right to open the
+next one.
+
+| Canonical name | Plain-language question | Result | Start here |
+|---|---|---|---|
+| **Stage 1A — 4B behavioral screen** | Can a small model apply a tiny “copy or flip” rule? | Failed one cell; model retired. | [`results/4b_behavioral_screen/`](results/4b_behavioral_screen/README.md) |
+| **Stage 1B — 27B scaled behavioral gate** | Does the larger model reliably do the same toy task? | Passed all 192 rows. | [`results/27b_behavioral_gate/`](results/27b_behavioral_gate/README.md) |
+| **Stage 1C — released-lens integrity** | Does the lens fit the selected model and produce sensible readouts? | Passed structural and reference checks. | [`results/27b_lens_integrity/`](results/27b_lens_integrity/README.md) |
+| **Stage 1D — observational policy-signal pilot** | Do internal readouts contain a possible reporting-policy signal? | A candidate signal appeared; exploratory only. | [`results/27b_observational_pilot/`](results/27b_observational_pilot/README.md) |
+| **Stage 1E.1 — V2 workspace mapping** | Which middle layers did the task-independent rule select? | Layers 36–43 were selected before flexible results were opened. | [`results/v2_workspace_mapping/`](results/v2_workspace_mapping/README.md) |
+| **Stage 1E.2 — V2 causal gate (H0)** | Does the planned intervention work on held-out country-answer controls? | Failed the required persistent, full-band topology. | [`results/v2_smoke_tests/`](results/v2_smoke_tests/README.md) |
+| **Stage 1E.3 — V2 recovery diagnosis (H0R-B)** | Why might the first intervention topology have failed? | A lower-strength, local candidate was frozen for a fresh test. | [`results/v2_h0r_diagnostic/`](results/v2_h0r_diagnostic/README.md) |
+| **Stage 1E.4a/b — V2 prospective validation (H0R-C)** | Does that frozen candidate reliably move an unseen answer? | The first corpus was invalid; the replacement reached 4/125 target top-1. | [`results/v2_h0r_argument_validation_v2/`](results/v2_h0r_argument_validation_v2/README.md) |
+| **V2-SR-1 — state/report dissociation** | Is state information still readable when the reporting rule changes? | Residual probes were positive; the J-space endpoint failed. | [`results/v2_stage1/`](results/v2_stage1/README.md) |
+| **V2-SWA-1 — strategic workspace atlas** | Does a generic optimization signal identify the specific strategy? | Generic signal replicated; strategy decoding did not. | [`results/v2_workspace_atlas/`](results/v2_workspace_atlas/README.md) |
+| **V2-ST-1 — strategic J-Lens trajectories** | Can top-k lens trajectories expose the decisive pathway? | Generic task semantics and late answer preparation only. | [`results/v2_strategic_trajectories/`](results/v2_strategic_trajectories/README.md) |
+| **V3-JI1 — J-space intervention replication** | Can a fresh corpus support a cleaner intervention test? | Burned engineering gate passed; fresh corpus freeze failed before intervention. | [`results/v3_jspace_interventions/`](results/v3_jspace_interventions/README.md) |
+| **V4-SES-1 — strategic epistemic search** | Does retaining a correct rationale hurt a later relational report? | Yes, replicated behaviorally; the internal mechanism is unknown. | [`results/v4_strategic_epistemic_search/`](results/v4_strategic_epistemic_search/README.md) |
+| **V5-RBG-1** | Can the model use a demonstrated receiver policy in a game? | No; competence gate failed. | [`results/v5_revealed_belief_games/`](results/v5_revealed_belief_games/README.md) |
+| **V5-RBG-2/3/4** | Does the action/report gap survive controls and matched history? | RBG-2 found the gap, RBG-3 weakened it, RBG-4 confirmed inverse evidence. | [`results/v5_inverse_evidence/`](results/v5_inverse_evidence/README.md) |
+| **Stage 2 — controlled composition** | Can the mechanism compose with a fact inferred from a story? | Not reached. | [`docs/literature-review.md`](docs/literature-review.md#stage-2-controlled-composition) |
+| **Stage 3 — naturalistic behavior** | Does the mechanism matter in a richer strategic setting? | Not reached. | [`docs/literature-review.md`](docs/literature-review.md#stage-3-naturalistic-behavior) |
+
+The first H0R-C corpus is also recorded because it was rejected before the
+intervention was opened: [`results/v2_h0r_argument_validation/`](results/v2_h0r_argument_validation/README.md).
+It is a **Stage 1E.4a corpus-eligibility check**, not a separate research stage.
+
+The later V3–V5 studies are deliberately listed after the Stage 1 path. They
+are protocol generations and behavioral follow-ons, not Stage 2 and Stage 3 of
+the original mechanistic ladder.
+
+## What the results mean
+
+Three conclusions are supported by the committed evidence:
+
+- The model can follow the simple reporting task, and the lens implementation passes its numerical and structural checks.
+- The frozen J-space write has a real, selective, strength-dependent effect on answer scores. In plain language, it can push the model toward a chosen answer direction.
+- That effect is not reliable enough to count as a validated counterfactual instrument: it rarely made the chosen answer the model’s most likely answer on the fresh test.
+
+
+## A small glossary
+
+- **Fact / world state:** the answer that is true in the toy setup, such as A or B.
+- **Reporting policy:** the rule for turning the fact into a report, such as “say the fact” or “say the other option.”
+- **J-space:** the intermediate coordinate system exposed by the Jacobian Lens.
+- **Lens:** a fixed mathematical readout that translates an internal model state into token-related coordinates.
+- **Intervention:** a temporary, targeted change to an internal model state during a forward pass.
+- **Top-1:** the single token with the highest model probability. “Target top-1” means the requested counterfactual answer actually became the model’s most likely answer.
+- **Log-odds gain:** how much the intervention changed the target answer’s score relative to the source answer. It is useful for measuring direction, but it does not guarantee a top-1 change.
+- **Control:** a comparison intervention that should not produce the same effect, such as an identity or random-direction write.
+- **Gate:** a predeclared pass/fail rule. A failed gate closes the next stage instead of being explained away afterward.
 
 ## Repository map
 
-```text
-src/jspace_policy/
-  dataset.py              deterministic factorial prompt generation
-  analysis.py             paired estimates and bootstrap intervals
-  interventions.py        J-lens directions and residual hooks
-  h0r.py                   locked positive-control generators
-  h0r_diagnostics.py       coordinate, conditioning, and reconstruction checks
-  stage1.py                frozen four-state Stage 1 corpus
-  stage1_analysis.py       bootstrap and probe metrics
-  workspace_atlas.py       exact game solvers and atlas corpus
-scripts/
-  analyze_results.py       V1 summaries and figures
-  analyze_v2_h0.py         original H0 summaries and figures
-  analyze_h0r.py           H0R-B selection tables and nine diagnostic figures
-  analyze_stage1.py        Stage 1 tables, figure, and generated report
-  analyze_workspace_atlas.py V2-E1 atlas and locked endpoints
-modal_app.py               V1 benchmark/readout entry points
-modal_v2.py                original bounded H0 GPU runner
-modal_h0r.py               H0R freeze, diagnostic, and prospective runners
-modal_stage1.py            separated Stage 1 behavior/readout entry points
-modal_workspace_atlas.py   V2-E1 behavior and all-layer readout runner
-configs/v2/                preregistered gates and immutable H0R controls
-docs/v2/                   V2/H0/H0R plans, decisions, and reports
-results/                   committed raw evidence, summaries, and figures
-```
+The folder READMEs are the human-facing map. The files below are the working
+parts behind them.
 
-## Local verification and analysis
+| Area | What it contains |
+|---|---|
+| [`results/`](results/README.md) | Raw outputs, summaries, figures, and a README for each experiment. |
+| [`docs/`](docs/README.md) | Research question, literature boundary, analysis plans, preregistrations, reports, and the decision log. |
+| [`src/jspace_policy/`](src/jspace_policy/README.md) | Reusable dataset, analysis, lens-direction, intervention, and diagnostic code. |
+| [`scripts/`](scripts/README.md) | Deterministic analysis and figure-generation scripts. |
+| [`configs/`](configs/README.md) | Experiment inputs, locked controls, and frozen intervention settings. |
+| [`tests/`](tests/README.md) | Small automated checks for the reusable code. |
 
-Set up the project and run the non-GPU checks:
+## Reproduce the local checks
+
+The GPU runs are already committed as evidence. The lightweight code checks
+can be run locally:
 
 ```bash
 uv sync --extra dev --extra modal
 uv run pytest
 ```
 
-Regenerate committed analyses from their immutable raw rows:
+The committed summary tables and figures can be regenerated from their raw
+rows with:
 
 ```bash
 uv run python scripts/analyze_v2_h0.py
@@ -228,30 +217,18 @@ uv run python scripts/analyze_workspace_atlas.py --phase open
 uv run python scripts/analyze_workspace_atlas.py --phase locked
 ```
 
-The H0R analysis emits the full layer curve, top-1 curve, position and strength
-sweeps, cumulative-layer comparison, coordinate trajectory, reconstruction
-curve, effect-versus-distance plot, and semantic-versus-control comparison in
-[`results/v2_h0r_diagnostic/figures/`](results/v2_h0r_diagnostic/figures/).
+The Modal entry points preserve the original GPU workflow. Existing locked
+result directories should not be treated as fresh runs or retuned after the
+fact.
 
-The Modal entry points preserve the exact GPU workflow used for the committed
-runs. Prospective entry points intentionally refuse to overwrite existing
-result directories. Do not rerun or retune them as though the existing locked
-controls were fresh.
+## The deeper record
 
-## Interpretation and novelty
+- [`docs/v2/final-report.md`](docs/v2/final-report.md) explains the original H0 failure.
+- [`docs/v2/h0r-diagnostic-report.md`](docs/v2/h0r-diagnostic-report.md) explains how the recovery candidate was chosen.
+- [`docs/v2/h0r-final-report.md`](docs/v2/h0r-final-report.md) gives the final causal-branch verdict.
+- [`docs/v2/decision-log.md`](docs/v2/decision-log.md) records what changed, why it changed, what had already been seen, and what remained unopened.
 
-Activation probes and steering directions for truthfulness or deception already
-exist, and the Jacobian Lens work already demonstrates causal concept swaps.
-The proposed novelty here was the stronger combined test of a reporting policy:
-a vocabulary-grounded J-space intervention, factorial world-state controls, a
-required compositional output change, and independent fact preservation.
-
-That full claim was not reached. The retained result is a transparent negative
-and diagnostic study: readable and directionally causal structure did not
-become a sufficiently reliable instrument for the planned latent-knowledge and
-strategic-reporting experiment.
-
-## Primary references
+## References
 
 - Gurnee et al., [Verbalizable Representations Form a Global Workspace in Language Models](https://transformer-circuits.pub/2026/workspace/) and the [reference implementation](https://github.com/anthropics/jacobian-lens).
 - Zou et al., [Representation Engineering: A Top-Down Approach to AI Transparency](https://arxiv.org/abs/2310.01405).

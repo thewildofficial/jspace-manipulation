@@ -1,88 +1,70 @@
-# V2 H0 instrumentation and flexible-generalization gate
+# Stage 1E.2 — Protocol V2 causal gate (H0)
 
-## Outcome
+## The question
 
-**H0 failed. No strategic-reporting experiment is licensed or was run.**
+The first V2 test asked whether the planned J-space edit could work on a
+separate positive-control task before we tried anything about strategic
+reporting.
 
-Numerical transport/readout parity, the analytic coordinate-swap test, and the
-predeclared finite-direction sign check passed. The required causal positive
-control did not: the reference topology (workspace band, all prompt positions)
-produced 0/90 target-answer top-1 successes on baseline-eligible trials.
+The control task came from held-out country facts. The intervention tried to
+swap one answer for another at different layers and positions. The key
+comparison was:
 
-| Topology | Eligible | Target top-1 rate (95% scenario bootstrap) | Target-vs-source log-odds gain (95% CI) | Mean `ΔRMS/RMS` |
-|---|---:|---:|---:|---:|
-| One layer / final position | 90 | 1.1% [0.0, 3.4] | 0.82 [0.49, 1.22] | 0.091 |
-| One layer / all positions | 90 | 27.8% [14.6, 42.7] | 5.10 [3.12, 7.41] | 0.075 |
-| Band / final position | 90 | 0.0% [0.0, 0.0] | 0.22 [0.13, 0.33] | 0.047 |
-| Band / all positions | 90 | 0.0% [0.0, 0.0] | 0.58 [0.36, 0.87] | 0.060 |
+- **one layer / final position:** a small local edit;
+- **one layer / all positions:** the same layer, but across the prompt;
+- **band / final position:** several middle layers at the final position;
+- **band / all positions:** the preregistered reference topology.
 
-The preregistered reference success threshold was 25%, with at least a
-10-percentage-point advantage over one-layer/final-position. The observed
-reference rate was 0%, 1.1 points below that weakened comparison. Although its
-mean log-odds gain exceeded the separate +0.5 threshold, the behavioral and
-topology criteria failed.
+## What happened
 
-The unexpected useful signal is the one-layer/all-position condition. It
-succeeded on 24/33 eligible country trials (72.7%) but persistent bandwise
-clamping succeeded on 0/33. This is diagnostic evidence that topology matters,
-but in the opposite direction from H8 and the H0 prediction. It does not rescue
-the gate post hoc.
+The required reference topology failed. It made **0/90** baseline-eligible
+trials produce the target answer as top-1.
 
-## What was tested and why
+| Edit | Target top-1 | Target score movement | Plain-language reading |
+|---|---:|---:|---|
+| One layer / final position | 1/90 (1.1%) | +0.82 | Usually too weak |
+| One layer / all positions | 25/90 (27.8%) | +5.10 | A surprisingly useful local edit |
+| Band / final position | 0/90 (0.0%) | +0.22 | Too weak |
+| Band / all positions | 0/90 (0.0%) | +0.58 | Required topology failed |
 
-The run tested exact local/upstream transport parity, direction construction,
-an analytically known coordinate swap, finite perturbations, and all released
-flexible-generalization trials that had valid one-token arguments/answers for
-Qwen. The causal prompts came byte-for-byte from Anthropic's pinned released
-JSON. Four matched topologies isolated layer persistence from position extent.
+The one-layer/all-position condition worked especially well on countries:
+24/33 eligible country trials reached target top-1. That was the most
+counterintuitive result in the run. Repeating the same symmetric edit through
+the whole band did not strengthen it; it erased or disrupted the useful local
+effect.
 
-Before this run, V1 had already shown behavioral competence, released-lens
-integrity, an observational policy-family signal, and a weak local causal
-result with no flips. Only H0 was confirmatory here.
+## Why the gate stopped
 
-## Gates, exclusions, and controls
+The preregistered reference needed at least 25% target top-1 and at least a
+10-point advantage over the one-layer/final-position comparison. It achieved
+0% and did not beat that comparison. Because this was the required causal
+instrument check, H1–H8 and every strategic-reporting experiment remained
+closed.
 
-- Baseline task accuracy was 52.9% over retained source-target rows (90/170 per
-  topology eligible). Baseline failures remain in raw data and are excluded
-  only from conditional swap success.
-- Fourteen logged tokenization exclusions account for released answers without
-  an accepted one-token continuation; 170 of 192 trials remained per topology.
-- The independently mapped Qwen band was layers 36–43; the single-layer
-  comparison used its center, layer 40.
-- Synthetic swap maximum error, random-tensor transport error, prompt readout
-  error, and direction-formula error were all exactly zero at stored precision.
-- The two larger finite perturbations moved the target token in the predicted
-  sign; the smallest was below bfloat16 readout resolution. Full-vocabulary
-  delta cosine was weak (−0.024, 0.002, 0.183), so this check supports only its
-  narrow preregistered sign criterion.
-- Intervention distance is reported above. Target coordinates were explicitly
-  exchanged at every requested hook. Downstream reconstruction and independent
-  task-state preservation were not measured in H0 and must not be inferred.
+The score movement is still informative: the edit was not simply numerically
+broken. But “the score moved” is weaker than “the requested answer became the
+most likely answer,” so it could not validate the instrument.
 
-## Reproducibility
+## What was checked
 
-- Command: `modal run modal_v2.py::h0`
-- Run: `b1d093ae24ea40fc8c386d3dd50a5ece`
-- Code commit: `ed187cba8e2429ce86ba305f467ada30f8be1768`
-- Tree: dirty because a pre-existing unrelated untracked `.prismor/` directory
-  was present; tracked experimental files matched the commit.
-- Workspace config SHA-256: `01db216b10c465455170291565baf222d47bc3748e6ca5b1f2126964ea337db7`
-- Flexible config SHA-256: `97de7c122da5b3c6db56972716a84f30689658529d00ad07770ecf198f6fc872`
-- Model revision: `6a9e13bd6fc8f0983b9b99948120bc37f49c13e9`
-- GPU: NVIDIA A100-SXM4-80GB
-- Metered elapsed time: 151.27 seconds; conservatively recorded cost: $0.1484
+- Numerical transport and readout parity passed.
+- An analytically known coordinate swap passed.
+- The finite-direction sign check passed.
+- Tokenization exclusions and baseline failures were recorded rather than hidden.
+- Downstream reconstruction and independent fact preservation were **not** measured here and must not be inferred.
 
-The first invocation's remote return could not be deserialized locally and was
-logged separately as a conservative $0.1766 failed-run estimate. No metric from
-that invocation was inspected.
+## Evidence and reproducibility
 
-## Claim boundary
+- [`raw/flexible_generalization.jsonl`](raw/flexible_generalization.jsonl): the intervention rows.
+- [`raw/h0_summary.json`](raw/h0_summary.json): the gate summary.
+- [`run_manifest.json`](run_manifest.json): run, model, code, and config metadata.
+- [`summaries/topology_summary.csv`](summaries/topology_summary.csv): regenerated topology results.
+- [`figures/topology_effect.png`](figures/topology_effect.png): target conversion and score movement.
+- [`../v2_workspace_mapping/README.md`](../v2_workspace_mapping/README.md): the separate layer-selection artifact.
+- [`../../docs/v2/final-report.md`](../../docs/v2/final-report.md): the formal report.
 
-Licensed: local transport and swap formulas match the pinned implementation and
-analytic expectations; a single-layer/all-position country swap can causally
-redirect many eligible Qwen answers; repeating the symmetric swap through the
-selected band suppresses rather than strengthens that effect.
+The GPU runner is [`../../modal_v2.py`](../../modal_v2.py), the intervention
+math is in [`../../src/jspace_policy/interventions.py`](../../src/jspace_policy/interventions.py),
+and the deterministic rebuild is [`../../scripts/analyze_v2_h0.py`](../../scripts/analyze_v2_h0.py).
 
-Not licensed: V2 instrument validation, latent-knowledge monitoring, strategic
-misreporting claims, truth/report dissociation, causal latent-truth swapping, or
-cross-task transfer.
+[Previous run: observational pilot](../27b_observational_pilot/README.md) · [Next recovery phase: H0R-B diagnosis](../v2_h0r_diagnostic/README.md) · [Results map](../README.md)

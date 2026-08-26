@@ -1,4 +1,4 @@
-# H0R final report
+# Protocol V2 H0R final report
 
 Status: **H0R-C failed; causal V2 branch remains blocked**.
 

@@ -1,4 +1,4 @@
-# V2 final report
+# Protocol V2 final report — H0 gate
 
 Status: **stopped at failed H0; no strategic V2 task was run**.
 

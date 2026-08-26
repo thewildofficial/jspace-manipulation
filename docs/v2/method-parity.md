@@ -1,4 +1,4 @@
-# V2 method-parity ledger
+# Protocol V2 method-parity ledger
 
 | Method | Label | Basis |
 |---|---|---|

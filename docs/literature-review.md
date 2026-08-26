@@ -21,6 +21,18 @@ That conjunction matters. Any one component already has close precedents.
 
 ## Claim ladder
 
+### Where the repository currently stands
+
+The original mechanistic ladder is still inside **Research Stage 1**. The 4B
+screen, 27B scale-up, released-lens check, observational pilot, and V2
+causal-instrument attempt all test the toy mechanism. **Stage 2** and **Stage 3**
+are planned extensions, not completed mechanistic experiments.
+
+V4 and V5 later ran behavioral follow-ons about rationale interference and
+contrarian games. They are recorded as protocol generations, not as completed
+Stage 2 or Stage 3 mechanistic studies, because the V2 causal-instrument gate
+that would have licensed that ladder was not passed.
+
 ### Stage 1: toy mechanism
 
 Prompt: an explicit `A` or `B` fact, a symmetric COPY/FLIP function, and an exact one-token report.

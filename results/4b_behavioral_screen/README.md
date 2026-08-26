@@ -1,43 +1,57 @@
-# Why we abandoned the 4B model
+# Stage 1A — Gate 0: the 4B behavioral screen
 
-`Qwen/Qwen3.5-4B` did not pass the preregistered behavioral gate, so we stopped before performing any J-space readout or intervention on it.
+## The question
 
-Simplifying the task all the way to an explicitly supplied binary state did not eliminate the asymmetry. The model solved FLIP and A-input cases while failing the B/COPY identity case, particularly when semantic rule labels were removed. We therefore treated the failure as insufficient behavioral competence rather than continuing prompt optimization and moved to the next model with an official J-lens.
+Before looking inside a model, we asked whether it could perform the tiny task
+we planned to study. The model was shown a fact, such as **A**, and a rule:
 
-This is a model-selection result, not evidence that J-space lacks a separable reporting-policy representation.
+- **COPY / identity:** report the fact;
+- **FLIP / swap:** report the other answer.
 
-## Decision rule
+There were two possible facts and two possible rules. A model that cannot do
+all four combinations reliably is not a good subject for a later internal
+mechanism study.
 
-The pre-specified gate required at least 90% policy-following accuracy in **every** world-state × policy cell, together with positive margins. Overall accuracy was never allowed to hide a failed cell.
+## What happened
 
-## Prompt-screen history
+The `Qwen/Qwen3.5-4B` model did not pass the predeclared gate. The final
+story-free toy version reached 84.4% overall, but one balanced cell was still
+at 0%: fact **B** with the identity rule in the unlabeled R0/R1 wording.
 
-| Version | Change | Overall accuracy | Worst cell | Decision |
+| Prompt version | What changed | Overall | Weakest cell | Decision |
 |---|---|---:|---:|---|
-| v1 | Story fact; natural “same/other” objective | 70.8% | 0.0% | Answer-token and wording confounds |
-| v2 | Symmetric COPY/FLIP and reward tables | 59.9% | 0.0% | Did not repair composition |
-| v3 | Context-conditioned A/B token scoring | 59.9% | 0.0% | Confirmed v2 failure was not tokenization |
-| v4 | Explicit `TRUE OPTION: A/B` added | 63.0% | 0.0% | Story inference was not the main bottleneck |
-| v5 | Full symmetric function table, story retained | 93.2% | 70.8% | Strong aggregate, failed cell gate |
-| v6 | Story-free toy function application | 84.4% | 0.0% | B/COPY failure sharpened without semantic labels |
+| P1 (file: v1) | Story fact and natural “same/other” wording | 70.8% | 0.0% | Too ambiguous |
+| P2 (file: v2) | Symmetric COPY/FLIP and reward tables | 59.9% | 0.0% | Still failed |
+| P3 (file: v3) | Context-conditioned A/B scoring | 59.9% | 0.0% | Not a tokenization fix |
+| P4 (file: v4) | Explicit `TRUE OPTION: A/B` | 63.0% | 0.0% | Story was not the main issue |
+| P5 (file: v5) | Full function table with story | 93.2% | 70.8% | Aggregate score hid a failed cell |
+| P6 (file: v6) | Story-free toy function | 84.4% | 0.0% | Failure became clearer |
+Prompting may have contributed, but repeated simplification did not remove the model’s asymmetric failure. We treated the 4B model as unsuitable for the later mechanism study, rather than claiming that the prompts were definitively perfect.
 
-In v6, named equations achieved 100% in three cells but only 75% for fact B + COPY, with a near-zero mean margin. The unlabeled R0/R1 matrix achieved 100% in three cells but 0% for fact B + identity row. The asymmetric pattern is inconsistent with a stable four-cell reporting function.
+## Why this result matters
 
-## Why stop rather than keep prompting?
+The failure is useful because it stopped us from blaming later J-space results
+on a hidden lack of basic task ability. The model could solve some cases, but
+not the full balanced function. We therefore scaled to the 27B model instead
+of continuing to search for a prompt that might make the 4B model look good.
 
-Further prompt search would create three problems:
+## What this does *not* show
 
-1. It would optimize against the same cells later used to claim behavioral competence.
-2. It could produce a brittle prompt-specific trick rather than a mechanism that generalizes.
-3. It would make any later J-space interpretation conditional on an undocumented prompt search.
+It does not show that J-space lacks a reporting-policy representation. We never
+ran a lens readout or intervention on this model. It is a model-selection
+result, not a mechanistic result.
 
-The original research plan specified scaling the model when the smallest model lacked reliable behavior. The next candidate, `Qwen/Qwen3.6-27B`, also has an official 1,000-prompt Jacobian Lens and is therefore a cleaner fallback than fitting a new lens to an intermediate model.
+## The gate and the evidence
 
-## Files
+The gate required at least 90% accuracy in **every** fact × policy cell, with
+positive score margins. Overall accuracy was not allowed to hide one failed
+cell.
 
-- `raw/`: all six prompt-screen JSONL tables and resolved-run manifests.
-- `summaries/`: four-cell bootstrap summaries for each version.
-- `figures/`: behavioral-gate figures generated from the corresponding raw tables.
+- [`raw/`](raw/) contains every version and its run manifest.
+- [`summaries/`](summaries/) contains the four-cell summaries.
+- [`figures/`](figures/) contains the corresponding plots.
+- Prompt revisions are named **P1–P6** here; the raw filenames retain historical `v1`–`v6` labels. All use seed 1729 and direct conditional log-probability scoring.
 
-All versions use seed 1729 and direct conditional log-probability scoring. Version 3 onward records context-conditioned candidate token IDs (`A=32`, `B=33`) as a tokenizer sanity check.
+The reusable prompt and scoring pieces are in [`../../src/jspace_policy/dataset.py`](../../src/jspace_policy/dataset.py) and [`../../scripts/analyze_results.py`](../../scripts/analyze_results.py).
 
+[Back to the results map](../README.md) · [Back to the project README](../../README.md)

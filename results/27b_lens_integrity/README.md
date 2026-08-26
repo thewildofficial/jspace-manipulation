@@ -1,33 +1,46 @@
-# Qwen3.6-27B released-lens integrity check
+# Stage 1C — Gate 1: released-lens integrity
 
-The official 1,000-prompt Jacobian Lens is structurally compatible with the selected model and produces a sensible reference readout. This clears Gate 1 for observational experiments; it is not a reporting-policy result.
+## The question
 
-## Structural checks
+The Jacobian Lens is the measuring instrument used in the rest of the project.
+Before trusting it, we checked that it was built for this model and that it
+produced sensible reference readouts.
 
-| Check | Lens | Model | Result |
-|---|---:|---:|---|
-| Residual width | 5,120 | 5,120 | Pass |
-| Source layers | 0–62 (63 layers) | 0–63 (64 layers) | Pass |
-| Lens fit prompts | 1,000 | — | Expected official artifact |
-| Model revision | — | `6a9e13bd6fc8f0983b9b99948120bc37f49c13e9` | Recorded |
-| J-lens code | `581d398613e5602a5af361e1c34d3a92ea82ba8e` | — | Pinned |
+## What happened
 
-## Qualitative reference
+The released 1,000-prompt lens passed the structural checks:
 
-For the repository's official reference prompt:
+| Check | Expected / observed | Result |
+|---|---|---|
+| Residual width | Lens 5,120; model 5,120 | Pass |
+| Source layers | Lens 0–62; model 0–63 | Pass |
+| Fitted prompts | 1,000 official prompts | Recorded |
+| Model revision | `6a9e13bd6fc8f0983b9b99948120bc37f49c13e9` | Recorded |
+| Lens code | `581d398613e5602a5af361e1c34d3a92ea82ba8e` | Pinned |
 
-```text
-Fact: The currency used in the country shaped like a boot is
-```
+For the reference prompt “The currency used in the country shaped like a boot
+is”, middle layers surfaced Italy-related tokens as expected. On the toy
+reporting prompt, the final readout also contained the literal answer tokens A
+and B.
 
-the early layer is token-level noise, while layer 31's top ten includes `Italy` and `意大利`. Across the full stored top-ten table, variants of *Italy* dominate the middle-depth readout. At layer 62 the readout shifts toward local/output words such as `is`, `boot`, `shaped`, and `Italy`, consistent with the expected move toward the output regime.
+## The useful caution
 
-This validates that the lens can expose the intermediate country concept implied by “shaped like a boot”; it does not establish that the final currency answer itself appears at every layer.
+The lens does not show the same thing at every depth. Early layers look noisy;
+middle layers can expose a concept; late layers move toward output words. One
+attractive example is therefore not enough to choose an intervention target.
+The later pilot used matched prompts and measured families of tokens instead.
 
-## Toy prompt sanity check
+## What this clears—and what it does not
 
-On the selected one-token reporting prompt, the late J-lens readout at the final prompt boundary includes the literal candidates `A` and `B`, and the model-logit readout selects the correct answer. Middle layers do not show a stable policy word in the top ten for this one example. Candidate policy families must therefore be discovered quantitatively across balanced prompts rather than selected from an attractive anecdote.
+This clears the instrument check for observational work. It does not prove
+that a reporting policy exists inside the model, and it does not prove that the
+lens coordinates cause the model’s behavior.
 
-## File
+The complete metadata and top-ten records are in
+[`raw/lens_integrity_27b.json`](raw/lens_integrity_27b.json).
 
-- `raw/lens_integrity_27b.json`: complete metadata and top-ten token/logit records for every fitted layer and inspected position.
+The model/lens readout entry point is [`../../modal_app.py`](../../modal_app.py);
+the reusable intervention and lens-direction helpers are documented in
+[`../../src/jspace_policy/`](../../src/jspace_policy/README.md).
+
+[Previous run: 27B behavior](../27b_behavioral_gate/README.md) · [Next run: observational pilot](../27b_observational_pilot/README.md) · [Results map](../README.md)

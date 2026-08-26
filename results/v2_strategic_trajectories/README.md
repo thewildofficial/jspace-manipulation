@@ -1,6 +1,23 @@
-# V2-E2 MVP — Strategic J-Lens Trajectories
+# V2-ST-1 — strategic J-Lens trajectories
+
+Historical study label: `V2-E2 MVP`.
 
 **Project state: COMPLETE — EXPLORATORY NEGATIVE.**
+
+## The question
+
+Can a time-resolved top-k lens readout show which changing internal pathway
+produced a strategic action?
+
+## What happened
+
+The model solved the final 48-row corpus perfectly, but the readout mostly showed
+generic task meaning followed by late answer preparation. It did not give us a
+clear, human-readable signal for the decisive strategy, and the strategic and
+non-agentic versions did not show a compelling difference.
+
+That is a limitation of this readout method, not proof that the relevant
+variables are absent from the model.
 
 V2-E2 measured a pinned top-k Jacobian-Lens readout proxy. It did not implement
 the formal sparse nonnegative J-space decomposition, so the result should not be
