@@ -35,6 +35,7 @@ the bold label in the table.
 | **V5-RBG-2 — semantic action-outcome override** | Can consequence reports stay correct while meaningful actions fail? | Yes: a 42.19-point semantic action gap. | [`v5_semantic_override/`](v5_semantic_override/README.md) |
 | **V5-RBG-3 — semantic localization** | Does the large RBG-2 effect survive fresh surface controls? | No; the large effect attenuated, but residual errors were rehearsal-repaired. | [`v5_semantic_localization/`](v5_semantic_localization/README.md) |
 | **V5-RBG-4 — inverse-evidence replication** | Do redundant correct demonstrations harm strategic action? | Yes, prospectively, for prose assertions; tables removed the harm. | [`v5_inverse_evidence/`](v5_inverse_evidence/README.md) |
+| **V5-RBG-5 — mechanistic decomposition** | Can matched natural activations repair the prose/assertion failure? | Behavior replicated; report-gap gate failed, so activations stayed closed. | [`v5_mechanistic_decomposition/`](v5_mechanistic_decomposition/README.md) |
 
 ## How to read a result
 

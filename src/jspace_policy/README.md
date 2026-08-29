@@ -19,6 +19,7 @@ pieces into a run.
 | [`semantic_override_games.py`](semantic_override_games.py) | Builds the V5-RBG-2 action/report dissociation task. |
 | [`semantic_capture_localization.py`](semantic_capture_localization.py) | Builds the V5-RBG-3 localization controls. |
 | [`inverse_evidence_games.py`](inverse_evidence_games.py) | Builds the V5-RBG-4 history and representation contrasts. |
+| [`mechanistic_decomposition_games.py`](mechanistic_decomposition_games.py) | Builds the fresh V5-RBG-5 discovery/locked natural-interchange corpus. |
 | [`budget.py`](budget.py) | Keeps the planned compute budget visible. |
 | [`plotting.py`](plotting.py) | Shared plotting helpers. |
 | [`__init__.py`](__init__.py) | Package entry point. |

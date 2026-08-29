@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-5",
+  "status": "prospectively_frozen_after_rbg4_before_dataset_materialization_or_model_execution",
+  "frozen_after": {
+    "rbg4_run_id": "7c06999f4ad54d06b4454584e04faf9d",
+    "rbg4_dataset_sha256": "3fdc9977f03700dbfb2118414ec9602a4e76d9d6e2b35788a81bc6acf4a1f5d1"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "discovery_base_games": 24,
+    "locked_base_games": 24,
+    "frames": ["strategic", "device"],
+    "focused_cells": [
+      ["opposed", "assertion", "none", "prose"],
+      ["opposed", "assertion", "redundant", "prose"],
+      ["opposed", "assertion", "none", "table"],
+      ["opposed", "assertion", "redundant", "table"],
+      ["opposed", "opaque_token", "none", "prose"],
+      ["opposed", "opaque_token", "redundant", "prose"],
+      ["aligned", "assertion", "redundant", "prose"]
+    ],
+    "receiver_type": "contrarian",
+    "policy_access": "explicit"
+  },
+  "behavior_gate": {
+    "minimum_option_report_accuracy": 0.95,
+    "minimum_opaque_action_accuracy": 0.95,
+    "minimum_prose_assertion_history_harm": 0.20,
+    "maximum_absolute_report_gap": 0.05,
+    "minimum_assertion_minus_opaque_history_harm": 0.20,
+    "maximum_table_history_harm": 0.05,
+    "maximum_exact_cluster_p": 0.05,
+    "minimum_locked_eligible_recipients": 12
+  },
+  "capture": {
+    "layers": "all_transformer_block_outputs",
+    "anchors": [
+      "history_1",
+      "history_2",
+      "history_3",
+      "history_4",
+      "history_end",
+      "mapping_end",
+      "actions_end",
+      "payoff_end",
+      "answer"
+    ],
+    "storage_dtype": "float16"
+  },
+  "probe": {
+    "training_split": "discovery",
+    "evaluation_split": "locked",
+    "targets": ["option_a_response_index", "target_index", "correct_action_index", "chosen_action_index"],
+    "regularization_c_grid": [0.01, 0.1, 1.0],
+    "group_folds": 6,
+    "bootstrap_base_resamples": 2000,
+    "seed": 829051
+  },
+  "patch": {
+    "candidate_layers": [36, 37, 38, 39, 40, 41, 42, 43],
+    "candidate_anchors": ["history_end", "mapping_end", "actions_end", "payoff_end"],
+    "positive_control_anchor": "answer",
+    "donor_families": ["table", "opaque"],
+    "selection_metric": "base_cluster_mean_correct_action_logit_margin_change",
+    "tie_break": ["table_before_opaque", "lower_layer", "earlier_anchor"],
+    "minimum_locked_repair_rate": 0.20,
+    "maximum_exact_cluster_p": 0.05,
+    "maximum_control_accuracy_loss": 0.05,
+    "normalized_recovery_minimum_denominator": 0.10
+  },
+  "jspace": {
+    "status": "optional_if_remaining_buffered_v5_budget_allows",
+    "lens_repo": "neuronpedia/jacobian-lens",
+    "lens_revision": "qwen-n1000",
+    "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+    "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+    "top_k": 20,
+    "layers": [36, 37, 38, 39, 40, 41, 42, 43],
+    "bases_per_split": 4,
+    "may_select_patch_site": false,
+    "budget_skip_status": "not_run_budget"
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "behavior_batch_size": 24,
+    "capture_batch_size": 2,
+    "patch_batch_size": 8,
+    "hard_cumulative_v5_cost_limit_usd": 6.0,
+    "estimated_behavior_ceiling_seconds": 1200,
+    "estimated_capture_ceiling_seconds": 2400,
+    "estimated_patch_ceiling_seconds": 4200,
+    "seed": 829052
+  },
+  "claim_boundary": "Probes and J-space establish decodability only. A locked natural activation interchange may establish selective causal transport under the frozen contrast, but not a complete circuit, deception, consciousness, or model-family generality."
+}

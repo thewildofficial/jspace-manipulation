@@ -2,6 +2,49 @@
 
 ## Closest open literature
 
+**A Mechanistic Lens on Semantic Conflicts: Using Activation Patching to
+Understand LLM Behavior** is the closest mechanistic precedent found after
+RBG-4. It uses token-aligned triplets, bidirectional residual patching, raw and
+normalized output-preference changes, and denominator safeguards to localize
+competition between meaningful cues and executable code. RBG-5 adopts those
+methodological safeguards but studies redundant correct evidence, independent
+consequence reports, and naturally successful table/opaque donors in a strategic
+action task.
+
+- https://arxiv.org/abs/2607.05587
+
+**Towards Best Practices of Activation Patching in Language Models** and **How
+to use and interpret activation patching** show that localization depends on the
+contrast, corruption, metric, and patch granularity. RBG-5 therefore freezes its
+raw logit-margin endpoint, source/destination pairing, semantic anchors, reverse
+patches, and denominator handling before locked execution.
+
+- https://arxiv.org/abs/2309.16042
+- https://arxiv.org/abs/2404.15255
+
+**Causal Abstractions of Neural Networks** motivates using interchange
+interventions to test whether a neural state has the counterfactual role of a
+high-level variable. RBG-5 makes the narrower sufficiency claim licensed by a
+single natural residual replacement rather than claiming a full abstraction.
+
+- https://arxiv.org/abs/2106.02997
+
+**Function Vectors in Large Language Models** provides a candidate account on
+which demonstrations write a compact task state into middle-layer residual
+processing. This motivates—but does not establish—the persistent-policy-state
+hypothesis for RBG-5.
+
+- https://arxiv.org/abs/2310.15213
+
+Probe methodology supplies an important negative constraint. **Designing and
+Interpreting Probes with Control Tasks** and **Amnesic Probing** distinguish
+decodable information from information the model behaviorally uses. RBG-5 uses
+group-held-out and shuffled-label controls and assigns all causal weight to the
+locked interchange rather than probe accuracy.
+
+- https://aclanthology.org/D19-1275/
+- https://aclanthology.org/2021.tacl-1.10/
+
 **Broken Links Between Observations, Beliefs, and Actions** reports that internal
 game-state beliefs can exceed verbal reports and that beliefs often weakly control
 best-response actions. It establishes the broad strategic belief/action gap and
@@ -63,4 +106,3 @@ scheme.” It is:
 This links cognitive-control/Stroop-style interference to alignment evaluation:
 evaluators may add demonstrations expecting greater task understanding, yet make
 meaningful strategic action less reliable even as verbal checks remain excellent.
-

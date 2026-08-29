@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-5B",
+  "status": "prospectively_frozen_before_dataset_materialization_or_model_execution",
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "dataset": {
+    "discovery_base_games": 48,
+    "locked_base_games": 48,
+    "lexicon": "rbg5b_v1",
+    "concept_pair_count": 96,
+    "expected_content_sha256": "a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed",
+    "frames": ["strategic", "device"],
+    "focused_cells": [
+      ["opposed", "assertion", "none", "prose"],
+      ["opposed", "assertion", "redundant", "prose"],
+      ["opposed", "assertion", "none", "table"],
+      ["opposed", "assertion", "redundant", "table"],
+      ["opposed", "opaque_token", "none", "prose"],
+      ["opposed", "opaque_token", "redundant", "prose"],
+      ["aligned", "assertion", "redundant", "prose"]
+    ],
+    "capture_cells": [
+      ["opposed", "assertion", "none", "prose"],
+      ["opposed", "assertion", "redundant", "prose"],
+      ["opposed", "assertion", "redundant", "table"],
+      ["opposed", "opaque_token", "redundant", "prose"],
+      ["aligned", "assertion", "redundant", "prose"]
+    ],
+    "receiver_type": "contrarian",
+    "policy_access": "explicit"
+  },
+  "behavior_gate": {
+    "minimum_option_report_accuracy": 0.95,
+    "minimum_critical_prose_report_accuracy": 0.90,
+    "minimum_opaque_action_accuracy": 0.95,
+    "minimum_aligned_action_accuracy": 0.95,
+    "minimum_prose_assertion_history_harm": 0.20,
+    "maximum_report_harm": 0.05,
+    "report_harm_bootstrap_resamples": 2000,
+    "report_harm_bootstrap_seed": 829053,
+    "minimum_assertion_minus_opaque_history_harm": 0.20,
+    "maximum_table_history_harm": 0.05,
+    "maximum_exact_cluster_p": 0.05,
+    "minimum_locked_eligible_recipients": 24,
+    "minimum_locked_eligible_bases": 18,
+    "minimum_discovery_eligible_recipients": 24,
+    "minimum_discovery_eligible_bases": 18
+  },
+  "capture": {
+    "layers": "all_transformer_block_outputs",
+    "anchors": [
+      "history_1", "history_2", "history_3", "history_4",
+      "history_end", "mapping_end", "actions_end", "payoff_end", "answer"
+    ],
+    "storage_dtype": "bfloat16_bits_uint16",
+    "require_paired_anchor_token_ids": true
+  },
+  "probe": {
+    "training_split": "discovery",
+    "evaluation_split": "locked",
+    "targets": [
+      "option_a_response_index", "target_index",
+      "correct_action_index", "chosen_action_index"
+    ],
+    "fixed_regularization_c": 0.1,
+    "evaluation_population": "all_captured",
+    "group_folds": 6,
+    "bootstrap_base_resamples": 2000,
+    "seed": 829051,
+    "core_anchors": ["history_end", "mapping_end", "actions_end", "payoff_end", "answer"],
+    "history_anchors": ["history_1", "history_2", "history_3", "history_4"],
+    "history_probe_layers": [0, 8, 16, 24, 32, 36, 37, 38, 39, 40, 41, 42, 43, 48, 56, 63],
+    "target_training_population": {
+      "option_a_response_index": "donor_formats",
+      "target_index": "donor_formats",
+      "correct_action_index": "donor_formats",
+      "chosen_action_index": "all_captured"
+    },
+    "label_shuffle_sentinel_sites": [
+      [0, "history_end"], [32, "mapping_end"], [43, "payoff_end"], [63, "answer"]
+    ],
+    "label_shuffle_permutations": 10
+  },
+  "patch": {
+    "candidate_layers": [36, 37, 38, 39, 40, 41, 42, 43],
+    "candidate_anchors": ["history_end", "mapping_end", "actions_end", "payoff_end"],
+    "positive_control_anchor": "answer",
+    "donor_families": ["table", "opaque"],
+    "selection_metric": "base_cluster_mean_correct_action_logit_margin_change",
+    "tie_break": ["table_before_opaque", "lower_layer", "earlier_anchor"],
+    "minimum_locked_repair_rate": 0.20,
+    "maximum_exact_cluster_p": 0.05,
+    "maximum_control_accuracy_loss": 0.05,
+    "normalized_recovery_minimum_denominator": 0.10,
+    "identity_margin_tolerance": 0.0001
+  },
+  "jspace": {
+    "required": true,
+    "lens_repo": "neuronpedia/jacobian-lens",
+    "lens_revision": "qwen-n1000",
+    "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+    "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+    "top_k": 20,
+    "layers": [36, 37, 38, 39, 40, 41, 42, 43],
+    "candidate_score_all_rows": true,
+    "full_vocab_bases_per_split": 8,
+    "full_vocab_anchors": ["history_end", "mapping_end", "actions_end", "payoff_end", "answer"],
+    "may_select_patch_site": false
+  },
+  "execution": {
+    "gpu": "A100-80GB",
+    "behavior_batch_size": 24,
+    "capture_batch_size": 2,
+    "patch_batch_size": 8,
+    "hard_cumulative_v5_cost_limit_usd": 12.0,
+    "estimated_behavior_ceiling_seconds": 1200,
+    "estimated_capture_ceiling_seconds": 3000,
+    "estimated_patch_ceiling_seconds": 3600,
+    "estimated_jspace_ceiling_seconds": 900,
+    "seed": 829052,
+    "artifact_prefix": "rbg5b",
+    "result_root": "results/v5_mechanistic_decomposition_b",
+    "stage_reservation_buffered_usd": 10.55,
+    "prior_v5_buffered_usd_at_freeze": 1.30556
+  },
+  "claim_boundary": "Probes and J-space establish decodability or observational evidence only. A locked natural residual interchange may establish selective causal transport under this frozen contrast, but not a complete circuit, deception, consciousness, or model-family generality."
+}

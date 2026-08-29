@@ -66,3 +66,97 @@
   accuracy with 91.67% consequence reports and 100% matched opaque actions.
 - Natural activation interchange and multi-model replication are now licensed.
   No arbitrary steering, broad layer search, or scheming claim is licensed.
+
+## 2026-08-29 — V5-D006 — Freeze RBG-5 natural activation interchange
+
+- RBG-5 uses 48 fresh, lexically split bases and a focused seven-cell design to
+  replicate the RBG-4 behavioral conjunction before opening any activation.
+- Discovery data may select one natural donor/layer/semantic-anchor combination
+  within the previously established Qwen layers 36–43. A hashed freeze is required
+  before locked activation patching.
+- The locked causal endpoint requires both a positive exact clustered margin test
+  and at least 20% repair of eligible failed prose/assertion choices.
+- Probes and J-space are descriptive only. Full-residual natural interchange is
+  the only licensed first intervention; arbitrary vectors and component/path
+  searches remain closed.
+- Dataset expected SHA-256:
+  `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.
+
+## 2026-08-29 — V5-D007 — Repair preflight image construction
+
+- The first RBG-5 preflight stopped during Modal image definition because the
+  optional Jacobian-lens dependency was appended after a local source mount.
+- No tokenizer, dataset query, model weights, behavior, activation, or endpoint
+  output was opened.
+- Move the local source mount to the final step of both core and lens images.
+  The frozen dataset, gates, prompts, model, sites, metrics, and analyses are
+  unchanged.
+
+## 2026-08-29 — V5-D008 — Make remote dataset validation self-contained
+
+- The second preflight stopped in validation because the remote container does
+  not mount the local dataset-manifest path. It stopped before tokenizer loading,
+  query rendering, model loading, or any behavioral/mechanistic output.
+- Pin the already frozen dataset SHA-256 directly in the runner. Local entrypoints
+  additionally compare that constant with the committed manifest; remote calls
+  compare it with the content-addressed dataset passed as an argument.
+- No prompt, gate, model, activation, intervention, or analysis choice changed.
+
+## 2026-08-29 — V5-D009 — RBG-5 preflight passed
+
+- All 2,016 action and consequence-report queries passed chat-template,
+  one-token continuation, and semantic-anchor resolution checks.
+- Prompt lengths range from 172 to 321 tokens and every query exposes at least
+  the five common semantic anchors.
+- Dataset SHA-256 matched
+  `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.
+- No model behavior or activation output was opened by preflight.
+
+## 2026-08-29 — V5-D010 — RBG-5 behavior replicated but gate failed
+
+- Immutable behavior run `c100debc2344409eb69e06eaa02a6b81` replicated the
+  prose/assertion history effect at 37.50 points with exact base-cluster
+  `p=.0000178`. Assertion-minus-opaque history harm was also 37.50 points,
+  opaque actions were 100%, and table history harm was −4.17 points.
+- All consequence reports were 98.29% accurate, but the frozen prose report-gap
+  endpoint was 5.208 points (92.71% without history versus 97.92% with history),
+  exceeding the five-point maximum.
+- The report-gap miss occurred identically in discovery and locked splits. The
+  conjunctive behavioral gate nevertheless fails; thresholds will not be rounded
+  or relaxed after inspection.
+- Discovery/locked activations, probes, natural activation patches, and J-space
+  remain unopened. RBG-5 adds a fresh behavioral replication but no internal or
+  mechanistic evidence.
+
+## 2026-08-29 — V5-D011 — Freeze RBG-5B mechanistic follow-up
+
+- RBG-5B is a separate 96-base prospective corpus with a new lexicon and a
+  separate artifact/result namespace. RBG-5 outputs are excluded from all
+  training, activation, donor, patch-site, and locked evidence.
+- The RBG-5 report endpoint used an absolute gap and rejected a five-point
+  improvement. RBG-5B therefore preregisters one-sided report non-inferiority:
+  the upper 95% base-cluster bootstrap bound for no-history minus history report
+  accuracy must be at most five points, with critical-cell floors retained.
+- Exact BF16 residual bits, paired anchor-token checks, fixed-C probes,
+  deterministic geometry controls, and candidate-token J-space projections are
+  frozen before model execution. J-space is required after the legally opened
+  activation corpus and cannot select a patch site.
+- The complete run is reserved under a USD 12 cumulative V5 ceiling. The prior
+  RBG-5 failure remains unchanged and no `.prismor/` content is in scope.
+- RBG-5B dataset SHA-256:
+  `a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed`.
+
+## 2026-08-29 — V5-D012 — Route Modal execution through GitHub Actions when local service is unreachable
+
+- The local RBG-5B CLI entrypoint resolved correctly (`app.rbg5b_*`), but the
+  Modal client stopped before remote execution with `Could not connect to the
+  Modal server`.  No tokenizer, model weights, behavior, activation, patch,
+  J-space, or locked output was opened by this failure.
+- Add a manual, `stage=all` GitHub Actions workflow using the same pinned Modal
+  functions, credentials, budget reservation, and append-only result namespace.
+  The runner is only a control-plane fallback; it does not change the GPU,
+  image, model revision, prompts, gates, or causal analysis.
+- The workflow verifies the committed dataset/config hashes, refuses missing
+  predecessor manifests for stage-specific dispatches, downloads immutable
+  Modal-volume artifacts, and runs the offline analysis after J-space.  No
+  scientific result is implied until a complete immutable manifest is present.

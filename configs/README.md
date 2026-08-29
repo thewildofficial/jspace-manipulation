@@ -11,7 +11,7 @@ inspectable instead of hiding them inside a runner.
 | [`v2/`](v2/README.md) | Protocol V2 preregistered controls, task-independent mapping, diagnostics, and frozen protocol files. |
 | [`v3/jspace_interventions/`](v3/jspace_interventions/experiment.json) | V3-JI1 intervention-replication configuration and candidate pools. |
 | [`v4/strategic_epistemic_search/`](v4/strategic_epistemic_search/experiment.json) | V4 rationale-interference datasets and frozen analyses. |
-| [`v5/`](v5/inverse_evidence/experiment.json) | V5 revealed-belief, semantic, and inverse-evidence game configurations. |
+| [`v5/`](v5/mechanistic_decomposition/experiment.json) | V5 revealed-belief, inverse-evidence, and mechanistic-decomposition configurations. |
 
 ## A note about locked files
 

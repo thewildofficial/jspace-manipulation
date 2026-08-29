@@ -36,3 +36,28 @@ redundant-prose assertion prompts, with reverse and same-condition controls. Do 
 use arbitrary steering vectors or tune layers against the final endpoint. A small
 fresh behavioral replication should accompany any mechanistic result.
 
+This experiment is now frozen as **V5-RBG-5**. It uses discovery data to choose
+one site inside the pre-established layers 36–43, hashes that choice, and tests it
+once on lexically disjoint locked games. Probes and optional J-space trajectories
+remain secondary diagnostics.
+
+## RBG-5 outcome
+
+The fresh behavior run replicated the central action effect more strongly
+(37.50 points, `p=.0000178`), retained 100% opaque actions, and again showed no
+table harm. However, its absolute prose consequence-report gap was 5.208 points,
+just above the frozen five-point ceiling. The conjunctive gate failed, so no
+RBG-5 activation, probe, patch, or J-space output was opened. The internal cause
+therefore remains unresolved.
+
+## RBG-5B status
+
+RBG-5B is now prospectively frozen as the powered mechanistic follow-up: 96 fresh
+base games, exact BF16 residual capture, fixed-C probes, matched natural residual
+interchange, and required post-patch J-space readouts. Its one-sided report
+non-inferiority gate accepts improvements while still excluding report damage.
+The dataset/config hashes and append-only artifact namespace are committed;
+Modal execution is pending service connectivity.  A manual GitHub Actions
+fallback is frozen at `.github/workflows/v5-mechanistic-decomposition-b.yml`;
+it invokes the same Modal functions and downloads the mounted-volume artifacts
+for offline analysis when the local Modal client cannot reach the control plane.

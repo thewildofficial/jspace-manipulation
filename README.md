@@ -47,6 +47,7 @@ removes the harm.** It does not establish consciousness, deliberate deception,
 scheming, or cross-model generality.
 
 - [RBG-4 frozen findings](results/v5_inverse_evidence/FINDINGS.md)
+- [RBG-5 frozen mechanistic protocol](docs/v5/mechanistic-decomposition-preregistration.md)
 - [V5 research status and open hypotheses](docs/v5/RESEARCH_STATUS.md)
 - [Preregistration](docs/v5/inverse-evidence-preregistration.md)
 - [Literature positioning](docs/v5/literature-positioning.md)
@@ -80,6 +81,7 @@ The project contains both positive and negative results, and the order matters:
 | Did the V2 recovery fix that? | No: 4/125 target top-1 outcomes, below the locked 20% gate. |
 | Was the original strategic J-space experiment run? | No. The gates stopped it. |
 | Did later behavioral game studies find anything? | Yes. V5-RBG-4 found the inverse-evidence effect described above. |
+| Has the internal cause been tested? | No. V5-RBG-5 replicated behavior, but missed its report-stability gate by 0.208 points, so activations stayed closed. |
 
 The V2 causal-instrument branch is closed. The later V3–V5 protocols are
 separate follow-on studies and must not be used to rewrite the V2 verdict.
@@ -150,6 +152,7 @@ next one.
 | **V4-SES-1 — strategic epistemic search** | Does retaining a correct rationale hurt a later relational report? | Yes, replicated behaviorally; the internal mechanism is unknown. | [`results/v4_strategic_epistemic_search/`](results/v4_strategic_epistemic_search/README.md) |
 | **V5-RBG-1** | Can the model use a demonstrated receiver policy in a game? | No; competence gate failed. | [`results/v5_revealed_belief_games/`](results/v5_revealed_belief_games/README.md) |
 | **V5-RBG-2/3/4** | Does the action/report gap survive controls and matched history? | RBG-2 found the gap, RBG-3 weakened it, RBG-4 confirmed inverse evidence. | [`results/v5_inverse_evidence/`](results/v5_inverse_evidence/README.md) |
+| **V5-RBG-5** | Can a naturally successful internal state repair a failed prose/assertion choice? | Behavior replicated; mechanistic gate failed before activations. | [`results/v5_mechanistic_decomposition/`](results/v5_mechanistic_decomposition/README.md) |
 | **Stage 2 — controlled composition** | Can the mechanism compose with a fact inferred from a story? | Not reached. | [`docs/literature-review.md`](docs/literature-review.md#stage-2-controlled-composition) |
 | **Stage 3 — naturalistic behavior** | Does the mechanism matter in a richer strategic setting? | Not reached. | [`docs/literature-review.md`](docs/literature-review.md#stage-3-naturalistic-behavior) |
 
