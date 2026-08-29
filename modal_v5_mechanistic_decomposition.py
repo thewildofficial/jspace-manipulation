@@ -32,6 +32,7 @@ MANIFEST_PATH = Path("configs/v5/mechanistic_decomposition/dataset_manifest.json
 RESULT_ROOT = Path("results/v5_mechanistic_decomposition")
 MODEL_ID = "Qwen/Qwen3.6-27B"
 MODEL_REVISION = "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9"
+DATASET_SHA256 = "238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e"
 SYSTEM_PROMPT = (
     "Treat the described game and prior episodes as exact formal information. "
     "Follow the requested forced-choice format exactly."
@@ -110,9 +111,12 @@ def _validate(config: dict[str, Any], dataset: dict[str, Any]) -> None:
     if config["model"]["id"] != MODEL_ID or config["model"]["revision"] != MODEL_REVISION:
         raise RuntimeError("pinned model changed")
     verify_dataset_payload(dataset, config)
-    manifest = _load_json(MANIFEST_PATH)
-    if dataset["content_sha256"] != manifest["expected_content_sha256"]:
+    if dataset["content_sha256"] != DATASET_SHA256:
         raise RuntimeError("materialized dataset does not match prospective manifest")
+    if MANIFEST_PATH.exists():
+        manifest = _load_json(MANIFEST_PATH)
+        if manifest["expected_content_sha256"] != DATASET_SHA256:
+            raise RuntimeError("local prospective manifest does not match pinned dataset hash")
 
 
 def _content_hash_valid(payload: dict[str, Any]) -> bool:

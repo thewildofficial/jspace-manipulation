@@ -91,3 +91,13 @@
 - Move the local source mount to the final step of both core and lens images.
   The frozen dataset, gates, prompts, model, sites, metrics, and analyses are
   unchanged.
+
+## 2026-08-29 — V5-D008 — Make remote dataset validation self-contained
+
+- The second preflight stopped in validation because the remote container does
+  not mount the local dataset-manifest path. It stopped before tokenizer loading,
+  query rendering, model loading, or any behavioral/mechanistic output.
+- Pin the already frozen dataset SHA-256 directly in the runner. Local entrypoints
+  additionally compare that constant with the committed manifest; remote calls
+  compare it with the content-addressed dataset passed as an argument.
+- No prompt, gate, model, activation, intervention, or analysis choice changed.
