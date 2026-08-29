@@ -19,7 +19,7 @@ pretending that the model’s internal state is already a theory of mind.
 | RBG-2 | Can consequence reports stay correct while meaningful actions fail? | Passed; 42.19-point action gap. |
 | RBG-3 | Does the large effect survive fresh surface controls? | Large replication failed; residual errors were informative. |
 | RBG-4 | Do redundant history and prose format explain the effect? | Passed prospectively; inverse evidence. |
-| RBG-5 | Can a matched natural activation repair the prose/assertion failure? | Prospectively frozen; not run. |
+| RBG-5 | Can a matched natural activation repair the prose/assertion failure? | Behavior replicated, but report-gap gate failed; activations unopened. |
 
 ## Documents
 

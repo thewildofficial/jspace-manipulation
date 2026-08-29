@@ -111,3 +111,19 @@
 - Dataset SHA-256 matched
   `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.
 - No model behavior or activation output was opened by preflight.
+
+## 2026-08-29 — V5-D010 — RBG-5 behavior replicated but gate failed
+
+- Immutable behavior run `c100debc2344409eb69e06eaa02a6b81` replicated the
+  prose/assertion history effect at 37.50 points with exact base-cluster
+  `p=.0000178`. Assertion-minus-opaque history harm was also 37.50 points,
+  opaque actions were 100%, and table history harm was −4.17 points.
+- All consequence reports were 98.29% accurate, but the frozen prose report-gap
+  endpoint was 5.208 points (92.71% without history versus 97.92% with history),
+  exceeding the five-point maximum.
+- The report-gap miss occurred identically in discovery and locked splits. The
+  conjunctive behavioral gate nevertheless fails; thresholds will not be rounded
+  or relaxed after inspection.
+- Discovery/locked activations, probes, natural activation patches, and J-space
+  remain unopened. RBG-5 adds a fresh behavioral replication but no internal or
+  mechanistic evidence.

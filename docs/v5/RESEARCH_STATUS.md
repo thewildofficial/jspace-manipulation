@@ -40,3 +40,12 @@ This experiment is now frozen as **V5-RBG-5**. It uses discovery data to choose
 one site inside the pre-established layers 36–43, hashes that choice, and tests it
 once on lexically disjoint locked games. Probes and optional J-space trajectories
 remain secondary diagnostics.
+
+## RBG-5 outcome
+
+The fresh behavior run replicated the central action effect more strongly
+(37.50 points, `p=.0000178`), retained 100% opaque actions, and again showed no
+table harm. However, its absolute prose consequence-report gap was 5.208 points,
+just above the frozen five-point ceiling. The conjunctive gate failed, so no
+RBG-5 activation, probe, patch, or J-space output was opened. The internal cause
+therefore remains unresolved.
