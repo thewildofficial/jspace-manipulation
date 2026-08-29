@@ -678,6 +678,7 @@ def _fit_probe_artifact(
     c_grid = [float(fixed_c)] if fixed_c is not None else list(
         map(float, config["probe"]["regularization_c_grid"])
     )
+    fixed_solver = str(config["probe"].get("solver", "lbfgs"))
     folds = int(config["probe"]["group_folds"])
     rng = np.random.default_rng(int(config["probe"]["seed"]))
     models = []
@@ -723,6 +724,48 @@ def _fit_probe_artifact(
                             }
                         )
                         continue
+                    # RBG-5B fixes C prospectively and has no hyperparameter
+                    # search.  Fit each probe once on discovery data; locked
+                    # evaluation is the preregistered out-of-sample readout.
+                    # The old RBG-5 path below retains its frozen CV/grid logic.
+                    if fixed_c is not None:
+                        estimator = make_pipeline(
+                            StandardScaler(),
+                            LogisticRegression(
+                                C=float(fixed_c),
+                                solver=fixed_solver,
+                                class_weight="balanced",
+                                max_iter=200,
+                                random_state=int(config["probe"]["seed"]),
+                            ),
+                        )
+                        estimator.fit(x, y)
+                        models.append(
+                            {
+                                "layer": layer,
+                                "anchor": anchor,
+                                "anchor_index": anchor_index,
+                                "target": target,
+                                "model_kind": model_kind,
+                                "estimator": estimator,
+                            }
+                        )
+                        selection.append(
+                            {
+                                "layer": layer,
+                                "anchor": anchor,
+                                "target": target,
+                                "model_kind": model_kind,
+                                "status": "ok",
+                                "n": len(valid_kind),
+                                "selected_c": float(fixed_c),
+                                "solver": "lbfgs",
+                                "discovery_fit_balanced_accuracy": float(
+                                    balanced_accuracy_score(y, estimator.predict(x))
+                                ),
+                            }
+                        )
+                        continue
                     splitter = GroupKFold(n_splits=folds)
                     scores_by_c = {}
                     for regularization_c in c_grid:
@@ -763,11 +806,11 @@ def _fit_probe_artifact(
                         control = make_pipeline(
                             StandardScaler(),
                             LogisticRegression(
-                            C=selected_c,
-                            solver="liblinear",
-                            dual=True,
-                            class_weight="balanced",
-                            max_iter=1000,
+                                C=selected_c,
+                                solver="liblinear",
+                                dual=True,
+                                class_weight="balanced",
+                                max_iter=1000,
                                 random_state=int(config["probe"]["seed"]),
                             ),
                         )
@@ -840,10 +883,9 @@ def _fit_probe_artifact(
                             StandardScaler(),
                             LogisticRegression(
                                 C=c_grid[0],
-                                solver="liblinear",
-                                dual=True,
+                                solver=fixed_solver,
                                 class_weight="balanced",
-                                max_iter=1000,
+                                max_iter=200,
                                 random_state=int(config["probe"]["seed"]) + permutation,
                             ),
                         )

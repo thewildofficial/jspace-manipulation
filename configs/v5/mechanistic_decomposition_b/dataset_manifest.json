@@ -2,8 +2,8 @@
   "schema_version": 1,
   "study_id": "V5-RBG-5B",
   "generator": "jspace_policy.mechanistic_decomposition_games.dataset_payload",
-  "expected_content_sha256": "a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed",
-  "expected_config_sha256": "09e3d2ced6ba10efdddd5dca467bdaa3f6cb3f384f380c9a1b5128672854b74c",
+  "expected_content_sha256": "b64f6acbf286096dbbd0608c879f96d13265526e4c6f9f6c37cbd0742f8dc2ea",
+  "expected_config_sha256": "02578b0cb9e8272e74d00ea6f46c9ab0d2e4bf4057db9abea3103ade3d190161",
   "lexicon": "rbg5b_v1",
   "frozen_before_dataset_materialization": true
 }

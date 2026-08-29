@@ -144,7 +144,7 @@
 - The complete run is reserved under a USD 12 cumulative V5 ceiling. The prior
   RBG-5 failure remains unchanged and no `.prismor/` content is in scope.
 - RBG-5B dataset SHA-256:
-  `a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed`.
+  `b64f6acbf286096dbbd0608c879f96d13265526e4c6f9f6c37cbd0742f8dc2ea`.
 
 ## 2026-08-29 — V5-D012 — Route Modal execution through GitHub Actions when local service is unreachable
 
@@ -160,3 +160,22 @@
   predecessor manifests for stage-specific dispatches, downloads immutable
   Modal-volume artifacts, and runs the offline analysis after J-space.  No
   scientific result is implied until a complete immutable manifest is present.
+
+## 2026-08-29 — V5-D013 — Optimize the frozen RBG-5B discovery probe fit before rerun
+
+- The first remote `stage=all` attempt passed preflight and behavior, then was
+  cancelled during discovery before the discovery manifest, locked activations,
+  probe artifact, patch freeze, or J-space output was exposed.  The run is not
+  scientific evidence.
+- Modal logs showed repeated `liblinear` convergence warnings.  RBG-5B fixes
+  `C=0.1` prospectively and explicitly forbids hyperparameter search, so the
+  prior implementation was unnecessarily fitting six grouped folds and a
+  shuffled control for every layer/anchor/target site.
+- Freeze a single standardized L2 logistic fit on discovery data (`solver=lbfgs`,
+  `C=0.1`) followed by the preregistered locked out-of-sample readout.  Retain
+  the ten deterministic label permutations at the four sentinel sites as the
+  only grouped cross-validation controls.  The legacy RBG-5 grid/CV path is
+  unchanged.
+- This is an engineering correction made before any locked activation or
+  discovery result was opened; behavioral gates, donor rules, patch selection,
+  J-space ordering, hashes, and claim criteria remain unchanged.

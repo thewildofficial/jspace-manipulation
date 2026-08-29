@@ -56,8 +56,11 @@ RBG-5B is now prospectively frozen as the powered mechanistic follow-up: 96 fres
 base games, exact BF16 residual capture, fixed-C probes, matched natural residual
 interchange, and required post-patch J-space readouts. Its one-sided report
 non-inferiority gate accepts improvements while still excluding report damage.
-The dataset/config hashes and append-only artifact namespace are committed;
-Modal execution is pending service connectivity.  A manual GitHub Actions
-fallback is frozen at `.github/workflows/v5-mechanistic-decomposition-b.yml`;
-it invokes the same Modal functions and downloads the mounted-volume artifacts
-for offline analysis when the local Modal client cannot reach the control plane.
+The first GitHub Actions attempt passed preflight and behavior but was cancelled
+during discovery before any locked activation or scientific artifact was opened;
+the cancellation exposed a redundant, convergence-prone probe fitting path.
+Decision V5-D013 freezes a single fixed-C discovery fit plus sentinel-only
+permutation controls before rerun. The dataset/config hashes and append-only
+artifact namespace remain committed; the manual GitHub Actions fallback is
+frozen at `.github/workflows/v5-mechanistic-decomposition-b.yml` and invokes
+the same Modal functions for offline analysis.
