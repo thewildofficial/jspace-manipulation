@@ -127,3 +127,36 @@
 - Discovery/locked activations, probes, natural activation patches, and J-space
   remain unopened. RBG-5 adds a fresh behavioral replication but no internal or
   mechanistic evidence.
+
+## 2026-08-29 — V5-D011 — Freeze RBG-5B mechanistic follow-up
+
+- RBG-5B is a separate 96-base prospective corpus with a new lexicon and a
+  separate artifact/result namespace. RBG-5 outputs are excluded from all
+  training, activation, donor, patch-site, and locked evidence.
+- The RBG-5 report endpoint used an absolute gap and rejected a five-point
+  improvement. RBG-5B therefore preregisters one-sided report non-inferiority:
+  the upper 95% base-cluster bootstrap bound for no-history minus history report
+  accuracy must be at most five points, with critical-cell floors retained.
+- Exact BF16 residual bits, paired anchor-token checks, fixed-C probes,
+  deterministic geometry controls, and candidate-token J-space projections are
+  frozen before model execution. J-space is required after the legally opened
+  activation corpus and cannot select a patch site.
+- The complete run is reserved under a USD 12 cumulative V5 ceiling. The prior
+  RBG-5 failure remains unchanged and no `.prismor/` content is in scope.
+- RBG-5B dataset SHA-256:
+  `a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed`.
+
+## 2026-08-29 — V5-D012 — Route Modal execution through GitHub Actions when local service is unreachable
+
+- The local RBG-5B CLI entrypoint resolved correctly (`app.rbg5b_*`), but the
+  Modal client stopped before remote execution with `Could not connect to the
+  Modal server`.  No tokenizer, model weights, behavior, activation, patch,
+  J-space, or locked output was opened by this failure.
+- Add a manual, `stage=all` GitHub Actions workflow using the same pinned Modal
+  functions, credentials, budget reservation, and append-only result namespace.
+  The runner is only a control-plane fallback; it does not change the GPU,
+  image, model revision, prompts, gates, or causal analysis.
+- The workflow verifies the committed dataset/config hashes, refuses missing
+  predecessor manifests for stage-specific dispatches, downloads immutable
+  Modal-volume artifacts, and runs the offline analysis after J-space.  No
+  scientific result is implied until a complete immutable manifest is present.

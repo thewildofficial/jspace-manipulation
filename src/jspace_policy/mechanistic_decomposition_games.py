@@ -32,10 +32,85 @@ TOKEN_PAIRS = tuple(
     (f"Z{index:02d}Q", f"V{index:02d}K") for index in range(len(CONCEPT_PAIRS))
 )
 
+# RBG-5B uses a separate, larger lexicon.  Keeping it in this module makes the
+# generator deterministic while leaving the already frozen RBG-5 lexicon and
+# tests unchanged.
+RBG5B_CONCEPT_PAIRS = (
+    ("ASTROLABE", "BROMELIAD"), ("CANTALOUPE", "DRIFTWOOD"),
+    ("EQUINOX", "FIREBRAND"), ("GALENA", "HIBISCUS"),
+    ("IMPALA", "JAVELIN"), ("KUMQUAT", "LIMESTONE"),
+    ("MAGNOLIA", "NECTARINE"), ("OBOE", "POMEGRANATE"),
+    ("QUARTZ", "ROSEMARY"), ("SEQUOIA", "THISTLE"),
+    ("UMBRELLA", "VERBENA"), ("WISTERIA", "YARROW"),
+    ("ZEPHYR", "ALMANAC"), ("BAYONET", "CYPRESS"),
+    ("DOVETAIL", "ECLIPSE"), ("FJORD", "GARNET"),
+    ("HARMONICA", "IRIDIUM"), ("JASMINE", "KILN"),
+    ("LOCUST", "MANDARIN"), ("NEBULA", "OARLOCK"),
+    ("PARACHUTE", "QUASAR"), ("RIPTIDE", "SUNDIAL"),
+    ("TOPIARY", "URCHIN"), ("VARNISH", "WHIMBREL"),
+    ("XYLOPHONE", "YACHT"), ("ACORN", "BASIN"),
+    ("CITADEL", "DUNES"), ("ELM", "FOSSIL"),
+    ("GALLEON", "HORIZON"), ("ISOTOPE", "JUBILEE"),
+    ("KETTLE", "LUMINARY"), ("MOSAIC", "NOMAD"),
+    ("ORIGAMI", "PAVILION"), ("QUILL", "RADIANCE"),
+    ("SAPPHIRE", "TRESTLE"), ("UPLAND", "VELLUM"),
+    ("WILDFLOWER", "ZINC"), ("ANCHOVY", "BURLAP"),
+    ("CINNAMON", "DAPPLE"), ("ESTUARY", "FABLE"),
+    ("GINKGO", "HARBORLIGHT"), ("INKWELL", "JUGGERNAUT"),
+    ("KESTREL", "LATTICE"), ("MARMALADE", "NARWHAL"),
+    ("OASIS", "PARSNIP"), ("QUENCH", "RIVULET"),
+    ("SCARECROW", "TAMARIND"), ("UPHOLSTERY", "VORTEX"),
+    ("WALRUS", "XENOLITH"), ("YODEL", "ZINNIA"),
+    ("ARCHIVE", "BLOSSOM"), ("CRUCIBLE", "DOCKYARD"),
+    ("ENCLAVE", "FRACTAL"), ("GONDOLA", "HONEYDEW"),
+    ("INKSTONE", "JUNCTURE"), ("KILOWATT", "LANTERNPOST"),
+    ("MANTIS", "NIGHTFALL"), ("ORRERY", "PARCHMENT"),
+    ("QUARRY", "RAVEL"), ("SILTSTONE", "TURBINE"),
+    ("UPDRAFT", "VIOLETWOOD"), ("WATERMARK", "XEROPHYTE"),
+    ("YAWN", "ZODIAC"), ("AEROLITH", "BUNSEN"),
+    ("CORMORANT", "DAPPLEWOOD"), ("EWER", "FARTHING"),
+    ("GOSSAMER", "HATCHET"), ("ICEBERG", "JELLYFISH"),
+    ("KILOBYTE", "LAMPLIGHT"), ("MONSOON", "NUTCRACKER"),
+    ("ORCHARD", "PENDULUM"), ("QUARTERDECK", "RUNIC"),
+    ("STARLING", "TAPESTRY"), ("UPRISING", "VAGRANT"),
+    ("WAYFARER", "XEBEC"), ("YONDER", "ZITHER"),
+    ("ARTICHOKE", "BOLLARD"), ("CAMEO", "DROMEDARY"),
+    ("EIDERDOWN", "FRESNEL"), ("GRAFFITI", "HUMMOCK"),
+    ("INTRIGUE", "JACKDAW"), ("KNOTWORK", "LULLABY"),
+    ("MIRAGE", "NIGHTJAR"), ("OPALINE", "PENDANT"),
+    ("QUADRANT", "RACQUET"), ("SKEIN", "TURQUOISE"),
+    ("UMBER", "VELLUMSTONE"), ("WATERLILY", "XENON"),
+    ("YAWNING", "ZIGGURAT"), ("APOGEE", "BELLWETHER"),
+    ("CRESCENT", "DOWSING"), ("ENAMEL", "FIREWEED"),
+    ("GROTESQUE", "HINTERLAND"), ("ISLANDER", "JASMINEWOOD"),
+    ("KILNWORK", "LIMPID"), ("MOORING", "NIMBUSCLOUD"),
+)
+RBG5B_TOKEN_PAIRS = tuple(
+    (f"Q{index:03d}M", f"R{index:03d}N")
+    for index in range(len(RBG5B_CONCEPT_PAIRS))
+)
+
+_LEGACY_LEXEMES = {
+    lexeme
+    for pair in CONCEPT_PAIRS
+    for lexeme in pair
+} | {
+    "KITE", "MOSS", "AMBER", "INDIGO", "TULIP", "CEDAR", "ORBIT",
+    "HARBOR", "MARBLE", "LANTERN", "FALCON", "WILLOW", "COPPER",
+    "VIOLET", "RIVER", "SUMMIT",
+}
+
 
 def canonical_sha256(value: object) -> str:
     payload = json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(payload).hexdigest()
+
+
+def config_sha256(config: dict[str, Any]) -> str:
+    """Hash the frozen experiment choices, excluding its derived dataset hash."""
+    normalized = json.loads(json.dumps(config, sort_keys=True))
+    normalized.get("dataset", {}).pop("expected_content_sha256", None)
+    return canonical_sha256(normalized)
 
 
 def _rng(*parts: object) -> random.Random:
@@ -71,10 +146,17 @@ def _make_row(
     surface_kind: str,
     history: str,
     mapping_format: str,
+    *,
+    study_id: str = "V5-RBG-5",
+    concept_pairs: tuple[tuple[str, str], ...] = CONCEPT_PAIRS,
+    token_pairs: tuple[tuple[str, str], ...] = TOKEN_PAIRS,
 ) -> dict[str, Any]:
-    rng = _rng("v5-mechanistic-decomposition", base)
-    concepts = CONCEPT_PAIRS[base]
-    tokens = TOKEN_PAIRS[base]
+    rng_namespace = (
+        "v5-mechanistic-decomposition" if study_id == "V5-RBG-5" else study_id
+    )
+    rng = _rng(rng_namespace, base)
+    concepts = concept_pairs[base]
+    tokens = token_pairs[base]
     if rng.random() < 0.5:
         concepts = (concepts[1], concepts[0])
     if rng.random() < 0.5:
@@ -170,7 +252,7 @@ def _make_row(
     prompt = "".join(parts)
     return {
         "schema_version": 1,
-        "study_id": "V5-RBG-5",
+        "study_id": study_id,
         "split": split,
         "base_game_id": f"m{base:03d}",
         "condition_id": _stable_id(
@@ -202,21 +284,39 @@ def _make_row(
 
 
 def dataset_payload(config: dict[str, Any]) -> dict[str, Any]:
+    study_id = str(config.get("study_id", "V5-RBG-5"))
     discovery = int(config["dataset"]["discovery_base_games"])
     locked = int(config["dataset"]["locked_base_games"])
     cells = [tuple(cell) for cell in config["dataset"]["focused_cells"]]
+    if study_id == "V5-RBG-5B":
+        concept_pairs = RBG5B_CONCEPT_PAIRS
+        token_pairs = RBG5B_TOKEN_PAIRS
+    else:
+        concept_pairs = CONCEPT_PAIRS
+        token_pairs = TOKEN_PAIRS
+    if discovery + locked > len(concept_pairs):
+        raise ValueError("dataset requests more bases than the frozen lexicon")
     rows = []
     for base in range(discovery + locked):
         split = "discovery" if base < discovery else "locked"
         for frame in FRAMES:
             for incentive, surface, history, mapping in cells:
-                rows.append(
-                    _make_row(base, split, frame, incentive, surface, history, mapping)
-                )
+                rows.append(_make_row(
+                    base,
+                    split,
+                    frame,
+                    incentive,
+                    surface,
+                    history,
+                    mapping,
+                    study_id=study_id,
+                    concept_pairs=concept_pairs,
+                    token_pairs=token_pairs,
+                ))
     body = {
         "schema_version": 1,
-        "study_id": "V5-RBG-5",
-        "config_sha256": canonical_sha256(config),
+        "study_id": study_id,
+        "config_sha256": config_sha256(config),
         "rows": rows,
     }
     return {**body, "content_sha256": canonical_sha256(body)}
@@ -237,7 +337,7 @@ def verify_dataset_payload(payload: dict[str, Any], config: dict[str, Any]) -> N
     body = {key: value for key, value in payload.items() if key != "content_sha256"}
     if payload.get("content_sha256") != canonical_sha256(body):
         raise ValueError("dataset content hash mismatch")
-    if payload.get("config_sha256") != canonical_sha256(config):
+    if payload.get("config_sha256") != config_sha256(config):
         raise ValueError("dataset/config hash mismatch")
     expected = (
         int(config["dataset"]["discovery_base_games"])
@@ -246,12 +346,32 @@ def verify_dataset_payload(payload: dict[str, Any], config: dict[str, Any]) -> N
     if len(payload["rows"]) != expected:
         raise ValueError("unexpected focused factorial size")
     split_concepts: dict[str, set[str]] = {"discovery": set(), "locked": set()}
+    study_id = str(config.get("study_id", "V5-RBG-5"))
+    expected_pairs = RBG5B_CONCEPT_PAIRS if study_id == "V5-RBG-5B" else CONCEPT_PAIRS
+    expected_tokens = RBG5B_TOKEN_PAIRS if study_id == "V5-RBG-5B" else TOKEN_PAIRS
+    expected_pair_sets = {frozenset(pair) for pair in expected_pairs}
+    expected_token_sets = {frozenset(pair) for pair in expected_tokens}
+    if len(expected_pairs) < int(config["dataset"]["discovery_base_games"]) + int(
+        config["dataset"]["locked_base_games"]
+    ):
+        raise ValueError("frozen lexicon is smaller than requested dataset")
+    seen_pairs: set[tuple[str, str]] = set()
     ids: set[str] = set()
     for row in payload["rows"]:
+        if row.get("study_id") != study_id:
+            raise ValueError("row study ID mismatch")
         if row["condition_id"] in ids:
             raise ValueError("duplicate condition ID")
         ids.add(row["condition_id"])
         split_concepts[row["split"]].update(row["concepts"])
+        pair = tuple(row["concepts"])
+        token_pair = tuple(row["tokens"])
+        if (
+            frozenset(pair) not in expected_pair_sets
+            or frozenset(token_pair) not in expected_token_sets
+        ):
+            raise ValueError("row uses a lexeme outside the frozen study lexicon")
+        seen_pairs.add(pair)
         if row["response_per_action"][row["expected_action"]] != row["target_response"]:
             raise ValueError("oracle action does not induce target response")
         required = {"history_end", "mapping_end", "actions_end", "payoff_end", "answer"}
@@ -279,6 +399,10 @@ def verify_dataset_payload(payload: dict[str, Any], config: dict[str, Any]) -> N
                 raise ValueError("history anchors are not monotonic")
     if split_concepts["discovery"] & split_concepts["locked"]:
         raise ValueError("discovery and locked concepts overlap")
+    if study_id == "V5-RBG-5B":
+        if any(lexeme.upper() in {item.upper() for item in _LEGACY_LEXEMES}
+               for lexeme in split_concepts["discovery"] | split_concepts["locked"]):
+            raise ValueError("RBG-5B lexicon overlaps a prior V5 lexeme")
 
 
 def matched_row(

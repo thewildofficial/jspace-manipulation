@@ -82,6 +82,27 @@ def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _study_id(config: dict[str, Any]) -> str:
+    return str(config.get("study_id", "V5-RBG-5"))
+
+
+def _artifact_prefix(config: dict[str, Any]) -> str:
+    return str(config.get("execution", {}).get("artifact_prefix", "rbg5"))
+
+
+def _result_root(config: dict[str, Any]) -> Path:
+    return Path(
+        config.get("execution", {}).get(
+            "result_root", "results/v5_mechanistic_decomposition"
+        )
+    )
+
+
+def _expected_dataset_sha256(config: dict[str, Any]) -> str:
+    expected = config.get("dataset", {}).get("expected_content_sha256")
+    return str(expected or DATASET_SHA256)
+
+
 def _write_new(path: Path, text: str) -> None:
     if path.exists():
         raise RuntimeError(f"refusing to overwrite prospective artifact: {path}")
@@ -106,16 +127,20 @@ def _validate(config: dict[str, Any], dataset: dict[str, Any]) -> None:
     expected_status = (
         "prospectively_frozen_after_rbg4_before_dataset_materialization_or_model_execution"
     )
-    if config["status"] != expected_status:
-        raise RuntimeError("RBG-5 protocol is not prospectively frozen")
+    if config["status"] not in {
+        expected_status,
+        "prospectively_frozen_before_dataset_materialization_or_model_execution",
+    }:
+        raise RuntimeError("protocol is not prospectively frozen")
     if config["model"]["id"] != MODEL_ID or config["model"]["revision"] != MODEL_REVISION:
         raise RuntimeError("pinned model changed")
     verify_dataset_payload(dataset, config)
-    if dataset["content_sha256"] != DATASET_SHA256:
+    expected_dataset = _expected_dataset_sha256(config)
+    if dataset["content_sha256"] != expected_dataset:
         raise RuntimeError("materialized dataset does not match prospective manifest")
-    if MANIFEST_PATH.exists():
+    if "expected_content_sha256" not in config.get("dataset", {}) and MANIFEST_PATH.exists():
         manifest = _load_json(MANIFEST_PATH)
-        if manifest["expected_content_sha256"] != DATASET_SHA256:
+        if manifest["expected_content_sha256"] != expected_dataset:
             raise RuntimeError("local prospective manifest does not match pinned dataset hash")
 
 
@@ -243,6 +268,24 @@ def _model_layers(model: Any) -> Any:
     raise RuntimeError("could not locate transformer layers")
 
 
+def _capture_row_allowed(row: dict[str, Any], config: dict[str, Any]) -> bool:
+    cells = config.get("dataset", {}).get("capture_cells")
+    if not cells:
+        return True
+    key = [row["incentive"], row["surface_kind"], row["history"], row["mapping_format"]]
+    return key in cells
+
+
+def _decode_residual_slice(values: Any, *, device: str = "cpu") -> Any:
+    """Decode either legacy float16 or exact BF16 uint16 storage."""
+    import torch
+
+    if getattr(values, "dtype", None) is not None and str(values.dtype) == "uint16":
+        tensor = torch.from_numpy(values)
+        return tensor.view(torch.bfloat16).to(device=device)
+    return torch.as_tensor(values, dtype=torch.float32, device=device)
+
+
 def _load_model() -> tuple[Any, Any, dict[str, Any]]:
     import torch
     import transformers
@@ -324,6 +367,8 @@ def _query_batches(
 def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     import transformers
 
+    from jspace_policy.mechanistic_decomposition_games import matched_row
+
     _validate(config, dataset)
     tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     checked = []
@@ -333,17 +378,44 @@ def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
         for option in ("A", "B"):
             report, _ = _report_query(tokenizer, row, option)
             checked.append((report["sequence_length"], len(report["anchor_positions"])))
+    paired_anchor_pairs_checked = 0
+    if config.get("capture", {}).get("require_paired_anchor_token_ids", False):
+        action_queries = {
+            row["condition_id"]: _action_query(tokenizer, row) for row in dataset["rows"]
+        }
+        recipients = [
+            row for row in dataset["rows"]
+            if row["incentive"] == "opposed"
+            and row["surface_kind"] == "assertion"
+            and row["history"] == "redundant"
+            and row["mapping_format"] == "prose"
+        ]
+        for recipient in recipients:
+            for family in ("table", "opaque"):
+                donor = matched_row(dataset["rows"], recipient, family)
+                left = action_queries[recipient["condition_id"]]
+                right = action_queries[donor["condition_id"]]
+                for anchor in config["patch"]["candidate_anchors"]:
+                    left_id = left["prompt_token_ids"][left["anchor_positions"][anchor]]
+                    right_id = right["prompt_token_ids"][right["anchor_positions"][anchor]]
+                    if left_id != right_id:
+                        raise RuntimeError(
+                            "paired anchor token mismatch for "
+                            f"{anchor}: {recipient['condition_id']}"
+                        )
+                paired_anchor_pairs_checked += 1
     cache.commit()
     return json.dumps(
         {
             "schema_version": 1,
-            "study_id": "V5-RBG-5",
+            "study_id": _study_id(config),
             "created_at": datetime.now(UTC).isoformat(),
             "dataset_sha256": dataset["content_sha256"],
             "queries_checked": len(checked),
             "minimum_tokens": min(item[0] for item in checked),
             "maximum_tokens": max(item[0] for item in checked),
             "minimum_anchors": min(item[1] for item in checked),
+            "paired_anchor_pairs_checked": paired_anchor_pairs_checked,
             "status": "all_token_continuation_and_semantic_anchor_checks_passed",
         },
         sort_keys=True,
@@ -442,10 +514,17 @@ def _capture_split(
     anchor_names = list(config["capture"]["anchors"])
     width = int(model.config.hidden_size)
     ordered = sorted(rows, key=lambda row: row["condition_id"])
+    storage_dtype = str(config["capture"].get("storage_dtype", "float16"))
+    if storage_dtype == "bfloat16_bits_uint16":
+        numpy_dtype = np.uint16
+    elif storage_dtype == "float16":
+        numpy_dtype = np.float16
+    else:
+        raise ValueError(f"unsupported activation storage dtype: {storage_dtype}")
     features = np.lib.format.open_memmap(
         output_path,
         mode="w+",
-        dtype=np.float16,
+        dtype=numpy_dtype,
         shape=(len(ordered), len(layers), len(anchor_names), width),
     )
     masks = np.zeros((len(ordered), len(anchor_names)), dtype=bool)
@@ -481,9 +560,12 @@ def _capture_split(
         ) -> Any:
             def hook(_module: Any, _inputs: Any, output: Any) -> Any:
                 hidden = output[0] if isinstance(output, tuple) else output
-                selected = hidden[selected_indices, selected_positions].detach().to(
-                    device="cpu", dtype=torch.float16
-                )
+                selected = hidden[selected_indices, selected_positions].detach()
+                if storage_dtype == "bfloat16_bits_uint16":
+                    selected = selected.to(device="cpu", dtype=torch.bfloat16)
+                    selected = selected.view(torch.uint16)
+                else:
+                    selected = selected.to(device="cpu", dtype=torch.float16)
                 features[
                     start_index : start_index + part_length, layer_index, :, :
                 ] = selected.numpy()
@@ -535,6 +617,26 @@ def _capture_split(
     return metadata, anchor_names, list(range(len(layers)))
 
 
+def _decode_numpy_features(values: Any) -> Any:
+    """Convert exact BF16 uint16 storage (or legacy float16) to float32."""
+    import numpy as np
+
+    array = np.asarray(values)
+    if array.dtype == np.uint16:
+        return (array.astype(np.uint32) << 16).view(np.float32)
+    return array.astype(np.float32, copy=False)
+
+
+def _probe_layer_indices(anchor: str, layers: list[int], config: dict[str, Any]) -> list[int]:
+    probe = config.get("probe", {})
+    if anchor in probe.get("history_anchors", []):
+        requested = probe.get("history_probe_layers", layers)
+    else:
+        requested = probe.get("core_probe_layers", layers)
+    allowed = set(layers)
+    return [int(layer) for layer in requested if int(layer) in allowed]
+
+
 def _fit_probe_artifact(
     residual_path: Path,
     mask_path: Path,
@@ -557,18 +659,28 @@ def _fit_probe_artifact(
     features = np.load(residual_path, mmap_mode="r")
     masks = np.load(mask_path)
     targets = list(config["probe"]["targets"])
-    c_grid = list(map(float, config["probe"]["regularization_c_grid"]))
+    fixed_c = config["probe"].get("fixed_regularization_c")
+    c_grid = [float(fixed_c)] if fixed_c is not None else list(
+        map(float, config["probe"]["regularization_c_grid"])
+    )
     folds = int(config["probe"]["group_folds"])
     rng = np.random.default_rng(int(config["probe"]["seed"]))
     models = []
     selection = []
-    for layer in layers:
-        for anchor_index, anchor in enumerate(anchor_names):
+    for anchor_index, anchor in enumerate(anchor_names):
+        for layer in _probe_layer_indices(anchor, layers, config):
             valid = np.flatnonzero(masks[:, anchor_index])
             for target in targets:
                 y_all = np.asarray([int(row[target]) for row in metadata])
-                for model_kind in ("all", "successful_formats"):
-                    if model_kind == "successful_formats":
+                populations = config.get("probe", {}).get("target_training_population", {})
+                configured_population = populations.get(target)
+                model_kinds = (
+                    [configured_population]
+                    if configured_population
+                    else ["all", "successful_formats"]
+                )
+                for model_kind in model_kinds:
+                    if model_kind in {"successful_formats", "donor_formats"}:
                         valid_kind = np.asarray(
                             [
                                 index
@@ -580,7 +692,7 @@ def _fit_probe_artifact(
                         )
                     else:
                         valid_kind = valid
-                    x = np.asarray(features[valid_kind, layer, anchor_index], dtype=np.float32)
+                    x = _decode_numpy_features(features[valid_kind, layer, anchor_index])
                     y = y_all[valid_kind]
                     groups = np.asarray(
                         [metadata[index]["base_game_id"] for index in valid_kind]
@@ -606,6 +718,8 @@ def _fit_probe_artifact(
                                 LogisticRegression(
                                     C=regularization_c,
                                     solver="liblinear",
+                                    dual=True,
+                                    class_weight="balanced",
                                     max_iter=1000,
                                     random_state=int(config["probe"]["seed"]),
                                 ),
@@ -621,6 +735,8 @@ def _fit_probe_artifact(
                         LogisticRegression(
                             C=selected_c,
                             solver="liblinear",
+                            dual=True,
+                            class_weight="balanced",
                             max_iter=1000,
                             random_state=int(config["probe"]["seed"]),
                         ),
@@ -632,9 +748,11 @@ def _fit_probe_artifact(
                         control = make_pipeline(
                             StandardScaler(),
                             LogisticRegression(
-                                C=selected_c,
-                                solver="liblinear",
-                                max_iter=1000,
+                            C=selected_c,
+                            solver="liblinear",
+                            dual=True,
+                            class_weight="balanced",
+                            max_iter=1000,
                                 random_state=int(config["probe"]["seed"]),
                             ),
                         )
@@ -670,12 +788,71 @@ def _fit_probe_artifact(
                             },
                         }
                     )
+    # Frozen, low-cost shuffled-label controls for four sentinel sites.
+    sentinel_sites = config.get("probe", {}).get("label_shuffle_sentinel_sites", [])
+    n_permutations = int(config.get("probe", {}).get("label_shuffle_permutations", 0))
+    if sentinel_sites and n_permutations:
+        populations = config.get("probe", {}).get("target_training_population", {})
+        for layer, anchor in sentinel_sites:
+            if anchor not in anchor_names or int(layer) not in layers:
+                continue
+            anchor_index = anchor_names.index(anchor)
+            valid = np.flatnonzero(masks[:, anchor_index])
+            for target in targets:
+                population = populations.get(target)
+                if population in {"successful_formats", "donor_formats"}:
+                    valid_kind = np.asarray(
+                        [
+                            index for index in valid
+                            if metadata[index]["mapping_format"] == "table"
+                            or metadata[index]["surface_kind"] == "opaque_token"
+                        ],
+                        dtype=int,
+                    )
+                else:
+                    valid_kind = valid
+                x = _decode_numpy_features(features[valid_kind, int(layer), anchor_index])
+                y = np.asarray([int(metadata[index][target]) for index in valid_kind])
+                groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
+                if len(set(y)) < 2 or len(set(groups)) < folds:
+                    continue
+                splitter = GroupKFold(n_splits=folds)
+                for permutation in range(n_permutations):
+                    shuffled = rng.permutation(y)
+                    scores = []
+                    for train, test in splitter.split(x, shuffled, groups):
+                        control = make_pipeline(
+                            StandardScaler(),
+                            LogisticRegression(
+                                C=c_grid[0],
+                                solver="liblinear",
+                                dual=True,
+                                class_weight="balanced",
+                                max_iter=1000,
+                                random_state=int(config["probe"]["seed"]) + permutation,
+                            ),
+                        )
+                        control.fit(x[train], shuffled[train])
+                        scores.append(
+                            balanced_accuracy_score(
+                                shuffled[test], control.predict(x[test])
+                            )
+                        )
+                    selection.append({
+                        "layer": int(layer),
+                        "anchor": anchor,
+                        "target": target,
+                        "model_kind": population or "all",
+                        "status": "shuffled_label_control",
+                        "permutation": permutation,
+                        "balanced_accuracy": float(np.mean(scores)),
+                    })
     model_path = remote_root / "probe_models.pkl.gz"
     with gzip.open(model_path, "wb") as handle:
         pickle.dump(models, handle, protocol=pickle.HIGHEST_PROTOCOL)
     artifact = {
         "schema_version": 1,
-        "study_id": "V5-RBG-5",
+        "study_id": _study_id(config),
         "status": "frozen_after_discovery_before_locked_capture",
         "dataset_sha256": dataset_sha256,
         "remote_model_path": str(model_path),
@@ -705,7 +882,13 @@ def _patched_query_batch(
         dtype=torch.long,
         device="cuda",
     )
-    vectors = torch.as_tensor(donor_vectors, device="cuda", dtype=torch.bfloat16)
+    if (
+        getattr(donor_vectors, "dtype", None) is not None
+        and str(donor_vectors.dtype) == "uint16"
+    ):
+        vectors = torch.from_numpy(donor_vectors).view(torch.bfloat16).to(device="cuda")
+    else:
+        vectors = torch.as_tensor(donor_vectors, device="cuda", dtype=torch.bfloat16)
     batch_indices = torch.arange(len(queries), device="cuda")
     layer = _model_layers(model)[layer_index]
 
@@ -894,7 +1077,10 @@ def _evaluate_locked_probes(
     for record in models:
         anchor_index = int(record["anchor_index"])
         indices = np.flatnonzero(masks[:, anchor_index])
-        if record["model_kind"] == "successful_formats":
+        if (
+            record["model_kind"] in {"successful_formats", "donor_formats"}
+            and config.get("probe", {}).get("evaluation_population", "prose") == "prose"
+        ):
             indices = np.asarray(
                 [
                     index
@@ -904,8 +1090,8 @@ def _evaluate_locked_probes(
                 ],
                 dtype=int,
             )
-        x = np.asarray(
-            features[indices, int(record["layer"]), anchor_index], dtype=np.float32
+        x = _decode_numpy_features(
+            features[indices, int(record["layer"]), anchor_index]
         )
         y = np.asarray([int(metadata[index][record["target"]]) for index in indices])
         predicted = record["estimator"].predict(x)
@@ -1287,6 +1473,7 @@ def discovery_remote(
     import torch
 
     from jspace_policy.mechanistic_decomposition import select_patch_site
+    from jspace_policy.mechanistic_decomposition_analysis import compute_activation_geometry
 
     _validate(config, dataset)
     if behavior_payload["metadata"]["dataset_sha256"] != dataset["content_sha256"]:
@@ -1297,10 +1484,13 @@ def discovery_remote(
     started = time.perf_counter()
     model, tokenizer, model_metadata = _load_model()
     run_id = uuid.uuid4().hex
-    remote_root = Path(f"/artifacts/rbg5/{run_id}")
+    remote_root = Path(f"/artifacts/{_artifact_prefix(config)}/{run_id}")
     remote_root.mkdir(parents=True, exist_ok=False)
     behavior_rows = {row["condition_id"]: row for row in behavior_payload["rows"]}
-    selected_rows = [row for row in dataset["rows"] if row["split"] == "discovery"]
+    selected_rows = [
+        row for row in dataset["rows"]
+        if row["split"] == "discovery" and _capture_row_allowed(row, config)
+    ]
     residual_path = remote_root / "discovery_residuals.npy"
     metadata, anchor_names, layers = _capture_split(
         model,
@@ -1313,6 +1503,16 @@ def discovery_remote(
     metadata_path = remote_root / "discovery_metadata.json.gz"
     with gzip.open(metadata_path, "wt", encoding="utf-8") as handle:
         json.dump(metadata, handle, sort_keys=True)
+    geometry_path = remote_root / "discovery_geometry.json.gz"
+    geometry_artifact = compute_activation_geometry(
+        residual_path,
+        metadata,
+        anchor_names,
+        layers,
+        dataset["rows"],
+        geometry_path,
+        permutation_seed=int(config["execution"]["seed"]) + 2,
+    )
     probe_artifact = _fit_probe_artifact(
         residual_path,
         residual_path.with_name("anchor_mask.npy"),
@@ -1345,7 +1545,7 @@ def discovery_remote(
     cache.commit()
     result = {
         "schema_version": 1,
-        "study_id": "V5-RBG-5",
+        "study_id": _study_id(config),
         "metadata": {
             "run_id": run_id,
             "created_at": datetime.now(UTC).isoformat(),
@@ -1360,13 +1560,18 @@ def discovery_remote(
             "remote_root": str(remote_root),
             "residual_path": str(residual_path),
             "residual_sha256": _sha256_file(residual_path),
-            "residual_shape": [len(metadata), len(layers), len(anchor_names), 5120],
+            "residual_shape": [
+                len(metadata), len(layers), len(anchor_names), int(model_metadata["d_model"])
+            ],
+            "residual_storage_dtype": config["capture"].get("storage_dtype", "float16"),
             "anchor_mask_path": str(residual_path.with_name("anchor_mask.npy")),
             "anchor_mask_sha256": _sha256_file(
                 residual_path.with_name("anchor_mask.npy")
             ),
             "metadata_path": str(metadata_path),
             "metadata_sha256": _sha256_file(metadata_path),
+            "geometry_path": str(geometry_path),
+            "geometry_sha256": geometry_artifact["sha256"],
             "patch_rows_path": str(patch_path),
             "patch_rows_sha256": _sha256_file(patch_path),
             "anchor_names": anchor_names,
@@ -1412,10 +1617,13 @@ def locked_remote(
     started = time.perf_counter()
     model, tokenizer, model_metadata = _load_model()
     run_id = uuid.uuid4().hex
-    remote_root = Path(f"/artifacts/rbg5/{run_id}")
+    remote_root = Path(f"/artifacts/{_artifact_prefix(config)}/{run_id}")
     remote_root.mkdir(parents=True, exist_ok=False)
     behavior_rows = {row["condition_id"]: row for row in behavior_payload["rows"]}
-    selected_rows = [row for row in dataset["rows"] if row["split"] == "locked"]
+    selected_rows = [
+        row for row in dataset["rows"]
+        if row["split"] == "locked" and _capture_row_allowed(row, config)
+    ]
     residual_path = remote_root / "locked_residuals.npy"
     metadata, anchor_names, layers = _capture_split(
         model,
@@ -1428,6 +1636,18 @@ def locked_remote(
     metadata_path = remote_root / "locked_metadata.json.gz"
     with gzip.open(metadata_path, "wt", encoding="utf-8") as handle:
         json.dump(metadata, handle, sort_keys=True)
+    from jspace_policy.mechanistic_decomposition_analysis import compute_activation_geometry
+
+    geometry_path = remote_root / "locked_geometry.json.gz"
+    geometry_artifact = compute_activation_geometry(
+        residual_path,
+        metadata,
+        anchor_names,
+        layers,
+        dataset["rows"],
+        geometry_path,
+        permutation_seed=int(config["execution"]["seed"]) + 3,
+    )
     probe_metrics = _evaluate_locked_probes(
         residual_path,
         residual_path.with_name("anchor_mask.npy"),
@@ -1458,7 +1678,7 @@ def locked_remote(
     cache.commit()
     result = {
         "schema_version": 1,
-        "study_id": "V5-RBG-5",
+        "study_id": _study_id(config),
         "metadata": {
             "run_id": run_id,
             "created_at": datetime.now(UTC).isoformat(),
@@ -1475,13 +1695,18 @@ def locked_remote(
             "remote_root": str(remote_root),
             "residual_path": str(residual_path),
             "residual_sha256": _sha256_file(residual_path),
-            "residual_shape": [len(metadata), len(layers), len(anchor_names), 5120],
+            "residual_shape": [
+                len(metadata), len(layers), len(anchor_names), int(model_metadata["d_model"])
+            ],
+            "residual_storage_dtype": config["capture"].get("storage_dtype", "float16"),
             "anchor_mask_path": str(residual_path.with_name("anchor_mask.npy")),
             "anchor_mask_sha256": _sha256_file(
                 residual_path.with_name("anchor_mask.npy")
             ),
             "metadata_path": str(metadata_path),
             "metadata_sha256": _sha256_file(metadata_path),
+            "geometry_path": str(geometry_path),
+            "geometry_sha256": geometry_artifact["sha256"],
             "probe_metrics_path": str(probe_metrics_path),
             "probe_metrics_sha256": _sha256_file(probe_metrics_path),
             "patch_results_path": str(patch_results_path),
@@ -1531,8 +1756,24 @@ def jspace_remote(
     )
     if int(lens.d_model) != int(model.d_model):
         raise RuntimeError("pinned Jacobian Lens residual width mismatch")
+    if config["jspace"].get("candidate_score_all_rows", False):
+        # Verify the optimized candidate-token projection against the lens wrapper's
+        # full unembedding before using it for the large all-row trajectory.
+        with torch.inference_mode():
+            probe_state = torch.zeros((1, int(model.d_model)), device="cuda")
+            probe_ids = [0, 1, 2]
+            full_probe = model.unembed(probe_state).float()[0, probe_ids]
+            direct_probe = (
+                probe_state @ hf_model.lm_head.weight[probe_ids].to(dtype=probe_state.dtype).T
+            ).float()[0]
+            if getattr(hf_model.lm_head, "bias", None) is not None:
+                direct_probe += hf_model.lm_head.bias[probe_ids].float().to(device="cuda")
+            if not torch.allclose(full_probe, direct_probe, atol=1e-4, rtol=1e-5):
+                raise RuntimeError(
+                    "optimized J-space projection failed full-unembedding parity"
+                )
     run_id = uuid.uuid4().hex
-    remote_root = Path(f"/artifacts/rbg5/{run_id}")
+    remote_root = Path(f"/artifacts/{_artifact_prefix(config)}/{run_id}")
     remote_root.mkdir(parents=True, exist_ok=False)
     output = []
     by_condition = {row["condition_id"]: row for row in dataset["rows"]}
@@ -1550,9 +1791,25 @@ def jspace_remote(
         residuals = np.load(residual_path, mmap_mode="r")
         with gzip.open(metadata_path, "rt", encoding="utf-8") as handle:
             metadata = json.load(handle)
-        bases = sorted({row["base_game_id"] for row in metadata})[
-            : int(config["jspace"]["bases_per_split"])
-        ]
+        base_ids = sorted({row["base_game_id"] for row in metadata})
+        if config["jspace"].get("candidate_score_all_rows", False):
+            bases = base_ids
+        else:
+            bases = base_ids[: int(config["jspace"].get("bases_per_split", 4))]
+        full_vocab_bases = set(bases)
+        if config["jspace"].get("candidate_score_all_rows", False):
+            n_full = int(config["jspace"].get("full_vocab_bases_per_split", 0))
+            seed = int(config.get("execution", {}).get("seed", 0))
+            full_vocab_bases = {
+                base
+                for _, base in sorted(
+                    (
+                        hashlib.sha256(f"{seed}:{split}:{base}".encode()).hexdigest(),
+                        base,
+                    )
+                    for base in base_ids
+                )[:n_full]
+            }
         indices = [
             index for index, row in enumerate(metadata) if row["base_game_id"] in bases
         ]
@@ -1562,28 +1819,102 @@ def jspace_remote(
             for anchor_index, anchor in enumerate(anchor_names):
                 for start in range(0, len(indices), 8):
                     part = indices[start : start + 8]
-                    states = torch.tensor(
-                        np.asarray(residuals[part, layer, anchor_index], dtype=np.float32),
-                        device="cuda",
-                    )
+                    states = _decode_residual_slice(
+                        residuals[part, layer, anchor_index], device="cuda"
+                    ).float()
                     with torch.inference_mode():
                         transported = states @ jacobian.T
-                        logits = model.unembed(transported).float()
-                        top = logits.topk(int(config["jspace"]["top_k"]), dim=-1)
+                        rows_for_part = [metadata[index] for index in part]
+                        top_enabled = any(
+                            row["base_game_id"] in full_vocab_bases
+                            and anchor in config["jspace"].get(
+                                "full_vocab_anchors", anchor_names
+                            )
+                            for row in rows_for_part
+                        )
+                        if top_enabled:
+                            logits = model.unembed(transported).float()
+                            top = logits.topk(int(config["jspace"]["top_k"]), dim=-1)
+                            selected_logits = None
+                        else:
+                            required_ids = sorted(
+                                {
+                                    token_id
+                                    for source_index in part
+                                    for token_id in (
+                                        list(
+                                            map(
+                                                int,
+                                                _action_query(
+                                                    tokenizer,
+                                                    by_condition[metadata[source_index]["condition_id"]],
+                                                )["candidate_token_ids"],
+                                            )
+                                        )
+                                        + [
+                                            token_id
+                                            for concept in by_condition[
+                                                metadata[source_index]["condition_id"]
+                                            ]["concepts"]
+                                            for token_id in tokenizer.encode(
+                                                f" {concept}", add_special_tokens=False
+                                            )
+                                        ]
+                                    )
+                                }
+                            )
+                            weight = hf_model.lm_head.weight[required_ids].to(
+                                device=transported.device, dtype=transported.dtype
+                            )
+                            selected_logits = transported @ weight.T
+                            if getattr(hf_model.lm_head, "bias", None) is not None:
+                                selected_logits += hf_model.lm_head.bias[required_ids].to(
+                                    device=transported.device, dtype=transported.dtype
+                                )
+                            logits = None
+                            top = None
                     for local_index, source_index in enumerate(part):
                         item = metadata[source_index]
                         row = by_condition[item["condition_id"]]
                         query = _action_query(tokenizer, row)
+                        full_vocab_row = (
+                            row["base_game_id"] in full_vocab_bases
+                            and anchor in config["jspace"].get(
+                                "full_vocab_anchors", anchor_names
+                            )
+                        )
                         action_ids = list(map(int, query["candidate_token_ids"]))
-                        action_scores = logits[local_index, action_ids]
+                        if logits is not None:
+                            action_scores = logits[local_index, action_ids]
+                        else:
+                            score_index = {
+                                token_id: offset
+                                for offset, token_id in enumerate(required_ids)
+                            }
+                            action_scores = torch.stack(
+                                [
+                                    selected_logits[local_index, score_index[token_id]]
+                                    for token_id in action_ids
+                                ]
+                            )
                         concept_scores = {}
                         for concept in row["concepts"]:
                             concept_ids = tokenizer.encode(
                                 f" {concept}", add_special_tokens=False
                             )
-                            concept_scores[concept] = float(
-                                logits[local_index, concept_ids].mean().cpu()
-                            )
+                            if logits is not None:
+                                concept_scores[concept] = float(
+                                    logits[local_index, concept_ids].mean().cpu()
+                                )
+                            else:
+                                concept_scores[concept] = float(
+                                    torch.stack(
+                                        [
+                                            selected_logits[local_index, score_index[token_id]]
+                                            for token_id in concept_ids
+                                        ]
+                                    ).mean().cpu()
+                                )
                         output.append(
                             {
                                 "split": split,
@@ -1600,12 +1931,24 @@ def jspace_remote(
                                 ),
                                 "concept_mean_token_scores": concept_scores,
                                 "target_concept": row["target_response"],
-                                "top_token_ids": list(map(int, top.indices[local_index].cpu())),
-                                "top_tokens": [
-                                    tokenizer.decode([int(token)])
-                                    for token in top.indices[local_index].cpu()
-                                ],
-                                "top_scores": list(map(float, top.values[local_index].cpu())),
+                                "top_token_ids": (
+                                    list(map(int, top.indices[local_index].cpu()))
+                                    if top is not None and full_vocab_row
+                                    else []
+                                ),
+                                "top_tokens": (
+                                    [
+                                        tokenizer.decode([int(token)])
+                                        for token in top.indices[local_index].cpu()
+                                    ]
+                                    if top is not None and full_vocab_row
+                                    else []
+                                ),
+                                "top_scores": (
+                                    list(map(float, top.values[local_index].cpu()))
+                                    if top is not None and full_vocab_row
+                                    else []
+                                ),
                             }
                         )
                     del states, transported, logits, top
@@ -1620,7 +1963,7 @@ def jspace_remote(
     return json.dumps(
         {
             "schema_version": 1,
-            "study_id": "V5-RBG-5",
+            "study_id": _study_id(config),
             "status": "completed_observational_secondary",
             "metadata": {
                 "run_id": run_id,
@@ -1655,10 +1998,12 @@ def _stage_estimate(config: dict[str, Any], stage: str) -> Any:
         "behavior": "estimated_behavior_ceiling_seconds",
         "discovery": "estimated_capture_ceiling_seconds",
         "locked": "estimated_patch_ceiling_seconds",
-        "jspace": "estimated_capture_ceiling_seconds",
+        "jspace": "estimated_jspace_ceiling_seconds",
     }[stage]
     memory = 32 if stage == "behavior" else 64
     cpu = 8 if stage in {"behavior", "jspace"} else 16
+    if seconds_key not in config["execution"]:
+        seconds_key = "estimated_capture_ceiling_seconds"
     return estimate_cost(
         str(config["execution"]["gpu"]),
         float(config["execution"][seconds_key]),
@@ -1689,10 +2034,10 @@ def _record_stage(config: dict[str, Any], payload: dict[str, Any], stage: str) -
         memory_gib=memory,
     )
     append_ledger(
-        RESULT_ROOT / "cost_ledger.jsonl",
+        _result_root(config) / "cost_ledger.jsonl",
         measured,
         run_id=str(payload["metadata"]["run_id"]),
-        stage=f"rbg5_{stage}",
+        stage=f"{_artifact_prefix(config)}_{stage}",
     )
 
 
@@ -1813,7 +2158,7 @@ def jspace() -> None:
     except RuntimeError as error:
         payload = {
             "schema_version": 1,
-            "study_id": "V5-RBG-5",
+            "study_id": _study_id(config),
             "status": config["jspace"]["budget_skip_status"],
             "created_at": datetime.now(UTC).isoformat(),
             "reason": str(error),

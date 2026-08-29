@@ -1,0 +1,153 @@
+name: V5-RBG-5B mechanistic decomposition
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: Stage to run (all is the reproducible end-to-end path)
+        required: true
+        default: all
+        type: choice
+        options:
+          - preflight
+          - behavior
+          - discovery
+          - locked
+          - jspace
+          - analyze
+          - all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v5-rbg5b
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      UV_CACHE_DIR: /tmp/jspace-uv-cache
+      STUDY_ROOT: results/v5_mechanistic_decomposition_b
+
+    steps:
+      - name: Check out frozen protocol
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Refuse missing Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID"
+          test -n "$MODAL_TOKEN_SECRET"
+
+      - name: Validate repository and frozen dataset
+        shell: bash
+        run: |
+          uv run --extra dev pytest -q
+          uv run python - <<'PY'
+          import json
+          from pathlib import Path
+          from jspace_policy.mechanistic_decomposition_games import verify_dataset_payload
+
+          config = json.loads(Path("configs/v5/mechanistic_decomposition_b/experiment.json").read_text())
+          dataset = json.loads(Path("configs/v5/mechanistic_decomposition_b/dataset.json").read_text())
+          manifest = json.loads(Path("configs/v5/mechanistic_decomposition_b/dataset_manifest.json").read_text())
+          verify_dataset_payload(dataset, config)
+          assert dataset["content_sha256"] == manifest["expected_content_sha256"]
+          assert dataset["config_sha256"] == manifest["expected_config_sha256"]
+          assert config["dataset"]["expected_content_sha256"] == manifest["expected_content_sha256"]
+          print(json.dumps({"rows": len(dataset["rows"]), "sha256": dataset["content_sha256"]}))
+          PY
+
+      - name: Validate stage prerequisites
+        shell: bash
+        env:
+          REQUESTED_STAGE: ${{ inputs.stage }}
+        run: |
+          case "$REQUESTED_STAGE" in
+            preflight|behavior|all) ;;
+            discovery|locked|jspace|analyze)
+              test -f "$STUDY_ROOT/raw/behavior.json" || {
+                echo "This stage needs a prior behavior artifact in the same checkout. Dispatch stage=all for a fresh run." >&2
+                exit 1
+              }
+              ;;
+          esac
+          case "$REQUESTED_STAGE" in
+            locked|jspace|analyze)
+              test -f "$STUDY_ROOT/raw/discovery_manifest.json" || {
+                echo "This stage needs raw/discovery_manifest.json; dispatch stage=all for a fresh run." >&2
+                exit 1
+              }
+              ;;
+          esac
+          case "$REQUESTED_STAGE" in
+            jspace|analyze)
+              if test -f "$STUDY_ROOT/raw/discovery_manifest.json"; then
+                selected="$(jq -r '.patch_freeze.selected // empty' "$STUDY_ROOT/raw/discovery_manifest.json")"
+                if test -n "$selected"; then
+                  test -f "$STUDY_ROOT/raw/locked_manifest.json" || {
+                    echo "J-space after a positive discovery freeze needs raw/locked_manifest.json; dispatch stage=all for a fresh run." >&2
+                    exit 1
+                  }
+                fi
+              fi
+              ;;
+          esac
+
+      - name: Run Modal preflight
+        if: ${{ inputs.stage == 'preflight' || inputs.stage == 'all' }}
+        run: uv run --extra modal modal run modal_v5b_mechanistic_decomposition.py::app.rbg5b_preflight
+
+      - name: Run Modal behavior gate and reserve full budget
+        if: ${{ inputs.stage == 'behavior' || inputs.stage == 'all' }}
+        run: uv run --extra modal modal run modal_v5b_mechanistic_decomposition.py::app.rbg5b_behavior
+
+      - name: Run Modal discovery capture and freeze
+        if: ${{ inputs.stage == 'discovery' || inputs.stage == 'all' }}
+        run: uv run --extra modal modal run modal_v5b_mechanistic_decomposition.py::app.rbg5b_discovery
+
+      - name: Run Modal locked natural interchange
+        if: ${{ inputs.stage == 'locked' || inputs.stage == 'all' }}
+        run: uv run --extra modal modal run modal_v5b_mechanistic_decomposition.py::app.rbg5b_locked
+
+      - name: Run Modal required J-space readout
+        if: ${{ inputs.stage == 'jspace' || inputs.stage == 'all' }}
+        run: uv run --extra modal modal run modal_v5b_mechanistic_decomposition.py::app.rbg5b_jspace
+
+      - name: Download immutable activation and J-space artifacts
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          mkdir -p "$STUDY_ROOT/modal_artifacts"
+          for manifest in discovery_manifest locked_manifest jspace_manifest; do
+            path="$STUDY_ROOT/raw/${manifest}.json"
+            test -f "$path" || continue
+            remote_root="$(jq -r '.artifact.remote_root // empty' "$path")"
+            test -n "$remote_root" || continue
+            volume_path="${remote_root#/artifacts/}"
+            destination="$STUDY_ROOT/modal_artifacts/${volume_path}"
+            mkdir -p "$destination"
+            uv run --extra modal modal volume get --force \
+              jspace-v5-rbg5-artifacts "$volume_path" "$destination"
+          done
+
+      - name: Run deterministic offline analysis
+        if: ${{ inputs.stage == 'analyze' || inputs.stage == 'all' }}
+        run: uv run python scripts/analyze_v5_mechanistic_decomposition_b.py
+
+      - name: Upload immutable run outputs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: v5-rbg5b-${{ inputs.stage }}-${{ github.run_id }}
+          path: results/v5_mechanistic_decomposition_b
+          if-no-files-found: warn
+          retention-days: 30

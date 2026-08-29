@@ -51,6 +51,45 @@ def report_accuracy(rows: list[dict[str, Any]]) -> float:
     )
 
 
+def _report_cell_accuracy(rows: list[dict[str, Any]]) -> float:
+    return report_accuracy(rows) if rows else float("nan")
+
+
+def _cluster_bootstrap_upper(
+    rows: list[dict[str, Any]],
+    left_predicate: Callable[[dict[str, Any]], bool],
+    right_predicate: Callable[[dict[str, Any]], bool],
+    *,
+    seed: int,
+    resamples: int,
+    quantile: float = 0.95,
+) -> tuple[float, list[float]]:
+    """Return the upper bootstrap bound for left-minus-right report accuracy."""
+    import numpy as np
+
+    clusters: dict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        if left_predicate(row):
+            clusters[row["base_game_id"]].append(
+                report_accuracy([row])
+            )
+    right_by_base: dict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        if right_predicate(row):
+            right_by_base[row["base_game_id"]].append(report_accuracy([row]))
+    values = [
+        _mean(clusters[base]) - _mean(right_by_base[base])
+        for base in sorted(clusters)
+        if base in right_by_base and clusters[base] and right_by_base[base]
+    ]
+    if not values:
+        return float("nan"), []
+    rng = np.random.default_rng(seed)
+    array = np.asarray(values, dtype=float)
+    draws = rng.choice(array, size=(resamples, len(array)), replace=True).mean(axis=1)
+    return float(np.quantile(draws, quantile)), list(map(float, values))
+
+
 def _cell(
     rows: list[dict[str, Any]],
     *,
@@ -235,21 +274,79 @@ def analyze_behavior(payload: dict[str, Any], config: dict[str, Any]) -> dict[st
     table_harm = _mean([r["action_correct"] for r in table_none]) - _mean(
         [r["action_correct"] for r in table_history]
     )
+    aligned_history = _cell(
+        rows,
+        incentive="aligned",
+        surface="assertion",
+        history="redundant",
+        mapping="prose",
+    )
+    prose_report_upper = None
+    prose_report_cluster_values = None
+    if "maximum_report_harm" in gates:
+        prose_report_upper, prose_report_cluster_values = _cluster_bootstrap_upper(
+            rows,
+            lambda r: r["incentive"] == "opposed"
+            and r["surface_kind"] == "assertion"
+            and r["mapping_format"] == "prose"
+            and r["history"] == "none",
+            lambda r: r["incentive"] == "opposed"
+            and r["surface_kind"] == "assertion"
+            and r["mapping_format"] == "prose"
+            and r["history"] == "redundant",
+            seed=int(gates.get("report_harm_bootstrap_seed", 0)),
+            resamples=int(gates.get("report_harm_bootstrap_resamples", 2000)),
+        )
     locked_eligible_by_donor = {
         donor: eligible_recipients(rows, "locked", donor) for donor in ("table", "opaque")
     }
     locked_eligible = eligible_recipients(rows, "locked")
+    discovery_eligible_by_donor = {
+        donor: eligible_recipients(rows, "discovery", donor) for donor in ("table", "opaque")
+    }
+
+    def _eligible_base_count(items: list[dict[str, Any]]) -> int:
+        return len({row["base_game_id"] for row in items})
+
+    if "maximum_report_harm" in gates:
+        report_gate = (
+            prose_report_upper <= float(gates["maximum_report_harm"])
+            and _report_cell_accuracy(prose_none)
+            >= float(gates.get("minimum_critical_prose_report_accuracy", 0.0))
+            and _report_cell_accuracy(prose_history)
+            >= float(gates.get("minimum_critical_prose_report_accuracy", 0.0))
+        )
+        aligned_gate = _mean([row["action_correct"] for row in aligned_history]) >= float(
+            gates.get("minimum_aligned_action_accuracy", 0.0)
+        )
+        eligibility_gate = all(
+            len(locked_eligible_by_donor[donor])
+            >= int(gates["minimum_locked_eligible_recipients"])
+            and _eligible_base_count(locked_eligible_by_donor[donor])
+            >= int(gates.get("minimum_locked_eligible_bases", 0))
+            and len(discovery_eligible_by_donor[donor])
+            >= int(gates.get("minimum_discovery_eligible_recipients", 0))
+            and _eligible_base_count(discovery_eligible_by_donor[donor])
+            >= int(gates.get("minimum_discovery_eligible_bases", 0))
+            for donor in ("table", "opaque")
+        )
+    else:
+        report_gate = abs(prose_report_gap) <= float(gates["maximum_absolute_report_gap"])
+        aligned_gate = True
+        eligibility_gate = min(map(len, locked_eligible_by_donor.values())) >= int(
+            gates["minimum_locked_eligible_recipients"]
+        )
     passed = (
         all_reports >= float(gates["minimum_option_report_accuracy"])
         and opaque_accuracy >= float(gates["minimum_opaque_action_accuracy"])
         and prose_harm >= float(gates["minimum_prose_assertion_history_harm"])
-        and abs(prose_report_gap) <= float(gates["maximum_absolute_report_gap"])
+        and report_gate
         and prose_p < float(gates["maximum_exact_cluster_p"])
         and did >= float(gates["minimum_assertion_minus_opaque_history_harm"])
         and did_p < float(gates["maximum_exact_cluster_p"])
         and table_harm <= float(gates["maximum_table_history_harm"])
-        and min(map(len, locked_eligible_by_donor.values()))
-        >= int(gates["minimum_locked_eligible_recipients"])
+        and aligned_gate
+        and eligibility_gate
     )
     return {
         "schema_version": 1,
@@ -261,6 +358,8 @@ def analyze_behavior(payload: dict[str, Any], config: dict[str, Any]) -> dict[st
         "opaque_action_accuracy": opaque_accuracy,
         "prose_assertion_history_harm": prose_harm,
         "prose_option_report_gap": prose_report_gap,
+        "prose_report_harm_bootstrap_upper": prose_report_upper,
+        "prose_report_harm_cluster_values": prose_report_cluster_values,
         "prose_exact_cluster_p": prose_p,
         "prose_cluster_values": list(map(float, prose_values)),
         "opaque_history_harm": opaque_harm,
@@ -277,6 +376,16 @@ def analyze_behavior(payload: dict[str, Any], config: dict[str, Any]) -> dict[st
             }
             for donor, donor_rows in locked_eligible_by_donor.items()
         },
+        "discovery_eligible_by_donor": {
+            donor: {
+                "n": len(donor_rows),
+                "n_bases": _eligible_base_count(donor_rows),
+            }
+            for donor, donor_rows in discovery_eligible_by_donor.items()
+        },
+        "aligned_action_accuracy": _mean([row["action_correct"] for row in aligned_history])
+        if aligned_history
+        else None,
     }
 
 
