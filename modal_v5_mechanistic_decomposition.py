@@ -188,6 +188,21 @@ def _render_query(
     anchor_positions = {}
     for name, char_end in anchor_char_ends.items():
         absolute_end = user_start + int(char_end)
+        # Section boundaries are represented by the first token of the common
+        # separator/next section.  Taking the last token of a variable-length
+        # prose/table section can select punctuation that differs by format
+        # (and therefore cannot be used for same-base interchange).  History
+        # episode anchors remain end-of-episode tokens because their response
+        # sentence is the shared semantic suffix.
+        if name in {"mapping_end", "actions_end", "payoff_end"}:
+            candidates_after = [
+                index
+                for index, (start, end) in enumerate(offsets)
+                if end > start >= absolute_end
+            ]
+            if candidates_after:
+                anchor_positions[name] = candidates_after[0]
+                continue
         candidates_at_or_before = [
             index for index, (_, end) in enumerate(offsets) if end and end <= absolute_end
         ]
