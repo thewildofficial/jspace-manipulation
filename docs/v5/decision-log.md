@@ -66,3 +66,18 @@
   accuracy with 91.67% consequence reports and 100% matched opaque actions.
 - Natural activation interchange and multi-model replication are now licensed.
   No arbitrary steering, broad layer search, or scheming claim is licensed.
+
+## 2026-08-29 — V5-D006 — Freeze RBG-5 natural activation interchange
+
+- RBG-5 uses 48 fresh, lexically split bases and a focused seven-cell design to
+  replicate the RBG-4 behavioral conjunction before opening any activation.
+- Discovery data may select one natural donor/layer/semantic-anchor combination
+  within the previously established Qwen layers 36–43. A hashed freeze is required
+  before locked activation patching.
+- The locked causal endpoint requires both a positive exact clustered margin test
+  and at least 20% repair of eligible failed prose/assertion choices.
+- Probes and J-space are descriptive only. Full-residual natural interchange is
+  the only licensed first intervention; arbitrary vectors and component/path
+  searches remain closed.
+- Dataset expected SHA-256:
+  `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.

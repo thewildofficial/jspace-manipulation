@@ -36,3 +36,7 @@ redundant-prose assertion prompts, with reverse and same-condition controls. Do 
 use arbitrary steering vectors or tune layers against the final endpoint. A small
 fresh behavioral replication should accompany any mechanistic result.
 
+This experiment is now frozen as **V5-RBG-5**. It uses discovery data to choose
+one site inside the pre-established layers 36–43, hashes that choice, and tests it
+once on lexically disjoint locked games. Probes and optional J-space trajectories
+remain secondary diagnostics.

@@ -14,6 +14,7 @@ analysis code, not new experiment definitions.
 | [`analyze_strategic_trajectories.py`](analyze_strategic_trajectories.py) | Rebuilds the V2-ST-1 trajectory checks. |
 | [`analyze_v4_*.py`](.) | Rebuilds the V4 rationale-interference analyses. |
 | [`analyze_v5_*.py`](.) | Rebuilds the V5 game-study analyses. |
+| [`analyze_v5_mechanistic_decomposition.py`](analyze_v5_mechanistic_decomposition.py) | Rebuilds the locked RBG-5 patch gate and probe tables from downloaded immutable payloads. |
 | [`generate_dataset.py`](generate_dataset.py) | Creates deterministic experiment data from the configured prompt families. |
 | [`modal_v2.py`](../modal_v2.py) | Runs the original V2 GPU workflow, including the H0 gate. |
 | [`modal_h0r.py`](../modal_h0r.py) | Runs the H0R diagnostic and prospective GPU workflows. |
