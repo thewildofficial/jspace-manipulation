@@ -678,7 +678,11 @@ def _fit_probe_artifact(
     c_grid = [float(fixed_c)] if fixed_c is not None else list(
         map(float, config["probe"]["regularization_c_grid"])
     )
-    fixed_solver = str(config["probe"].get("solver", "lbfgs"))
+    # RBG-5B fixes C prospectively and uses the fast primal L2 solver. Keep
+    # the legacy RBG-5 path's liblinear solver unchanged when it has no fixed C.
+    fixed_solver = str(
+        config["probe"].get("solver", "lbfgs" if fixed_c is not None else "liblinear")
+    )
     folds = int(config["probe"]["group_folds"])
     rng = np.random.default_rng(int(config["probe"]["seed"]))
     models = []
@@ -759,7 +763,7 @@ def _fit_probe_artifact(
                                 "status": "ok",
                                 "n": len(valid_kind),
                                 "selected_c": float(fixed_c),
-                                "solver": "lbfgs",
+                                "solver": fixed_solver,
                                 "discovery_fit_balanced_accuracy": float(
                                     balanced_accuracy_score(y, estimator.predict(x))
                                 ),

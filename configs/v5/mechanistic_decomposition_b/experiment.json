@@ -13,7 +13,7 @@
     "locked_base_games": 48,
     "lexicon": "rbg5b_v1",
     "concept_pair_count": 96,
-    "expected_content_sha256": "b64f6acbf286096dbbd0608c879f96d13265526e4c6f9f6c37cbd0742f8dc2ea",
+    "expected_content_sha256": "a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed",
     "frames": ["strategic", "device"],
     "focused_cells": [
       ["opposed", "assertion", "none", "prose"],
@@ -68,8 +68,6 @@
       "correct_action_index", "chosen_action_index"
     ],
     "fixed_regularization_c": 0.1,
-    "solver": "lbfgs",
-    "fit_protocol": "single_discovery_fit_locked_evaluation",
     "evaluation_population": "all_captured",
     "group_folds": 6,
     "bootstrap_base_resamples": 2000,
