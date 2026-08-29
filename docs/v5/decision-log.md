@@ -170,9 +170,11 @@
 - Modal logs showed repeated `liblinear` convergence warnings.  RBG-5B fixes
   `C=0.1` prospectively and explicitly forbids hyperparameter search, so the
   prior implementation was unnecessarily fitting six grouped folds and a
-  shuffled control for every layer/anchor/target site.
-- Freeze a single standardized L2 logistic fit on discovery data (`solver=lbfgs`,
-  `C=0.1`) followed by the preregistered locked out-of-sample readout.  Retain
+  shuffled control for every layer/anchor/target site.  A trial single-fit
+  `lbfgs` implementation was also too slow in this 5,120-dimensional regime.
+- Freeze a single standardized dual-L2 logistic fit on discovery data
+  (`solver=liblinear`, `C=0.1`) followed by the preregistered locked
+  out-of-sample readout.  Retain
   the ten deterministic label permutations at the four sentinel sites as the
   only grouped cross-validation controls.  The legacy RBG-5 grid/CV path is
   unchanged.
