@@ -40,7 +40,7 @@ SYSTEM_PROMPT = (
 app = modal.App("jspace-v5-mechanistic-decomposition")
 cache = modal.Volume.from_name("jspace-hf-cache", create_if_missing=True)
 artifacts = modal.Volume.from_name("jspace-v5-rbg5-artifacts", create_if_missing=True)
-core_image = (
+base_image = (
     modal.Image.debian_slim(python_version="3.13")
     .apt_install("git")
     .uv_pip_install(
@@ -51,11 +51,15 @@ core_image = (
         "huggingface_hub>=0.34",
     )
     .env({"HF_HOME": "/cache/huggingface", "TOKENIZERS_PARALLELISM": "false"})
-    .add_local_dir("src/jspace_policy", remote_path="/root/jspace_policy")
+)
+core_image = base_image.add_local_dir(
+    "src/jspace_policy", remote_path="/root/jspace_policy"
 )
 JLENS_COMMIT = "581d398613e5602a5af361e1c34d3a92ea82ba8e"
-lens_image = core_image.uv_pip_install(
+lens_image = base_image.uv_pip_install(
     f"git+https://github.com/anthropics/jacobian-lens.git@{JLENS_COMMIT}"
+).add_local_dir(
+    "src/jspace_policy", remote_path="/root/jspace_policy"
 )
 
 

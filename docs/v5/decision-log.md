@@ -81,3 +81,13 @@
   searches remain closed.
 - Dataset expected SHA-256:
   `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.
+
+## 2026-08-29 — V5-D007 — Repair preflight image construction
+
+- The first RBG-5 preflight stopped during Modal image definition because the
+  optional Jacobian-lens dependency was appended after a local source mount.
+- No tokenizer, dataset query, model weights, behavior, activation, or endpoint
+  output was opened.
+- Move the local source mount to the final step of both core and lens images.
+  The frozen dataset, gates, prompts, model, sites, metrics, and analyses are
+  unchanged.
