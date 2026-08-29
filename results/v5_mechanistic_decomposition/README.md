@@ -1,6 +1,6 @@
 # V5-RBG-5 — mechanistic decomposition
 
-**Status: prospectively frozen; no model output has been opened.**
+**Status: prospectively frozen; preflight passed; no model output has been opened.**
 
 RBG-5 first reruns the focused RBG-4 behavioral conjunction on 48 fresh bases.
 If that gate passes, discovery activations select and hash one natural
@@ -30,4 +30,3 @@ uv run python scripts/analyze_v5_mechanistic_decomposition.py
 
 The preregistration is
 [`../../docs/v5/mechanistic-decomposition-preregistration.md`](../../docs/v5/mechanistic-decomposition-preregistration.md).
-

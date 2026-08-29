@@ -101,3 +101,13 @@
   additionally compare that constant with the committed manifest; remote calls
   compare it with the content-addressed dataset passed as an argument.
 - No prompt, gate, model, activation, intervention, or analysis choice changed.
+
+## 2026-08-29 — V5-D009 — RBG-5 preflight passed
+
+- All 2,016 action and consequence-report queries passed chat-template,
+  one-token continuation, and semantic-anchor resolution checks.
+- Prompt lengths range from 172 to 321 tokens and every query exposes at least
+  the five common semantic anchors.
+- Dataset SHA-256 matched
+  `238ac7d6a36c49851ef2ebabce201aca3ad3c33c2d79251ab67bf2ee16090c8e`.
+- No model behavior or activation output was opened by preflight.
