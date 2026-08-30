@@ -33,6 +33,7 @@ def test_rbg5b_dataset_is_fresh_deterministic_and_hashed() -> None:
     verify_dataset_payload(payload, config)
     assert payload == dataset_payload(config)
     assert len(RBG5B_CONCEPT_PAIRS) == 96
+    assert all(row["prompt"].count("\n---\n") == 3 for row in payload["rows"])
     assert len(payload["rows"]) == 1344
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert payload["content_sha256"] == manifest["expected_content_sha256"]

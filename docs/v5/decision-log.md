@@ -177,3 +177,26 @@
 - This change does not modify the content-addressed dataset, prompts, model,
   behavioral gate, activation sites, discovery selection rule, locked endpoint,
   controls, statistics, J-space analysis, or claim boundary.
+
+## 2026-08-30 — V5-D014 — Invalidate the first RBG-5B corpus at paired-anchor preflight
+
+- GitHub Actions run `33336737311` passed repository, dataset-hash, credential,
+  and stage-prerequisite checks, then stopped in CPU-only Modal preflight before
+  behavior with `paired anchor token mismatch for mapping_end` on the first
+  discovery recipient. No model weights, behavior, activation, probe, patch,
+  J-space, or locked output was opened.
+- The original prompt sections ended on their last lexical item. Prose, table,
+  and opaque renderings therefore need not share the same token ID at a nominally
+  matched section endpoint, contradicting the prospectively required paired-token
+  check. The original RBG-5B dataset SHA-256
+  `a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed` is
+  invalid for activation execution and will not be reused.
+- Add the same neutral Markdown section delimiter (`---`) after the mapping,
+  action list, and payoff in every RBG-5B row, and anchor each corresponding
+  residual state after that delimiter. Regenerate and content-address the full
+  discovery and locked corpus before rerunning preflight.
+- This prospective repair changes prompt formatting and anchor token identity,
+  so the corpus hash must change. It does not change concepts, splits, history,
+  receiver/device policies, action order, consequences, targets, expected
+  answers, behavioral thresholds, candidate layers, site-selection rule,
+  controls, statistics, or claim boundary.
