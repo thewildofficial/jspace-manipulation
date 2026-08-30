@@ -160,3 +160,20 @@
   predecessor manifests for stage-specific dispatches, downloads immutable
   Modal-volume artifacts, and runs the offline analysis after J-space.  No
   scientific result is implied until a complete immutable manifest is present.
+
+## 2026-08-30 — V5-D013 — Enforce the approved incremental USD 10 execution ceiling
+
+- The approved RBG-5B execution budget is an incremental USD 10 Modal ceiling.
+  The frozen scientific config already estimates USD 8.7921 of GPU, CPU, and
+  memory charges at its declared stage ceilings; CPU-only preflight raises the
+  hard-timeout ceiling to approximately USD 8.8053.
+- Replace the more permissive Modal function timeouts with the already frozen
+  execution ceilings: 1,200 seconds behavior, 3,000 discovery, 3,600 locked,
+  and 900 J-space, plus a 300-second CPU preflight. A timeout is an operational
+  stop, not a scientific result, and will not be rerun without new approval.
+- Add executable admission and CI checks that refuse the full plan if the sum
+  of hard timeout charges exceeds USD 10. The reservation artifact records the
+  incremental authorization, timeout ceiling, and per-stage timeout values.
+- This change does not modify the content-addressed dataset, prompts, model,
+  behavioral gate, activation sites, discovery selection rule, locked endpoint,
+  controls, statistics, J-space analysis, or claim boundary.

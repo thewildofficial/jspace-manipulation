@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from jspace_policy.budget import estimate_cost
+from jspace_policy.budget import RBG5B_EXECUTION_LIMITS, estimate_cost
 from jspace_policy.mechanistic_decomposition import analyze_behavior
 from jspace_policy.mechanistic_decomposition_analysis import (
     _resolve_remote_artifact,
@@ -153,3 +153,7 @@ def test_full_run_budget_reservation_matches_config() -> None:
     assert estimate + config["execution"]["prior_v5_buffered_usd_at_freeze"] < config[
         "execution"
     ]["hard_cumulative_v5_cost_limit_usd"]
+    assert RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds == stage_seconds["behavior"]
+    assert RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds == stage_seconds["discovery"]
+    assert RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds == stage_seconds["locked"]
+    assert RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds == stage_seconds["jspace"]

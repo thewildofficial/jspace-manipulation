@@ -24,7 +24,12 @@ from typing import Any
 
 import modal
 
-from jspace_policy.budget import append_ledger, estimate_cost, ledger_total
+from jspace_policy.budget import (
+    RBG5B_EXECUTION_LIMITS,
+    append_ledger,
+    estimate_cost,
+    ledger_total,
+)
 
 CONFIG_PATH = Path("configs/v5/mechanistic_decomposition/experiment.json")
 DATASET_PATH = Path("configs/v5/mechanistic_decomposition/dataset.json")
@@ -363,7 +368,13 @@ def _query_batches(
     return output
 
 
-@app.function(image=core_image, cpu=2, memory=8192, volumes={"/cache": cache}, timeout=900)
+@app.function(
+    image=core_image,
+    cpu=2,
+    memory=8192,
+    volumes={"/cache": cache},
+    timeout=RBG5B_EXECUTION_LIMITS["preflight"].timeout_seconds,
+)
 def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     import transformers
 
@@ -428,7 +439,7 @@ def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     cpu=8,
     memory=32768,
     volumes={"/cache": cache},
-    timeout=2400,
+    timeout=RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds,
     retries=0,
 )
 def behavior_remote(dataset: dict[str, Any], config: dict[str, Any], git_commit: str) -> str:
@@ -1460,7 +1471,7 @@ def _run_locked_patches(
     cpu=16,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=7200,
+    timeout=RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds,
     retries=0,
     max_containers=1,
 )
@@ -1589,7 +1600,7 @@ def discovery_remote(
     cpu=16,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=9000,
+    timeout=RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds,
     retries=0,
     max_containers=1,
 )
@@ -1730,7 +1741,7 @@ def locked_remote(
     cpu=8,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=5400,
+    timeout=RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds,
     retries=0,
     max_containers=1,
 )

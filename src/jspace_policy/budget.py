@@ -20,6 +20,29 @@ MEMORY_GIB_USD_PER_SECOND = 0.00000222
 
 
 @dataclass(frozen=True)
+class ExecutionLimit:
+    """A hard Modal function timeout and its billable resources."""
+
+    timeout_seconds: int
+    gpu: str | None
+    cpu_cores: float
+    memory_gib: float
+
+
+# Operational limits only: the frozen RBG-5B dataset, behavioral gates, patch
+# search, and locked endpoint are unchanged. Centralizing the limits makes the
+# user's incremental authorization executable and testable.
+RBG5B_INCREMENTAL_COST_LIMIT_USD = 10.0
+RBG5B_EXECUTION_LIMITS = {
+    "preflight": ExecutionLimit(300, None, 2, 8),
+    "behavior": ExecutionLimit(1200, "A100-80GB", 8, 32),
+    "discovery": ExecutionLimit(3000, "A100-80GB", 16, 64),
+    "locked": ExecutionLimit(3600, "A100-80GB", 16, 64),
+    "jspace": ExecutionLimit(900, "A100-80GB", 8, 64),
+}
+
+
+@dataclass(frozen=True)
 class CostEstimate:
     gpu: str
     seconds: float
@@ -28,6 +51,38 @@ class CostEstimate:
     memory_usd: float
     subtotal_usd: float
     buffered_usd: float
+
+
+def execution_limit_cost_usd(limit: ExecutionLimit) -> float:
+    """Return the maximum compute charge implied by one hard timeout."""
+
+    gpu_rate = 0.0 if limit.gpu is None else GPU_USD_PER_SECOND[limit.gpu]
+    rate = (
+        gpu_rate
+        + CPU_CORE_USD_PER_SECOND * limit.cpu_cores
+        + MEMORY_GIB_USD_PER_SECOND * limit.memory_gib
+    )
+    return rate * limit.timeout_seconds
+
+
+def execution_plan_cost_usd(limits: dict[str, ExecutionLimit]) -> float:
+    """Return the cost ceiling if every stage consumes its full timeout."""
+
+    return sum(execution_limit_cost_usd(limit) for limit in limits.values())
+
+
+def admit_execution_plan(
+    limits: dict[str, ExecutionLimit], *, limit_usd: float
+) -> float:
+    """Refuse a plan whose hard timeout ceiling exceeds its authorization."""
+
+    ceiling = execution_plan_cost_usd(limits)
+    if ceiling > limit_usd:
+        raise RuntimeError(
+            f"execution plan refused: hard timeout ceiling ${ceiling:.2f} "
+            f"exceeds ${limit_usd:.2f} authorization"
+        )
+    return ceiling
 
 
 def estimate_cost(

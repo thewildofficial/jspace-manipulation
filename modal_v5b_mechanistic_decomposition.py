@@ -14,6 +14,11 @@ from pathlib import Path
 import modal
 
 import modal_v5_mechanistic_decomposition as base
+from jspace_policy.budget import (
+    RBG5B_EXECUTION_LIMITS,
+    RBG5B_INCREMENTAL_COST_LIMIT_USD,
+    admit_execution_plan,
+)
 
 CONFIG_PATH = Path("configs/v5/mechanistic_decomposition_b/experiment.json")
 DATASET_PATH = Path("configs/v5/mechanistic_decomposition_b/dataset.json")
@@ -50,6 +55,10 @@ def _dataset(config: dict) -> dict:
 
 
 def _admit_full_run(config: dict) -> None:
+    admit_execution_plan(
+        RBG5B_EXECUTION_LIMITS,
+        limit_usd=RBG5B_INCREMENTAL_COST_LIMIT_USD,
+    )
     current = base._v5_buffered_total()
     estimates = sum(
         base._stage_estimate(config, stage).buffered_usd
@@ -108,6 +117,15 @@ def behavior() -> None:
             for stage in ("behavior", "discovery", "locked", "jspace")
         },
         "hard_limit_usd": config["execution"]["hard_cumulative_v5_cost_limit_usd"],
+        "hard_incremental_limit_usd": RBG5B_INCREMENTAL_COST_LIMIT_USD,
+        "hard_timeout_cost_ceiling_usd": admit_execution_plan(
+            RBG5B_EXECUTION_LIMITS,
+            limit_usd=RBG5B_INCREMENTAL_COST_LIMIT_USD,
+        ),
+        "hard_timeouts_seconds": {
+            stage: limit.timeout_seconds
+            for stage, limit in RBG5B_EXECUTION_LIMITS.items()
+        },
     }
     _write_new(RESULT_ROOT / "raw/cost_reservation.json", reservation)
     payload = json.loads(base.behavior_remote.remote(dataset, config, base._git_head()))
