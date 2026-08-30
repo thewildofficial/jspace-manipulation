@@ -200,3 +200,16 @@
   receiver/device policies, action order, consequences, targets, expected
   answers, behavioral thresholds, candidate layers, site-selection rule,
   controls, statistics, or claim boundary.
+
+## 2026-08-30 — V5-D015 — Corrected RBG-5B corpus passed preflight
+
+- The corrected corpus is frozen at SHA-256
+  `cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3`.
+  A row-by-row comparison against the invalidated corpus confirmed that all
+  1,344 logical rows are unchanged outside prompt delimiters and anchor offsets.
+- GitHub Actions run `33337076874` checked 4,032 action/report queries and 384
+  recipient-donor anchor pairs. Every continuation and semantic-anchor check
+  passed; prompt lengths range from 182 to 346 tokens with at least five anchors.
+- This was a CPU-only tokenizer preflight. Model weights, behavior, activations,
+  probes, patches, J-space, and locked outputs remain unopened. The corrected
+  corpus may now enter the prospectively gated behavioral run.
