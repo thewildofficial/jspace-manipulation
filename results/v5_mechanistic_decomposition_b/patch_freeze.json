@@ -1,0 +1,595 @@
+{
+  "content_sha256": "e6f5c0d9ef9056d381572cc00279ea808623ededf5b9664ef17cf00633e6378a",
+  "dataset_sha256": "cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3",
+  "schema_version": 1,
+  "selected": {
+    "anchor": "payoff_end",
+    "cluster_mean_margin_change": 0.058823529411764705,
+    "donor_family": "opaque",
+    "exact_cluster_sign_flip_p": 0.021448373794555664,
+    "layer": 40,
+    "n_bases": 34,
+    "n_rows": 60
+  },
+  "selection_metric": "base_cluster_mean_correct_action_logit_margin_change",
+  "selection_table": [
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.058823529411764705,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.021448373794555664,
+      "layer": 40,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.058823529411764705,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.020622968673706055,
+      "layer": 41,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.05698529411764706,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.024499982595443726,
+      "layer": 38,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.05514705882352941,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.041097402572631836,
+      "layer": 42,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.05330882352941176,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.025008559226989746,
+      "layer": 37,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.051470588235294115,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.021423041820526123,
+      "layer": 36,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.051470588235294115,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.03434324264526367,
+      "layer": 37,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.051470588235294115,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.016568779945373535,
+      "layer": 39,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.05113636363636364,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.050019264221191406,
+      "layer": 42,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04963235294117647,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.036118507385253906,
+      "layer": 41,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04963235294117647,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.04976320266723633,
+      "layer": 43,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.025320053100585938,
+      "layer": 36,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.08973503112792969,
+      "layer": 38,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.05485796928405762,
+      "layer": 38,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.054233551025390625,
+      "layer": 40,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.07839447259902954,
+      "layer": 41,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04779411764705882,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.047985583543777466,
+      "layer": 43,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04734848484848485,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.062068939208984375,
+      "layer": 37,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04734848484848485,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.08604437112808228,
+      "layer": 41,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.05256938934326172,
+      "layer": 37,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.04472586512565613,
+      "layer": 38,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.05444300174713135,
+      "layer": 39,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.03225517272949219,
+      "layer": 40,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.08432203531265259,
+      "layer": 42,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.04595588235294118,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.06333759427070618,
+      "layer": 43,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.043560606060606064,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.06394290924072266,
+      "layer": 40,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.043560606060606064,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.14605093002319336,
+      "layer": 41,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.043560606060606064,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.08030068874359131,
+      "layer": 43,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.042279411764705885,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.10283088684082031,
+      "layer": 37,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.042279411764705885,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.1183774471282959,
+      "layer": 41,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.041666666666666664,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.1341414451599121,
+      "layer": 38,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.04044117647058824,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.07927703857421875,
+      "layer": 39,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.04044117647058824,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.09946846961975098,
+      "layer": 42,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.04044117647058824,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.08780336380004883,
+      "layer": 43,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03860294117647059,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.0920695960521698,
+      "layer": 36,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03860294117647059,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.1500169038772583,
+      "layer": 42,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.03787878787878788,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.10390424728393555,
+      "layer": 36,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.03787878787878788,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.16783714294433594,
+      "layer": 39,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03676470588235294,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.17491775751113892,
+      "layer": 40,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.09586334228515625,
+      "layer": 36,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.12607717514038086,
+      "layer": 36,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.12635040283203125,
+      "layer": 37,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.18334054946899414,
+      "layer": 39,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.1234893798828125,
+      "layer": 40,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.03598484848484849,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.1858358383178711,
+      "layer": 41,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.1903076171875,
+      "layer": 37,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.16228103637695312,
+      "layer": 38,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.2450733184814453,
+      "layer": 40,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.20697999000549316,
+      "layer": 42,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.2014141082763672,
+      "layer": 42,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03409090909090909,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.2094409465789795,
+      "layer": 43,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.03308823529411765,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.229098379611969,
+      "layer": 39,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.032196969696969696,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.21599960327148438,
+      "layer": 37,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.032196969696969696,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.23530006408691406,
+      "layer": 40,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.03125,
+      "donor_family": "opaque",
+      "exact_cluster_sign_flip_p": 0.186004638671875,
+      "layer": 36,
+      "n_bases": 34,
+      "n_rows": 60
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.030303030303030304,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.24798166751861572,
+      "layer": 38,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "actions_end",
+      "cluster_mean_margin_change": 0.030303030303030304,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.255479097366333,
+      "layer": 38,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "payoff_end",
+      "cluster_mean_margin_change": 0.030303030303030304,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.2720456123352051,
+      "layer": 42,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.028409090909090908,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.29180312156677246,
+      "layer": 43,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.01893939393939394,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.4797658920288086,
+      "layer": 36,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.017045454545454544,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.5064306259155273,
+      "layer": 39,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.017045454545454544,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.5007343292236328,
+      "layer": 39,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "history_end",
+      "cluster_mean_margin_change": 0.017045454545454544,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.5723724365234375,
+      "layer": 43,
+      "n_bases": 33,
+      "n_rows": 53
+    },
+    {
+      "anchor": "mapping_end",
+      "cluster_mean_margin_change": 0.015151515151515152,
+      "donor_family": "table",
+      "exact_cluster_sign_flip_p": 0.6056182384490967,
+      "layer": 41,
+      "n_bases": 33,
+      "n_rows": 53
+    }
+  ],
+  "status": "frozen_after_discovery_before_locked_capture",
+  "study_id": "V5-RBG-5"
+}

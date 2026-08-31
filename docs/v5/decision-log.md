@@ -248,3 +248,30 @@
   declared A100-80GB, CPU, and memory rates, their combined worst-case charge is
   USD 5.0693, leaving USD 1.5307 headroom. No repaired Modal stage is launched
   until the user confirms this exact test and ceiling.
+
+## 2026-08-31 — V5-D017 — Freeze the repaired discovery winner before opening locked data
+
+- After explicit user approval, discovery-only GitHub Actions run `33377569076`
+  executed commit `a766035`. It reused the immutable passing behavior artifact,
+  skipped preflight and behavior inference, and completed successfully in
+  922.54 seconds on an A100-SXM4-80GB. Measured compute was USD 0.9647 before
+  the ledger's 20% buffer; the hard stage ceiling was USD 1.2548.
+- The probe freeze contains 1,696 primary and sentinel selection records using
+  the V5-D016 Newton-CG implementation. No fit reached its iteration limit. All
+  recorded residual, mask, metadata, geometry, and patch-row hashes match the
+  downloaded immutable files.
+- Independent local reconstruction from all 3,616 discovery patch rows exactly
+  reproduced the content-addressed patch freeze. The positive winner is an
+  opaque donor at layer 40 and `payoff_end`, with 60 rows across 34 bases,
+  cluster-mean correct-action margin change `+0.05882`, and exact sign-flip
+  `p = 0.02145`.
+- The discovery effect is directional but small: raw row-mean margin change was
+  `+0.05208`; one of 60 rows was marked repaired via a zero-margin tie, and zero
+  rows achieved a strictly positive correct-action margin. This does not meet
+  or anticipate the locked 20% repair endpoint. Under the frozen rule, however,
+  any positive top-ranked discovery candidate opens one test of that exact site
+  on the untouched locked concepts. No alternative site may now be selected.
+- The remaining locked and J-space hard ceilings sum to USD 3.8145. GitHub
+  Actions may redundantly transfer the prior discovery artifacts during later
+  harvest steps, but that transfer does not use Modal compute or change any
+  model input, intervention, endpoint, or scientific artifact.

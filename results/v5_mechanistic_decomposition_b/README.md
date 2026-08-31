@@ -14,9 +14,17 @@ points (exact base-cluster `p = 2.997e-10`). The complete frozen gate is in
 
 Run `33337232212` emitted 670 liblinear convergence warnings before discovery
 hit its 3,000-second timeout. Decision V5-D016 records the prospective
-implementation-only repair and the new $6.60 remaining authorization. No
-discovery, locked, or J-space result is implied until its corresponding
-immutable manifest exists.
+implementation-only repair and the new $6.60 remaining authorization.
+
+The repaired discovery-only run
+[`33377569076`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33377569076)
+completed in 922.54 seconds. It froze opaque-donor residual replacement at layer
+40 and `payoff_end`: cluster-mean correct-action margin change `+0.05882`, exact
+sign-flip `p = 0.02145`, 34 bases and 60 rows. This was a small directional
+effect: one row reached a counted repair through a zero-margin tie, while no row
+became strictly positive-margin correct. The untouched locked split is now
+legally open under the prospective positive-winner rule; no locked or J-space
+result is yet implied.
 
 The one-time dataset materialization command is retained for auditability but
 must not be run against this already frozen checkout (the entrypoint refuses to
