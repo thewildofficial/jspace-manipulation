@@ -55,6 +55,18 @@ immutable [run 33391981859](https://github.com/thewildofficial/jspace-manipulati
 artifact without rerunning the model. J-space remains a separately gated,
 observational readout and has not been used to reinterpret this negative result.
 
+The required J-space secondary run
+[`33395448789`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33395448789)
+completed in 509.305 seconds and wrote 69,120 rows (34,560 per split), SHA
+`6b17bca2d1cbe822cb4dbf654557ec1a1b8e49c9c8568da796004b712f7e1cbe`. Projected
+action-token top-1 ranking was 50.96% on discovery and 54.69% on locked rows;
+within locked rows it was 57.73% for opposed games and 42.56% for aligned games.
+These are lens/readout descriptives, not evidence that J-space controls the
+model, and they cannot select a new patch site or overturn the failed locked
+endpoint. The J-space measured Modal subtotal was USD 0.47919 (buffered ledger
+amount USD 0.57503); the two successful salvage stages together used USD 0.81301
+measured / USD 0.97561 buffered.
+
 The one-time dataset materialization command is retained for auditability but
 must not be run against this already frozen checkout (the entrypoint refuses to
 overwrite `dataset.json`):

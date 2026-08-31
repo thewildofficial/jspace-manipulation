@@ -19,12 +19,15 @@ repair the matched meaningful-action failure.
 > RBG-5 replicated it but stopped before activations because one report-stability
 > gate missed by 0.208 percentage points. RBG-5B passed its corrected behavior
 > gate and froze one weak discovery site (opaque donor, layer 40,
-> `payoff_end`). Its first locked run timed out before patching, so the held-out
-> causal result is still unopened; an implementation-only salvage now keeps CPU
+> `payoff_end`). Its first locked run timed out before patching; an
+> implementation-only salvage now keeps CPU
 > statistics off the paid GPU. The salvage completed the locked test: the frozen
 > natural-state interchange repaired 2/50 failures (4%), failed its exact
 > clustered endpoint (`p=.429`), and preserved consequence reports; the causal
-> claim is therefore negative for this checkpoint and contrast.
+> claim is therefore negative for this checkpoint and contrast. The required
+> J-space secondary readout also completed (69,120 rows); its projected
+> action-token ranking was near chance and is not used to rescue the failed
+> causal endpoint.
 
 ## The question in one example
 
@@ -147,7 +150,7 @@ The negative results are part of the evidence rather than discarded attempts:
 | RBG-3 | Does it replicate on a fresh design? | Effect weakened; rehearsal repaired seven errors |
 | RBG-4 | Can more correct evidence selectively worsen action? | Passed prospectively |
 | RBG-5 | Can activations be opened for causal analysis? | Behavior replicated; report gate missed by 0.208 points |
-| RBG-5B | Can a natural successful state repair held-out failures? | Locked result negative: 2/50 repairs (4%), exact `p=.429`; J-space readout pending |
+| RBG-5B | Can a natural successful state repair held-out failures? | Locked result negative: 2/50 repairs (4%), exact `p=.429`; J-space completed as an observational readout |
 
 This history matters. Observable decodability was never promoted into causal
 evidence, failed thresholds were not rounded, and later studies do not rewrite

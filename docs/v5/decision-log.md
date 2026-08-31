@@ -332,3 +332,21 @@
   post-hoc exclusion. J-space remains the preregistered observational readout;
   it may describe the locked state but cannot reopen patch selection or convert
   this failed causal endpoint into a positive claim.
+
+## 2026-08-31 — V5-D020 — Complete the J-space secondary readout without upgrading its claim
+
+- After the locked salvage completed, the required J-space stage ran through
+  GitHub Actions `33395448789`, pinned to commit `0b1f3d0`. Modal run
+  `6fba6e96678445c4a594147271cc830b` completed in 509.305 seconds and wrote
+  69,120 rows (34,560 per split), with SHA-256
+  `6b17bca2d1cbe822cb4dbf654557ec1a1b8e49c9c8568da796004b712f7e1cbe`.
+- The readout used the frozen dataset and lens configuration: layers 36–43,
+  nine anchors, top-k 20, and the predeclared full-vocabulary subset. Projected
+  action-token top-1 ranking was 50.96% on discovery and 54.69% on locked rows;
+  locked opposed/aligned rows were 57.73%/42.56%. These are observational
+  descriptives only: they do not establish control, select a new patch site, or
+  reopen the failed locked causal endpoint.
+- The measured J-space subtotal was USD 0.47919 (buffered ledger amount USD
+  0.57503). Together, the successful locked and J-space stages used USD 0.81301
+  measured / USD 0.97561 buffered against the USD 1.93225 hard salvage ceiling;
+  retries remained disabled.

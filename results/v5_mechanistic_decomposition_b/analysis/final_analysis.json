@@ -494,8 +494,40 @@
     "locked_patch": "selective natural residual transport under this frozen contrast",
     "probes": "information availability/decodability only"
   },
-  "content_sha256": "dff3dff42a98d5c598a579facc466a08a2430fab4bb24fea7d0c4e9b3598d250",
+  "content_sha256": "f4895fcb2d655b7ceb6bb0535f417208ccd0bc464656f7865714991a032c7789",
   "dataset_sha256": "cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3",
+  "jspace": {
+    "artifact": {
+      "n_rows": 69120,
+      "remote_root": "/artifacts/rbg5b/6fba6e96678445c4a594147271cc830b",
+      "rows_path": "/artifacts/rbg5b/6fba6e96678445c4a594147271cc830b/jspace_rows.json.gz",
+      "rows_sha256": "6b17bca2d1cbe822cb4dbf654557ec1a1b8e49c9c8568da796004b712f7e1cbe"
+    },
+    "metadata": {
+      "created_at": "2026-08-31T13:19:17.821542+00:00",
+      "d_model": 5120,
+      "dataset_sha256": "cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3",
+      "dtype": "bfloat16",
+      "elapsed_seconds": 509.30476434799994,
+      "git_commit": "0b1f3d0de188bad4cacc292a71013ff3188303c8",
+      "gpu_actual": "NVIDIA A100-SXM4-80GB",
+      "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+      "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+      "lens_repo": "neuronpedia/jacobian-lens",
+      "lens_revision": "qwen-n1000",
+      "model_id": "Qwen/Qwen3.6-27B",
+      "model_revision_requested": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+      "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+      "n_layers": 64,
+      "run_id": "6fba6e96678445c4a594147271cc830b",
+      "tokenizer_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+      "torch_version": "2.13.0+cu130",
+      "transformers_version": "5.16.1"
+    },
+    "schema_version": 1,
+    "status": "completed_observational_secondary",
+    "study_id": "V5-RBG-5B"
+  },
   "locked": {
     "artifact": {
       "anchor_mask_path": "/artifacts/rbg5b/7fc3c5322f554086a57a04629a54828d/anchor_mask.npy",
