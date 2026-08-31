@@ -5,6 +5,8 @@ import pytest
 from jspace_policy.budget import (
     RBG5B_EXECUTION_LIMITS,
     RBG5B_INCREMENTAL_COST_LIMIT_USD,
+    RBG5B_REPAIR_EXECUTION_LIMITS,
+    RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
     ExecutionLimit,
     admit_execution_plan,
     admit_run,
@@ -35,11 +37,21 @@ def test_rbg5b_hard_timeouts_fit_incremental_authorization() -> None:
     )
 
     assert ceiling == execution_plan_cost_usd(RBG5B_EXECUTION_LIMITS)
-    assert ceiling < 8.81
+    assert ceiling < RBG5B_INCREMENTAL_COST_LIMIT_USD
     assert RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds == 1200
-    assert RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds == 3000
-    assert RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds == 3600
-    assert RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds == 900
+    assert RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds == 1200
+    assert RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds == 3000
+    assert RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds == 720
+
+
+def test_rbg5b_repair_plan_fits_reported_remaining_authorization() -> None:
+    ceiling = admit_execution_plan(
+        RBG5B_REPAIR_EXECUTION_LIMITS,
+        limit_usd=RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    )
+
+    assert ceiling == pytest.approx(5.0692896)
+    assert RBG5B_REPAIR_REMAINING_COST_LIMIT_USD - ceiling > 1.53
 
 
 def test_incremental_authorization_refuses_oversized_timeout_plan() -> None:

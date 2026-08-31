@@ -1,9 +1,22 @@
 # V5-RBG-5B results
 
-This directory is reserved for the immutable RBG-5B run. The checked-in
-configuration and dataset manifest are frozen; behavior, discovery, locked
-patching, J-space, and final analysis artifacts are created append-only by the
-`modal_v5b_mechanistic_decomposition.py` entrypoints.
+This directory contains the immutable surviving artifacts from GitHub Actions
+run [`33337232212`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33337232212).
+The corrected preflight and behavioral gate passed. Discovery then timed out
+inside descriptive probe fitting before its manifest or Modal-volume artifact
+was committed; locked patching and J-space were never opened.
+
+The passing behavioral result is not rerun: option reports were 98.10% correct,
+aligned and opaque action accuracy were both 100%, and redundant semantic
+history reduced opposed prose-assertion action accuracy by 33.85 percentage
+points (exact base-cluster `p = 2.997e-10`). The complete frozen gate is in
+[`analysis/behavior_analysis.json`](analysis/behavior_analysis.json).
+
+Run `33337232212` emitted 670 liblinear convergence warnings before discovery
+hit its 3,000-second timeout. Decision V5-D016 records the prospective
+implementation-only repair and the new $6.60 remaining authorization. No
+discovery, locked, or J-space result is implied until its corresponding
+immutable manifest exists.
 
 The one-time dataset materialization command is retained for auditability but
 must not be run against this already frozen checkout (the entrypoint refuses to
@@ -44,6 +57,7 @@ gh workflow run v5-mechanistic-decomposition-b.yml --ref <frozen-branch> -f stag
 gh run watch
 ```
 
-Stage-specific dispatches are intended for preflight/diagnostics or a checkout
-that already contains the predecessor manifests.  A fresh end-to-end run
-should use `stage=all`, because GitHub workspaces are ephemeral between runs.
+The checked-in behavior artifact now permits a stage-specific `discovery`
+dispatch without repeating the passed behavior inference. Later stages are
+dispatched only after their predecessor manifests have been reviewed and
+committed.

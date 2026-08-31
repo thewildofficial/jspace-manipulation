@@ -6,7 +6,13 @@ from pathlib import Path
 
 import numpy as np
 
-from jspace_policy.budget import RBG5B_EXECUTION_LIMITS, estimate_cost
+from jspace_policy.budget import (
+    RBG5B_EXECUTION_LIMITS,
+    RBG5B_REPAIR_EXECUTION_LIMITS,
+    RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    estimate_cost,
+    execution_plan_cost_usd,
+)
 from jspace_policy.mechanistic_decomposition import analyze_behavior
 from jspace_policy.mechanistic_decomposition_analysis import (
     _resolve_remote_artifact,
@@ -154,7 +160,10 @@ def test_full_run_budget_reservation_matches_config() -> None:
     assert estimate + config["execution"]["prior_v5_buffered_usd_at_freeze"] < config[
         "execution"
     ]["hard_cumulative_v5_cost_limit_usd"]
+    # The config retains the original prospective reservation as provenance.
+    # The executable limits were tightened after run 33337232212 timed out, and
+    # are independently bounded by the user's reported $6.60 remaining balance.
     assert RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds == stage_seconds["behavior"]
-    assert RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds == stage_seconds["discovery"]
-    assert RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds == stage_seconds["locked"]
-    assert RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds == stage_seconds["jspace"]
+    assert execution_plan_cost_usd(RBG5B_REPAIR_EXECUTION_LIMITS) < (
+        RBG5B_REPAIR_REMAINING_COST_LIMIT_USD
+    )

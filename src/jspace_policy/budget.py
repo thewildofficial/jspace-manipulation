@@ -32,13 +32,24 @@ class ExecutionLimit:
 # Operational limits only: the frozen RBG-5B dataset, behavioral gates, patch
 # search, and locked endpoint are unchanged. Centralizing the limits makes the
 # user's incremental authorization executable and testable.
+# The initial authorization was $10.00.  After the first behavior run and the
+# timed-out discovery attempt, the user reported $6.60 remaining on 2026-08-31.
+# These limits cover only the prospective repair run: discovery -> locked ->
+# J-space.  The failed attempt is historical spend, not silently omitted from
+# the authorization boundary.
 RBG5B_INCREMENTAL_COST_LIMIT_USD = 10.0
+RBG5B_REPAIR_REMAINING_COST_LIMIT_USD = 6.6
 RBG5B_EXECUTION_LIMITS = {
     "preflight": ExecutionLimit(300, None, 2, 8),
     "behavior": ExecutionLimit(1200, "A100-80GB", 8, 32),
-    "discovery": ExecutionLimit(3000, "A100-80GB", 16, 64),
-    "locked": ExecutionLimit(3600, "A100-80GB", 16, 64),
-    "jspace": ExecutionLimit(900, "A100-80GB", 8, 64),
+    "discovery": ExecutionLimit(1200, "A100-80GB", 16, 64),
+    "locked": ExecutionLimit(3000, "A100-80GB", 16, 64),
+    "jspace": ExecutionLimit(720, "A100-80GB", 8, 64),
+}
+
+RBG5B_REPAIR_EXECUTION_LIMITS = {
+    stage: RBG5B_EXECUTION_LIMITS[stage]
+    for stage in ("discovery", "locked", "jspace")
 }
 
 

@@ -213,3 +213,38 @@
 - This was a CPU-only tokenizer preflight. Model weights, behavior, activations,
   probes, patches, J-space, and locked outputs remain unopened. The corrected
   corpus may now enter the prospectively gated behavioral run.
+
+## 2026-08-31 — V5-D016 — Preserve the passing behavior gate and repair the timed-out probe implementation
+
+- GitHub Actions run `33337232212` passed corrected preflight and the complete
+  frozen behavior gate on all 1,344 rows. Option-report accuracy was 98.10%;
+  aligned and opaque action accuracy were 100%; opposed prose-assertion history
+  harm was 33.85 percentage points; assertion-minus-opaque harm was 33.85
+  points; table harm was -3.65 points; and the exact base-cluster test gave
+  `p = 2.997e-10`. The immutable behavior artifact is retained and will not be
+  regenerated for the repair run.
+- Discovery captured its inputs and entered descriptive probe fitting, but the
+  dual liblinear optimizer emitted 670 convergence warnings from 21:58 UTC
+  until Modal enforced the frozen 3,000-second timeout at 22:45 UTC. The remote
+  function never returned or committed a discovery manifest. Locked data and
+  J-space remained unopened, so this is an execution failure rather than a
+  scientific endpoint.
+- Preserve the preregistered standardized, class-balanced L2-logistic objective,
+  fixed `C=0.1`, six discovery-group folds, targets, populations, anchors, and
+  layers. Replace only the non-converging optimizer with Newton-CG, refuse any
+  fit that reaches its iteration limit, and parallelize independent probe sites
+  across 12 single-threaded processes. Remove the extra one-per-site shuffled
+  CV that was not specified in the RBG-5B preregistration; retain all ten label
+  permutations at each of the four frozen sentinel sites.
+- A 72-site synthetic benchmark at the exact 480-by-5,120 feature shape
+  projected approximately 208 seconds for all 1,536 primary sites plus the
+  sentinel controls; converged Newton-CG fits used at most eight iterations.
+  Across 16 additional exact-width synthetic fits where the original solver did
+  converge, Newton-CG and liblinear agreed on 100% of predictions; the maximum
+  fitted probability difference was 0.00774. These benchmarks are operational
+  evidence only and are not model results.
+- The user reported USD 6.60 remaining after the failed run. Tighten hard
+  timeouts to 1,200 seconds discovery, 3,000 locked, and 720 J-space. At the
+  declared A100-80GB, CPU, and memory rates, their combined worst-case charge is
+  USD 5.0693, leaving USD 1.5307 headroom. No repaired Modal stage is launched
+  until the user confirms this exact test and ceiling.

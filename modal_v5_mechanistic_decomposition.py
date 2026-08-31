@@ -56,7 +56,18 @@ base_image = (
         "transformers>=5.5",
         "huggingface_hub>=0.34",
     )
-    .env({"HF_HOME": "/cache/huggingface", "TOKENIZERS_PARALLELISM": "false"})
+    .env(
+        {
+            "HF_HOME": "/cache/huggingface",
+            "TOKENIZERS_PARALLELISM": "false",
+            # Probe folds are parallelized explicitly.  Keep each numerical
+            # solve single-threaded so BLAS does not multiply 12 workers into
+            # severe oversubscription.
+            "OMP_NUM_THREADS": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+        }
+    )
 )
 core_image = base_image.add_local_dir(
     "src/jspace_policy", remote_path="/root/jspace_policy"
@@ -661,6 +672,7 @@ def _fit_probe_artifact(
     import pickle
 
     import numpy as np
+    from joblib import Parallel, delayed, parallel_config
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import balanced_accuracy_score
     from sklearn.model_selection import GroupKFold
@@ -675,9 +687,51 @@ def _fit_probe_artifact(
         map(float, config["probe"]["regularization_c_grid"])
     )
     folds = int(config["probe"]["group_folds"])
-    rng = np.random.default_rng(int(config["probe"]["seed"]))
-    models = []
-    selection = []
+    probe_seed = int(config["probe"]["seed"])
+    workers = min(12, max(1, folds * 2))
+
+    def estimator_for(regularization_c: float, seed: int) -> Any:
+        # This is the same standardized, class-balanced L2-logistic objective
+        # frozen in the protocol.  The original liblinear dual optimizer failed
+        # to converge in 670 fits and exhausted a 3,000-second discovery run.
+        # Newton-CG solves the same objective.  The fitted iteration count is
+        # checked below so no incomplete fit can enter a frozen artifact.
+        return make_pipeline(
+            StandardScaler(),
+            LogisticRegression(
+                C=regularization_c,
+                solver="newton-cg",
+                class_weight="balanced",
+                max_iter=1000,
+                random_state=seed,
+            ),
+        )
+
+    def fit_checked(estimator: Any, x_fit: Any, y_fit: Any) -> Any:
+        estimator.fit(x_fit, y_fit)
+        fitted = estimator.named_steps["logisticregression"]
+        if np.any(np.asarray(fitted.n_iter_) >= int(fitted.max_iter)):
+            raise RuntimeError("probe optimizer exhausted max_iter without convergence")
+        return estimator
+
+    def fold_score(
+        x_values: Any,
+        y_values: Any,
+        train: Any,
+        test: Any,
+        regularization_c: float,
+        seed: int,
+    ) -> float:
+        estimator = fit_checked(
+            estimator_for(regularization_c, seed),
+            x_values[train],
+            y_values[train],
+        )
+        return float(
+            balanced_accuracy_score(y_values[test], estimator.predict(x_values[test]))
+        )
+
+    site_specs = []
     for anchor_index, anchor in enumerate(anchor_names):
         for layer in _probe_layer_indices(anchor, layers, config):
             valid = np.flatnonzero(masks[:, anchor_index])
@@ -703,107 +757,91 @@ def _fit_probe_artifact(
                         )
                     else:
                         valid_kind = valid
-                    x = _decode_numpy_features(features[valid_kind, layer, anchor_index])
-                    y = y_all[valid_kind]
-                    groups = np.asarray(
-                        [metadata[index]["base_game_id"] for index in valid_kind]
-                    )
-                    if len(set(y)) < 2 or len(set(groups)) < folds:
-                        selection.append(
-                            {
-                                "layer": layer,
-                                "anchor": anchor,
-                                "target": target,
-                                "model_kind": model_kind,
-                                "status": "insufficient_classes_or_groups",
-                            }
+                    site_specs.append(
+                        (
+                            len(site_specs),
+                            anchor_index,
+                            anchor,
+                            layer,
+                            target,
+                            model_kind,
+                            valid_kind,
+                            y_all,
                         )
-                        continue
-                    splitter = GroupKFold(n_splits=folds)
-                    scores_by_c = {}
-                    for regularization_c in c_grid:
-                        fold_scores = []
-                        for train, test in splitter.split(x, y, groups):
-                            estimator = make_pipeline(
-                                StandardScaler(),
-                                LogisticRegression(
-                                    C=regularization_c,
-                                    solver="liblinear",
-                                    dual=True,
-                                    class_weight="balanced",
-                                    max_iter=1000,
-                                    random_state=int(config["probe"]["seed"]),
-                                ),
-                            )
-                            estimator.fit(x[train], y[train])
-                            fold_scores.append(
-                                balanced_accuracy_score(y[test], estimator.predict(x[test]))
-                            )
-                        scores_by_c[regularization_c] = float(np.mean(fold_scores))
-                    selected_c = sorted(c_grid, key=lambda c: (-scores_by_c[c], c))[0]
-                    estimator = make_pipeline(
-                        StandardScaler(),
-                        LogisticRegression(
-                            C=selected_c,
-                            solver="liblinear",
-                            dual=True,
-                            class_weight="balanced",
-                            max_iter=1000,
-                            random_state=int(config["probe"]["seed"]),
-                        ),
                     )
-                    estimator.fit(x, y)
-                    shuffled = rng.permutation(y)
-                    shuffled_scores = []
-                    for train, test in splitter.split(x, shuffled, groups):
-                        control = make_pipeline(
-                            StandardScaler(),
-                            LogisticRegression(
-                            C=selected_c,
-                            solver="liblinear",
-                            dual=True,
-                            class_weight="balanced",
-                            max_iter=1000,
-                                random_state=int(config["probe"]["seed"]),
-                            ),
+
+    def fit_site(
+        spec: tuple[Any, ...], feature_values: Any
+    ) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        (
+            _site_index,
+            anchor_index,
+            anchor,
+            layer,
+            target,
+            model_kind,
+            valid_kind,
+            y_all,
+        ) = spec
+        x = _decode_numpy_features(feature_values[valid_kind, layer, anchor_index])
+        y = y_all[valid_kind]
+        groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
+        identity = {
+            "layer": layer,
+            "anchor": anchor,
+            "target": target,
+            "model_kind": model_kind,
+        }
+        if len(set(y)) < 2 or len(set(groups)) < folds:
+            return None, {**identity, "status": "insufficient_classes_or_groups"}
+        splitter = GroupKFold(n_splits=folds)
+        splits = list(splitter.split(x, y, groups))
+        scores_by_c = {}
+        for regularization_c in c_grid:
+            scores_by_c[regularization_c] = float(
+                np.mean(
+                    [
+                        fold_score(
+                            x,
+                            y,
+                            train,
+                            test,
+                            regularization_c,
+                            probe_seed,
                         )
-                        control.fit(x[train], shuffled[train])
-                        shuffled_scores.append(
-                            balanced_accuracy_score(
-                                shuffled[test], control.predict(x[test])
-                            )
-                        )
-                    models.append(
-                        {
-                            "layer": layer,
-                            "anchor": anchor,
-                            "anchor_index": anchor_index,
-                            "target": target,
-                            "model_kind": model_kind,
-                            "estimator": estimator,
-                        }
-                    )
-                    selection.append(
-                        {
-                            "layer": layer,
-                            "anchor": anchor,
-                            "target": target,
-                            "model_kind": model_kind,
-                            "status": "ok",
-                            "n": len(valid_kind),
-                            "selected_c": selected_c,
-                            "cv_balanced_accuracy": scores_by_c[selected_c],
-                            "shuffled_cv_balanced_accuracy": float(np.mean(shuffled_scores)),
-                            "scores_by_c": {
-                                str(key): value for key, value in scores_by_c.items()
-                            },
-                        }
-                    )
+                        for train, test in splits
+                    ]
+                )
+            )
+        selected_c = sorted(c_grid, key=lambda c: (-scores_by_c[c], c))[0]
+        estimator = fit_checked(estimator_for(selected_c, probe_seed), x, y)
+        model_row = {
+            **identity,
+            "anchor_index": anchor_index,
+            "estimator": estimator,
+        }
+        selection_row = {
+            **identity,
+            "status": "ok",
+            "n": len(valid_kind),
+            "selected_c": selected_c,
+            "cv_balanced_accuracy": scores_by_c[selected_c],
+            "scores_by_c": {str(key): value for key, value in scores_by_c.items()},
+        }
+        return model_row, selection_row
+
+    with parallel_config(backend="loky", n_jobs=workers, inner_max_num_threads=1):
+        site_results = Parallel()(
+            delayed(fit_site)(spec, features) for spec in site_specs
+        )
+    models = [model for model, _ in site_results if model is not None]
+    selection = [row for _, row in site_results]
     # Frozen, low-cost shuffled-label controls for four sentinel sites.
     sentinel_sites = config.get("probe", {}).get("label_shuffle_sentinel_sites", [])
     n_permutations = int(config.get("probe", {}).get("label_shuffle_permutations", 0))
     if sentinel_sites and n_permutations:
         populations = config.get("probe", {}).get("target_training_population", {})
+        sentinel_specs = []
         for layer, anchor in sentinel_sites:
             if anchor not in anchor_names or int(layer) not in layers:
                 continue
@@ -822,42 +860,66 @@ def _fit_probe_artifact(
                     )
                 else:
                     valid_kind = valid
-                x = _decode_numpy_features(features[valid_kind, int(layer), anchor_index])
-                y = np.asarray([int(metadata[index][target]) for index in valid_kind])
-                groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
-                if len(set(y)) < 2 or len(set(groups)) < folds:
-                    continue
-                splitter = GroupKFold(n_splits=folds)
                 for permutation in range(n_permutations):
-                    shuffled = rng.permutation(y)
-                    scores = []
-                    for train, test in splitter.split(x, shuffled, groups):
-                        control = make_pipeline(
-                            StandardScaler(),
-                            LogisticRegression(
-                                C=c_grid[0],
-                                solver="liblinear",
-                                dual=True,
-                                class_weight="balanced",
-                                max_iter=1000,
-                                random_state=int(config["probe"]["seed"]) + permutation,
-                            ),
+                    sentinel_specs.append(
+                        (
+                            len(sentinel_specs),
+                            int(layer),
+                            anchor,
+                            anchor_index,
+                            target,
+                            population or "all",
+                            valid_kind,
+                            permutation,
                         )
-                        control.fit(x[train], shuffled[train])
-                        scores.append(
-                            balanced_accuracy_score(
-                                shuffled[test], control.predict(x[test])
-                            )
-                        )
-                    selection.append({
-                        "layer": int(layer),
-                        "anchor": anchor,
-                        "target": target,
-                        "model_kind": population or "all",
-                        "status": "shuffled_label_control",
-                        "permutation": permutation,
-                        "balanced_accuracy": float(np.mean(scores)),
-                    })
+                    )
+
+        def fit_sentinel(spec: tuple[Any, ...], feature_values: Any) -> dict[str, Any] | None:
+            (
+                sentinel_index,
+                layer,
+                anchor,
+                anchor_index,
+                target,
+                model_kind,
+                valid_kind,
+                permutation,
+            ) = spec
+            x = _decode_numpy_features(feature_values[valid_kind, layer, anchor_index])
+            y = np.asarray([int(metadata[index][target]) for index in valid_kind])
+            groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
+            if len(set(y)) < 2 or len(set(groups)) < folds:
+                return None
+            sentinel_rng = np.random.default_rng(
+                np.random.SeedSequence([probe_seed, 1, sentinel_index])
+            )
+            shuffled = sentinel_rng.permutation(y)
+            scores = [
+                fold_score(
+                    x,
+                    shuffled,
+                    train,
+                    test,
+                    c_grid[0],
+                    probe_seed + permutation,
+                )
+                for train, test in GroupKFold(n_splits=folds).split(x, shuffled, groups)
+            ]
+            return {
+                "layer": layer,
+                "anchor": anchor,
+                "target": target,
+                "model_kind": model_kind,
+                "status": "shuffled_label_control",
+                "permutation": permutation,
+                "balanced_accuracy": float(np.mean(scores)),
+            }
+
+        with parallel_config(backend="loky", n_jobs=workers, inner_max_num_threads=1):
+            sentinel_results = Parallel()(
+                delayed(fit_sentinel)(spec, features) for spec in sentinel_specs
+            )
+        selection.extend(row for row in sentinel_results if row is not None)
     model_path = remote_root / "probe_models.pkl.gz"
     with gzip.open(model_path, "wb") as handle:
         pickle.dump(models, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -868,6 +930,16 @@ def _fit_probe_artifact(
         "dataset_sha256": dataset_sha256,
         "remote_model_path": str(model_path),
         "remote_model_sha256": _sha256_file(model_path),
+        "implementation": {
+            "objective": "standardized_class_balanced_l2_logistic",
+            "solver": "newton-cg",
+            "maximum_iterations": 1000,
+            "parallel_site_workers": workers,
+            "shuffle_seed_derivation": "numpy_seed_sequence_probe_seed_and_sentinel_index",
+            "convergence_policy": "refuse_fit_at_iteration_limit",
+            "shuffled_controls": "ten_permutations_at_four_preregistered_sentinel_sites_only",
+            "amendment_reason": "run_33337232212_liblinear_timeout_after_670_warnings",
+        },
         "selection": selection,
     }
     artifact["content_sha256"] = _canonical_sha256(artifact)

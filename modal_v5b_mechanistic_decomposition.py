@@ -17,6 +17,8 @@ import modal_v5_mechanistic_decomposition as base
 from jspace_policy.budget import (
     RBG5B_EXECUTION_LIMITS,
     RBG5B_INCREMENTAL_COST_LIMIT_USD,
+    RBG5B_REPAIR_EXECUTION_LIMITS,
+    RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
     admit_execution_plan,
 )
 
@@ -72,6 +74,15 @@ def _admit_full_run(config: dict) -> None:
     declared = float(config["execution"]["stage_reservation_buffered_usd"])
     if abs(estimates - declared) > 0.02:
         raise RuntimeError("RBG-5B stage reservation does not match executable ceilings")
+
+
+def _admit_repair_plan() -> float:
+    """Enforce the user's post-timeout $6.60 remaining authorization."""
+
+    return admit_execution_plan(
+        RBG5B_REPAIR_EXECUTION_LIMITS,
+        limit_usd=RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    )
 
 
 @app.local_entrypoint(name="rbg5b_freeze_dataset")
@@ -142,6 +153,7 @@ def discovery() -> None:
     config = _config()
     dataset = _dataset(config)
     behavior_payload = _load_json(RESULT_ROOT / "raw/behavior.json")
+    _admit_repair_plan()
     base._admit_stage(config, "discovery")
     payload = json.loads(
         base.discovery_remote.remote(dataset, behavior_payload, config, base._git_head())
@@ -161,6 +173,7 @@ def locked() -> None:
     dataset = _dataset(config)
     behavior_payload = _load_json(RESULT_ROOT / "raw/behavior.json")
     discovery_manifest = _load_json(RESULT_ROOT / "raw/discovery_manifest.json")
+    _admit_repair_plan()
     base._admit_stage(config, "locked")
     payload = json.loads(
         base.locked_remote.remote(
@@ -191,6 +204,7 @@ def jspace() -> None:
             return
         raise RuntimeError("locked manifest is required before RBG-5B J-space")
     locked_manifest = _load_json(locked_path)
+    _admit_repair_plan()
     base._admit_stage(config, "jspace")
     payload = json.loads(
         base.jspace_remote.remote(
