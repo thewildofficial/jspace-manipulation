@@ -151,6 +151,35 @@ def _download_locked_gpu_artifact(gpu_payload: dict) -> Path:
     return candidates[0].parent
 
 
+def _download_probe_model(discovery_manifest: dict) -> Path:
+    probe_artifact = discovery_manifest["probe_freeze"]
+    remote_path = str(probe_artifact["remote_model_path"])
+    prefix = "/artifacts/"
+    if not remote_path.startswith(prefix):
+        raise RuntimeError("probe model is outside the expected Modal volume")
+    volume_path = remote_path.removeprefix(prefix)
+    destination = RESULT_ROOT / "modal_artifacts" / Path(volume_path).parent
+    destination.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [
+            "modal",
+            "volume",
+            "get",
+            "--force",
+            "jspace-v5-rbg5-artifacts",
+            volume_path,
+            str(destination),
+        ],
+        check=True,
+    )
+    candidates = list(destination.rglob(Path(volume_path).name))
+    if len(candidates) != 1:
+        raise RuntimeError(
+            f"expected one downloaded probe model, found {len(candidates)}"
+        )
+    return candidates[0]
+
+
 @app.local_entrypoint(name="rbg5b_freeze_dataset")
 def freeze_dataset() -> None:
     from jspace_policy.mechanistic_decomposition_games import (
@@ -278,6 +307,7 @@ def locked() -> None:
         stage="locked_gpu",
     )
     local_artifact_root = _download_locked_gpu_artifact(gpu_payload)
+    local_probe_model_path = _download_probe_model(discovery_manifest)
     payload = json.loads(
         base.locked_analysis_local(
             dataset,
@@ -286,6 +316,7 @@ def locked() -> None:
             config,
             base._git_head(),
             str(local_artifact_root),
+            str(local_probe_model_path),
             str(RESULT_ROOT),
         )
     )

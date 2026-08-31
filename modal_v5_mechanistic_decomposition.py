@@ -1141,6 +1141,8 @@ def _evaluate_locked_probes(
     metadata: list[dict[str, Any]],
     probe_artifact: dict[str, Any],
     config: dict[str, Any],
+    *,
+    probe_model_path: Path | None = None,
 ) -> list[dict[str, Any]]:
     import pickle
 
@@ -1151,11 +1153,10 @@ def _evaluate_locked_probes(
         clustered_balanced_accuracy_bootstrap,
     )
 
-    if _sha256_file(Path(probe_artifact["remote_model_path"])) != probe_artifact[
-        "remote_model_sha256"
-    ]:
+    model_path = probe_model_path or Path(probe_artifact["remote_model_path"])
+    if _sha256_file(model_path) != probe_artifact["remote_model_sha256"]:
         raise RuntimeError("remote probe model hash mismatch")
-    with gzip.open(probe_artifact["remote_model_path"], "rb") as handle:
+    with gzip.open(model_path, "rb") as handle:
         models = pickle.load(handle)
     features = np.load(residual_path, mmap_mode="r")
     masks = np.load(mask_path)
@@ -1969,6 +1970,7 @@ def locked_analysis_local(
     config: dict[str, Any],
     git_commit: str,
     local_artifact_root: str,
+    local_probe_model_path: str,
     result_root: str,
 ) -> str:
     """Finish unchanged locked geometry and probes on the GitHub runner CPU."""
@@ -2019,6 +2021,7 @@ def locked_analysis_local(
         metadata,
         probe_artifact,
         config,
+        probe_model_path=Path(local_probe_model_path),
     )
     probe_metrics_path = local_root / "locked_probe_metrics.json.gz"
     with gzip.open(probe_metrics_path, "wt", encoding="utf-8") as handle:

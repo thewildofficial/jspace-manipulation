@@ -37,6 +37,24 @@ equivalent probe bootstrap to the GitHub runner CPU. The authorized salvage has
 a combined locked-plus-J-space Modal ceiling of USD 1.93225 against USD 2.50
 remaining, with retries disabled.
 
+The recovered locked result is now complete. GPU capture and the frozen natural
+interchange ran in 319.23 seconds on the A100; geometry, probe predictions, and
+all 2,000-resample statistics ran locally on CPU in 44.26 seconds. The primary
+endpoint repaired **2/50 rows (4%)**, with mean correct-action margin change
+`+0.020` but exact base-cluster sign-flip `p = 0.42924`; this fails the required
+20% repair, positive-margin, and `p<.05` conjunction. Consequence reports stayed
+at 100% before and after. Non-damage controls stayed at 100%, while the strict
+identity-margin control failed (maximum absolute shift `0.5`), so the overall
+selective-causal-transport claim is **not supported**. This result does not
+establish that the semantic-action effect is a robust causal bottleneck.
+
+The workflow badge is red because its first local post-processing attempt lacked
+the already-frozen discovery probe file; the GPU artifact and all hashes were
+preserved. The small manifest and derived CPU files were reconstructed from the
+immutable [run 33391981859](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33391981859)
+artifact without rerunning the model. J-space remains a separately gated,
+observational readout and has not been used to reinterpret this negative result.
+
 The one-time dataset materialization command is retained for auditability but
 must not be run against this already frozen checkout (the entrypoint refuses to
 overwrite `dataset.json`):

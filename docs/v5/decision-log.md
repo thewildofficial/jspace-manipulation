@@ -305,3 +305,30 @@
   seconds for required J-space. Their combined worst-case Modal charge is USD
   1.93225, leaving USD 0.56775 headroom. Local CPU analysis is not a Modal
   charge. Retries remain disabled.
+
+## 2026-08-31 — V5-D019 — Complete the locked salvage and preserve its negative endpoint
+
+- The single authorized salvage run was GitHub Actions `33391981859`, pinned to
+  commit `40d21ae`. Modal GPU run `7fc3c5322f554086a57a04629a54828d` captured
+  the 480-row locked residual tensor and applied the already-frozen opaque-donor
+  layer-40 `payoff_end` interchange in 319.229 seconds. Its measured Modal
+  subtotal was USD 0.33381 (ledger buffered amount USD 0.40057). No GPU retry
+  was made.
+- The workflow's post-GPU CPU step initially failed because it did not download
+  the already-frozen discovery `probe_models.pkl.gz`; the immutable workflow
+  artifact retained both the locked tensor and that probe file. The artifact was
+  downloaded locally, hashes were checked, and the unchanged geometry, probe,
+  patch, and 2,000-resample analysis completed in 44.258 seconds on CPU. The
+  retrieval path was fixed prospectively; no endpoint or model input changed.
+- Locked primary outcome: 2/50 rows repaired (4%), mean correct-action margin
+  change `+0.020`, exact base-cluster sign-flip `p = 0.429238`. The preregistered
+  conjunction (at least 20% repair, positive margin shift, exact `p<.05`) failed.
+  Consequence-report accuracy remained 100% before/after; aligned, table, and
+  opaque non-damage controls remained 100%. Opposite-target repair was 4%,
+  same-condition cross-base repair 2%, and the strict identity-margin control
+  failed with maximum absolute shift 0.5. Therefore selective natural residual
+  transport is not supported for this checkpoint and frozen contrast.
+- Preserve this as a negative held-out causal result, not as a timeout or a
+  post-hoc exclusion. J-space remains the preregistered observational readout;
+  it may describe the locked state but cannot reopen patch selection or convert
+  this failed causal endpoint into a positive claim.

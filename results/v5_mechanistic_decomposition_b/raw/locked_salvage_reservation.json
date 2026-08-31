@@ -1,0 +1,23 @@
+{
+  "created_at": "2026-08-31T12:37:28.056403+00:00",
+  "frozen_patch_site": {
+    "anchor": "payoff_end",
+    "cluster_mean_margin_change": 0.058823529411764705,
+    "donor_family": "opaque",
+    "exact_cluster_sign_flip_p": 0.021448373794555664,
+    "layer": 40,
+    "n_bases": 34,
+    "n_rows": 60
+  },
+  "git_commit": "40d21ae46278ca741abd2fc73e0f1113bf9478c1",
+  "hard_limit_usd": 2.5,
+  "hard_timeout_cost_ceiling_usd": 1.9322495999999998,
+  "hard_timeouts_seconds": {
+    "jspace": 720,
+    "locked_gpu": 1200
+  },
+  "implementation_only": true,
+  "run_id": "7fc3c5322f554086a57a04629a54828d",
+  "schema_version": 1,
+  "study_id": "V5-RBG-5B"
+}
