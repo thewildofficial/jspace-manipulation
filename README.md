@@ -17,8 +17,11 @@ repair the matched meaningful-action failure.
 
 > **Current status:** RBG-4 prospectively confirmed the behavioral effect.
 > RBG-5 replicated it but stopped before activations because one report-stability
-> gate missed by 0.208 percentage points. RBG-5B is a fresh, powered mechanistic
-> follow-up; no RBG-5 activation or patch result is reused.
+> gate missed by 0.208 percentage points. RBG-5B passed its corrected behavior
+> gate and froze one weak discovery site (opaque donor, layer 40,
+> `payoff_end`). Its first locked run timed out before patching, so the held-out
+> causal result is still unopened; an implementation-only salvage now keeps CPU
+> statistics off the paid GPU.
 
 ## The question in one example
 
@@ -141,7 +144,7 @@ The negative results are part of the evidence rather than discarded attempts:
 | RBG-3 | Does it replicate on a fresh design? | Effect weakened; rehearsal repaired seven errors |
 | RBG-4 | Can more correct evidence selectively worsen action? | Passed prospectively |
 | RBG-5 | Can activations be opened for causal analysis? | Behavior replicated; report gate missed by 0.208 points |
-| RBG-5B | Can a natural successful state repair held-out failures? | Frozen; execution in progress |
+| RBG-5B | Can a natural successful state repair held-out failures? | Weak site frozen; first locked run infrastructure-censored; one salvage authorized |
 
 This history matters. Observable decodability was never promoted into causal
 evidence, failed thresholds were not rounded, and later studies do not rewrite

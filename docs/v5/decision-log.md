@@ -275,3 +275,33 @@
   Actions may redundantly transfer the prior discovery artifacts during later
   harvest steps, but that transfer does not use Modal compute or change any
   model input, intervention, endpoint, or scientific artifact.
+
+## 2026-08-31 — V5-D018 — Treat the locked timeout as censoring and split paid GPU from local statistics
+
+- Locked-only GitHub Actions run `33380084999` executed the frozen layer-40
+  `payoff_end` opaque-donor site, but Modal terminated the remote function at
+  its exact 3,000-second hard timeout. No locked manifest returned and J-space
+  remained closed. This is infrastructure censoring, not a failed causal
+  endpoint; no locked statistic may be reported from the attempt.
+- Postmortem inspection found that the locked function evaluated 1,536 frozen
+  probe models with 2,000 serial base-cluster bootstrap resamples each. A local
+  benchmark projected roughly 22 minutes for those 3.07 million sklearn metric
+  calls alone, during which the A100 remained attached. The causal patch was
+  ordered after this descriptive work and therefore never produced an artifact.
+- Preserve the dataset, behavior artifact, discovery probe models, selected
+  donor family, layer, anchor, patch controls, 20% repair threshold, exact test,
+  and all 2,000 probe bootstrap resamples. Change implementation only: capture
+  locked residuals and execute the already-frozen patch first, commit the
+  capture to its unique Modal-volume run directory before patching, then
+  download the committed GPU artifact and run geometry, probe prediction, and
+  algebraically equivalent per-base confusion-count bootstraps on the GitHub
+  runner CPU.
+- An exact small-fixture test verifies that vectorized base-count aggregation
+  equals explicit sampled-row reconstruction. An exact-shape benchmark of all
+  1,536 vectorized bootstrap sites completed in 4.53 seconds locally. These are
+  implementation checks, not model results.
+- The user reported USD 2.50 remaining and explicitly authorized this salvage.
+  Hard paid timeouts are 1,200 seconds for locked GPU capture/patch and 720
+  seconds for required J-space. Their combined worst-case Modal charge is USD
+  1.93225, leaving USD 0.56775 headroom. Local CPU analysis is not a Modal
+  charge. Retries remain disabled.

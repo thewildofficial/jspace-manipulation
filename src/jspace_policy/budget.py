@@ -39,6 +39,7 @@ class ExecutionLimit:
 # the authorization boundary.
 RBG5B_INCREMENTAL_COST_LIMIT_USD = 10.0
 RBG5B_REPAIR_REMAINING_COST_LIMIT_USD = 6.6
+RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD = 2.5
 RBG5B_EXECUTION_LIMITS = {
     "preflight": ExecutionLimit(300, None, 2, 8),
     "behavior": ExecutionLimit(1200, "A100-80GB", 8, 32),
@@ -52,10 +53,19 @@ RBG5B_REPAIR_EXECUTION_LIMITS = {
     for stage in ("discovery", "locked", "jspace")
 }
 
+# After locked run 33380084999 spent its full 3,000-second timeout on serial
+# CPU bootstrap work while retaining an A100, the user authorized one bounded
+# implementation-only salvage.  The frozen dataset, site, endpoints, and
+# resampling count do not change; only resource placement and vectorization do.
+RBG5B_SALVAGE_EXECUTION_LIMITS = {
+    "locked_gpu": ExecutionLimit(1200, "A100-80GB", 16, 64),
+    "jspace": ExecutionLimit(720, "A100-80GB", 8, 64),
+}
+
 
 @dataclass(frozen=True)
 class CostEstimate:
-    gpu: str
+    gpu: str | None
     seconds: float
     gpu_usd: float
     cpu_usd: float
@@ -97,18 +107,18 @@ def admit_execution_plan(
 
 
 def estimate_cost(
-    gpu: str,
+    gpu: str | None,
     seconds: float,
     *,
     cpu_cores: float = 4.0,
     memory_gib: float = 16.0,
     uncertainty_fraction: float = 0.20,
 ) -> CostEstimate:
-    if gpu not in GPU_USD_PER_SECOND:
+    if gpu is not None and gpu not in GPU_USD_PER_SECOND:
         raise ValueError(f"unknown GPU: {gpu}")
     if seconds < 0:
         raise ValueError("seconds must be non-negative")
-    gpu_cost = GPU_USD_PER_SECOND[gpu] * seconds
+    gpu_cost = 0.0 if gpu is None else GPU_USD_PER_SECOND[gpu] * seconds
     cpu_cost = CPU_CORE_USD_PER_SECOND * cpu_cores * seconds
     memory_cost = MEMORY_GIB_USD_PER_SECOND * memory_gib * seconds
     subtotal = gpu_cost + cpu_cost + memory_cost

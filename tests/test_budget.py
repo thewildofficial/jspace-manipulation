@@ -7,6 +7,8 @@ from jspace_policy.budget import (
     RBG5B_INCREMENTAL_COST_LIMIT_USD,
     RBG5B_REPAIR_EXECUTION_LIMITS,
     RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    RBG5B_SALVAGE_EXECUTION_LIMITS,
+    RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD,
     ExecutionLimit,
     admit_execution_plan,
     admit_run,
@@ -20,6 +22,12 @@ def test_estimate_includes_buffer() -> None:
     estimate = estimate_cost("A10", 3600)
     assert estimate.gpu_usd == pytest.approx(1.1016)
     assert estimate.buffered_usd > estimate.subtotal_usd > estimate.gpu_usd
+
+
+def test_cpu_only_estimate_has_no_gpu_charge() -> None:
+    estimate = estimate_cost(None, 300, cpu_cores=16, memory_gib=64)
+    assert estimate.gpu_usd == 0.0
+    assert estimate.subtotal_usd == pytest.approx(0.105504)
 
 
 def test_admission_refuses_projected_overspend(tmp_path: Path) -> None:
@@ -52,6 +60,18 @@ def test_rbg5b_repair_plan_fits_reported_remaining_authorization() -> None:
 
     assert ceiling == pytest.approx(5.0692896)
     assert RBG5B_REPAIR_REMAINING_COST_LIMIT_USD - ceiling > 1.53
+
+
+def test_rbg5b_salvage_plan_fits_final_authorization() -> None:
+    ceiling = admit_execution_plan(
+        RBG5B_SALVAGE_EXECUTION_LIMITS,
+        limit_usd=RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD,
+    )
+
+    assert ceiling == pytest.approx(1.9322496)
+    assert RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD - ceiling > 0.56
+    assert RBG5B_SALVAGE_EXECUTION_LIMITS["locked_gpu"].timeout_seconds == 1200
+    assert RBG5B_SALVAGE_EXECUTION_LIMITS["jspace"].timeout_seconds == 720
 
 
 def test_incremental_authorization_refuses_oversized_timeout_plan() -> None:

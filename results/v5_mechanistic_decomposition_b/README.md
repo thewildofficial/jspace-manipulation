@@ -26,6 +26,17 @@ became strictly positive-margin correct. The untouched locked split is now
 legally open under the prospective positive-winner rule; no locked or J-space
 result is yet implied.
 
+Locked-only run
+[`33380084999`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33380084999)
+then reached its exact 3,000-second Modal timeout while performing serial
+descriptive probe bootstraps, before the frozen patch or any locked manifest was
+written. This is infrastructure censoring, not a negative causal result: the
+locked endpoint remains unopened and J-space was correctly skipped. Decision
+V5-D018 preserves every frozen scientific choice but moves the algebraically
+equivalent probe bootstrap to the GitHub runner CPU. The authorized salvage has
+a combined locked-plus-J-space Modal ceiling of USD 1.93225 against USD 2.50
+remaining, with retries disabled.
+
 The one-time dataset materialization command is retained for auditability but
 must not be run against this already frozen checkout (the entrypoint refuses to
 overwrite `dataset.json`):
@@ -49,11 +60,12 @@ No result is implied until the corresponding immutable manifest exists.
 
 ## GitHub Actions fallback
 
-Local `modal run` needs a working Modal control-plane connection.  If the local
+Local `modal run` needs a working Modal control-plane connection. If the local
 client reports `Could not connect to the Modal server`, push the frozen commit
 and dispatch [`.github/workflows/v5-mechanistic-decomposition-b.yml`](../../.github/workflows/v5-mechanistic-decomposition-b.yml)
-with `stage=all`.  The GitHub runner only orchestrates the same Modal functions;
-the A100 work and the pinned model still run in Modal.  The repository must
+with the next unopened stage. The GitHub runner orchestrates the Modal GPU
+functions and performs CPU-only analysis locally; the A100 work and pinned model
+still run in Modal. The repository must
 have `MODAL_TOKEN_ID` and `MODAL_TOKEN_SECRET` Actions secrets.  The workflow
 uploads the local manifests, logs, downloaded Modal-volume artifacts, and
 offline analysis as an immutable run artifact.
@@ -61,7 +73,7 @@ offline analysis as an immutable run artifact.
 From the repository checkout, the manual dispatch is:
 
 ```text
-gh workflow run v5-mechanistic-decomposition-b.yml --ref <frozen-branch> -f stage=all
+gh workflow run v5-mechanistic-decomposition-b.yml --ref <frozen-branch> -f stage=locked
 gh run watch
 ```
 

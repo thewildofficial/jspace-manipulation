@@ -16,6 +16,7 @@ from jspace_policy.budget import (
 from jspace_policy.mechanistic_decomposition import analyze_behavior
 from jspace_policy.mechanistic_decomposition_analysis import (
     _resolve_remote_artifact,
+    clustered_balanced_accuracy_bootstrap,
     compute_activation_geometry,
 )
 from jspace_policy.mechanistic_decomposition_games import (
@@ -101,6 +102,45 @@ def test_downloaded_modal_artifact_path_resolution(tmp_path: Path) -> None:
     local.parent.mkdir(parents=True)
     local.write_bytes(b"fixture")
     assert _resolve_remote_artifact(remote, tmp_path) == local
+
+
+def test_relative_artifact_path_resolution(tmp_path: Path) -> None:
+    relative = Path("modal_artifacts/rbg5b/run/locked_probe_metrics.json.gz")
+    assert _resolve_remote_artifact(relative, tmp_path) == tmp_path / relative
+
+
+def test_vectorized_cluster_bootstrap_matches_row_reconstruction() -> None:
+    y = np.asarray([0, 1, 0, 0, 1, 1, 0, 1], dtype=np.int8)
+    predicted = np.asarray([0, 1, 1, 0, 1, 0, 0, 0], dtype=np.int8)
+    groups = np.asarray(["a", "a", "b", "c", "c", "c", "d", "d"])
+    draws = np.asarray([[0, 1, 2, 3], [0, 0, 1, 3], [2, 2, 3, 1]])
+    actual = clustered_balanced_accuracy_bootstrap(y, predicted, groups, draws)
+    bases = sorted(set(groups.tolist()))
+    expected = []
+    for draw in draws:
+        indices = np.concatenate([np.flatnonzero(groups == bases[index]) for index in draw])
+        sampled_y = y[indices]
+        sampled_predicted = predicted[indices]
+        positive = sampled_y == 1
+        negative = ~positive
+        expected.append(
+            0.5
+            * (
+                np.mean(sampled_predicted[positive] == 1)
+                + np.mean(sampled_predicted[negative] == 0)
+            )
+        )
+    assert np.allclose(actual, expected)
+
+
+def test_vectorized_bootstrap_preserves_seeded_draw_sequence() -> None:
+    sequential_rng = np.random.default_rng(20260831)
+    matrix_rng = np.random.default_rng(20260831)
+    sequential = np.stack(
+        [sequential_rng.choice(34, size=34, replace=True) for _ in range(2000)]
+    )
+    matrix = matrix_rng.choice(34, size=(2000, 34), replace=True)
+    assert np.array_equal(matrix, sequential)
 
 
 def test_geometry_fixture_is_reproducible(tmp_path: Path) -> None:

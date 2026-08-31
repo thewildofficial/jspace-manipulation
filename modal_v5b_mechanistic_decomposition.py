@@ -8,6 +8,8 @@ read or overwrite the earlier study.
 from __future__ import annotations
 
 import json
+import subprocess
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -19,7 +21,11 @@ from jspace_policy.budget import (
     RBG5B_INCREMENTAL_COST_LIMIT_USD,
     RBG5B_REPAIR_EXECUTION_LIMITS,
     RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    RBG5B_SALVAGE_EXECUTION_LIMITS,
+    RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD,
     admit_execution_plan,
+    append_ledger,
+    estimate_cost,
 )
 
 CONFIG_PATH = Path("configs/v5/mechanistic_decomposition_b/experiment.json")
@@ -83,6 +89,66 @@ def _admit_repair_plan() -> float:
         RBG5B_REPAIR_EXECUTION_LIMITS,
         limit_usd=RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
     )
+
+
+def _admit_salvage_plan() -> float:
+    """Enforce the user's final $2.50 implementation-only authorization."""
+    return admit_execution_plan(
+        RBG5B_SALVAGE_EXECUTION_LIMITS,
+        limit_usd=RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD,
+    )
+
+
+def _record_salvage_stage(
+    config: dict,
+    payload: dict,
+    *,
+    limit_key: str,
+    elapsed_key: str,
+    stage: str,
+) -> None:
+    limit = RBG5B_SALVAGE_EXECUTION_LIMITS[limit_key]
+    estimate = estimate_cost(
+        limit.gpu,
+        float(payload["metadata"][elapsed_key]),
+        cpu_cores=limit.cpu_cores,
+        memory_gib=limit.memory_gib,
+    )
+    append_ledger(
+        RESULT_ROOT / "cost_ledger.jsonl",
+        estimate,
+        run_id=str(payload["metadata"]["run_id"]),
+        stage=f"{config['execution']['artifact_prefix']}_{stage}",
+    )
+
+
+def _download_locked_gpu_artifact(gpu_payload: dict) -> Path:
+    remote_root = str(gpu_payload["artifact"]["remote_root"])
+    prefix = "/artifacts/"
+    if not remote_root.startswith(prefix):
+        raise RuntimeError("locked GPU artifact is outside the expected Modal volume")
+    volume_path = remote_root.removeprefix(prefix)
+    destination = RESULT_ROOT / "modal_artifacts" / volume_path
+    destination.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [
+            "modal",
+            "volume",
+            "get",
+            "--force",
+            "jspace-v5-rbg5-artifacts",
+            volume_path,
+            str(destination),
+        ],
+        check=True,
+    )
+    residual_name = Path(gpu_payload["artifact"]["residual_path"]).name
+    candidates = list(destination.rglob(residual_name))
+    if len(candidates) != 1:
+        raise RuntimeError(
+            f"expected one downloaded {residual_name}, found {len(candidates)}"
+        )
+    return candidates[0].parent
 
 
 @app.local_entrypoint(name="rbg5b_freeze_dataset")
@@ -173,15 +239,57 @@ def locked() -> None:
     dataset = _dataset(config)
     behavior_payload = _load_json(RESULT_ROOT / "raw/behavior.json")
     discovery_manifest = _load_json(RESULT_ROOT / "raw/discovery_manifest.json")
-    _admit_repair_plan()
-    base._admit_stage(config, "locked")
+    ceiling = _admit_salvage_plan()
+    run_id = uuid.uuid4().hex
+    _write_new(
+        RESULT_ROOT / "raw/locked_salvage_reservation.json",
+        {
+            "schema_version": 1,
+            "study_id": config["study_id"],
+            "created_at": datetime.now(UTC).isoformat(),
+            "run_id": run_id,
+            "git_commit": base._git_head(),
+            "hard_limit_usd": RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD,
+            "hard_timeout_cost_ceiling_usd": ceiling,
+            "hard_timeouts_seconds": {
+                stage: limit.timeout_seconds
+                for stage, limit in RBG5B_SALVAGE_EXECUTION_LIMITS.items()
+            },
+            "frozen_patch_site": discovery_manifest["patch_freeze"]["selected"],
+            "implementation_only": True,
+        },
+    )
+    gpu_payload = json.loads(
+        base.locked_gpu_remote.remote(
+            dataset,
+            behavior_payload,
+            discovery_manifest,
+            config,
+            base._git_head(),
+            run_id,
+        )
+    )
+    _write_new(RESULT_ROOT / "raw/locked_gpu_manifest.json", gpu_payload)
+    _record_salvage_stage(
+        config,
+        gpu_payload,
+        limit_key="locked_gpu",
+        elapsed_key="elapsed_seconds",
+        stage="locked_gpu",
+    )
+    local_artifact_root = _download_locked_gpu_artifact(gpu_payload)
     payload = json.loads(
-        base.locked_remote.remote(
-            dataset, behavior_payload, discovery_manifest, config, base._git_head()
+        base.locked_analysis_local(
+            dataset,
+            discovery_manifest,
+            gpu_payload,
+            config,
+            base._git_head(),
+            str(local_artifact_root),
+            str(RESULT_ROOT),
         )
     )
     _write_new(RESULT_ROOT / "raw/locked_manifest.json", payload)
-    base._record_stage(config, payload, "locked")
     print(json.dumps(payload["counts"], indent=2, sort_keys=True))
 
 
@@ -204,7 +312,7 @@ def jspace() -> None:
             return
         raise RuntimeError("locked manifest is required before RBG-5B J-space")
     locked_manifest = _load_json(locked_path)
-    _admit_repair_plan()
+    _admit_salvage_plan()
     base._admit_stage(config, "jspace")
     payload = json.loads(
         base.jspace_remote.remote(
