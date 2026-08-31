@@ -1,7 +1,7 @@
 # V5-RBG-5B results
 
 This directory contains the immutable surviving artifacts from GitHub Actions
-run [`33337232212`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33337232212).
+run [`33337232212`](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33337232212).
 The corrected preflight and behavioral gate passed. Discovery then timed out
 inside descriptive probe fitting before its manifest or Modal-volume artifact
 was committed; locked patching and J-space were never opened.
@@ -17,7 +17,7 @@ hit its 3,000-second timeout. Decision V5-D016 records the prospective
 implementation-only repair and the new $6.60 remaining authorization.
 
 The repaired discovery-only run
-[`33377569076`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33377569076)
+[`33377569076`](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33377569076)
 completed in 922.54 seconds. It froze opaque-donor residual replacement at layer
 40 and `payoff_end`: cluster-mean correct-action margin change `+0.05882`, exact
 sign-flip `p = 0.02145`, 34 bases and 60 rows. This was a small directional
@@ -27,7 +27,7 @@ legally open under the prospective positive-winner rule; no locked or J-space
 result is yet implied.
 
 Locked-only run
-[`33380084999`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33380084999)
+[`33380084999`](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33380084999)
 then reached its exact 3,000-second Modal timeout while performing serial
 descriptive probe bootstraps, before the frozen patch or any locked manifest was
 written. This is infrastructure censoring, not a negative causal result: the
@@ -51,12 +51,12 @@ establish that the semantic-action effect is a robust causal bottleneck.
 The workflow badge is red because its first local post-processing attempt lacked
 the already-frozen discovery probe file; the GPU artifact and all hashes were
 preserved. The small manifest and derived CPU files were reconstructed from the
-immutable [run 33391981859](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33391981859)
+immutable [run 33391981859](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33391981859)
 artifact without rerunning the model. J-space remains a separately gated,
 observational readout and has not been used to reinterpret this negative result.
 
 The required J-space secondary run
-[`33395448789`](https://github.com/thewildofficial/jspace-manipulation/actions/runs/33395448789)
+[`33395448789`](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33395448789)
 completed in 509.305 seconds and wrote 69,120 rows (34,560 per split), SHA
 `6b17bca2d1cbe822cb4dbf654557ec1a1b8e49c9c8568da796004b712f7e1cbe`. Projected
 action-token top-1 ranking was 50.96% on discovery and 54.69% on locked rows;

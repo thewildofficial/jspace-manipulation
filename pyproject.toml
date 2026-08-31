@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "jspace-reporting-policy"
+name = "when-words-override-consequences"
 version = "0.1.0"
-description = "Causal tests of reporting policies in Jacobian-lens space"
+description = "Preregistered empirical tests of semantic action binding and consequence knowledge in language models"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}

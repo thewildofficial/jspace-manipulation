@@ -20,7 +20,7 @@ pretending that the model’s internal state is already a theory of mind.
 | RBG-3 | Does the large effect survive fresh surface controls? | Large replication failed; residual errors were informative. |
 | RBG-4 | Do redundant history and prose format explain the effect? | Passed prospectively; inverse evidence. |
 | RBG-5 | Can a matched natural activation repair the prose/assertion failure? | Behavior replicated, but report-gap gate failed; activations unopened. |
-| RBG-5B | Can a fresh, powered natural residual interchange repair the failure? | Frozen follow-up; execution pending. |
+| RBG-5B | Can a fresh, powered natural residual interchange repair the failure? | Locked causal endpoint negative (2/50 repairs); J-space completed as an observational readout. |
 
 ## Documents
 

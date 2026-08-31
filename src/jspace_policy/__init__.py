@@ -1,4 +1,4 @@
-"""Utilities for the J-space reporting-policy study."""
+"""Utilities for the When Words Override Consequences study."""
 
 from jspace_policy.dataset import generate_dataset
 

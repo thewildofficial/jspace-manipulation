@@ -50,14 +50,25 @@ just above the frozen five-point ceiling. The conjunctive gate failed, so no
 RBG-5 activation, probe, patch, or J-space output was opened. The internal cause
 therefore remains unresolved.
 
-## RBG-5B status
+## RBG-5B outcome
 
-RBG-5B is now prospectively frozen as the powered mechanistic follow-up: 96 fresh
+RBG-5B was prospectively frozen as the powered mechanistic follow-up: 96 fresh
 base games, exact BF16 residual capture, fixed-C probes, matched natural residual
 interchange, and required post-patch J-space readouts. Its one-sided report
-non-inferiority gate accepts improvements while still excluding report damage.
-The dataset/config hashes and append-only artifact namespace are committed;
-Modal execution is pending service connectivity.  A manual GitHub Actions
-fallback is frozen at `.github/workflows/v5-mechanistic-decomposition-b.yml`;
-it invokes the same Modal functions and downloads the mounted-volume artifacts
-for offline analysis when the local Modal client cannot reach the control plane.
+non-inferiority gate accepted improvements while still excluding report damage.
+The locked salvage completed GPU capture and patching in 319.23 seconds, then ran
+the geometry, probe, and 2,000-resample statistics locally on CPU. The natural
+residual interchange repaired 2/50 held-out failures (4%), with exact clustered
+sign-flip `p = 0.429238`; the preregistered 20%/positive-margin/`p<.05`
+conjunction therefore failed. Consequence reports and non-damage controls stayed
+at 100%, but the strict identity-margin control shifted by at most 0.5, so the
+selective causal-transport claim is not supported for this checkpoint and
+contrast.
+
+The required J-space secondary run completed separately, producing 69,120 rows
+(34,560 per split). Its projected action-token top-1 ranking was 50.96% on
+discovery and 54.69% on locked rows (57.73% opposed, 42.56% aligned). This is a
+weak observational readout, not a causal steering result; it cannot reopen patch
+selection or rescue the negative locked endpoint. The first red workflow was a
+missing frozen-probe-file error during local post-processing; immutable GPU
+artifacts were recovered and analyzed without rerunning the model.

@@ -90,9 +90,9 @@ The supported claim is deliberately narrow:
 - [V5 research status](docs/v5/RESEARCH_STATUS.md)
 - [V5 decision log](docs/v5/decision-log.md)
 
-## Current causal experiment: RBG-5B
+## Completed causal follow-up: RBG-5B
 
-RBG-5B asks whether the behavioral dissociation has a transferable internal
+RBG-5B asked whether the behavioral dissociation has a transferable internal
 cause. It uses a prospectively frozen corpus of 96 new concept pairs: 48 games
 for discovery and 48 untouched games for the locked evaluation.
 
