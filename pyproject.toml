@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "jspace-reporting-policy"
+name = "when-words-override-consequences"
 version = "0.1.0"
-description = "Causal tests of reporting policies in Jacobian-lens space"
+description = "Preregistered empirical tests of semantic action binding and consequence knowledge in language models"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
@@ -19,7 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.3", "ruff>=0.9"]
-modal = ["modal>=1.4"]
+modal = ["modal>=1.4", "scikit-learn>=1.6"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/jspace_policy"]
@@ -33,4 +33,3 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["B", "E", "F", "I", "UP"]
-

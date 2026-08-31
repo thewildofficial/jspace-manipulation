@@ -237,12 +237,22 @@ def _make_row(
             f"{response_per_action['A']}; if {surfaces['B']}, {outcome_subject} "
             f"{response_per_action['B']}.\n"
         )
-    _append(parts, anchors, mapping, "mapping_end")
+    if study_id == "V5-RBG-5B":
+        _append(parts, anchors, mapping)
+        _append(parts, anchors, "\n---\n", "mapping_end")
+    else:
+        _append(parts, anchors, mapping, "mapping_end")
     options = "Available actions:\n" + "".join(
         f"{label}: {surfaces[label]}\n" for label in presentation
     )
-    _append(parts, anchors, f"\n{options}", "actions_end")
-    _append(parts, anchors, f"\n{payoff}", "payoff_end")
+    if study_id == "V5-RBG-5B":
+        _append(parts, anchors, f"\n{options}")
+        _append(parts, anchors, "\n---\n", "actions_end")
+        _append(parts, anchors, f"\n{payoff}")
+        _append(parts, anchors, "\n---\n", "payoff_end")
+    else:
+        _append(parts, anchors, f"\n{options}", "actions_end")
+        _append(parts, anchors, f"\n{payoff}", "payoff_end")
     _append(
         parts,
         anchors,

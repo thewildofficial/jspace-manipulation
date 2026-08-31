@@ -38,6 +38,8 @@ def _resolve_remote_artifact(path: str | Path, result_root: Path) -> Path:
     candidate = Path(path)
     if candidate.exists():
         return candidate
+    if not candidate.is_absolute():
+        return result_root / candidate
     parts = candidate.parts
     if len(parts) >= 2 and parts[0] == "/" and parts[1] == "artifacts":
         relative = Path(*parts[2:])
@@ -68,6 +70,48 @@ def _linear_cka(left: np.ndarray, right: np.ndarray) -> float:
         np.sqrt(np.sum((left.T @ left) ** 2) * np.sum((right.T @ right) ** 2))
     )
     return numerator / denominator if denominator else 0.0
+
+
+def clustered_balanced_accuracy_bootstrap(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    groups: np.ndarray,
+    sampled_group_indices: np.ndarray,
+) -> np.ndarray:
+    """Vectorize the frozen base-cluster bootstrap exactly at count level.
+
+    Sampling a base with replacement repeats every row from that base.  Since
+    binary balanced accuracy depends only on the four confusion counts, summing
+    per-base counts is algebraically identical to rebuilding every sampled row
+    array and calling sklearn for each resample.
+    """
+    y_true = np.asarray(y_true, dtype=np.int8)
+    y_pred = np.asarray(y_pred, dtype=np.int8)
+    groups = np.asarray(groups)
+    draws = np.asarray(sampled_group_indices, dtype=np.int64)
+    bases = np.asarray(sorted(set(groups.tolist())))
+    if draws.ndim != 2 or draws.shape[1] != len(bases):
+        raise ValueError("bootstrap draws must have one column per base cluster")
+    if len(y_true) != len(y_pred) or len(y_true) != len(groups):
+        raise ValueError("labels, predictions, and groups must have equal length")
+    base_lookup = {base: index for index, base in enumerate(bases)}
+    row_bases = np.asarray([base_lookup[base] for base in groups], dtype=np.int64)
+    # Columns are true positives, false negatives, true negatives, false positives.
+    counts = np.zeros((len(bases), 4), dtype=np.int64)
+    categories = np.where(
+        y_true == 1,
+        np.where(y_pred == 1, 0, 1),
+        np.where(y_pred == 0, 2, 3),
+    )
+    np.add.at(counts, (row_bases, categories), 1)
+    sampled = counts[draws].sum(axis=1)
+    positive = sampled[:, 0] + sampled[:, 1]
+    negative = sampled[:, 2] + sampled[:, 3]
+    valid = (positive > 0) & (negative > 0)
+    return 0.5 * (
+        sampled[valid, 0] / positive[valid]
+        + sampled[valid, 2] / negative[valid]
+    )
 
 
 def compute_activation_geometry(

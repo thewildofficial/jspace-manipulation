@@ -1,4 +1,4 @@
-"""Metered Modal entry points for the reporting-policy study.
+"""Metered Modal entry points for When Words Override Consequences.
 
 The remote image is UV-built, uses one GPU/container, and has bounded timeouts.
 Run from the repository root with ``modal run modal_app.py::benchmark`` or
@@ -25,7 +25,7 @@ from jspace_policy.budget import (  # noqa: E402
 )
 from jspace_policy.dataset import generate_dataset, write_jsonl  # noqa: E402
 
-APP_NAME = "jspace-reporting-policy"
+APP_NAME = "when-words-override-consequences"
 MODEL_ID = "Qwen/Qwen3.5-4B"
 MODEL_ID_27B = "Qwen/Qwen3.6-27B"
 MODEL_REVISION = "main"

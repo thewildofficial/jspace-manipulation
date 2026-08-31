@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-08-30T21:45:14.082180+00:00",
+  "dataset_sha256": "cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3",
+  "maximum_tokens": 346,
+  "minimum_anchors": 5,
+  "minimum_tokens": 182,
+  "paired_anchor_pairs_checked": 384,
+  "queries_checked": 4032,
+  "schema_version": 1,
+  "status": "all_token_continuation_and_semantic_anchor_checks_passed",
+  "study_id": "V5-RBG-5B"
+}

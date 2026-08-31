@@ -20,8 +20,52 @@ MEMORY_GIB_USD_PER_SECOND = 0.00000222
 
 
 @dataclass(frozen=True)
+class ExecutionLimit:
+    """A hard Modal function timeout and its billable resources."""
+
+    timeout_seconds: int
+    gpu: str | None
+    cpu_cores: float
+    memory_gib: float
+
+
+# Operational limits only: the frozen RBG-5B dataset, behavioral gates, patch
+# search, and locked endpoint are unchanged. Centralizing the limits makes the
+# user's incremental authorization executable and testable.
+# The initial authorization was $10.00.  After the first behavior run and the
+# timed-out discovery attempt, the user reported $6.60 remaining on 2026-08-31.
+# These limits cover only the prospective repair run: discovery -> locked ->
+# J-space.  The failed attempt is historical spend, not silently omitted from
+# the authorization boundary.
+RBG5B_INCREMENTAL_COST_LIMIT_USD = 10.0
+RBG5B_REPAIR_REMAINING_COST_LIMIT_USD = 6.6
+RBG5B_SALVAGE_REMAINING_COST_LIMIT_USD = 2.5
+RBG5B_EXECUTION_LIMITS = {
+    "preflight": ExecutionLimit(300, None, 2, 8),
+    "behavior": ExecutionLimit(1200, "A100-80GB", 8, 32),
+    "discovery": ExecutionLimit(1200, "A100-80GB", 16, 64),
+    "locked": ExecutionLimit(3000, "A100-80GB", 16, 64),
+    "jspace": ExecutionLimit(720, "A100-80GB", 8, 64),
+}
+
+RBG5B_REPAIR_EXECUTION_LIMITS = {
+    stage: RBG5B_EXECUTION_LIMITS[stage]
+    for stage in ("discovery", "locked", "jspace")
+}
+
+# After locked run 33380084999 spent its full 3,000-second timeout on serial
+# CPU bootstrap work while retaining an A100, the user authorized one bounded
+# implementation-only salvage.  The frozen dataset, site, endpoints, and
+# resampling count do not change; only resource placement and vectorization do.
+RBG5B_SALVAGE_EXECUTION_LIMITS = {
+    "locked_gpu": ExecutionLimit(1200, "A100-80GB", 16, 64),
+    "jspace": ExecutionLimit(720, "A100-80GB", 8, 64),
+}
+
+
+@dataclass(frozen=True)
 class CostEstimate:
-    gpu: str
+    gpu: str | None
     seconds: float
     gpu_usd: float
     cpu_usd: float
@@ -30,19 +74,51 @@ class CostEstimate:
     buffered_usd: float
 
 
+def execution_limit_cost_usd(limit: ExecutionLimit) -> float:
+    """Return the maximum compute charge implied by one hard timeout."""
+
+    gpu_rate = 0.0 if limit.gpu is None else GPU_USD_PER_SECOND[limit.gpu]
+    rate = (
+        gpu_rate
+        + CPU_CORE_USD_PER_SECOND * limit.cpu_cores
+        + MEMORY_GIB_USD_PER_SECOND * limit.memory_gib
+    )
+    return rate * limit.timeout_seconds
+
+
+def execution_plan_cost_usd(limits: dict[str, ExecutionLimit]) -> float:
+    """Return the cost ceiling if every stage consumes its full timeout."""
+
+    return sum(execution_limit_cost_usd(limit) for limit in limits.values())
+
+
+def admit_execution_plan(
+    limits: dict[str, ExecutionLimit], *, limit_usd: float
+) -> float:
+    """Refuse a plan whose hard timeout ceiling exceeds its authorization."""
+
+    ceiling = execution_plan_cost_usd(limits)
+    if ceiling > limit_usd:
+        raise RuntimeError(
+            f"execution plan refused: hard timeout ceiling ${ceiling:.2f} "
+            f"exceeds ${limit_usd:.2f} authorization"
+        )
+    return ceiling
+
+
 def estimate_cost(
-    gpu: str,
+    gpu: str | None,
     seconds: float,
     *,
     cpu_cores: float = 4.0,
     memory_gib: float = 16.0,
     uncertainty_fraction: float = 0.20,
 ) -> CostEstimate:
-    if gpu not in GPU_USD_PER_SECOND:
+    if gpu is not None and gpu not in GPU_USD_PER_SECOND:
         raise ValueError(f"unknown GPU: {gpu}")
     if seconds < 0:
         raise ValueError("seconds must be non-negative")
-    gpu_cost = GPU_USD_PER_SECOND[gpu] * seconds
+    gpu_cost = 0.0 if gpu is None else GPU_USD_PER_SECOND[gpu] * seconds
     cpu_cost = CPU_CORE_USD_PER_SECOND * cpu_cores * seconds
     memory_cost = MEMORY_GIB_USD_PER_SECOND * memory_gib * seconds
     subtotal = gpu_cost + cpu_cost + memory_cost

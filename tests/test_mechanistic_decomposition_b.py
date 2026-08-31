@@ -6,10 +6,17 @@ from pathlib import Path
 
 import numpy as np
 
-from jspace_policy.budget import estimate_cost
+from jspace_policy.budget import (
+    RBG5B_EXECUTION_LIMITS,
+    RBG5B_REPAIR_EXECUTION_LIMITS,
+    RBG5B_REPAIR_REMAINING_COST_LIMIT_USD,
+    estimate_cost,
+    execution_plan_cost_usd,
+)
 from jspace_policy.mechanistic_decomposition import analyze_behavior
 from jspace_policy.mechanistic_decomposition_analysis import (
     _resolve_remote_artifact,
+    clustered_balanced_accuracy_bootstrap,
     compute_activation_geometry,
 )
 from jspace_policy.mechanistic_decomposition_games import (
@@ -33,6 +40,7 @@ def test_rbg5b_dataset_is_fresh_deterministic_and_hashed() -> None:
     verify_dataset_payload(payload, config)
     assert payload == dataset_payload(config)
     assert len(RBG5B_CONCEPT_PAIRS) == 96
+    assert all(row["prompt"].count("\n---\n") == 3 for row in payload["rows"])
     assert len(payload["rows"]) == 1344
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert payload["content_sha256"] == manifest["expected_content_sha256"]
@@ -96,6 +104,45 @@ def test_downloaded_modal_artifact_path_resolution(tmp_path: Path) -> None:
     assert _resolve_remote_artifact(remote, tmp_path) == local
 
 
+def test_relative_artifact_path_resolution(tmp_path: Path) -> None:
+    relative = Path("modal_artifacts/rbg5b/run/locked_probe_metrics.json.gz")
+    assert _resolve_remote_artifact(relative, tmp_path) == tmp_path / relative
+
+
+def test_vectorized_cluster_bootstrap_matches_row_reconstruction() -> None:
+    y = np.asarray([0, 1, 0, 0, 1, 1, 0, 1], dtype=np.int8)
+    predicted = np.asarray([0, 1, 1, 0, 1, 0, 0, 0], dtype=np.int8)
+    groups = np.asarray(["a", "a", "b", "c", "c", "c", "d", "d"])
+    draws = np.asarray([[0, 1, 2, 3], [0, 0, 1, 3], [2, 2, 3, 1]])
+    actual = clustered_balanced_accuracy_bootstrap(y, predicted, groups, draws)
+    bases = sorted(set(groups.tolist()))
+    expected = []
+    for draw in draws:
+        indices = np.concatenate([np.flatnonzero(groups == bases[index]) for index in draw])
+        sampled_y = y[indices]
+        sampled_predicted = predicted[indices]
+        positive = sampled_y == 1
+        negative = ~positive
+        expected.append(
+            0.5
+            * (
+                np.mean(sampled_predicted[positive] == 1)
+                + np.mean(sampled_predicted[negative] == 0)
+            )
+        )
+    assert np.allclose(actual, expected)
+
+
+def test_vectorized_bootstrap_preserves_seeded_draw_sequence() -> None:
+    sequential_rng = np.random.default_rng(20260831)
+    matrix_rng = np.random.default_rng(20260831)
+    sequential = np.stack(
+        [sequential_rng.choice(34, size=34, replace=True) for _ in range(2000)]
+    )
+    matrix = matrix_rng.choice(34, size=(2000, 34), replace=True)
+    assert np.array_equal(matrix, sequential)
+
+
 def test_geometry_fixture_is_reproducible(tmp_path: Path) -> None:
     config = _config()
     dataset = dataset_payload(config)
@@ -153,3 +200,10 @@ def test_full_run_budget_reservation_matches_config() -> None:
     assert estimate + config["execution"]["prior_v5_buffered_usd_at_freeze"] < config[
         "execution"
     ]["hard_cumulative_v5_cost_limit_usd"]
+    # The config retains the original prospective reservation as provenance.
+    # The executable limits were tightened after run 33337232212 timed out, and
+    # are independently bounded by the user's reported $6.60 remaining balance.
+    assert RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds == stage_seconds["behavior"]
+    assert execution_plan_cost_usd(RBG5B_REPAIR_EXECUTION_LIMITS) < (
+        RBG5B_REPAIR_REMAINING_COST_LIMIT_USD
+    )

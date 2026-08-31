@@ -13,7 +13,7 @@
     "locked_base_games": 48,
     "lexicon": "rbg5b_v1",
     "concept_pair_count": 96,
-    "expected_content_sha256": "a6fde28a0f1995899661ea498eb1417da0d6d212059134236805f0f03a891fed",
+    "expected_content_sha256": "cd299a07cecde0f7e222176f646af60254fcb243b2e5f8945259b9fec2b861b3",
     "frames": ["strategic", "device"],
     "focused_cells": [
       ["opposed", "assertion", "none", "prose"],

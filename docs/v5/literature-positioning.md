@@ -106,3 +106,59 @@ scheme.” It is:
 This links cognitive-control/Stroop-style interference to alignment evaluation:
 evaluators may add demonstrations expecting greater task understanding, yet make
 meaningful strategic action less reliable even as verbal checks remain excellent.
+
+## Action-representation invariance: tool use and scheming evaluations
+
+The safety-facing open problem is whether a consequential model action is stable
+under a semantics-preserving renaming of the available action interface. A model
+that selects causal outcomes should choose the correspondingly renamed action
+when names change but transitions, payoffs, information, and goals do not. A model
+whose policy is captured by the semantic action surface may instead change the
+outcome it selects despite accurately reporting every action's consequence.
+
+Recent agentic-safety work makes this a live measurement question. **Evaluating
+and Understanding Scheming Propensity in LLM Agents** finds large changes under
+tool and oversight variations and argues that measured propensity belongs to a
+model-prompt-scaffold system rather than a model in isolation. **Agentic
+Misalignment in Summer 2026** holds judged transcripts fixed and reverses the
+downstream training consequence of `COMPLIANT` and `NON_COMPLIANT`; several
+Claude judges change their verdicts, but the study does not cross consequence
+direction with opaque or countersemantic verdict names.
+
+- https://arxiv.org/abs/2603.01608
+- https://alignment.anthropic.com/2026/agentic-misalignment-summer-2026/
+
+Tool-use work supplies the adjacent interface result without the strategic
+construct-validity test. **ToolRobustBench** diagnoses failures under interface,
+intent, observation, and runtime perturbations. **INTENT-AS-A-TOOL** treats the
+probability of calling specially named intent tools as a fine-grained signal of
+agentic misalignment. **Formal Verification of Agentic Systems over Operational
+Data** identifies identifier-renaming equivariance as a condition for transferring
+system properties and shows that an LLM policy can violate it. These results make
+action naming scientifically important, but do not independently verify action
+consequence knowledge or causally localize a semantic-versus-consequence conflict.
+
+- https://arxiv.org/abs/2608.23635
+- https://arxiv.org/abs/2608.27348
+- https://arxiv.org/abs/2608.03609
+
+The proposed bridge is therefore a crossed, outcome-scored evaluation: truthful
+semantic names, opaque aliases, and countersemantic aliases for identical tool
+transitions, accompanied by independent consequence reports. RBG-4 supplies the
+controlled behavioral precursor; RBG-5B asks whether a naturally successful
+table/opaque residual state can causally repair the matched semantic failure.
+Neither study by itself establishes scheming. Together they test whether the
+action surfaces later used to measure scheming are faithful readouts of a stable
+consequence-directed policy.
+
+The current novelty target is the conjunction of:
+
+1. causally identical action or tool interfaces under systematic relabeling;
+2. independent evidence that the model knows each action's real consequence;
+3. outcome-level rather than function-name-level scoring;
+4. held-out causal intervention on violations of that invariance; and
+5. explicit application to the construct validity of agentic safety evaluations.
+
+This remains a literature-shaped hypothesis rather than a priority claim. The
+direct tool-calling and motivated-mislabeling translations are prospective
+follow-ups and are not evidence from the present game corpus.

@@ -24,7 +24,13 @@ from typing import Any
 
 import modal
 
-from jspace_policy.budget import append_ledger, estimate_cost, ledger_total
+from jspace_policy.budget import (
+    RBG5B_EXECUTION_LIMITS,
+    RBG5B_SALVAGE_EXECUTION_LIMITS,
+    append_ledger,
+    estimate_cost,
+    ledger_total,
+)
 
 CONFIG_PATH = Path("configs/v5/mechanistic_decomposition/experiment.json")
 DATASET_PATH = Path("configs/v5/mechanistic_decomposition/dataset.json")
@@ -51,7 +57,18 @@ base_image = (
         "transformers>=5.5",
         "huggingface_hub>=0.34",
     )
-    .env({"HF_HOME": "/cache/huggingface", "TOKENIZERS_PARALLELISM": "false"})
+    .env(
+        {
+            "HF_HOME": "/cache/huggingface",
+            "TOKENIZERS_PARALLELISM": "false",
+            # Probe folds are parallelized explicitly.  Keep each numerical
+            # solve single-threaded so BLAS does not multiply 12 workers into
+            # severe oversubscription.
+            "OMP_NUM_THREADS": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+        }
+    )
 )
 core_image = base_image.add_local_dir(
     "src/jspace_policy", remote_path="/root/jspace_policy"
@@ -363,7 +380,13 @@ def _query_batches(
     return output
 
 
-@app.function(image=core_image, cpu=2, memory=8192, volumes={"/cache": cache}, timeout=900)
+@app.function(
+    image=core_image,
+    cpu=2,
+    memory=8192,
+    volumes={"/cache": cache},
+    timeout=RBG5B_EXECUTION_LIMITS["preflight"].timeout_seconds,
+)
 def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     import transformers
 
@@ -428,7 +451,7 @@ def preflight_remote(dataset: dict[str, Any], config: dict[str, Any]) -> str:
     cpu=8,
     memory=32768,
     volumes={"/cache": cache},
-    timeout=2400,
+    timeout=RBG5B_EXECUTION_LIMITS["behavior"].timeout_seconds,
     retries=0,
 )
 def behavior_remote(dataset: dict[str, Any], config: dict[str, Any], git_commit: str) -> str:
@@ -650,6 +673,7 @@ def _fit_probe_artifact(
     import pickle
 
     import numpy as np
+    from joblib import Parallel, delayed, parallel_config
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import balanced_accuracy_score
     from sklearn.model_selection import GroupKFold
@@ -664,9 +688,51 @@ def _fit_probe_artifact(
         map(float, config["probe"]["regularization_c_grid"])
     )
     folds = int(config["probe"]["group_folds"])
-    rng = np.random.default_rng(int(config["probe"]["seed"]))
-    models = []
-    selection = []
+    probe_seed = int(config["probe"]["seed"])
+    workers = min(12, max(1, folds * 2))
+
+    def estimator_for(regularization_c: float, seed: int) -> Any:
+        # This is the same standardized, class-balanced L2-logistic objective
+        # frozen in the protocol.  The original liblinear dual optimizer failed
+        # to converge in 670 fits and exhausted a 3,000-second discovery run.
+        # Newton-CG solves the same objective.  The fitted iteration count is
+        # checked below so no incomplete fit can enter a frozen artifact.
+        return make_pipeline(
+            StandardScaler(),
+            LogisticRegression(
+                C=regularization_c,
+                solver="newton-cg",
+                class_weight="balanced",
+                max_iter=1000,
+                random_state=seed,
+            ),
+        )
+
+    def fit_checked(estimator: Any, x_fit: Any, y_fit: Any) -> Any:
+        estimator.fit(x_fit, y_fit)
+        fitted = estimator.named_steps["logisticregression"]
+        if np.any(np.asarray(fitted.n_iter_) >= int(fitted.max_iter)):
+            raise RuntimeError("probe optimizer exhausted max_iter without convergence")
+        return estimator
+
+    def fold_score(
+        x_values: Any,
+        y_values: Any,
+        train: Any,
+        test: Any,
+        regularization_c: float,
+        seed: int,
+    ) -> float:
+        estimator = fit_checked(
+            estimator_for(regularization_c, seed),
+            x_values[train],
+            y_values[train],
+        )
+        return float(
+            balanced_accuracy_score(y_values[test], estimator.predict(x_values[test]))
+        )
+
+    site_specs = []
     for anchor_index, anchor in enumerate(anchor_names):
         for layer in _probe_layer_indices(anchor, layers, config):
             valid = np.flatnonzero(masks[:, anchor_index])
@@ -692,107 +758,91 @@ def _fit_probe_artifact(
                         )
                     else:
                         valid_kind = valid
-                    x = _decode_numpy_features(features[valid_kind, layer, anchor_index])
-                    y = y_all[valid_kind]
-                    groups = np.asarray(
-                        [metadata[index]["base_game_id"] for index in valid_kind]
-                    )
-                    if len(set(y)) < 2 or len(set(groups)) < folds:
-                        selection.append(
-                            {
-                                "layer": layer,
-                                "anchor": anchor,
-                                "target": target,
-                                "model_kind": model_kind,
-                                "status": "insufficient_classes_or_groups",
-                            }
+                    site_specs.append(
+                        (
+                            len(site_specs),
+                            anchor_index,
+                            anchor,
+                            layer,
+                            target,
+                            model_kind,
+                            valid_kind,
+                            y_all,
                         )
-                        continue
-                    splitter = GroupKFold(n_splits=folds)
-                    scores_by_c = {}
-                    for regularization_c in c_grid:
-                        fold_scores = []
-                        for train, test in splitter.split(x, y, groups):
-                            estimator = make_pipeline(
-                                StandardScaler(),
-                                LogisticRegression(
-                                    C=regularization_c,
-                                    solver="liblinear",
-                                    dual=True,
-                                    class_weight="balanced",
-                                    max_iter=1000,
-                                    random_state=int(config["probe"]["seed"]),
-                                ),
-                            )
-                            estimator.fit(x[train], y[train])
-                            fold_scores.append(
-                                balanced_accuracy_score(y[test], estimator.predict(x[test]))
-                            )
-                        scores_by_c[regularization_c] = float(np.mean(fold_scores))
-                    selected_c = sorted(c_grid, key=lambda c: (-scores_by_c[c], c))[0]
-                    estimator = make_pipeline(
-                        StandardScaler(),
-                        LogisticRegression(
-                            C=selected_c,
-                            solver="liblinear",
-                            dual=True,
-                            class_weight="balanced",
-                            max_iter=1000,
-                            random_state=int(config["probe"]["seed"]),
-                        ),
                     )
-                    estimator.fit(x, y)
-                    shuffled = rng.permutation(y)
-                    shuffled_scores = []
-                    for train, test in splitter.split(x, shuffled, groups):
-                        control = make_pipeline(
-                            StandardScaler(),
-                            LogisticRegression(
-                            C=selected_c,
-                            solver="liblinear",
-                            dual=True,
-                            class_weight="balanced",
-                            max_iter=1000,
-                                random_state=int(config["probe"]["seed"]),
-                            ),
+
+    def fit_site(
+        spec: tuple[Any, ...], feature_values: Any
+    ) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        (
+            _site_index,
+            anchor_index,
+            anchor,
+            layer,
+            target,
+            model_kind,
+            valid_kind,
+            y_all,
+        ) = spec
+        x = _decode_numpy_features(feature_values[valid_kind, layer, anchor_index])
+        y = y_all[valid_kind]
+        groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
+        identity = {
+            "layer": layer,
+            "anchor": anchor,
+            "target": target,
+            "model_kind": model_kind,
+        }
+        if len(set(y)) < 2 or len(set(groups)) < folds:
+            return None, {**identity, "status": "insufficient_classes_or_groups"}
+        splitter = GroupKFold(n_splits=folds)
+        splits = list(splitter.split(x, y, groups))
+        scores_by_c = {}
+        for regularization_c in c_grid:
+            scores_by_c[regularization_c] = float(
+                np.mean(
+                    [
+                        fold_score(
+                            x,
+                            y,
+                            train,
+                            test,
+                            regularization_c,
+                            probe_seed,
                         )
-                        control.fit(x[train], shuffled[train])
-                        shuffled_scores.append(
-                            balanced_accuracy_score(
-                                shuffled[test], control.predict(x[test])
-                            )
-                        )
-                    models.append(
-                        {
-                            "layer": layer,
-                            "anchor": anchor,
-                            "anchor_index": anchor_index,
-                            "target": target,
-                            "model_kind": model_kind,
-                            "estimator": estimator,
-                        }
-                    )
-                    selection.append(
-                        {
-                            "layer": layer,
-                            "anchor": anchor,
-                            "target": target,
-                            "model_kind": model_kind,
-                            "status": "ok",
-                            "n": len(valid_kind),
-                            "selected_c": selected_c,
-                            "cv_balanced_accuracy": scores_by_c[selected_c],
-                            "shuffled_cv_balanced_accuracy": float(np.mean(shuffled_scores)),
-                            "scores_by_c": {
-                                str(key): value for key, value in scores_by_c.items()
-                            },
-                        }
-                    )
+                        for train, test in splits
+                    ]
+                )
+            )
+        selected_c = sorted(c_grid, key=lambda c: (-scores_by_c[c], c))[0]
+        estimator = fit_checked(estimator_for(selected_c, probe_seed), x, y)
+        model_row = {
+            **identity,
+            "anchor_index": anchor_index,
+            "estimator": estimator,
+        }
+        selection_row = {
+            **identity,
+            "status": "ok",
+            "n": len(valid_kind),
+            "selected_c": selected_c,
+            "cv_balanced_accuracy": scores_by_c[selected_c],
+            "scores_by_c": {str(key): value for key, value in scores_by_c.items()},
+        }
+        return model_row, selection_row
+
+    with parallel_config(backend="loky", n_jobs=workers, inner_max_num_threads=1):
+        site_results = Parallel()(
+            delayed(fit_site)(spec, features) for spec in site_specs
+        )
+    models = [model for model, _ in site_results if model is not None]
+    selection = [row for _, row in site_results]
     # Frozen, low-cost shuffled-label controls for four sentinel sites.
     sentinel_sites = config.get("probe", {}).get("label_shuffle_sentinel_sites", [])
     n_permutations = int(config.get("probe", {}).get("label_shuffle_permutations", 0))
     if sentinel_sites and n_permutations:
         populations = config.get("probe", {}).get("target_training_population", {})
+        sentinel_specs = []
         for layer, anchor in sentinel_sites:
             if anchor not in anchor_names or int(layer) not in layers:
                 continue
@@ -811,42 +861,66 @@ def _fit_probe_artifact(
                     )
                 else:
                     valid_kind = valid
-                x = _decode_numpy_features(features[valid_kind, int(layer), anchor_index])
-                y = np.asarray([int(metadata[index][target]) for index in valid_kind])
-                groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
-                if len(set(y)) < 2 or len(set(groups)) < folds:
-                    continue
-                splitter = GroupKFold(n_splits=folds)
                 for permutation in range(n_permutations):
-                    shuffled = rng.permutation(y)
-                    scores = []
-                    for train, test in splitter.split(x, shuffled, groups):
-                        control = make_pipeline(
-                            StandardScaler(),
-                            LogisticRegression(
-                                C=c_grid[0],
-                                solver="liblinear",
-                                dual=True,
-                                class_weight="balanced",
-                                max_iter=1000,
-                                random_state=int(config["probe"]["seed"]) + permutation,
-                            ),
+                    sentinel_specs.append(
+                        (
+                            len(sentinel_specs),
+                            int(layer),
+                            anchor,
+                            anchor_index,
+                            target,
+                            population or "all",
+                            valid_kind,
+                            permutation,
                         )
-                        control.fit(x[train], shuffled[train])
-                        scores.append(
-                            balanced_accuracy_score(
-                                shuffled[test], control.predict(x[test])
-                            )
-                        )
-                    selection.append({
-                        "layer": int(layer),
-                        "anchor": anchor,
-                        "target": target,
-                        "model_kind": population or "all",
-                        "status": "shuffled_label_control",
-                        "permutation": permutation,
-                        "balanced_accuracy": float(np.mean(scores)),
-                    })
+                    )
+
+        def fit_sentinel(spec: tuple[Any, ...], feature_values: Any) -> dict[str, Any] | None:
+            (
+                sentinel_index,
+                layer,
+                anchor,
+                anchor_index,
+                target,
+                model_kind,
+                valid_kind,
+                permutation,
+            ) = spec
+            x = _decode_numpy_features(feature_values[valid_kind, layer, anchor_index])
+            y = np.asarray([int(metadata[index][target]) for index in valid_kind])
+            groups = np.asarray([metadata[index]["base_game_id"] for index in valid_kind])
+            if len(set(y)) < 2 or len(set(groups)) < folds:
+                return None
+            sentinel_rng = np.random.default_rng(
+                np.random.SeedSequence([probe_seed, 1, sentinel_index])
+            )
+            shuffled = sentinel_rng.permutation(y)
+            scores = [
+                fold_score(
+                    x,
+                    shuffled,
+                    train,
+                    test,
+                    c_grid[0],
+                    probe_seed + permutation,
+                )
+                for train, test in GroupKFold(n_splits=folds).split(x, shuffled, groups)
+            ]
+            return {
+                "layer": layer,
+                "anchor": anchor,
+                "target": target,
+                "model_kind": model_kind,
+                "status": "shuffled_label_control",
+                "permutation": permutation,
+                "balanced_accuracy": float(np.mean(scores)),
+            }
+
+        with parallel_config(backend="loky", n_jobs=workers, inner_max_num_threads=1):
+            sentinel_results = Parallel()(
+                delayed(fit_sentinel)(spec, features) for spec in sentinel_specs
+            )
+        selection.extend(row for row in sentinel_results if row is not None)
     model_path = remote_root / "probe_models.pkl.gz"
     with gzip.open(model_path, "wb") as handle:
         pickle.dump(models, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -857,6 +931,16 @@ def _fit_probe_artifact(
         "dataset_sha256": dataset_sha256,
         "remote_model_path": str(model_path),
         "remote_model_sha256": _sha256_file(model_path),
+        "implementation": {
+            "objective": "standardized_class_balanced_l2_logistic",
+            "solver": "newton-cg",
+            "maximum_iterations": 1000,
+            "parallel_site_workers": workers,
+            "shuffle_seed_derivation": "numpy_seed_sequence_probe_seed_and_sentinel_index",
+            "convergence_policy": "refuse_fit_at_iteration_limit",
+            "shuffled_controls": "ten_permutations_at_four_preregistered_sentinel_sites_only",
+            "amendment_reason": "run_33337232212_liblinear_timeout_after_670_warnings",
+        },
         "selection": selection,
     }
     artifact["content_sha256"] = _canonical_sha256(artifact)
@@ -1057,17 +1141,22 @@ def _evaluate_locked_probes(
     metadata: list[dict[str, Any]],
     probe_artifact: dict[str, Any],
     config: dict[str, Any],
+    *,
+    probe_model_path: Path | None = None,
 ) -> list[dict[str, Any]]:
     import pickle
 
     import numpy as np
     from sklearn.metrics import balanced_accuracy_score
 
-    if _sha256_file(Path(probe_artifact["remote_model_path"])) != probe_artifact[
-        "remote_model_sha256"
-    ]:
+    from jspace_policy.mechanistic_decomposition_analysis import (
+        clustered_balanced_accuracy_bootstrap,
+    )
+
+    model_path = probe_model_path or Path(probe_artifact["remote_model_path"])
+    if _sha256_file(model_path) != probe_artifact["remote_model_sha256"]:
         raise RuntimeError("remote probe model hash mismatch")
-    with gzip.open(probe_artifact["remote_model_path"], "rb") as handle:
+    with gzip.open(model_path, "rb") as handle:
         models = pickle.load(handle)
     features = np.load(residual_path, mmap_mode="r")
     masks = np.load(mask_path)
@@ -1096,20 +1185,20 @@ def _evaluate_locked_probes(
         y = np.asarray([int(metadata[index][record["target"]]) for index in indices])
         predicted = record["estimator"].predict(x)
         point = float(balanced_accuracy_score(y, predicted))
-        by_base: dict[str, list[int]] = {}
-        for local_index, source_index in enumerate(indices):
-            by_base.setdefault(metadata[source_index]["base_game_id"], []).append(local_index)
-        bases = sorted(by_base)
-        boot = []
+        groups = np.asarray([metadata[index]["base_game_id"] for index in indices])
+        bases = sorted(set(groups.tolist()))
+        boot = np.empty(0, dtype=np.float64)
         if len(set(y)) >= 2 and bases:
-            for _ in range(resamples):
-                sampled = rng.choice(bases, size=len(bases), replace=True)
-                sampled_indices = [index for base in sampled for index in by_base[base]]
-                sampled_y = y[sampled_indices]
-                if len(set(sampled_y)) >= 2:
-                    boot.append(
-                        balanced_accuracy_score(sampled_y, predicted[sampled_indices])
-                    )
+            # The original implementation rebuilt sampled row arrays and called
+            # sklearn 3.07 million times.  Summing per-base confusion counts is
+            # algebraically identical and preserves the frozen 2,000-resample
+            # cluster bootstrap while completing in seconds.
+            draws = rng.choice(
+                len(bases), size=(resamples, len(bases)), replace=True
+            )
+            boot = clustered_balanced_accuracy_bootstrap(
+                y, predicted, groups, draws
+            )
         output.append(
             {
                 "layer": int(record["layer"]),
@@ -1118,8 +1207,8 @@ def _evaluate_locked_probes(
                 "model_kind": record["model_kind"],
                 "n": len(indices),
                 "balanced_accuracy": point,
-                "bootstrap_95_low": float(np.quantile(boot, 0.025)) if boot else None,
-                "bootstrap_95_high": float(np.quantile(boot, 0.975)) if boot else None,
+                "bootstrap_95_low": float(np.quantile(boot, 0.025)) if len(boot) else None,
+                "bootstrap_95_high": float(np.quantile(boot, 0.975)) if len(boot) else None,
             }
         )
     return output
@@ -1460,7 +1549,7 @@ def _run_locked_patches(
     cpu=16,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=7200,
+    timeout=RBG5B_EXECUTION_LIMITS["discovery"].timeout_seconds,
     retries=0,
     max_containers=1,
 )
@@ -1589,7 +1678,7 @@ def discovery_remote(
     cpu=16,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=9000,
+    timeout=RBG5B_EXECUTION_LIMITS["locked"].timeout_seconds,
     retries=0,
     max_containers=1,
 )
@@ -1725,12 +1814,269 @@ def locked_remote(
 
 
 @app.function(
+    image=core_image,
+    gpu="A100-80GB",
+    cpu=16,
+    memory=65536,
+    volumes={"/cache": cache, "/artifacts": artifacts},
+    timeout=RBG5B_SALVAGE_EXECUTION_LIMITS["locked_gpu"].timeout_seconds,
+    retries=0,
+    max_containers=1,
+)
+def locked_gpu_remote(
+    dataset: dict[str, Any],
+    behavior_payload: dict[str, Any],
+    discovery_manifest: dict[str, Any],
+    config: dict[str, Any],
+    git_commit: str,
+    run_id: str,
+) -> str:
+    """Capture locked states and run only the frozen causal patch on GPU.
+
+    This is an implementation-only decomposition of ``locked_remote`` after
+    run 33380084999 timed out in serial CPU bootstrap work.  The capture is
+    committed before patching so an infrastructure failure cannot discard it.
+    """
+    import torch
+
+    _validate(config, dataset)
+    if not behavior_payload["analysis"]["gate_pass"]:
+        raise RuntimeError("behavioral gate failed; locked activations remain unopened")
+    probe_artifact = discovery_manifest["probe_freeze"]
+    patch_artifact = discovery_manifest["patch_freeze"]
+    if not _content_hash_valid(probe_artifact) or not _content_hash_valid(patch_artifact):
+        raise RuntimeError("invalid discovery freeze hash")
+    if patch_artifact["status"] != "frozen_after_discovery_before_locked_capture":
+        raise RuntimeError("no positive discovery patch; locked phase remains closed")
+    if probe_artifact["dataset_sha256"] != dataset["content_sha256"]:
+        raise RuntimeError("probe freeze/dataset mismatch")
+    torch.manual_seed(int(config["execution"]["seed"]))
+    started = time.perf_counter()
+    model, tokenizer, model_metadata = _load_model()
+    remote_root = Path(f"/artifacts/{_artifact_prefix(config)}/{run_id}")
+    remote_root.mkdir(parents=True, exist_ok=False)
+    behavior_rows = {row["condition_id"]: row for row in behavior_payload["rows"]}
+    selected_rows = [
+        row for row in dataset["rows"]
+        if row["split"] == "locked" and _capture_row_allowed(row, config)
+    ]
+    residual_path = remote_root / "locked_residuals.npy"
+    metadata, anchor_names, layers = _capture_split(
+        model,
+        tokenizer,
+        selected_rows,
+        behavior_rows,
+        config,
+        residual_path,
+    )
+    metadata_path = remote_root / "locked_metadata.json.gz"
+    with gzip.open(metadata_path, "wt", encoding="utf-8") as handle:
+        json.dump(metadata, handle, sort_keys=True)
+    capture_artifact = {
+        "remote_root": str(remote_root),
+        "residual_path": str(residual_path),
+        "residual_sha256": _sha256_file(residual_path),
+        "residual_shape": [
+            len(metadata), len(layers), len(anchor_names), int(model_metadata["d_model"])
+        ],
+        "residual_storage_dtype": config["capture"].get("storage_dtype", "float16"),
+        "anchor_mask_path": str(residual_path.with_name("anchor_mask.npy")),
+        "anchor_mask_sha256": _sha256_file(residual_path.with_name("anchor_mask.npy")),
+        "metadata_path": str(metadata_path),
+        "metadata_sha256": _sha256_file(metadata_path),
+        "anchor_names": anchor_names,
+        "layers": layers,
+    }
+    checkpoint = {
+        "schema_version": 1,
+        "study_id": _study_id(config),
+        "status": "locked_capture_committed_before_patch",
+        "metadata": {
+            "run_id": run_id,
+            "git_commit": git_commit,
+            "dataset_sha256": dataset["content_sha256"],
+            "probe_freeze_sha256": probe_artifact["content_sha256"],
+            "patch_freeze_sha256": patch_artifact["content_sha256"],
+            **model_metadata,
+        },
+        "artifact": capture_artifact,
+    }
+    checkpoint_path = remote_root / "locked_capture_checkpoint.json"
+    checkpoint_path.write_text(
+        json.dumps(checkpoint, allow_nan=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    artifacts.commit()
+
+    patch_results = _run_locked_patches(
+        model,
+        tokenizer,
+        dataset["rows"],
+        behavior_rows,
+        residual_path,
+        metadata,
+        anchor_names,
+        patch_artifact,
+        config,
+    )
+    patch_results_path = remote_root / "locked_patches.json.gz"
+    with gzip.open(patch_results_path, "wt", encoding="utf-8") as handle:
+        json.dump(patch_results, handle, sort_keys=True)
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - started
+    result = {
+        "schema_version": 1,
+        "study_id": _study_id(config),
+        "status": "locked_gpu_capture_and_frozen_patch_completed",
+        "metadata": {
+            "run_id": run_id,
+            "created_at": datetime.now(UTC).isoformat(),
+            "elapsed_seconds": elapsed,
+            "git_commit": git_commit,
+            "phase": "locked_gpu",
+            "dataset_sha256": dataset["content_sha256"],
+            "config_sha256": _canonical_sha256(config),
+            "probe_freeze_sha256": probe_artifact["content_sha256"],
+            "patch_freeze_sha256": patch_artifact["content_sha256"],
+            **model_metadata,
+        },
+        "artifact": {
+            **capture_artifact,
+            "capture_checkpoint_path": str(checkpoint_path),
+            "capture_checkpoint_sha256": _sha256_file(checkpoint_path),
+            "patch_results_path": str(patch_results_path),
+            "patch_results_sha256": _sha256_file(patch_results_path),
+        },
+        "counts": {
+            "primary_patch_rows": len(patch_results["primary"]),
+            "control_patch_rows": len(patch_results["controls"]),
+            "report_patch_rows": len(patch_results["reports"]),
+        },
+    }
+    gpu_manifest_path = remote_root / "locked_gpu_manifest.json"
+    gpu_manifest_path.write_text(
+        json.dumps(result, allow_nan=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    artifacts.commit()
+    cache.commit()
+    return json.dumps(result, allow_nan=False, sort_keys=True)
+
+
+def locked_analysis_local(
+    dataset: dict[str, Any],
+    discovery_manifest: dict[str, Any],
+    gpu_manifest: dict[str, Any],
+    config: dict[str, Any],
+    git_commit: str,
+    local_artifact_root: str,
+    local_probe_model_path: str,
+    result_root: str,
+) -> str:
+    """Finish unchanged locked geometry and probes on the GitHub runner CPU."""
+    _validate(config, dataset)
+    started = time.perf_counter()
+    probe_artifact = discovery_manifest["probe_freeze"]
+    patch_artifact = discovery_manifest["patch_freeze"]
+    if gpu_manifest["metadata"]["dataset_sha256"] != dataset["content_sha256"]:
+        raise RuntimeError("locked GPU manifest/dataset mismatch")
+    if gpu_manifest["metadata"]["probe_freeze_sha256"] != probe_artifact["content_sha256"]:
+        raise RuntimeError("locked GPU manifest/probe freeze mismatch")
+    if gpu_manifest["metadata"]["patch_freeze_sha256"] != patch_artifact["content_sha256"]:
+        raise RuntimeError("locked GPU manifest/patch freeze mismatch")
+    artifact = gpu_manifest["artifact"]
+    local_root = Path(local_artifact_root)
+    local_result_root = Path(result_root)
+    residual_path = local_root / Path(artifact["residual_path"]).name
+    mask_path = local_root / Path(artifact["anchor_mask_path"]).name
+    metadata_path = local_root / Path(artifact["metadata_path"]).name
+    patch_results_path = local_root / Path(artifact["patch_results_path"]).name
+    for path, expected in (
+        (residual_path, artifact["residual_sha256"]),
+        (mask_path, artifact["anchor_mask_sha256"]),
+        (metadata_path, artifact["metadata_sha256"]),
+        (patch_results_path, artifact["patch_results_sha256"]),
+    ):
+        if _sha256_file(path) != expected:
+            raise RuntimeError(f"locked GPU artifact hash mismatch: {path.name}")
+    with gzip.open(metadata_path, "rt", encoding="utf-8") as handle:
+        metadata = json.load(handle)
+    anchor_names = list(artifact["anchor_names"])
+    layers = list(map(int, artifact["layers"]))
+    from jspace_policy.mechanistic_decomposition_analysis import compute_activation_geometry
+
+    geometry_path = local_root / "locked_geometry.json.gz"
+    geometry_artifact = compute_activation_geometry(
+        residual_path,
+        metadata,
+        anchor_names,
+        layers,
+        dataset["rows"],
+        geometry_path,
+        permutation_seed=int(config["execution"]["seed"]) + 3,
+    )
+    probe_metrics = _evaluate_locked_probes(
+        residual_path,
+        mask_path,
+        metadata,
+        probe_artifact,
+        config,
+        probe_model_path=Path(local_probe_model_path),
+    )
+    probe_metrics_path = local_root / "locked_probe_metrics.json.gz"
+    with gzip.open(probe_metrics_path, "wt", encoding="utf-8") as handle:
+        json.dump(probe_metrics, handle, sort_keys=True)
+    elapsed = time.perf_counter() - started
+    result = {
+        "schema_version": 1,
+        "study_id": _study_id(config),
+        "status": "completed_after_timeout_safe_resource_split",
+        "metadata": {
+            **gpu_manifest["metadata"],
+            "created_at": datetime.now(UTC).isoformat(),
+            "elapsed_seconds": float(gpu_manifest["metadata"]["elapsed_seconds"]) + elapsed,
+            "gpu_elapsed_seconds": float(gpu_manifest["metadata"]["elapsed_seconds"]),
+            "cpu_elapsed_seconds": elapsed,
+            "git_commit": git_commit,
+            "phase": "locked",
+            "implementation_amendment": {
+                "reason": "run_33380084999_serial_bootstrap_hit_3000_second_timeout",
+                "causal_endpoint_changed": False,
+                "probe_endpoint_changed": False,
+                "bootstrap_resamples_changed": False,
+                "resource_split": (
+                    "gpu_capture_and_patch_then_local_cpu_geometry_and_probe_evaluation"
+                ),
+                "bootstrap_implementation": "vectorized_per_base_confusion_counts",
+            },
+        },
+        "artifact": {
+            **artifact,
+            "geometry_path": str(geometry_path.relative_to(local_result_root)),
+            "geometry_sha256": geometry_artifact["sha256"],
+            "probe_metrics_path": str(probe_metrics_path.relative_to(local_result_root)),
+            "probe_metrics_sha256": _sha256_file(probe_metrics_path),
+        },
+        "counts": {
+            **gpu_manifest["counts"],
+            "probe_metrics": len(probe_metrics),
+        },
+    }
+    final_manifest_path = local_root / "locked_manifest.json"
+    final_manifest_path.write_text(
+        json.dumps(result, allow_nan=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return json.dumps(result, allow_nan=False, sort_keys=True)
+
+
+@app.function(
     image=lens_image,
     gpu="A100-80GB",
     cpu=8,
     memory=65536,
     volumes={"/cache": cache, "/artifacts": artifacts},
-    timeout=5400,
+    timeout=RBG5B_EXECUTION_LIMITS["jspace"].timeout_seconds,
     retries=0,
     max_containers=1,
 )
