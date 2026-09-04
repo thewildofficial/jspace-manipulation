@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "max_abs_diff": 0.00390625,
+      "scales": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "seed": 82431,
+      "status": "assert_close_passed",
+      "token_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "max_abs_diff": 0.0029296875,
+      "scales": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "seed": 82431,
+      "status": "assert_close_passed",
+      "token_ids": [
+        100,
+        5000,
+        50000
+      ]
+    }
+  ],
+  "created_at": "2026-09-04T23:23:44.066590+00:00",
+  "elapsed_seconds": 143.48052064499998,
+  "gpu_actual": "NVIDIA A100-SXM4-80GB",
+  "lens_code_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+  "lens_filename": "qwen3.6-27b/jlens/Salesforce-wikitext/Qwen3.6-27B_jacobian_lens_n1000.pt",
+  "lens_repo": "neuronpedia/jacobian-lens",
+  "lens_revision": "qwen-n1000",
+  "model_id": "Qwen/Qwen3.6-27B",
+  "model_revision_requested": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "model_revision_resolved": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "readout_version": "normalized_candidates_v2",
+  "schema_version": 1,
+  "status": "real_checkpoint_parity_passed",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.15.1"
+}

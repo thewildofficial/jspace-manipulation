@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "readout_fix_validated_scores_quarantined",
+  "created_at": "2026-09-05",
+  "finding": "Archived RBG-5B candidate-path action_scores mixed normalized full-vocabulary scoring with candidate scoring that omitted the final norm. They cannot support a J-lens performance conclusion.",
+  "evidence": {
+    "code_path": "modal_v5_mechanistic_decomposition.py::jspace_remote computed full-vocabulary rows with model.unembed(transported) and candidate rows with transported @ lm_head.weight[required_ids].T, without the adapter final norm, bias, or softcap. The parity check used a zero vector, which passes for any norm gain.",
+    "synthetic_counterexample": "results/research_audit/snapshot_eb23897.json proves the zero-vector check passes while rankings flip under nonuniform gains.",
+    "real_checkpoint_parity": "results/research_audit/readout_parity_af81d642.json: normalized_candidates_v2 matches full unembedding on the pinned Qwen3.6-27B checkpoint for nonzero states at 3 scales x 2 token sets (max abs diff 0.0039, BF16-level). The fix is faithful; the old path was not."
+  },
+  "recomputation": {
+    "attempted": true,
+    "outcome": "not_possible_from_archives",
+    "reason": "The Modal volume retains only rbg5b/6fba6e96678445c4a594147271cc830b/jspace_rows.json.gz (69,120 rows of final scores: action_scores, concept_mean_token_scores; no transported residuals, no per-row candidate id lists). Transported states were never persisted, so per-row rescoring requires a GPU rerun, which this branch does not launch.",
+    "required_rerun": "Rerun the J-space readout with readout_version normalized_candidates_v2 and persist transported states or per-row candidate ids if rescoring must be auditable."
+  },
+  "verdicts_unchanged": [
+    "RBG-5B locked causal endpoint negative (2/50 repairs, p=.429).",
+    "54.69%-style archived aggregates are quarantined, not reinterpreted."
+  ],
+  "originals_intact": true
+}
