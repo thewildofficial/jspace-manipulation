@@ -16,6 +16,7 @@ representation removes the harm.
 | RBG-2 | Can explicit reportable consequences diverge from meaningful action? | Passed; 42.19-point semantic gap |
 | RBG-3 | Does the large effect survive history-free table paraphrase and localize by surface? | Strong magnitude failed; seven assertion-specific, rehearsal-repaired errors |
 | RBG-4 | Do redundant history and policy format explain the attenuation within matched games? | Passed; 23.96-point inverse-evidence effect, prose-specific |
+| RBG-6 | Does seeing self-generated consequence reports control later action? | 0/48 primary dissociations; +58.33-point self-generated rescue; exploratory follow-up |
 
 ## Open hypotheses
 
@@ -72,3 +73,19 @@ weak observational readout, not a causal steering result; it cannot reopen patch
 selection or rescue the negative locked endpoint. The first red workflow was a
 missing frozen-probe-file error during local post-processing; immutable GPU
 artifacts were recovered and analyzed without rerunning the model.
+
+## RBG-6 outcome
+
+Issue #11 requested the missing endogenous trajectory: the model reports both
+consequences, those exact report tokens remain as assistant turns, and it then
+chooses. The analysis plan froze the report-order factorial, oracle and swapped
+transcript controls, and local tokenization before execution. On the RBG-2-like
+strategic opposed assertion cell, both reports were correct in 46/48 trajectories
+and none chose the wrong action. Self-generated action accuracy was 95.83% versus
+37.50% for the immutable direct baseline (58.33-point gain, exact clustered
+`p=.000061`). Oracle replay was 100%; swapped replay followed the inverted
+report-implied action in 43/48 cases. The matched opaque control stayed at 100%.
+
+This supports behavioral trajectory dependence in this prompt family, not a claim
+about deception or a particular internal mechanism. See
+[`../../results/v5_full_action_trajectory/FINDINGS.md`](../../results/v5_full_action_trajectory/FINDINGS.md).

@@ -1,0 +1,15 @@
+{
+  "created_at": "2026-09-04T12:27:03.277069+00:00",
+  "execution_location": "github_actions_cpu",
+  "maximum_tokens": 423,
+  "minimum_tokens": 202,
+  "model_id": "Qwen/Qwen3.6-27B",
+  "model_revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+  "prepared_payload_sha256": "7bdf10288c043d588e077fccc81a49da5949655602bebe4e3aec9dc5fa8537aa",
+  "queries_validated": 5376,
+  "schema_version": 1,
+  "source_dataset_sha256": "3daaeaa14132555c1b4b98a6d35dc49ccd67ea967102922d55750f0ab89009ba",
+  "status": "all_branch_prompts_and_one_token_continuations_validated_locally",
+  "study_id": "V5-RBG-6",
+  "transformers_version": "5.16.1"
+}

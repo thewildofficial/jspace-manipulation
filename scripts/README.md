@@ -15,6 +15,9 @@ analysis code, not new experiment definitions.
 | [`analyze_v4_*.py`](.) | Rebuilds the V4 rationale-interference analyses. |
 | [`analyze_v5_*.py`](.) | Rebuilds the V5 game-study analyses. |
 | [`analyze_v5_mechanistic_decomposition.py`](analyze_v5_mechanistic_decomposition.py) | Rebuilds the locked RBG-5 patch gate and probe tables from downloaded immutable payloads. |
+| [`analyze_v5_full_action_trajectory.py`](analyze_v5_full_action_trajectory.py) | Rebuilds the V5-RBG-6 endogenous trajectory analysis locally. |
+| [`freeze_v5_full_action_trajectory.py`](freeze_v5_full_action_trajectory.py) | Materializes the RBG-6 dataset from the immutable RBG-4 payload. |
+| [`prepare_v5_full_action_trajectory.py`](prepare_v5_full_action_trajectory.py) | Tokenizes and validates all RBG-6 branches on CPU before Modal GPU execution. |
 | [`generate_dataset.py`](generate_dataset.py) | Creates deterministic experiment data from the configured prompt families. |
 | [`modal_v2.py`](../modal_v2.py) | Runs the original V2 GPU workflow, including the H0 gate. |
 | [`modal_h0r.py`](../modal_h0r.py) | Runs the H0R diagnostic and prospective GPU workflows. |

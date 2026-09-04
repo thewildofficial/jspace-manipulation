@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-6",
+  "generator": "jspace_policy.full_action_trajectory.dataset_payload",
+  "source_file_sha256": "4e7ba1d0dc16e1fe231d7fe312e77dbede14e33e5db2eca2c6e030ed9237b4f9",
+  "expected_content_sha256": "3daaeaa14132555c1b4b98a6d35dc49ccd67ea967102922d55750f0ab89009ba",
+  "expected_contexts": 768,
+  "status": "frozen_before_full_trajectory_model_execution"
+}

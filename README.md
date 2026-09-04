@@ -11,11 +11,13 @@ That hypothesis failed its prospective gate. Follow-up games then exposed a more
 interesting behavioral anomaly: additional correct evidence can selectively make
 meaningful strategic actions worse while consequence reports remain accurate.
 
-The current study, **V5-RBG-5B**, is a frozen held-out test of whether a naturally
-successful internal state from an opaque or tabular version of a game can causally
-repair the matched meaningful-action failure.
+The current study, **V5-RBG-6**, is the issue #11 follow-up testing whether a model
+that sees its own consequence reports before acting behaves differently from a
+direct action query.
 
-> **Current status:** RBG-4 prospectively confirmed the behavioral effect.
+> **Current status:** RBG-6 completed: self-generated consequence reports rescued
+> the matched direct-action failure; the primary full-trajectory dissociation was
+> 0/48.
 > RBG-5 replicated it but stopped before activations because one report-stability
 > gate missed by 0.208 percentage points. RBG-5B passed its corrected behavior
 > gate and froze one weak discovery site (opaque donor, layer 40,
@@ -151,6 +153,7 @@ The negative results are part of the evidence rather than discarded attempts:
 | RBG-4 | Can more correct evidence selectively worsen action? | Passed prospectively |
 | RBG-5 | Can activations be opened for causal analysis? | Behavior replicated; report gate missed by 0.208 points |
 | RBG-5B | Can a natural successful state repair held-out failures? | Locked result negative: 2/50 repairs (4%), exact `p=.429`; J-space completed as an observational readout |
+| RBG-6 | Does seeing the model's own consequence reports control later action? | Primary dissociation 0/48; self-generated action accuracy 95.83% vs direct 37.50% |
 
 This history matters. Observable decodability was never promoted into causal
 evidence, failed thresholds were not rounded, and later studies do not rewrite
