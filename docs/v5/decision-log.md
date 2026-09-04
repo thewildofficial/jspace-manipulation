@@ -350,3 +350,26 @@
   0.57503). Together, the successful locked and J-space stages used USD 0.81301
   measured / USD 0.97561 buffered against the USD 1.93225 hard salvage ceiling;
   retries remained disabled.
+
+
+## September 2026 — Second-pass code, literature and data audit
+
+- Reproduced RBG-6 analysis exactly from immutable raw SHA
+  `06b464386cbb9ab52867dbe6758b10b3e14afdee270e46335e47f924c61d6a88`.
+- Corrected prose: 46/46 correct actions given two correct reports; both
+  report-error trajectories chose incorrectly. Unconditional accuracy is 46/48.
+- Qualified 0/48 row-binomial uncertainty: two report orders share 24 base games
+  and 12 concept pairs. The clustered paired rescue p-value is unchanged.
+- Identified explicit report-use instruction/extra-turn confounds in RBG-6.
+- Found omitted final norm in optimized RBG-5B candidate scores; the zero-vector
+  parity check was insufficient. Archived mixed-path aggregates are quarantined
+  from J-lens performance interpretation pending a versioned correction.
+- Preserved raw results, preregistrations, selected sites and failed causal gates.
+- Added current literature/next-sprint navigation. These proposals do not license
+  reopening a stopped historical study, and no new paid inference was launched.
+
+- Implemented normalized candidate scoring with nonzero-state parity checks and
+  output version `normalized_candidates_v2`; 127 CPU tests pass including new
+  BF16/bias/softcap regressions. Real-Qwen readout correction remains unrun.
+- Added a virtual-tool safety protocol and Qwen3.8-27B comparison, including
+  thinking-retention controls, within the same proposed $30 total.

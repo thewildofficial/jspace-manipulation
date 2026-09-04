@@ -1,5 +1,21 @@
 # V5 literature positioning: inverse evidence and semantic action capture
 
+## Second-pass update
+
+The [expanded primary-source comparison](../next-sprint/literature.md) adds work
+on follow-up monitoring, latent reasoning, probe trajectories, and belief-verified
+lie detection. [The code/data audit](../next-sprint/audit.md) qualifies the current
+evidence: independent consequence reports do not establish an unchanged internal
+state on the action trajectory; RBG-6 adds an explicit report-use instruction;
+and the RBG-5B candidate readout omitted final normalization. No successful
+causal localization is established. The proposed next experiment is
+[content-controlled report reactivity](../next-sprint/experiments.md).
+
+The Story Shapes the Agent and INTENT-AS-A-TOOL entries below are retained from
+the previous review; direct source retrieval failed in this second pass, so
+their detailed comparisons are not newly verified. The next-sprint proposal does
+not depend on them.
+
 ## Closest open literature
 
 **A Mechanistic Lens on Semantic Conflicts: Using Activation Patching to
@@ -95,13 +111,13 @@ search and author-level comparison are required before a paper claims “first.�
 
 ## Contribution framing
 
-The strongest current framing is not “models secretly know the answer” or “models
-scheme.” It is:
+The current evidence supports the following behavioral framing:
 
-> Strategic failures can be caused by how correct causal knowledge is bound to
-> meaningful actions. More evidence can strengthen a misleading semantic action
-> script without degrading explicit consequence knowledge, while a representation
-> change restores policy use.
+> In the tested games, additional correct demonstrations worsen meaningful
+> action accuracy while independent consequence reports remain accurate.
+> Tabular/opaque formats and report-containing trajectories improve behavior.
+> Semantic binding or retrieval changes are candidate explanations; the internal
+> mechanism and preservation of the action trajectory's knowledge state are unproven.
 
 This links cognitive-control/Stroop-style interference to alignment evaluation:
 evaluators may add demonstrations expecting greater task understanding, yet make
@@ -145,11 +161,12 @@ consequence knowledge or causally localize a semantic-versus-consequence conflic
 The proposed bridge is therefore a crossed, outcome-scored evaluation: truthful
 semantic names, opaque aliases, and countersemantic aliases for identical tool
 transitions, accompanied by independent consequence reports. RBG-4 supplies the
-controlled behavioral precursor; RBG-5B asks whether a naturally successful
+controlled behavioral precursor; RBG-5B tested whether a naturally successful
 table/opaque residual state can causally repair the matched semantic failure.
-Neither study by itself establishes scheming. Together they test whether the
-action surfaces later used to measure scheming are faithful readouts of a stable
-consequence-directed policy.
+The locked causal endpoint failed, and its readout needs the normalization
+correction described above. Neither study establishes scheming or a stable
+consequence-directed internal policy. They motivate a direct test of whether
+action surfaces used in safety evaluations preserve outcome-level behavior.
 
 The current novelty target is the conjunction of:
 

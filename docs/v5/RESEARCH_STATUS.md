@@ -1,5 +1,13 @@
 # V5 research status
 
+## Second-pass review
+
+See [the audit](../next-sprint/audit.md) and [updated literature](../next-sprint/literature.md).
+RBG-6 supports report-conditioned behavior, with instruction/turn confounds; its
+48 rows represent 24 base games. RBG-5B candidate J-lens scores omitted final
+normalization, so the archived readout aggregates require correction before
+interpretation. Raw data, frozen analyses, and causal verdicts are unchanged.
+
 ## Current result
 
 RBG-4 is the first V5 result that passes its competence gate, effect-size threshold,
@@ -29,7 +37,7 @@ representation removes the harm.
 4. **Model-family hypothesis.** The effect may reflect Qwen post-training rather
    than transformer cognition generally; multi-model replication is essential.
 
-## Licensed next experiment
+## Historical causal follow-up (completed; not the next experiment)
 
 Freeze a natural activation-interchange study using matched RBG-4 prompts. Patch
 only naturally occurring states from correct table/opaque counterparts into failed
@@ -37,7 +45,7 @@ redundant-prose assertion prompts, with reverse and same-condition controls. Do 
 use arbitrary steering vectors or tune layers against the final endpoint. A small
 fresh behavioral replication should accompany any mechanistic result.
 
-This experiment is now frozen as **V5-RBG-5**. It uses discovery data to choose
+This experiment was frozen as **V5-RBG-5**. It uses discovery data to choose
 one site inside the pre-established layers 36–43, hashes that choice, and tests it
 once on lexically disjoint locked games. Probes and optional J-space trajectories
 remain secondary diagnostics.
@@ -68,9 +76,10 @@ contrast.
 
 The required J-space secondary run completed separately, producing 69,120 rows
 (34,560 per split). Its projected action-token top-1 ranking was 50.96% on
-discovery and 54.69% on locked rows (57.73% opposed, 42.56% aligned). This is a
-weak observational readout, not a causal steering result; it cannot reopen patch
-selection or rescue the negative locked endpoint. The first red workflow was a
+discovery and 54.69% on locked rows (57.73% opposed, 42.56% aligned). These archived
+aggregates mix normalized full-vocabulary scoring and candidate scoring that
+omitted final normalization. They cannot yet support a J-lens performance
+conclusion and cannot reopen patch selection or rescue the negative locked endpoint. The first red workflow was a
 missing frozen-probe-file error during local post-processing; immutable GPU
 artifacts were recovered and analyzed without rerunning the model.
 
@@ -89,3 +98,9 @@ report-implied action in 43/48 cases. The matched opaque control stayed at 100%.
 This supports behavioral trajectory dependence in this prompt family, not a claim
 about deception or a particular internal mechanism. See
 [`../../results/v5_full_action_trajectory/FINDINGS.md`](../../results/v5_full_action_trajectory/FINDINGS.md).
+
+## Proposed next experiment
+
+[Report reactivity and relational monitoring](../next-sprint/experiments.md) is a
+new proposal, not an activated historical protocol. Correct and validate the
+readout first, then test fresh games with a common neutral action instruction.

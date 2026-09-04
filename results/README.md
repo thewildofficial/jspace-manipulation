@@ -13,6 +13,9 @@ Folder names are historical storage paths and are kept unchanged so scripts,
 manifests, and citations remain reproducible. The canonical experiment name is
 the bold label in the table.
 
+**Second-pass review:** [audit and corrections](../docs/next-sprint/audit.md).
+RBG-6 counts/uncertainty and RBG-5B J-lens interpretation are qualified there.
+
 ## The experiment trail
 
 | Canonical name | Question | Result | Folder |
@@ -36,7 +39,7 @@ the bold label in the table.
 | **V5-RBG-3 — semantic localization** | Does the large RBG-2 effect survive fresh surface controls? | No; the large effect attenuated, but residual errors were rehearsal-repaired. | [`v5_semantic_localization/`](v5_semantic_localization/README.md) |
 | **V5-RBG-4 — inverse-evidence replication** | Do redundant correct demonstrations harm strategic action? | Yes, prospectively, for prose assertions; tables removed the harm. | [`v5_inverse_evidence/`](v5_inverse_evidence/README.md) |
 | **V5-RBG-5 — mechanistic decomposition** | Can matched natural activations repair the prose/assertion failure? | Behavior replicated; report-gap gate failed, so activations stayed closed. | [`v5_mechanistic_decomposition/`](v5_mechanistic_decomposition/README.md) |
-| **V5-RBG-5B — powered natural-residual follow-up** | Can a fresh natural residual repair held-out failures? | No: 2/50 repairs (4%), exact `p=.429`; required J-space readout completed observationally. | [`v5_mechanistic_decomposition_b/`](v5_mechanistic_decomposition_b/README.md) |
+| **V5-RBG-5B — powered natural-residual follow-up** | Can a fresh natural residual repair held-out failures? | No: 2/50 repairs (4%), exact `p=.429`; readout completed but candidate normalization needs correction. | [`v5_mechanistic_decomposition_b/`](v5_mechanistic_decomposition_b/README.md) |
 | **V5-RBG-6 — endogenous full action trajectory** | Does seeing the model's own consequence reports control later action? | Yes, behaviorally: 0/48 primary dissociations; self-generated action rescue of 58.33 points. | [`v5_full_action_trajectory/`](v5_full_action_trajectory/README.md) |
 
 ## How to read a result

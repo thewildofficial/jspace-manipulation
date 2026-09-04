@@ -2,6 +2,11 @@
 
 **Strategic action binding in language models**
 
+**Second-pass review:** [audit and corrections](docs/next-sprint/audit.md),
+[updated literature](docs/next-sprint/literature.md), and
+[proposed $30 sprint with Qwen3.8 virtual tools](docs/next-sprint/virtual-tools-qwen38.md). The next question is whether
+consequence elicitation reveals or changes the information controlling action.
+
 Can a language model know exactly what its available actions will cause, yet
 choose according to what an action *says* rather than what it *does*?
 
@@ -28,8 +33,10 @@ direct action query.
 > clustered endpoint (`p=.429`), and preserved consequence reports; the causal
 > claim is therefore negative for this checkpoint and contrast. The required
 > J-space secondary readout also completed (69,120 rows); its projected
-> action-token ranking was near chance and is not used to rescue the failed
-> causal endpoint.
+> action-token ranking mixed normalized and unnormalized scoring paths. A
+> second-pass code audit found the candidate-path normalization omission; those
+> aggregates need a corrected readout before interpretation. The failed causal
+> endpoint is unchanged.
 
 ## The question in one example
 
@@ -90,7 +97,15 @@ The supported claim is deliberately narrow:
 
 - [Frozen RBG-4 findings](results/v5_inverse_evidence/FINDINGS.md)
 - [V5 research status](docs/v5/RESEARCH_STATUS.md)
+- [Second-pass interpretation corrections](docs/next-sprint/audit.md)
 - [V5 decision log](docs/v5/decision-log.md)
+
+Independent report queries show accessible consequence information under their
+own prefixes; they do not prove the same state controlled a direct action. In
+RBG-6, 46/46 trajectories with both reports correct chose correctly, while the two
+report-error trajectories chose incorrectly. Its 48 primary rows are two report
+orders on 24 base games. Added instructions and turns limit attribution of the
+rescue to report content alone.
 
 ## Completed causal follow-up: RBG-5B
 

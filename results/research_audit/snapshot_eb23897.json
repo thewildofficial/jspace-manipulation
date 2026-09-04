@@ -1,0 +1,50 @@
+{
+  "audited_commit": "eb23897f12bf902763f43f4772bdf8b0ebd3f5e3",
+  "raw_sha256": "06b464386cbb9ab52867dbe6758b10b3e14afdee270e46335e47f924c61d6a88",
+  "archived_analysis_reproduced": true,
+  "rbg6_primary": {
+    "rows": 48,
+    "base_game_clusters": 24,
+    "unique_source_conditions": 24,
+    "unique_unordered_concept_pairs": 12,
+    "both_reports_correct": 46,
+    "correct_action_among_both_reports_correct": 46,
+    "wrong_action_among_report_error_cases": 2,
+    "correct_report_tokens": 92,
+    "total_report_tokens": 96,
+    "dissociation_binomial_interval_treating_rows_independent": [
+      0.0,
+      0.07397278534728019
+    ],
+    "any_dissociation_per_base_zero_event_interval": [
+      0.0,
+      0.1424735977225256
+    ],
+    "note": "The per-base interval targets any dissociation across two report orders; it is not an interchangeable CI for trajectory risk. Both binomial models additionally assume independent sampled units."
+  },
+  "synthetic_normalization_counterexample": {
+    "not_a_model_rerun": true,
+    "bare_candidate_scores": [
+      [
+        2.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "normalized_candidate_scores": [
+      [
+        0.12649108110852147,
+        1.8973662166278222
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "zero_vector_check_passes": true,
+    "nonzero_candidate_ranking_changes": true
+  }
+}
