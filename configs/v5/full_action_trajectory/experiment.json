@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "study_id": "V5-RBG-6",
+  "issue": 11,
+  "status": "analysis_plan_frozen_after_rbg4_before_full_trajectory_execution",
+  "source": {
+    "study_id": "V5-RBG-4",
+    "run_id": "7c06999f4ad54d06b4454584e04faf9d",
+    "path": "results/v5_inverse_evidence/raw/behavior_v1.json",
+    "file_sha256": "4e7ba1d0dc16e1fe231d7fe312e77dbede14e33e5db2eca2c6e030ed9237b4f9",
+    "dataset_sha256": "3fdc9977f03700dbfb2118414ec9602a4e76d9d6e2b35788a81bc6acf4a1f5d1",
+    "known_before_design": "RBG-4 direct actions and independent reports; no full-trajectory outcome"
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
+    "dtype": "bfloat16",
+    "thinking": false,
+    "decision_rule": "argmax over frozen legal one-token continuations"
+  },
+  "dataset": {
+    "population": "all RBG-4 opposed-goal assertion and opaque-token rows",
+    "source_contexts": 384,
+    "report_orders": ["A_then_B", "B_then_A"],
+    "trajectory_contexts": 768,
+    "primary_cell": "strategic opposed assertion with redundant history and prose mapping",
+    "matched_control": "strategic opposed opaque token with redundant history and prose mapping"
+  },
+  "arms": {
+    "direct": "immutable RBG-4 action with no report turns",
+    "self_generated": "model reports both consequences sequentially and sees its own answers before acting",
+    "oracle_replay": "same trajectory with both correct report tokens supplied",
+    "swapped_replay": "same trajectory with both incorrect report tokens supplied"
+  },
+  "primary_endpoints": {
+    "full_trajectory_dissociation": "both self-generated reports correct and final self-generated action wrong",
+    "self_report_accuracy_minimum": 0.90,
+    "persistent_wrong_action_rate_minimum": 0.25,
+    "population": "primary_cell",
+    "report": "count, rate, and exact 95% binomial interval"
+  },
+  "secondary_endpoints": {
+    "causal_rehearsal_rescue": {
+      "endpoint": "self-generated action accuracy minus direct action accuracy",
+      "minimum_gain": 0.25,
+      "test": "two-sided exact base-game cluster sign flip",
+      "alpha": 0.05
+    },
+    "report_order_robustness": {
+      "maximum_absolute_action_accuracy_gap": 0.10
+    },
+    "opaque_non_damage": {
+      "minimum_self_generated_action_accuracy": 0.90
+    },
+    "transcript_sensitivity": "compare oracle-replay and swapped-replay action accuracy"
+  },
+  "claim_boundary": "This is a frozen follow-up on a previously observed RBG-4 dataset, not an independent replication. It tests behavioral trajectory dependence, not deception, consciousness, or an internal mechanism.",
+  "execution": {
+    "local_steps": [
+      "dataset materialization",
+      "all prompt rendering and tokenization",
+      "one-token continuation validation",
+      "statistical analysis and report generation"
+    ],
+    "modal_steps": ["GPU forward passes only"],
+    "gpu": "A100-80GB",
+    "estimated_ceiling_seconds": 600,
+    "function_timeout_seconds": 1200,
+    "hard_cost_limit_usd": 2.0
+  }
+}
