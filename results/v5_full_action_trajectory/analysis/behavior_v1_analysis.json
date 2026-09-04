@@ -1,0 +1,141 @@
+{
+  "diagnostics": {
+    "forced_choice_formatting_compliance": 0.9997395833333333,
+    "opposed_assertion_cells": {
+      "device:none:prose": {
+        "direct_action_accuracy": 0.75,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 0.8333333333333334,
+        "self_report_accuracy": 0.8333333333333334,
+        "swapped_replay_action_accuracy": 0.10416666666666667
+      },
+      "device:none:table": {
+        "direct_action_accuracy": 0.8333333333333334,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 1.0,
+        "self_report_accuracy": 0.9895833333333334,
+        "swapped_replay_action_accuracy": 0.2708333333333333
+      },
+      "device:redundant:prose": {
+        "direct_action_accuracy": 0.16666666666666666,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 0.9375,
+        "self_report_accuracy": 0.9583333333333334,
+        "swapped_replay_action_accuracy": 0.14583333333333334
+      },
+      "device:redundant:table": {
+        "direct_action_accuracy": 0.8333333333333334,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 1.0,
+        "self_report_accuracy": 0.9791666666666666,
+        "swapped_replay_action_accuracy": 0.3125
+      },
+      "strategic:none:prose": {
+        "direct_action_accuracy": 0.75,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 0.9791666666666666,
+        "self_report_accuracy": 0.9583333333333334,
+        "swapped_replay_action_accuracy": 0.2916666666666667
+      },
+      "strategic:none:table": {
+        "direct_action_accuracy": 0.8333333333333334,
+        "n": 48,
+        "oracle_replay_action_accuracy": 0.9791666666666666,
+        "self_generated_action_accuracy": 0.9791666666666666,
+        "self_report_accuracy": 1.0,
+        "swapped_replay_action_accuracy": 0.4375
+      },
+      "strategic:redundant:prose": {
+        "direct_action_accuracy": 0.375,
+        "n": 48,
+        "oracle_replay_action_accuracy": 1.0,
+        "self_generated_action_accuracy": 0.9583333333333334,
+        "self_report_accuracy": 0.9583333333333334,
+        "swapped_replay_action_accuracy": 0.10416666666666667
+      },
+      "strategic:redundant:table": {
+        "direct_action_accuracy": 0.8333333333333334,
+        "n": 48,
+        "oracle_replay_action_accuracy": 0.9791666666666666,
+        "self_generated_action_accuracy": 0.9791666666666666,
+        "self_report_accuracy": 1.0,
+        "swapped_replay_action_accuracy": 0.25
+      }
+    }
+  },
+  "n": 768,
+  "primary_full_trajectory_dissociation": {
+    "both_self_reports_correct": 46,
+    "both_self_reports_correct_and_action_wrong": 0,
+    "exact_95_percent_binomial_interval": [
+      0.0,
+      0.07397278534728019
+    ],
+    "n": 48,
+    "persistent_signature": false,
+    "population": "strategic opposed assertion, redundant history, prose mapping",
+    "rate_over_all_trajectories": 0.0,
+    "self_report_accuracy": 0.9583333333333334
+  },
+  "schema_version": 1,
+  "secondary_causal_rehearsal_rescue": {
+    "cluster_values": [
+      0.0,
+      0.5,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      0.5,
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0
+    ],
+    "direct_action_accuracy": 0.375,
+    "gain": 0.5833333333333334,
+    "rescue_signature": true,
+    "self_generated_action_accuracy": 0.9583333333333334,
+    "two_sided_exact_base_game_sign_flip_p": 6.103515625e-05
+  },
+  "secondary_opaque_non_damage": {
+    "n": 48,
+    "passed": true,
+    "self_generated_action_accuracy": 1.0,
+    "self_report_accuracy": 1.0
+  },
+  "secondary_report_order": {
+    "A_then_B_minus_B_then_A": 0.0,
+    "robust": true,
+    "self_generated_action_accuracy": {
+      "A_then_B": 0.9583333333333334,
+      "B_then_A": 0.9583333333333334
+    }
+  },
+  "secondary_transcript_controls": {
+    "oracle_minus_swapped_gap": 0.8958333333333334,
+    "oracle_replay_action_accuracy": 1.0,
+    "swapped_replay_action_accuracy": 0.10416666666666667,
+    "swapped_report_implied_action_accuracy": 0.8958333333333334
+  },
+  "source_run_id": "625672989c0b4262828e3cd80332dfb9",
+  "study_id": "V5-RBG-6"
+}

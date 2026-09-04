@@ -23,6 +23,7 @@ uv run pytest
 | [`test_revealed_belief_games.py`](test_revealed_belief_games.py), [`test_semantic_override_games.py`](test_semantic_override_games.py), [`test_semantic_capture_localization.py`](test_semantic_capture_localization.py), and [`test_inverse_evidence_games.py`](test_inverse_evidence_games.py) | V5 game construction, localization, and inverse-evidence checks. |
 | [`test_mechanistic_decomposition_games.py`](test_mechanistic_decomposition_games.py) | V5-RBG-5 focused corpus, behavioral gate, natural donors, and patch-freeze logic. |
 | [`test_mechanistic_decomposition_b.py`](test_mechanistic_decomposition_b.py) | V5-RBG-5B fresh corpus, non-inferiority gate, exact BF16 storage, and geometry fixture. |
+| [`test_full_action_trajectory.py`](test_full_action_trajectory.py) | RBG-6 source hash, report-order, and transcript invariants. |
 
 Passing these tests does not prove that an intervention works on a model. It
 only means the local reusable pieces behave as expected.
