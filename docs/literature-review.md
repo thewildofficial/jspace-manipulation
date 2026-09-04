@@ -1,5 +1,9 @@
 # Literature review and novelty boundary
 
+Historical foundation review. For the current evidence boundaries and newly
+reviewed monitoring literature, see [the September second pass](next-sprint/literature.md)
+and [code/data corrections](next-sprint/audit.md).
+
 ## Bottom line
 
 The toy experiment is not, by itself, evidence of deception. Its useful contribution is narrower: a causal assay for whether a model can keep a fact available while a separable reporting function changes what it says. If that assay generalizes through controlled composition and then prospectively predicts an instrumentally chosen report in a naturalistic task, it becomes relevant evidence about deceptive or unaligned behavior.

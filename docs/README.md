@@ -4,6 +4,12 @@ The `docs/` folder holds the reasoning around the experiments. The `results/`
 folder holds what the experiments produced. This folder explains why a test
 was designed, what was allowed to change, and what each result can support.
 
+## Current review and next sprint
+
+Start with [the next-sprint guide](next-sprint/README.md): it joins the surviving
+claims, second-pass corrections, literature comparison, and proposed $30 plan.
+The versioned documents below retain the historical information state.
+
 ## Start with the research question
 
 - [`research-spec.md`](research-spec.md) is the original research ladder: toy behavior, lens readout, causal intervention, fact preservation, and transfer.

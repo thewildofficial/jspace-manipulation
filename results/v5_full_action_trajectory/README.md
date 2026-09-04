@@ -17,3 +17,10 @@ uv run python scripts/analyze_v5_full_action_trajectory.py \
   --config configs/v5/full_action_trajectory/experiment.json \
   --output /tmp/v5-rbg6-analysis.json
 ```
+
+## Second-pass qualification
+
+There were 46/46 correct actions conditional on both reports being correct, and
+two incorrect-report/incorrect-action trajectories. The 48 rows cover 24 base
+games. The report treatment also adds turns and an explicit instruction to use
+the reports. See the corrected [findings](FINDINGS.md) for these limits.

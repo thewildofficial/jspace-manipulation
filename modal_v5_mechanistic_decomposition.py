@@ -2091,6 +2091,8 @@ def jspace_remote(
     import torch
     from jlens import JacobianLens, from_hf
 
+    from jspace_policy.lens_readout import check_selected_unembed, selected_unembed
+
     _validate(config, dataset)
     started = time.perf_counter()
     hf_model, tokenizer, model_metadata = _load_model()
@@ -2106,18 +2108,12 @@ def jspace_remote(
         # Verify the optimized candidate-token projection against the lens wrapper's
         # full unembedding before using it for the large all-row trajectory.
         with torch.inference_mode():
-            probe_state = torch.zeros((1, int(model.d_model)), device="cuda")
-            probe_ids = [0, 1, 2]
-            full_probe = model.unembed(probe_state).float()[0, probe_ids]
-            direct_probe = (
-                probe_state @ hf_model.lm_head.weight[probe_ids].to(dtype=probe_state.dtype).T
-            ).float()[0]
-            if getattr(hf_model.lm_head, "bias", None) is not None:
-                direct_probe += hf_model.lm_head.bias[probe_ids].float().to(device="cuda")
-            if not torch.allclose(full_probe, direct_probe, atol=1e-4, rtol=1e-5):
-                raise RuntimeError(
-                    "optimized J-space projection failed full-unembedding parity"
-                )
+            generator = torch.Generator(device="cpu").manual_seed(82431)
+            probe_state = torch.randn(
+                (3, int(model.d_model)), generator=generator, dtype=torch.float32
+            )
+            probe_state *= torch.tensor([0.1, 1.0, 10.0])[:, None]
+            check_selected_unembed(model, probe_state.to("cuda"), [0, 1, 2])
     run_id = uuid.uuid4().hex
     remote_root = Path(f"/artifacts/{_artifact_prefix(config)}/{run_id}")
     remote_root.mkdir(parents=True, exist_ok=False)
@@ -2209,14 +2205,9 @@ def jspace_remote(
                                     )
                                 }
                             )
-                            weight = hf_model.lm_head.weight[required_ids].to(
-                                device=transported.device, dtype=transported.dtype
-                            )
-                            selected_logits = transported @ weight.T
-                            if getattr(hf_model.lm_head, "bias", None) is not None:
-                                selected_logits += hf_model.lm_head.bias[required_ids].to(
-                                    device=transported.device, dtype=transported.dtype
-                                )
+                            selected_logits = selected_unembed(
+                                model, transported, required_ids
+                            ).float()
                             logits = None
                             top = None
                     for local_index, source_index in enumerate(part):
@@ -2321,6 +2312,7 @@ def jspace_remote(
                 "lens_revision": config["jspace"]["lens_revision"],
                 "lens_filename": config["jspace"]["lens_filename"],
                 "lens_code_commit": config["jspace"]["lens_code_commit"],
+                "readout_version": "normalized_candidates_v2",
                 **model_metadata,
             },
             "artifact": {

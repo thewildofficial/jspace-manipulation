@@ -1,5 +1,16 @@
 # V5-RBG-5B results
 
+**Second-pass correction:** the archived candidate J-lens path omitted the final
+model normalization, while full-vocabulary rows used it. Its zero-state parity
+check could not detect the difference. Readout percentages below are historical
+outputs awaiting corrected computation, not evidence of near-chance J-lens
+performance. The failed identity control also limits mechanistic interpretation.
+The frozen causal endpoint remains unsupported; no archived outputs are changed.
+See [audit](../../docs/next-sprint/audit.md).
+
+The following paragraphs preserve the sequence of execution and recovery;
+earlier descriptions of unopened stages are historical, not current status.
+
 This directory contains the immutable surviving artifacts from GitHub Actions
 run [`33337232212`](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/33337232212).
 The corrected preflight and behavioral gate passed. Discovery then timed out

@@ -1,13 +1,24 @@
 # V5-RBG-6 findings: endogenous full action trajectory
 
+## Second-pass interpretation correction
+
+The frozen raw data and analysis are unchanged. The review reproduced the analysis
+exactly and corrected conditional counts and prose below. The archived row-level
+binomial interval assumes independence; the 48 rows actually represent two report
+orders on 24 base games (12 distinct concept pairs). It is not a cluster-valid
+population uncertainty bound. The paired rescue test already clusters by base.
+See [audit](../../docs/next-sprint/audit.md) and
+[reproducible checks](../research_audit/snapshot_eb23897.json).
+
 ## Verdict
 
 Issue #11's full-trajectory intervention produced the opposite of a persistent
 report/action dissociation in the preregistered follow-up cell. When Qwen3.6-27B
 reported both consequences and then saw those exact answers as assistant turns,
-it selected the payoff-maximizing action in **46/48** trajectories where both
-reports were correct. There were **0/48** cases of “both self-reports correct,
-action wrong” (exact 95% binomial interval: 0%–7.40%). The frozen persistence
+it selected the payoff-maximizing action in **46/46** trajectories where both
+reports were correct, or **46/48** across all primary trajectories. There were **0/48** cases of “both self-reports correct,
+action wrong” (archived row-level exact 95% binomial interval: 0%–7.40%;
+independence caveat above). The frozen persistence
 signature therefore failed.
 
 The trajectory acted as a strong behavioral rescue: self-generated action
@@ -27,9 +38,9 @@ preference, or an internal mechanism.
 
 | Endpoint | Result | Frozen criterion |
 |---|---:|---:|
-| Primary trajectories | 48 | strategic/opposed/assertion/redundant/prose, both report orders |
+| Primary trajectories | 48 rows / 24 base games | strategic/opposed/assertion/redundant/prose, both report orders |
 | Self-report accuracy | 46/48 trajectories had both reports correct (95.83% report-token accuracy) | at least 90% |
-| Both reports correct + action wrong | 0/48 (0.00%; exact 95% CI 0.00%–7.40%) | at least 25% for persistence |
+| Both reports correct + action wrong | 0/48 (0.00%; archived row-level CI 0.00%–7.40%, independence assumed) | at least 25% for persistence |
 | Direct action accuracy | 18/48 (37.50%) | descriptive baseline |
 | Self-generated action accuracy | 46/48 (95.83%) | descriptive endpoint |
 | Self-generated − direct | +58.33 points | at least +25 points for rescue |
@@ -44,8 +55,15 @@ The swapped replay result is an important control: changing only the visible
 report tokens reverses the chosen action in 43/48 cases. The model is therefore
 not merely ignoring the report turns; it is using their visible content. The
 self-generated trajectory agrees with oracle replay whenever its reports are
-correct, and its two report errors did not produce a wrong action in the primary
-cell.
+correct. Both report-error trajectories also selected the wrong action in the
+primary cell. The earlier sentence stating the opposite was a prose error.
+
+The final action request explicitly says to use the just-reported consequences.
+Relative to direct action, the treatment also adds turns and text. Oracle versus
+swapped replay isolates visible content under that instruction; it does not
+establish an instruction-independent self-trust mechanism. Self-generated and
+identical replayed tokens are not independent authorship treatments. Thinking was
+disabled and decisions were constrained legal-token argmax, not free-form CoT.
 
 ## Cell diagnostics
 
