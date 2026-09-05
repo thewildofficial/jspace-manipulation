@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "engineering_pilot",
+  "split": "discovery",
+  "seed": 82431,
+  "model_ids": ["Qwen/Qwen3.6-27B", "Qwen/Qwen3.8-27B"],
+  "enable_thinking": false,
+  "preserve_thinking": false,
+  "report_reactivity_bases": 48,
+  "incident_bases": 16,
+  "primary_proposed": "self_report_minus_matched_control",
+  "primary_population": "strategic_prose_unconditional",
+  "minimum_gain": 0.15,
+  "confidence": 0.95,
+  "alpha": 0.05,
+  "minimum_competence": 0.9,
+  "bootstrap_resamples": 5000,
+  "sign_flip_draws": 20000,
+  "locked_inference_allowed": false,
+  "mechanistic_inference_allowed": false,
+  "total_budget_usd": 30,
+  "parity": {"replay_max_abs": 0.01, "batch_single_max_abs": 0.25, "choices_agree": true},
+  "analysis_unit": "base_episode_equal_weight",
+  "forced_choice": true,
+  "invalid_format": "record_global_top1_outside_candidate_set_separately",
+  "stop_rules": [
+    "Numerical replay or batch-choice parity failure stops the run.",
+    "No content-controlled effect stops the mechanistic rescue claim.",
+    "Insufficient violations or errors stops monitor selection.",
+    "No locked outcome is used to select a contrast or site.",
+    "Discovery pilot is descriptive and cannot establish novelty or confirmation."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "ceiling_usd": 0.7828559999999999,
+  "code_sha256": "6832d2dcd19e0fd10e553c8747ccfb004980210b268624acffd9d6006ad13308",
+  "payload_sha256": "226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20",
+  "prepared_path": "artifacts/processed/sprint_preflight_38.json",
+  "stage": "preflight"
+}

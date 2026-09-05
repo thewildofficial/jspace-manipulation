@@ -1,0 +1,20 @@
+{
+  "elapsed_seconds": 34.945449914,
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "load_seconds": 27.050035641999997,
+  "model_class": "Qwen3_5ForCausalLM",
+  "model_id": "Qwen/Qwen3.8-27B",
+  "parity": {
+    "batch_single_max_abs": 0.5,
+    "choices_agree": true,
+    "passed": false,
+    "replay_max_abs": 0.0
+  },
+  "payload_sha256": "126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d",
+  "peak_memory_bytes": 54854840320,
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "scores": {},
+  "status": "instrument_gate_failed",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.15.1"
+}
