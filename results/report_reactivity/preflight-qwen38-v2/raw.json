@@ -1,0 +1,39 @@
+{
+  "elapsed_seconds": 209.00497796599998,
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "load_seconds": 204.144072484,
+  "model_class": "Qwen3_5ForCausalLM",
+  "model_id": "Qwen/Qwen3.8-27B",
+  "parity": {
+    "batch_single_max_abs": 0.125,
+    "choices_agree": true,
+    "passed": true,
+    "replay_max_abs": 0.0
+  },
+  "payload_sha256": "226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20",
+  "peak_memory_bytes": 53871095808,
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "scores": {
+    "0": {
+      "choice": "A",
+      "format_valid": true,
+      "logits": [
+        21.875,
+        13.5625
+      ],
+      "top1_token_id": 32
+    },
+    "1": {
+      "choice": "B",
+      "format_valid": true,
+      "logits": [
+        14.0,
+        20.75
+      ],
+      "top1_token_id": 33
+    }
+  },
+  "status": "engineering_pilot",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.15.1"
+}

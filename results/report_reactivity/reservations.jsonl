@@ -1,0 +1,9 @@
+{"ceiling_usd": 1.0, "run_id": "pinned-image-build-v1", "stage": "overhead", "status": "reserved_unreconciled", "total_reserved_usd": 1.0}
+{"ceiling_usd": 0.7828559999999999, "run_id": "preflight-qwen38-v1", "stage": "preflight", "status": "reserved_unreconciled", "total_reserved_usd": 1.7828559999999998}
+{"ceiling_usd": 0.7828559999999999, "run_id": "preflight-qwen38-v2", "stage": "preflight", "status": "reserved_unreconciled", "total_reserved_usd": 2.5657119999999995}
+{"ceiling_usd": 0.7828559999999999, "run_id": "report16-38-v1", "stage": "baseline", "status": "reserved_unreconciled", "total_reserved_usd": 3.3485679999999993}
+{"ceiling_usd": 0.7828559999999999, "run_id": "report16-38-v2", "stage": "baseline", "status": "reserved_unreconciled", "total_reserved_usd": 4.131423999999999}
+{"ceiling_usd": 0.7828559999999999, "run_id": "incident16-38-v1", "stage": "incident", "status": "reserved_unreconciled", "total_reserved_usd": 4.914279999999999}
+{"ceiling_usd": 0.7828559999999999, "run_id": "incident16-36-v1", "stage": "incident", "status": "reserved_unreconciled", "total_reserved_usd": 5.697135999999999}
+{"ceiling_usd": 0.7828559999999999, "run_id": "report16-36-v1", "stage": "baseline", "status": "reserved_unreconciled", "total_reserved_usd": 6.479991999999998}
+{"ceiling_usd": 0.7828559999999999, "run_id": "locked32-38-v1", "stage": "replication", "status": "reserved_unreconciled", "total_reserved_usd": 7.262847999999998}
