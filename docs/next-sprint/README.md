@@ -12,7 +12,8 @@ The proposed organizing question is:
 Start with [the audit](audit.md), then [the literature comparison](literature.md),
 then [the experimental design](experiments.md) and
 [virtual tools with Qwen3.8, including the revised $30 budget](virtual-tools-qwen38.md).
-Living claims: [claim ledger](claim-ledger.md) (includes C11–C13 GHA path).
+Living claims: [claim ledger](claim-ledger.md) (includes C11–C13 GHA path;
+C14–C15 GHA 16-base discovery baseline).
 Ops decisions: [decision log](decision-log.md) (RR-D001 GHA ledger).
 Next design draft: [branched pre-action auditor protocol](../experiments/report_reactivity/branched_preaction_auditor_protocol.md).
 Novelty bar: prefer experiments with deployment/safety/ToM implications (tool use, oversight, multi-agent, HITL, self-supervision) over quirks.

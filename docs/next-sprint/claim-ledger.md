@@ -27,8 +27,8 @@ no retries, ceiling reserved before launch, reservation retained on failure).
 `score_gpu` returns a JSON string (`dumps_jsonable`) so the Actions client
 never unpickles torch (C13). Spend ledgers: historical
 `results/report_reactivity/reservations.jsonl` (~$7.26 / $30, immutable) and
-GHA `results/report_reactivity/reservations_gha.jsonl` (~$0.78 / $28 after
-retained C13 preflight). Stage caps remain
+GHA `results/report_reactivity/reservations_gha.jsonl` (~$1.57 / $28 after
+retained C13 preflight + C14 baseline). Stage caps remain
 `src/jspace_policy/sprint_runtime.py::STAGE_LIMITS`.
 
 ## Claims
@@ -70,6 +70,8 @@ The frozen null replicates on unseen lexical material.
 | C11 | GHA CPU dry-run path works: pytest → prepare_preflight → artifact upload; Modal skipped | Actions run [34044659196](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044659196), `run_id=gha-dryrun-preflight-38-v1`, `dry_run=true`, stage=preflight, model Qwen/Qwen3.8-27B revision `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | Prepared payload sha256 `226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20` (n_queries=2, lengths [24, 28]); workflow `.github/workflows/report-reactivity.yml` | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md` | Engineering confirmation of CPU instrumentation | Tokenizer preflight payload only; not behavioral; does not validate GPU scoring, parity, or any scientific estimand |
 | C12 | GHA GPU path reaches Modal but fails closed at study-ledger `reserve()` before scoring (stage cap / ledger block, not missing Modal balance or auth) | Actions run [34044902792](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044902792), `run_id=gha-preflight-38-v1`, `dry_run=false`, stage=preflight | CPU prepare OK (same payload sha256 `226e488f…`); Modal credentials present; Modal app initialized; `results/…/gha-preflight-38-v1/input_manifest.json` written with `ceiling_usd≈0.7829`, `payload_sha256=226e488f…`, `stage=preflight` (run_id is the results subdirectory / dispatch input); **no** `raw.json` scores; **no** new row in `reservations.jsonl` | Fail-closed `sprint_runtime.reserve`: `ValueError('global or stage budget exhausted')`. Historical ledger total ~$7.26; `STAGE_LIMITS['preflight']=2.0` already holds ~$1.5657, so another ~$0.7829 cannot fit. Upload-artifacts step still ran (`always()`). | Instrument / ops finding (confirmed failure mode) | **Not a GPU behavioral result.** Provider Modal balance ~$28 ≠ study ledger headroom. Fix: RR-D001 new GHA ledger (`reservations_gha.jsonl`, global $28) via `REPORT_REACTIVITY_LEDGER` — does not invent scores for this run_id |
 | C13 | GHA GPU path reserves on `reservations_gha.jsonl` and completes remote `score_gpu`, then fails on local Modal deserialize (`torch` missing); reservation retained; no usable scores | Actions run [34045326136](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34045326136), `run_id=gha-preflight-38-v2`, `dry_run=false`, stage=preflight | `input_manifest.json` (`ceiling≈0.7829`, `global_ceiling_usd=28`, `ledger_path=…/reservations_gha.jsonl`, payload sha256 `226e488f…`); GHA ledger row retained; `failure.json` with `DeserializationError` / `No module named 'torch'`; **no** `raw.json`; historical `reservations.jsonl` unchanged | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md` (C13 section). Root cause: Modal pickle return required torch on the Actions client (`uv run --extra modal` has no torch). Fix: `score_gpu` returns `dumps_jsonable(...)` JSON string; local entrypoint `loads_jsonable` before writing `raw.json`. | Instrument / ops finding (confirmed failure mode) | **Not a behavioral result.** Do not install full torch on the CPU runner; keep payload JSON-safe. Re-dispatch needs a **new** `run_id` (this one is reserved). |
+| C14 | GHA 16-base discovery baseline replicates C2/C3 qualitative pattern: Direct/self/oracle/control/external at ceiling 1.0; primary self−control and self−direct = 0.0; swapped base-equal action accuracy 0.828125 (106/128) — report content can steer below ceiling | Actions run [34048123330](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330), `run_id=gha-report16-38-v1`, stage=baseline, task=report, model Qwen/Qwen3.8-27B revision `1d4bf0f2…`, batch_size=4, split=discovery, bases=16 | `results/report_reactivity/gha-report16-38-v1/{raw.json,input_manifest.json}`; payload sha256 `126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d` (matches CPU dry-run `gha-report16-38-dry-v1`); parity passed (`replay_max_abs=0.0`, `batch_single_max_abs=0.125`, `choices_agree=true`); status `engineering_pilot`; n_scores=960; n_records=768; GHA ledger row retained (~$0.7829; total with C13 ≈$1.5657) | `experiments/report_reactivity/analyze_gha_report16.py` → `…/analysis/arm_accuracy_summary.json`; `sprint_analysis` primary contrasts; methods note `experiments/report_reactivity/gha-report16-38-v1-methods.md` | Discovery pilot | Ceiling → rewrite-vs-reveal rescue unidentifiable (stop rule). Not locked confirmation; not novelty/priority. Qualitative replication of C2/C3 on fresh GHA path + nonce corpus — do not overclaim independence. Instruction privileges reports. |
+| C15 | Under the same GHA baseline, swapped steering is stronger on prose than opaque: swapped base-equal action accuracy prose 0.71875 (46/64) vs opaque 0.9375 (60/64) | Same unit as C14 (`gha-report16-38-v1`, 16 discovery bases, Qwen3.8) | Same raw artifact as C14; surface split in `…/analysis/arm_accuracy_summary.json` (`swapped_by_surface_kind`) | Same CPU analysis as C14; methods note `gha-report16-38-v1-methods.md` | Discovery pilot (descriptive split) | Surface contrast is descriptive within one pilot payload; not a locked surface-main-effect claim; not evidence of a mechanism. |
 
 ## Correction C10: conflict-conditional position rigidity (Qwen3.8)
 
@@ -112,10 +114,17 @@ added **no** reservation row; GPU never ran. Modal account balance (~$28)
 is orthogonal.
 
 **GHA-era ledger** `results/report_reactivity/reservations_gha.jsonl`
-(RR-D001): first retained row is C13 `gha-preflight-38-v2` (~$0.7829 /
-$28.0); same `STAGE_LIMITS`; selected in Actions via
-`REPORT_REACTIVITY_LEDGER`. Local default remains the historical path.
+(RR-D001): retained rows are C13 `gha-preflight-38-v2` and C14
+`gha-report16-38-v1` (each ~$0.7829; total ≈ **$1.5657** / $28.0); same
+`STAGE_LIMITS`; selected in Actions via `REPORT_REACTIVITY_LEDGER`. Local
+default remains the historical path. Exact lines are the committed
+`reservations_gha.jsonl` (from Actions artifact download; historical
+`reservations.jsonl` immutable).
 
 **C13 arithmetic.** Ledger OK (reserve succeeded); remote scoring completed
 enough to return a payload; local Modal unpickle failed needing `torch`.
 Reservation retained; no `raw.json` scores committed for analysis.
+
+**C14 arithmetic.** Same ≈$0.7829 baseline ceiling reserved on the GHA ledger
+after the C13 JSON-return fix; scoring completed with usable `raw.json`
+(parity passed). Download artifact for exact ledger lines.
