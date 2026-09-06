@@ -46,7 +46,7 @@ Prepare / Actions knob: `--history-mode minimal|redundant` (workflow input
 break Direct ceiling (C17); swapped still leaks (C18). Methods:
 [harder-games-qwen38-n16-v1-methods.md](harder-games-qwen38-n16-v1-methods.md).
 
-## Mid-trajectory ask as intervention (scores committed; claims not yet written)
+## Mid-trajectory ask as intervention (scored discovery — C19/C20/C21)
 
 Protocol:
 [ask-mid-trajectory-protocol.md](ask-mid-trajectory-protocol.md) +
@@ -54,10 +54,26 @@ Protocol:
 
 Prepare: `--task ask_mid_trajectory`. Actions GPU run
 [`ask-mid-traj-qwen38-n16-v1`](../../results/report_reactivity/ask-mid-traj-qwen38-n16-v1/)
-(Actions 34052527423) landed with parity pass; `raw.json` + matching
-`prepared.json` are committed for permanence. Arm analysis and claim-ledger
-rows are intentionally not added in the hygiene pass — do not overclaim from
-the raw file alone.
+(Actions 34052527423): asking does nothing; lied mid-answers rewrite ~60% of
+second presses. Methods:
+[ask-mid-traj-qwen38-n16-v1-methods.md](ask-mid-traj-qwen38-n16-v1-methods.md);
+story: [ask-mid-trajectory-story.md](ask-mid-trajectory-story.md). CPU analysis:
+`analyze_ask_mid_trajectory.py` (immutable).
+
+## Rename-invariant tool/button check (#6 — CPU wire; not scored)
+
+Protocol:
+[rename-invariant-protocol.md](rename-invariant-protocol.md) +
+[protocol_rename_invariant.json](protocol_rename_invariant.json).
+
+Prepare: `--task rename_invariant`. Neutral aliases; crossmap names and
+consequences (both directions). Actions dry-run first; no GPU from the wiring
+PR. Module: `src/jspace_policy/rename_invariant.py`.
+
+## Ask-after-the-act (#4 — stub only)
+
+Queue visibility only:
+[ask-after-the-act-protocol.md](ask-after-the-act-protocol.md). Do not block #6.
 
 ## Prepared-payload permanence
 

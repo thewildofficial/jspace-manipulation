@@ -1,0 +1,31 @@
+{
+  "protocol_id": "rename_invariant",
+  "study_id": "RENAME-INVARIANT-1",
+  "title": "Rename-invariant tool/button check",
+  "status": "design_ready_cpu_prepare_wired",
+  "sequence": [
+    "phase1_learn_neutral_aliases",
+    "forced_choice_1",
+    "phase2_rename_or_crossmap",
+    "forced_choice_2"
+  ],
+  "arms": [
+    "identity_control",
+    "rename_preserve",
+    "crossmap_names",
+    "crossmap_consequences"
+  ],
+  "primary_estimands": [
+    "P(choice2 follows consequence) on crossmap arms",
+    "P(choice2 follows phase1 label) on crossmap arms",
+    "rename_preserve choice2 accuracy vs identity_control"
+  ],
+  "constraints": [
+    "neutral_aliases_only",
+    "crossmap_both_directions",
+    "shared_phase1_scenario_across_arms"
+  ],
+  "prepare_task": "rename_invariant",
+  "scoring": "modal_report_reactivity.py via Actions after CPU dry-run (no GPU from wiring PR)",
+  "doc": "experiments/report_reactivity/rename-invariant-protocol.md"
+}

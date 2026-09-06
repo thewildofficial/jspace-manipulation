@@ -36,11 +36,11 @@ Direct ceiling so rescue would become identifiable. It did not: Direct and the
 other “honest” arms stayed at 1.0. Swapped still leaked (~0.79). Ask-first rescue
 remains blocked this way.
 
-**Mid-trajectory ask (scores landed; story not yet claimed).** A follow-up
-protocol inserts a consequence question between two forced choices. The first
-GPU score pack is committed under `ask-mid-traj-qwen38-n16-v1/` (parity passed;
-864 scores). Human-facing arm analysis and claim-ledger rows are **not** written
-here yet — do not treat the raw file as a paper result.
+**Mid-trajectory ask (scored discovery).** Asking between two presses does
+**nothing**: self mid-ask vs no-ask control leaves flip and choice2 accuracy at
+contrast **0.0** (C19). A **lied mid-answer rewrites ~60%** of second presses
+(swapped flip **0.59375**; C20). Opaque>prose flip asymmetry is descriptive and
+runs the opposite way from ask-first swapped (C21).
 
 ## Where the evidence lives
 
@@ -48,12 +48,13 @@ here yet — do not treat the raw file as a paper result.
 |---|---|---|
 | Ask-first GHA baseline | [`gha-report16-38-v1/`](gha-report16-38-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
 | Harder games (redundant demos) | [`harder-games-qwen38-n16-v1/`](harder-games-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
-| Mid-trajectory ask (raw only) | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json` (no analysis JSON yet) |
+| Mid-trajectory ask | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
 
 Methods and cell maps live under
 [`../../experiments/report_reactivity/`](../../experiments/report_reactivity/).
-CPU joins use `analyze_gha_report16.py` and `analyze_harder_games.py` (immutable
-`write_new`; existing analysis paths fail closed).
+CPU joins use `analyze_gha_report16.py`, `analyze_harder_games.py`, and
+`analyze_ask_mid_trajectory.py` (immutable `write_new`; existing analysis paths
+fail closed).
 
 Earlier Modal-local pilots (`report16-38-v2`, incident, locked, preflights) keep
 their historical `raw.json` / manifests; only the GHA-era scored runs above have

@@ -1,11 +1,11 @@
 # Protocol: mid-trajectory ask as intervention
 
-Status: **design ready; first GPU scores committed under
+Status: **scored discovery pilot**. First GPU scores under
 `results/report_reactivity/ask-mid-traj-qwen38-n16-v1/` (Actions 34052527423,
-parity passed). Arm analysis and claim-ledger interpretation are not yet
-written — do not treat the raw file as a settled result.** CPU prepare + Actions
-dry-run are wired. Experiment ID: `ask_mid_trajectory` / study
-`ASK-MID-TRAJECTORY-1`.
+parity passed). Arm analysis and claim-ledger rows **C19–C21** are written.
+Lead finding: asking mid-trajectory does nothing; a lied mid-answer rewrites
+~60% of second presses. CPU prepare + Actions dry-run remain wired. Experiment
+ID: `ask_mid_trajectory` / study `ASK-MID-TRAJECTORY-1`.
 
 Companion context: harder-games substantive null (Direct still ceiling under
 redundant demos → ask-first rescue still blocked); claim ledger C14–C18;
@@ -100,7 +100,7 @@ queries). **No separate local GPU path.**
 
 ## What this protocol does *not* claim yet
 
-- Not scored; not a claim-ledger behavioral row until a discovery pilot lands.
+- Discovery pilot only (C19–C21); not locked confirmation.
 - Not a replacement for ask-first (self-report before any press).
 - Not evidence that HITL questions always intervene.
 - Does not invent a second Modal entrypoint.

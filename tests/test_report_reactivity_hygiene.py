@@ -25,6 +25,15 @@ def test_harder_games_analyze_fails_closed_without_unlink(tmp_path: Path) -> Non
     assert "write_new(args.output, summary)" in source
 
 
+def test_mid_trajectory_analyze_fails_closed_without_unlink(tmp_path: Path) -> None:
+    """Regression: analyze_ask_mid_trajectory must not unlink before write_new."""
+    source = Path(
+        "experiments/report_reactivity/analyze_ask_mid_trajectory.py"
+    ).read_text()
+    assert "unlink(" not in source
+    assert "write_new(args.output, summary)" in source
+
+
 def test_committed_prepared_matches_raw_payload_hash() -> None:
     root = Path("results/report_reactivity")
     for run_id in (

@@ -18,7 +18,7 @@ on:
           - incident
           - replication
       task:
-        description: "Task for prepare.py (ignored for stage=preflight). ask_mid_trajectory = mid-trajectory ask-as-intervention"
+        description: "Task for prepare.py (ignored for stage=preflight). ask_mid_trajectory = mid-ask; rename_invariant = rename vs consequence"
         required: true
         default: report
         type: choice
@@ -26,6 +26,7 @@ on:
           - report
           - incident
           - ask_mid_trajectory
+          - rename_invariant
       model:
         description: Checkpoint to tokenize and score
         required: true
@@ -141,7 +142,7 @@ jobs:
             exit 1
           fi
           case "$TASK" in
-            report|incident|ask_mid_trajectory) ;;
+            report|incident|ask_mid_trajectory|rename_invariant) ;;
             *) echo "invalid task: $TASK" >&2; exit 1 ;;
           esac
           case "$HISTORY_MODE" in
@@ -152,8 +153,16 @@ jobs:
             echo "history_mode applies only to task=report or ask_mid_trajectory" >&2
             exit 1
           fi
+          if [[ "$TASK" == "rename_invariant" && "$HISTORY_MODE" != "minimal" ]]; then
+            echo "history_mode does not apply to rename_invariant (keep minimal)" >&2
+            exit 1
+          fi
           if [[ "$TASK" == "ask_mid_trajectory" && "$STAGE" != "preflight" && "$STAGE" != "baseline" ]]; then
             echo "ask_mid_trajectory supports preflight (tokenizer) or baseline stages only" >&2
+            exit 1
+          fi
+          if [[ "$TASK" == "rename_invariant" && "$STAGE" != "preflight" && "$STAGE" != "baseline" ]]; then
+            echo "rename_invariant supports preflight (tokenizer) or baseline stages only" >&2
             exit 1
           fi
 
