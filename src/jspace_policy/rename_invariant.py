@@ -1,15 +1,17 @@
-"""Rename-invariant tool/button check (experiment #6).
+"""Rename-invariant tool/button check (protocol ID: rename_invariant).
 
 Question: when consequences stay identical but only names/labels change, does
 the second press follow labels or outcomes?
 
-Hard constraints (PriGo):
+Hard constraints:
 - Neutral aliases only (never loaded words like DELETE/ARCHIVE).
 - Cross-mapped controls in both directions so label-following vs
   consequence-following are identifiable.
 - Shared phase-1 scenario across arms in a factorial cell.
 
 CPU-only corpus: plain dicts, hash-stable, prepare-ready. No Modal/GPU here.
+GPU scoring is blocked until a complete analyzer/results path exists
+(see experiments/report_reactivity/gha_gates.py).
 """
 
 from __future__ import annotations
@@ -20,8 +22,10 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 SCHEMA_VERSION = 1
-STUDY_ID = "RENAME-INVARIANT-1"
+# study_id === protocol_id (see experiments/report_reactivity/NAMING.md).
 PROTOCOL_ID = "rename_invariant"
+STUDY_ID = PROTOCOL_ID
+LEGACY_STUDY_ID = "RENAME-INVARIANT-1"
 
 SPLITS = ("discovery", "locked")
 FRAMES = ("strategic", "nonagentic")
@@ -624,6 +628,7 @@ __all__ = [
     "COMMON_FINAL_ACTION_QUERY_SUFFIX",
     "DEFAULT_CONFIG",
     "FRAMES",
+    "LEGACY_STUDY_ID",
     "PROTOCOL_ID",
     "RENAME_ARMS",
     "SCHEMA_VERSION",

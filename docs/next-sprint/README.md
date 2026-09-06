@@ -44,7 +44,9 @@ Keep frozen paths and results intact. Moving old runners breaks manifests,
 workflow paths, local-file uploads, imports, and historical reproduction commands.
 This directory is the new navigation layer; versioned directories remain the
 historical record. A future experiment should get one stable descriptive ID,
-not another ambiguous layer of V5/RBG/E2 labels.
+not another ambiguous layer of V5/RBG/E2 labels. Report-reactivity live IDs:
+`ask_mid_trajectory`, `rename_invariant` — see
+[`experiments/report_reactivity/NAMING.md`](../experiments/report_reactivity/NAMING.md).
 
 For new work use `experiments/report_reactivity/` for its design, config and CPU
 preparation; keep a thin root Modal entrypoint if its local upload paths require

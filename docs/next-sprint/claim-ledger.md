@@ -18,14 +18,15 @@ uv run python experiments/report_reactivity/prepare.py --task report \
 
 Actions: `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only).
 Default `dry_run=true` runs pytest + CPU prepare and uploads the prepared
-payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
-`batch_size` defaults to 4 (C1). Workflow input `history_mode` defaults to
-`minimal` (story: harder games = `redundant` correct demos). Task
-`ask_mid_trajectory` prepares the mid-trajectory ask-as-intervention protocol
-(CPU dry-run first; scored discovery under
-`results/report_reactivity/ask-mid-traj-qwen38-n16-v1/` with claim rows C19–C21).
-`rename_invariant` prepares the rename-invariant tool/button check (CPU wire
-only; not scored). Workflow sets
+payload without Modal. Set `dry_run=false` only when you intend to spend GPU,
+and supply `pinned_payload_sha256` matching the reviewed prepare hash (fail
+closed). `batch_size` defaults to 4 (C1). Workflow input `history_mode`
+defaults to `minimal` (story: harder games = `redundant` correct demos).
+Canonical protocol IDs (see `experiments/report_reactivity/NAMING.md`):
+`ask_mid_trajectory` (scored under `run_id`
+`ask-mid-traj-qwen38-n16-v1/`, claim rows C19–C21) and `rename_invariant`
+(CPU wire only; Actions refuses `dry_run=false` until an analyzer/results path
+exists). Workflow sets
 `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl`
 (GHA-era ledger, global ceiling $28; see RR-D001). Local/manual runs default
 to historical `results/report_reactivity/reservations.jsonl` ($30).

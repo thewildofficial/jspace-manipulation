@@ -1,14 +1,15 @@
-# Protocol stub: ask after the act (experiment #4)
+# Protocol stub: ask after the act
 
-Status: **design stub only — not wired, not scored.** Visible in the PriGo
-queue after rename-invariant (#6). Do not block #6 on this document.
+Status: **design stub only — not wired, not scored.** Not a live protocol ID.
+Do not treat this document as blocking `rename_invariant` CPU work.
 
 ## Scientific question
 
 Does a consequence question asked **after** the second forced press change
 anything measurable about the already-taken action (measurement / disclosure),
 or is the interesting intervention only the mid-trajectory ask *before*
-choice2 (see `ask-mid-trajectory-protocol.md`)?
+choice2 (see `ask-mid-trajectory-protocol.md`; canonical ID
+`ask_mid_trajectory`)?
 
 | Pattern | Counts as |
 |---|---|
@@ -29,6 +30,5 @@ choice2 (see `ask-mid-trajectory-protocol.md`)?
 
 - Not scheming.
 - Not a full prepare path, Actions task, or claim row.
-- Wire only after #6 rename-invariant CPU dry-run is green and priority still
-  points here (decision log: #7 done → #6 → **#4** → #1 lie titration → #2
-  attribution).
+- Wire only when operator priority (decision log) still points here after
+  `rename_invariant` CPU dry-run is green.

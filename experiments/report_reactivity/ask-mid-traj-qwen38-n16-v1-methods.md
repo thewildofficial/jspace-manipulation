@@ -22,11 +22,12 @@ stop rule 2 of the protocol.
 
 | Field | Value |
 |---|---|
+| Canonical protocol ID | `ask_mid_trajectory` |
 | Story run name | Mid-trajectory ask, 16 discovery bases, Qwen3.8 |
 | Actions run | [34052527423](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34052527423) |
 | `run_id` / results dir | `ask-mid-traj-qwen38-n16-v1` |
 | Stage | `baseline` |
-| Task | `ask_mid_trajectory` |
+| Task / study_id | `ask_mid_trajectory` |
 | Split | `discovery` |
 | Bases | 16 |
 | Batch size | 4 |

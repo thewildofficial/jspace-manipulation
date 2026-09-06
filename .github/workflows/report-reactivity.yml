@@ -1,6 +1,15 @@
 # Report-reactivity sprint (manual dispatch).
 # GPU/Modal is reserved only after CPU gates pass (pytest + prepare) and dry_run is false.
 # Default dry_run=true stops after CPU prepare and uploads the prepared payload only.
+#
+# Naming: one stable protocol ID per experiment (ask_mid_trajectory, rename_invariant).
+# See experiments/report_reactivity/NAMING.md — run_id is the results folder only.
+#
+# Paid execution (dry_run=false) requires:
+#   1. pinned_payload_sha256 matching the freshly prepared payload sha256 (fail closed).
+#   2. For task=rename_invariant: refused until
+#      report_reactivity_gates.RENAME_GPU_SCORING_UNLOCKED (no analyzer/results
+#      path yet). CPU dry_run/prepare remains allowed.
 
 name: Report reactivity
 
@@ -18,7 +27,7 @@ on:
           - incident
           - replication
       task:
-        description: "Task for prepare.py (ignored for stage=preflight). ask_mid_trajectory = mid-ask; rename_invariant = rename vs consequence"
+        description: "Canonical protocol ID for prepare.py (ignored for stage=preflight). ask_mid_trajectory | rename_invariant | report | incident"
         required: true
         default: report
         type: choice
@@ -49,7 +58,7 @@ on:
           - discovery
           - locked
       run_id:
-        description: Immutable results subdirectory under results/report_reactivity/
+        description: Immutable results subdirectory under results/report_reactivity/ (not the protocol ID)
         required: true
         type: string
       batch_size:
@@ -62,6 +71,11 @@ on:
         required: true
         default: true
         type: boolean
+      pinned_payload_sha256:
+        description: "Required when dry_run=false: sha256 of the reviewed prepare payload (must match freshly prepared). Leave empty for dry_run."
+        required: false
+        default: ""
+        type: string
       history_mode:
         description: "Harder games: redundant correct demos (minimal=current balanced priors; redundant=extra correct history cycles)"
         required: true
@@ -95,6 +109,7 @@ jobs:
       RUN_ID: ${{ inputs.run_id }}
       BATCH_SIZE: ${{ inputs.batch_size }}
       DRY_RUN: ${{ inputs.dry_run }}
+      PINNED_PAYLOAD_SHA256: ${{ inputs.pinned_payload_sha256 }}
       HISTORY_MODE: ${{ inputs.history_mode }}
       # Local scratch only (gitignored). On GPU success, modal_report_reactivity
       # also writes results/report_reactivity/<run_id>/prepared.json for permanence.
@@ -165,6 +180,17 @@ jobs:
             echo "rename_invariant supports preflight (tokenizer) or baseline stages only" >&2
             exit 1
           fi
+          # Early fail-closed: rename has no scoring/reporting path yet.
+          if [[ "$TASK" == "rename_invariant" && "$DRY_RUN" != "true" ]]; then
+            echo "refusing task=rename_invariant with dry_run=false: no complete scoring/reporting path (see report_reactivity_gates.RENAME_GPU_SCORING_UNLOCKED). CPU dry_run remains allowed." >&2
+            exit 1
+          fi
+          if [[ "$DRY_RUN" != "true" ]]; then
+            if [[ -z "${PINNED_PAYLOAD_SHA256// }" ]]; then
+              echo "dry_run=false requires pinned_payload_sha256 (reviewed prepare hash). Run dry_run=true first, record sha256, then pin it." >&2
+              exit 1
+            fi
+          fi
 
       - name: Validate repository locally
         run: uv run --extra dev pytest -q
@@ -192,6 +218,27 @@ jobs:
               --output "$PREPARED_PATH"
           fi
 
+      - name: Enforce paid-run gates (rename unlock + pinned prepare sha)
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Python gates mirror the bash early checks and compare prepared sha256.
+          uv run python - <<'PY'
+          import os
+          from pathlib import Path
+          from jspace_policy.report_reactivity_gates import enforce_paid_run_gates
+
+          dry = os.environ.get("DRY_RUN", "true").lower() in ("1", "true", "yes")
+          checked = enforce_paid_run_gates(
+              task=os.environ["TASK"],
+              dry_run=dry,
+              pinned_payload_sha256=os.environ.get("PINNED_PAYLOAD_SHA256", ""),
+              prepared_path=Path(os.environ["PREPARED_PATH"]),
+          )
+          print(checked)
+          PY
+
       - name: Upload prepared payload (dry_run / CPU gate)
         if: ${{ inputs.dry_run }}
         uses: actions/upload-artifact@v6
@@ -203,7 +250,9 @@ jobs:
 
       - name: Dry-run complete (no Modal/GPU)
         if: ${{ inputs.dry_run }}
-        run: echo "dry_run=true; prepared payload uploaded; skipping Modal."
+        run: |
+          echo "dry_run=true; prepared payload uploaded; skipping Modal."
+          python3 -c "import json,os; p=json.load(open(os.environ['PREPARED_PATH'])); print('prepared_sha256=', p.get('sha256'))"
 
       - name: Refuse missing Modal credentials
         if: ${{ !inputs.dry_run }}
