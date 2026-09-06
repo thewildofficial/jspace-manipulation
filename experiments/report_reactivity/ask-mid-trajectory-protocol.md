@@ -1,11 +1,14 @@
 # Protocol: mid-trajectory ask as intervention
 
-Status: **scored discovery pilot**. First GPU scores under
+Status: **scored discovery pilot**. Canonical protocol ID:
+**`ask_mid_trajectory`** (also `prepare --task`, Actions `task`, and
+`study_id`). First GPU scores live under `run_id`
+`ask-mid-traj-qwen38-n16-v1` →
 `results/report_reactivity/ask-mid-traj-qwen38-n16-v1/` (Actions 34052527423,
-parity passed). Arm analysis and claim-ledger rows **C19–C21** are written.
-Lead finding: asking mid-trajectory does nothing; a lied mid-answer rewrites
-~60% of second presses. CPU prepare + Actions dry-run remain wired. Experiment
-ID: `ask_mid_trajectory` / study `ASK-MID-TRAJECTORY-1`.
+parity passed). Arm analysis and claim-ledger rows **C19–C21** are written
+(ledger indices, not alternate experiment names). Lead finding: asking
+mid-trajectory does nothing; a lied mid-answer rewrites ~60% of second presses.
+CPU prepare + Actions dry-run remain wired. See [NAMING.md](NAMING.md).
 
 Companion context: harder-games substantive null (Direct still ceiling under
 redundant demos → ask-first rescue still blocked); claim ledger C14–C18;
@@ -90,13 +93,22 @@ Actions (`.github/workflows/report-reactivity.yml`), CPU dry-run first:
 - `task=ask_mid_trajectory`
 - `stage=baseline`
 - `dry_run=true`
-- `run_id` e.g. `ask-mid-traj-dry-v1`
+- `run_id` e.g. `ask-mid-traj-dry-v1` (results folder name only)
 - `history_mode=minimal` (default)
 - `bases=16`, model Qwen3.8-27B
 
-GPU scoring later: same workflow with `dry_run=false` after dry-run artifact
-hash is pinned. Uses existing `modal_report_reactivity.py` (scores all prepared
-queries). **No separate local GPU path.**
+GPU scoring later: same workflow with `dry_run=false` and
+`pinned_payload_sha256` equal to the reviewed prepare sha256. Uses existing
+`modal_report_reactivity.py` (scores all prepared queries). **No separate local
+GPU path.**
+
+## Legacy / path aliases (not IDs)
+
+| Kind | String | Status |
+|---|---|---|
+| Historical study label | `ASK-MID-TRAJECTORY-1` | synonym of `ask_mid_trajectory`; do not invent new aliases |
+| Markdown paths | `ask-mid-trajectory-*.md` | kebab display paths only |
+| Results folder | `ask-mid-traj-qwen38-n16-v1` | `run_id` only — do not rename |
 
 ## What this protocol does *not* claim yet
 

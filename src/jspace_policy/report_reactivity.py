@@ -21,7 +21,10 @@ from typing import Any
 
 SCHEMA_VERSION = 1
 STUDY_ID = "REPORT-REACTIVITY-1"
-MID_TRAJECTORY_STUDY_ID = "ASK-MID-TRAJECTORY-1"
+# Canonical protocol ID doubles as study_id (see experiments/report_reactivity/NAMING.md).
+# Historical payloads used ASK-MID-TRAJECTORY-1; do not rename committed results dirs.
+MID_TRAJECTORY_STUDY_ID = "ask_mid_trajectory"
+MID_TRAJECTORY_LEGACY_STUDY_ID = "ASK-MID-TRAJECTORY-1"
 
 SPLITS = ("discovery", "locked")
 FRAMES = ("strategic", "nonagentic")
@@ -1158,6 +1161,7 @@ __all__ = [
     "FRAMES",
     "HISTORY_MODES",
     "MID_TRAJECTORY_ARMS",
+    "MID_TRAJECTORY_LEGACY_STUDY_ID",
     "MID_TRAJECTORY_STUDY_ID",
     "MINIMAL_DEMO_REPEATS",
     "PRIMARY_ARMS",
@@ -1165,6 +1169,7 @@ __all__ = [
     "REPORT_LABELS",
     "SPLITS",
     "SURFACE_KINDS",
+    "STUDY_ID",
     "build_fork_queries",
     "build_self_report_branch",
     "canonical_sha256",

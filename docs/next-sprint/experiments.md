@@ -93,9 +93,11 @@ monitor test, report insufficient positive support instead of adapting labels.
 **Harder-games update (2026-09-06).** Redundant correct demos
 (`harder-games-qwen38-n16-v1`) did not break Direct ceiling (C17); ask-first
 rescue remains blocked. Mid-trajectory ask-as-intervention
-(`ask-mid-traj-qwen38-n16-v1`) scored: self mid-ask is **not** an intervention
-(C19); swapped mid content steers choice2 (C20). Next PriGo bet:
-**rename-invariant** tool/button check (#6); ask-after (#4) is a stub only.
+(`ask_mid_trajectory`; scored `run_id` `ask-mid-traj-qwen38-n16-v1`): self
+mid-ask is **not** an intervention (C19); swapped mid content steers choice2
+(C20). Related next scientific screen: **`rename_invariant`** (CPU prepare
+only; GPU blocked until analyzer/results path exists). Ask-after remains a
+design stub.
 
 ## Experiment 2: concepts versus bindings
 

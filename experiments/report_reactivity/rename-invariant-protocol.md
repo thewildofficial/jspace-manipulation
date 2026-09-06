@@ -1,12 +1,14 @@
-# Protocol: rename-invariant tool/button check (experiment #6)
+# Protocol: rename-invariant tool/button check
 
-Status: **design ready; CPU prepare wired**. Experiment ID: `rename_invariant` /
-study `RENAME-INVARIANT-1`. No GPU scores yet — CPU dry-run first; score only
-after a dry-run artifact hash is pinned. **No Modal from this wiring PR.**
+Status: **design ready; CPU prepare wired**. Canonical protocol ID:
+**`rename_invariant`** (also `prepare --task`, Actions `task`, and
+`study_id`). No GPU scores yet — CPU dry-run only. Actions **refuses**
+`dry_run=false` until a complete analyzer + results layout exists (see
+`jspace_policy.report_reactivity_gates.RENAME_GPU_SCORING_UNLOCKED`). See
+[NAMING.md](NAMING.md).
 
 Companion: mid-trajectory discovery (asking does nothing; lied mid-answers
-rewrite ~60% of second presses) lands as claim rows C19–C21. This protocol is
-the next PriGo priority after that score pack.
+rewrite ~60% of second presses) lands as claim rows C19–C21.
 
 ## Scientific question
 
@@ -21,7 +23,7 @@ press follow **labels** or **outcomes**?
 | After consequences remap (names fixed), choice2 tracks the new target slot | Consequence-following |
 | After consequences remap, choice2 sticks to the old phase-1 slot / token | Label-following |
 
-## Hard constraints (PriGo)
+## Hard constraints
 
 1. **Neutral aliases only.** Interface tokens are nonce strings
    (`D…P` / `D…Q` families). Never DELETE, ARCHIVE, or other loaded verbs that
@@ -88,6 +90,7 @@ Secondary: choice1 competence; agreement of label vs consequence predictions
 - Not a replacement for ask-first or mid-trajectory report protocols.
 - Does not invent a second Modal entrypoint (reuses
   `modal_report_reactivity.py`).
+- No `analyze_rename_invariant.py` / results layout yet — do not unlock GPU.
 
 ## CPU prepare / Actions dispatch
 
@@ -98,14 +101,22 @@ uv run python experiments/report_reactivity/prepare.py \
   --output artifacts/prepared/rename-invariant-dry-v1.json
 ```
 
-Actions (`.github/workflows/report-reactivity.yml`), CPU dry-run first:
+Actions (`.github/workflows/report-reactivity.yml`), CPU dry-run only for now:
 
 - `task=rename_invariant`
 - `stage=baseline`
 - `dry_run=true`
-- `run_id` e.g. `rename-invariant-dry-v1`
+- `run_id` e.g. `rename-invariant-dry-v1` (results folder name only)
 - `bases=16`, model Qwen3.8-27B
 - `history_mode=minimal` (ignored for this task; must stay minimal)
 
-GPU scoring later: same workflow with `dry_run=false` after dry-run artifact
-hash is pinned. **No separate local GPU path.**
+Paid GPU (`dry_run=false`) is blocked until the reporting path exists. When
+unlocked later, require `pinned_payload_sha256` matching the reviewed prepare
+hash. **No separate local GPU path.**
+
+## Legacy / path aliases (not IDs)
+
+| Kind | String | Status |
+|---|---|---|
+| Historical study label | `RENAME-INVARIANT-1` | synonym of `rename_invariant` |
+| Markdown path | `rename-invariant-protocol.md` | kebab display path only |

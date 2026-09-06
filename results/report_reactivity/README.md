@@ -48,7 +48,7 @@ runs the opposite way from ask-first swapped (C21).
 |---|---|---|
 | Ask-first GHA baseline | [`gha-report16-38-v1/`](gha-report16-38-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
 | Harder games (redundant demos) | [`harder-games-qwen38-n16-v1/`](harder-games-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
-| Mid-trajectory ask | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
+| Mid-trajectory ask (`ask_mid_trajectory`) | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
 
 Methods and cell maps live under
 [`../../experiments/report_reactivity/`](../../experiments/report_reactivity/).

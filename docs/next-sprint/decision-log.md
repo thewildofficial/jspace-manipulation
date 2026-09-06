@@ -58,22 +58,29 @@ confirmation; any mid-trajectory behavioral result (not yet scored).
 
 ## 2026-09-06 — RR-D003 — Mid-trajectory scored; PriGo priority order
 
-**Context.** Mid-trajectory Actions run 34052527423 (`ask-mid-traj-qwen38-n16-v1`,
+**Ops note.** Queue numbers (`#6`/`#7`) and “PriGo” below are **operator
+metadata only**. Scientific docs use canonical protocol IDs
+(`ask_mid_trajectory`, `rename_invariant`); see
+`experiments/report_reactivity/NAMING.md`.
+
+**Context.** Mid-trajectory Actions run 34052527423 (`run_id`
+`ask-mid-traj-qwen38-n16-v1`, protocol `ask_mid_trajectory`,
 payload sha256 `50b854ae…`, parity `batch_single_max_abs=0.125`) completed.
 Asking does nothing (self−control contrast 0.0 on flip and choice2); a lied
 mid-answer rewrites ~60% of second presses (swapped flip 0.59375). Claim rows
 C19–C21. Harder-games ask-first rescue remains blocked (C17); mid-ask is not the
 intervention lever on this scaffold.
 
-**Decision — priority order (PriGo):**
+**Decision — priority order (PriGo, ops only):**
 
-1. **#7 mid-trajectory** — **done** (scored discovery + claims; no further GPU
-   on ask-as-intervention without a new design).
-2. **#6 rename-invariant** — **next** (MOST NOVEL): when only names/labels
-   change, does the second press follow labels or outcomes? Wire CPU prepare +
-   Actions `task=rename_invariant` dry-run; neutral aliases; crossmap both
-   directions. Score only after dry-run hash is pinned. No Modal from the
-   docs/wire PR.
+1. **#7 mid-trajectory** (`ask_mid_trajectory`) — **done** (scored discovery +
+   claims; no further GPU on ask-as-intervention without a new design).
+2. **#6 rename-invariant** (`rename_invariant`) — **next** (MOST NOVEL): when
+   only names/labels change, does the second press follow labels or outcomes?
+   Wire CPU prepare + Actions `task=rename_invariant` dry-run; neutral aliases;
+   crossmap both directions. **Do not GPU-score** until analyzer + results
+   layout exist (`RENAME_GPU_SCORING_UNLOCKED`). Score only after dry-run hash
+   is pinned via `pinned_payload_sha256`. No Modal from the docs/wire PR.
 3. **#4 ask-after-the-act** — protocol stub only for now (queue visibility);
    do not block #6.
 4. **#1 lie titration** — after #4 design is ready to wire.

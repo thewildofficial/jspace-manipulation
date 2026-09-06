@@ -3,10 +3,19 @@
 CPU prepare lives here (`prepare.py`, `prepare_preflight.py`, `protocol.json`).
 GPU scoring is the root Modal entrypoint `modal_report_reactivity.py`.
 
+**Naming:** one stable protocol ID per experiment — see [NAMING.md](NAMING.md).
+`run_id` is the results folder only; claim rows (`C##`) are ledger indices.
+
 Dispatch via `.github/workflows/report-reactivity.yml` (`workflow_dispatch`).
 `dry_run` defaults to true so Actions can validate and materialize payloads
-without Modal GPU spend; set it false only for an intentional scoring run.
-Default `batch_size` is 4 (see claim ledger C1).
+without Modal GPU spend. Set `dry_run=false` only for an intentional scoring
+run, and pass `pinned_payload_sha256` equal to the reviewed prepare payload
+hash (fail closed on mismatch). Default `batch_size` is 4 (see claim ledger C1).
+
+`task=rename_invariant` with `dry_run=false` is **refused** until a complete
+analyzer + results layout exists
+(`jspace_policy.report_reactivity_gates.RENAME_GPU_SCORING_UNLOCKED`). CPU
+prepare / dry_run remains allowed.
 
 ## Instrumentation confirmation (C11 / C12 / C13)
 
@@ -46,41 +55,47 @@ Prepare / Actions knob: `--history-mode minimal|redundant` (workflow input
 break Direct ceiling (C17); swapped still leaks (C18). Methods:
 [harder-games-qwen38-n16-v1-methods.md](harder-games-qwen38-n16-v1-methods.md).
 
-## Mid-trajectory ask as intervention (scored discovery — C19/C20/C21)
+## Mid-trajectory ask as intervention (canonical ID: `ask_mid_trajectory`)
 
 Protocol:
 [ask-mid-trajectory-protocol.md](ask-mid-trajectory-protocol.md) +
 [protocol_ask_mid_trajectory.json](protocol_ask_mid_trajectory.json).
 
-Prepare: `--task ask_mid_trajectory`. Actions GPU run
+Canonical protocol / task / study ID: **`ask_mid_trajectory`**. Scored
+`run_id` (results folder only):
 [`ask-mid-traj-qwen38-n16-v1`](../../results/report_reactivity/ask-mid-traj-qwen38-n16-v1/)
 (Actions 34052527423): asking does nothing; lied mid-answers rewrite ~60% of
 second presses. Methods:
 [ask-mid-traj-qwen38-n16-v1-methods.md](ask-mid-traj-qwen38-n16-v1-methods.md);
 story: [ask-mid-trajectory-story.md](ask-mid-trajectory-story.md). CPU analysis:
-`analyze_ask_mid_trajectory.py` (immutable).
+`analyze_ask_mid_trajectory.py` (immutable). Claim rows C19–C21 are ledger
+indices, not alternate experiment names.
 
-## Rename-invariant tool/button check (#6 — CPU wire; not scored)
+## Rename-invariant tool/button check (canonical ID: `rename_invariant`)
 
 Protocol:
 [rename-invariant-protocol.md](rename-invariant-protocol.md) +
 [protocol_rename_invariant.json](protocol_rename_invariant.json).
 
-Prepare: `--task rename_invariant`. Neutral aliases; crossmap names and
-consequences (both directions). Actions dry-run first; no GPU from the wiring
-PR. Module: `src/jspace_policy/rename_invariant.py`.
+Canonical protocol / task / study ID: **`rename_invariant`**. Prepare:
+`--task rename_invariant`. Neutral aliases; crossmap names and consequences
+(both directions). **CPU dry-run only** — Actions refuses `dry_run=false` until
+an analyzer + documented results layout exist. Module:
+`src/jspace_policy/rename_invariant.py`.
 
-## Ask-after-the-act (#4 — stub only)
+## Ask-after-the-act (design stub)
 
-Queue visibility only:
-[ask-after-the-act-protocol.md](ask-after-the-act-protocol.md). Do not block #6.
+Stub only — not wired, not scored:
+[ask-after-the-act-protocol.md](ask-after-the-act-protocol.md). Operator
+priority ordering lives in the decision log, not here.
 
 ## Prepared-payload permanence
 
 Scored runs write `results/report_reactivity/<run_id>/prepared.json` (exact
 CPU prepare dict; sha256 must match `raw.json`’s `payload_sha256`). Local
 scratch `artifacts/prepared/*` stays gitignored. GPU Actions uploads now also
-include the prepare file as a short-lived backup.
+include the prepare file as a short-lived backup. Paid runs require
+`pinned_payload_sha256` to match the freshly prepared hash before Modal.
 
 ## Next protocol draft (not executed)
 

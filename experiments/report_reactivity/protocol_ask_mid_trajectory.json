@@ -1,8 +1,9 @@
 {
   "protocol_id": "ask_mid_trajectory",
-  "study_id": "ASK-MID-TRAJECTORY-1",
+  "study_id": "ask_mid_trajectory",
   "title": "Mid-trajectory ask as intervention",
   "status": "scored_discovery_pilot",
+  "canonical_name": "ask_mid_trajectory",
   "sequence": [
     "scenario",
     "forced_choice_1",
@@ -25,5 +26,13 @@
   "scoring": "modal_report_reactivity.py via Actions (no separate local GPU path)",
   "doc": "experiments/report_reactivity/ask-mid-trajectory-protocol.md",
   "scored_run_id": "ask-mid-traj-qwen38-n16-v1",
-  "claim_rows": ["C19", "C20", "C21"]
+  "claim_rows": ["C19", "C20", "C21"],
+  "legacy_aliases": {
+    "study_id": "ASK-MID-TRAJECTORY-1",
+    "markdown_paths": [
+      "ask-mid-trajectory-protocol.md",
+      "ask-mid-traj-qwen38-n16-v1-methods.md"
+    ],
+    "note": "run_id ask-mid-traj-qwen38-n16-v1 is the results folder only; see NAMING.md"
+  }
 }
