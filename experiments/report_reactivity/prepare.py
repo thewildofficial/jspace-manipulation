@@ -10,6 +10,11 @@ from pathlib import Path
 from transformers import AutoTokenizer
 
 from jspace_policy.incident_desk import IncidentDesk, generate_prompt_records
+from jspace_policy.rename_invariant import (
+    generate_rename_invariant_rows,
+    phase1_messages,
+    phase2_messages,
+)
 from jspace_policy.report_reactivity import (
     DEFAULT_HISTORY_MODE,
     HISTORY_MODES,
@@ -159,11 +164,43 @@ def build_incident(add, bases, split="discovery"):
     return records
 
 
+def build_rename_invariant(add, bases, split="discovery"):
+    """Prepare phase1 learn → phase2 rename/crossmap queries."""
+
+    records = []
+    counts = {"split": split, "discovery": bases, "locked": 0}
+    if split == "locked":
+        counts = {"split": split, "discovery": 0, "locked": bases}
+    for row in generate_rename_invariant_rows(
+        discovery_bases=counts["discovery"],
+        locked_bases=counts["locked"],
+    ):
+        item = {
+            "base_id": row["base_game_id"],
+            "split": row["split"],
+            "arm": row["arm"],
+            "frame": row["frame"],
+            "protocol": "rename_invariant",
+            "expected_action_phase1": row["expected_action_phase1"],
+            "expected_by_consequence": row["expected_by_consequence"],
+            "expected_by_label": row["expected_by_label"],
+            "label_consequence_agree": row["label_consequence_agree"],
+            "phase1_labels": row["phase1_labels"],
+            "phase2_labels": row["phase2_labels"],
+            "choice1": add(phase1_messages(row)),
+            "choice2": {
+                choice: add(phase2_messages(row, choice)) for choice in ("A", "B")
+            },
+        }
+        records.append(item)
+    return records
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--task",
-        choices=("report", "incident", "ask_mid_trajectory"),
+        choices=("report", "incident", "ask_mid_trajectory", "rename_invariant"),
         required=True,
     )
     parser.add_argument("--model", choices=MODEL_REVISIONS, default="Qwen/Qwen3.8-27B")
@@ -186,6 +223,8 @@ def main():
         raise ValueError("locked confirmation is frozen to the incident contrast only")
     if args.task == "incident" and args.history_mode != DEFAULT_HISTORY_MODE:
         raise ValueError("history_mode applies only to report / ask_mid_trajectory")
+    if args.task == "rename_invariant" and args.history_mode != DEFAULT_HISTORY_MODE:
+        raise ValueError("history_mode does not apply to rename_invariant")
     tokenizer = AutoTokenizer.from_pretrained(
         args.model,
         revision=MODEL_REVISIONS[args.model],
@@ -208,6 +247,11 @@ def main():
         )
         protocol_path = Path(
             "experiments/report_reactivity/protocol_ask_mid_trajectory.json"
+        )
+    elif args.task == "rename_invariant":
+        records = build_rename_invariant(add, args.bases, args.split)
+        protocol_path = Path(
+            "experiments/report_reactivity/protocol_rename_invariant.json"
         )
     else:
         records = build_incident(add, args.bases, args.split)
@@ -236,6 +280,8 @@ def main():
         payload["history_mode"] = args.history_mode
     if args.task == "ask_mid_trajectory":
         payload["protocol_id"] = "ask_mid_trajectory"
+    if args.task == "rename_invariant":
+        payload["protocol_id"] = "rename_invariant"
     if args.split == "locked":
         payload["frozen_contrast"] = dict(FROZEN_CONTRAST)
     payload["sha256"] = digest(payload)

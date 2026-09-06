@@ -1,0 +1,362 @@
+{
+  "actions_run_id": 34052527423,
+  "actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34052527423",
+  "arm_metric_detail": {
+    "mid_ask_oracle": {
+      "choice1_correct": 1.0,
+      "choice1_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "choice2_correct": 1.0,
+      "choice2_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "flip": 0.0,
+      "flip_detail": {
+        "base_equal": 0.0,
+        "micro": 0.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "mid_correct": 1.0,
+      "mid_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "persist": 1.0,
+      "persist_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      }
+    },
+    "mid_ask_self": {
+      "choice1_correct": 1.0,
+      "choice1_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "choice2_correct": 1.0,
+      "choice2_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "flip": 0.0,
+      "flip_detail": {
+        "base_equal": 0.0,
+        "micro": 0.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "mid_correct": 1.0,
+      "mid_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "persist": 1.0,
+      "persist_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      }
+    },
+    "mid_ask_swapped": {
+      "choice1_correct": 1.0,
+      "choice1_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "choice2_correct": 0.40625,
+      "choice2_correct_detail": {
+        "base_equal": 0.40625,
+        "micro": 0.40625,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "flip": 0.59375,
+      "flip_detail": {
+        "base_equal": 0.59375,
+        "micro": 0.59375,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "mid_correct": 0.0,
+      "mid_correct_detail": {
+        "base_equal": 0.0,
+        "micro": 0.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "persist": 0.40625,
+      "persist_detail": {
+        "base_equal": 0.40625,
+        "micro": 0.40625,
+        "n_bases": 16,
+        "n_rows": 128
+      }
+    },
+    "mid_no_ask_control": {
+      "choice1_correct": 1.0,
+      "choice1_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "choice2_correct": 1.0,
+      "choice2_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "flip": 0.0,
+      "flip_detail": {
+        "base_equal": 0.0,
+        "micro": 0.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "mid_correct": 1.0,
+      "mid_correct_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      },
+      "persist": 1.0,
+      "persist_detail": {
+        "base_equal": 1.0,
+        "micro": 1.0,
+        "n_bases": 16,
+        "n_rows": 128
+      }
+    }
+  },
+  "arm_metrics_base_equal": {
+    "mid_ask_oracle": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "mid_correct": 1.0,
+      "persist": 1.0
+    },
+    "mid_ask_self": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "mid_correct": 1.0,
+      "persist": 1.0
+    },
+    "mid_ask_swapped": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 0.40625,
+      "flip": 0.59375,
+      "mid_correct": 0.0,
+      "persist": 0.40625
+    },
+    "mid_no_ask_control": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "mid_correct": 1.0,
+      "persist": 1.0
+    }
+  },
+  "bases": 16,
+  "batch_size": 4,
+  "ceiling_arms": {
+    "mid_ask_oracle": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "persist": 1.0
+    },
+    "mid_ask_self": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "persist": 1.0
+    },
+    "mid_no_ask_control": {
+      "choice1_accuracy": 1.0,
+      "choice2_accuracy": 1.0,
+      "flip": 0.0,
+      "persist": 1.0
+    }
+  },
+  "elapsed_seconds": 238.36033257100001,
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "interpretation_limits": [
+    "Discovery pilot / engineering_pilot; not locked confirmation.",
+    "Self mid-ask is not an intervention here (contrast 0.0); content sensitivity without ask-as-intervention matches stop rule 2.",
+    "Swapped steering: every flip \u2192 wrong action; every persist \u2192 correct.",
+    "Opaque>prose flip asymmetry is DESCRIPTIVE ONLY \u2014 not a locked interaction.",
+    "Opposite surface direction from ask-first swapped (C15/C16).",
+    "GHA ledger: ask-mid-traj-qwen38-n16-v1 retained (~$0.7829); historical reservations.jsonl unchanged."
+  ],
+  "intervention_contrast_mid_ask_self_minus_control": {
+    "choice2_accuracy": 0.0,
+    "control": "mid_no_ask_control",
+    "flip": 0.0,
+    "interpretation": "Zero contrast \u2192 self mid-ask is not an intervention on this pilot; matched non-consequence chatter and consequence self-ask leave choice2 identical (ceiling persistence).",
+    "treatment": "mid_ask_self"
+  },
+  "load_seconds": 42.548595512999995,
+  "mid_ask_self_mid_answers_perfect": true,
+  "model_id": "Qwen/Qwen3.8-27B",
+  "n_control_rows": 128,
+  "n_records": 512,
+  "n_scores": 864,
+  "n_self_rows": 128,
+  "opaque_prose_asymmetry_descriptive": {
+    "across_16_bases": {
+      "opaque_gt_prose": 7,
+      "prose_gt_opaque": 2,
+      "ties": 7
+    },
+    "base_equal_flip": {
+      "opaque": 0.65625,
+      "opaque_minus_prose": 0.125,
+      "prose": 0.53125
+    },
+    "direction_vs_ask_first_swapped": "Opposite direction from ask-first swapped (C15/C16), where prose failed more than opaque (prose accuracy 0.71875 vs opaque 0.9375 on gha-report16).",
+    "length_c1_to_c2_delta_mean": {
+      "note": "Not an obvious length confound (means nearly equal).",
+      "opaque": 93.6875,
+      "prose": 93.25
+    },
+    "limits": [
+      "Descriptive split within one discovery pilot payload.",
+      "Not a locked surface-main-effect or interaction claim.",
+      "Opposite direction from ask-first swapped prose>opaque failure (C15/C16)."
+    ],
+    "standing": "descriptive_only_not_locked_interaction",
+    "within_base_policy_frame_pairs": {
+      "n_pairs": 64,
+      "opaque_only_flips": 11,
+      "prose_only_flips": 3
+    }
+  },
+  "parity": {
+    "batch_single_max_abs": 0.125,
+    "choices_agree": true,
+    "passed": true,
+    "replay_max_abs": 0.0
+  },
+  "payload_sha256": "50b854ae18ab584a25234e62687de4d4f6de8c467d5656ec9dda89a0b1d7a5d6",
+  "protocol_id": "ask_mid_trajectory",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "run_id": "ask-mid-traj-qwen38-n16-v1",
+  "split": "discovery",
+  "stage": "baseline",
+  "status": "engineering_pilot",
+  "story_lead": "Asking mid-trajectory does nothing on this pilot: self mid-ask vs no-ask control leaves flip and choice2 accuracy unchanged at 0.0. A lied mid-answer rewrites ~60% of second presses (swapped flip=0.59375).",
+  "swapped_mid_content": {
+    "choice1_accuracy": 1.0,
+    "choice2_accuracy": 0.40625,
+    "every_flip_lands_on_wrong_action": true,
+    "every_persist_stays_correct": true,
+    "flip": 0.59375,
+    "flip_by_frame": {
+      "nonagentic": 0.515625,
+      "strategic": 0.671875
+    },
+    "flip_cells": [
+      {
+        "choice2_accuracy": 0.4375,
+        "flip": 0.5625,
+        "frame": "nonagentic",
+        "n": 16,
+        "n_flip": 9,
+        "policy_kind": "direct",
+        "surface_kind": "opaque"
+      },
+      {
+        "choice2_accuracy": 0.25,
+        "flip": 0.75,
+        "frame": "strategic",
+        "n": 16,
+        "n_flip": 12,
+        "policy_kind": "direct",
+        "surface_kind": "opaque"
+      },
+      {
+        "choice2_accuracy": 0.4375,
+        "flip": 0.5625,
+        "frame": "nonagentic",
+        "n": 16,
+        "n_flip": 9,
+        "policy_kind": "opposed",
+        "surface_kind": "opaque"
+      },
+      {
+        "choice2_accuracy": 0.25,
+        "flip": 0.75,
+        "frame": "strategic",
+        "n": 16,
+        "n_flip": 12,
+        "policy_kind": "opposed",
+        "surface_kind": "opaque"
+      },
+      {
+        "choice2_accuracy": 0.625,
+        "flip": 0.375,
+        "frame": "nonagentic",
+        "n": 16,
+        "n_flip": 6,
+        "policy_kind": "direct",
+        "surface_kind": "prose"
+      },
+      {
+        "choice2_accuracy": 0.4375,
+        "flip": 0.5625,
+        "frame": "strategic",
+        "n": 16,
+        "n_flip": 9,
+        "policy_kind": "direct",
+        "surface_kind": "prose"
+      },
+      {
+        "choice2_accuracy": 0.4375,
+        "flip": 0.5625,
+        "frame": "nonagentic",
+        "n": 16,
+        "n_flip": 9,
+        "policy_kind": "opposed",
+        "surface_kind": "prose"
+      },
+      {
+        "choice2_accuracy": 0.375,
+        "flip": 0.625,
+        "frame": "strategic",
+        "n": 16,
+        "n_flip": 10,
+        "policy_kind": "opposed",
+        "surface_kind": "prose"
+      }
+    ],
+    "n_flips": 76,
+    "n_persists": 52,
+    "persist": 0.40625
+  },
+  "task": "ask_mid_trajectory"
+}

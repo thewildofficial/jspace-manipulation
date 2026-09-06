@@ -2,7 +2,7 @@
   "protocol_id": "ask_mid_trajectory",
   "study_id": "ASK-MID-TRAJECTORY-1",
   "title": "Mid-trajectory ask as intervention",
-  "status": "design_ready_not_scored",
+  "status": "scored_discovery_pilot",
   "sequence": [
     "scenario",
     "forced_choice_1",
@@ -23,5 +23,7 @@
   "history_mode_default": "minimal",
   "prepare_task": "ask_mid_trajectory",
   "scoring": "modal_report_reactivity.py via Actions (no separate local GPU path)",
-  "doc": "experiments/report_reactivity/ask-mid-trajectory-protocol.md"
+  "doc": "experiments/report_reactivity/ask-mid-trajectory-protocol.md",
+  "scored_run_id": "ask-mid-traj-qwen38-n16-v1",
+  "claim_rows": ["C19", "C20", "C21"]
 }
