@@ -1,0 +1,110 @@
+{
+  "title": "Poisoned self-talk: swapped-arm cell map",
+  "story": "Lied / swapped report transcripts hurt action most under wordy opposed strategic framing.",
+  "claim_id_footnote": "C16",
+  "source": {
+    "actions_run": 34048123330,
+    "actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330",
+    "run_id": "gha-report16-38-v1",
+    "payload_sha256": "126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d",
+    "raw_artifact": "results/report_reactivity/gha-report16-38-v1/raw.json",
+    "prepared_artifact_pattern": "gha-report16-38-v1 / gha-report16-38-dry-v1",
+    "model_id": "Qwen/Qwen3.8-27B",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "bases": 16,
+    "split": "discovery",
+    "arm": "swapped",
+    "no_new_gpu": true
+  },
+  "overall": {
+    "n_rows": 128,
+    "n_correct": 106,
+    "accuracy": 0.828125,
+    "n_failures": 22
+  },
+  "failures_by_surface": {
+    "prose": {"n_rows": 64, "n_failures": 18, "accuracy": 0.71875},
+    "opaque": {"n_rows": 64, "n_failures": 4, "accuracy": 0.9375}
+  },
+  "cells": [
+    {
+      "surface_kind": "prose",
+      "policy_kind": "opposed_assertion",
+      "frame": "strategic",
+      "n": 16,
+      "accuracy": 0.375,
+      "n_correct": 6,
+      "n_failures": 10
+    },
+    {
+      "surface_kind": "prose",
+      "policy_kind": "opposed_assertion",
+      "frame": "nonagentic",
+      "n": 16,
+      "accuracy": 0.6875,
+      "n_correct": 11,
+      "n_failures": 5
+    },
+    {
+      "surface_kind": "prose",
+      "policy_kind": "direct_policy",
+      "frame": "strategic",
+      "n": 16,
+      "accuracy": 0.8125,
+      "n_correct": 13,
+      "n_failures": 3
+    },
+    {
+      "surface_kind": "prose",
+      "policy_kind": "direct_policy",
+      "frame": "nonagentic",
+      "n": 16,
+      "accuracy": 1.0,
+      "n_correct": 16,
+      "n_failures": 0
+    },
+    {
+      "surface_kind": "opaque",
+      "policy_kind": "opposed_assertion",
+      "frame": "strategic",
+      "n": 16,
+      "accuracy": 0.875,
+      "n_correct": 14,
+      "n_failures": 2
+    },
+    {
+      "surface_kind": "opaque",
+      "policy_kind": "opposed_assertion",
+      "frame": "nonagentic",
+      "n": 16,
+      "accuracy": 1.0,
+      "n_correct": 16,
+      "n_failures": 0
+    },
+    {
+      "surface_kind": "opaque",
+      "policy_kind": "direct_policy",
+      "frame": "strategic",
+      "n": 16,
+      "accuracy": 0.875,
+      "n_correct": 14,
+      "n_failures": 2
+    },
+    {
+      "surface_kind": "opaque",
+      "policy_kind": "direct_policy",
+      "frame": "nonagentic",
+      "n": 16,
+      "accuracy": 1.0,
+      "n_correct": 16,
+      "n_failures": 0
+    }
+  ],
+  "opaque_summary": "opaque × most cells: 0.875–1.0",
+  "deployment_implication": "Lied transcripts hurt most under wordy opposed strategic framing.",
+  "limits": [
+    "Discovery pilot on one checkpoint and one nonce corpus; not locked confirmation.",
+    "Swapped arm privileges report content by instruction; measures transcript dependence, not spontaneous self-trust.",
+    "Cell n=16 each; descriptive factorial breakdown, not a locked interaction claim."
+  ]
+}

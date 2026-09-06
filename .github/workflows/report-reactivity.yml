@@ -60,6 +60,14 @@ on:
         required: true
         default: true
         type: boolean
+      history_mode:
+        description: "Harder games: redundant correct demos (minimal=current balanced priors; redundant=extra correct history cycles)"
+        required: true
+        default: minimal
+        type: choice
+        options:
+          - minimal
+          - redundant
 
 permissions:
   contents: read
@@ -85,6 +93,7 @@ jobs:
       RUN_ID: ${{ inputs.run_id }}
       BATCH_SIZE: ${{ inputs.batch_size }}
       DRY_RUN: ${{ inputs.dry_run }}
+      HISTORY_MODE: ${{ inputs.history_mode }}
       PREPARED_PATH: artifacts/prepared/${{ inputs.run_id }}.json
       # Fresh GHA-era study ledger (global ceiling 28.0). Historical
       # results/report_reactivity/reservations.jsonl (~$7.26) stays immutable.
@@ -128,6 +137,14 @@ jobs:
             echo "locked confirmation is frozen to the incident contrast only" >&2
             exit 1
           fi
+          case "$HISTORY_MODE" in
+            minimal|redundant) ;;
+            *) echo "invalid history_mode: $HISTORY_MODE" >&2; exit 1 ;;
+          esac
+          if [[ "$TASK" == "incident" && "$HISTORY_MODE" != "minimal" ]]; then
+            echo "history_mode applies only to task=report" >&2
+            exit 1
+          fi
 
       - name: Validate repository locally
         run: uv run --extra dev pytest -q
@@ -151,6 +168,7 @@ jobs:
               --model "$MODEL" \
               --bases "$BASES" \
               --split "$SPLIT" \
+              --history-mode "$HISTORY_MODE" \
               --output "$PREPARED_PATH"
           fi
 

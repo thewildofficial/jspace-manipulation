@@ -10,7 +10,13 @@ from pathlib import Path
 from transformers import AutoTokenizer
 
 from jspace_policy.incident_desk import IncidentDesk, generate_prompt_records
-from jspace_policy.report_reactivity import arm_messages, generate_rows, report_messages
+from jspace_policy.report_reactivity import (
+    DEFAULT_HISTORY_MODE,
+    HISTORY_MODES,
+    arm_messages,
+    generate_rows,
+    report_messages,
+)
 from jspace_policy.sprint_runtime import MODEL_REVISIONS, digest, prepare_query, write_new
 
 FROZEN_CONTRAST = {
@@ -21,13 +27,15 @@ FROZEN_CONTRAST = {
 }
 
 
-def build_report(add, bases, split="discovery"):
+def build_report(add, bases, split="discovery", history_mode=DEFAULT_HISTORY_MODE):
     records = []
     counts = {"split": split, "discovery": bases, "locked": 0}
     if split == "locked":
         counts = {"split": split, "discovery": 0, "locked": bases}
     for row in generate_rows(
-        discovery_bases=counts["discovery"], locked_bases=counts["locked"]
+        discovery_bases=counts["discovery"],
+        locked_bases=counts["locked"],
+        history_mode=history_mode,
     ):
         item = {
             "base_id": row["base_game_id"],
@@ -106,12 +114,23 @@ def main():
     parser.add_argument("--model", choices=MODEL_REVISIONS, default="Qwen/Qwen3.8-27B")
     parser.add_argument("--bases", type=int, default=16)
     parser.add_argument("--split", choices=("discovery", "locked"), default="discovery")
+    parser.add_argument(
+        "--history-mode",
+        choices=HISTORY_MODES,
+        default=DEFAULT_HISTORY_MODE,
+        help=(
+            "Harder games: minimal keeps historical two-trial demos; "
+            "redundant adds extra correct demonstration cycles"
+        ),
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.bases < 16:
         raise ValueError("pilot requires at least 16 grouped bases")
     if args.split == "locked" and args.task != "incident":
         raise ValueError("locked confirmation is frozen to the incident contrast only")
+    if args.task == "incident" and args.history_mode != DEFAULT_HISTORY_MODE:
+        raise ValueError("history_mode applies only to the report task")
     tokenizer = AutoTokenizer.from_pretrained(
         args.model,
         revision=MODEL_REVISIONS[args.model],
@@ -125,9 +144,10 @@ def main():
             queries[key] = prepare_query(tokenizer, messages, labels)
         return key
 
-    records = (build_report if args.task == "report" else build_incident)(
-        add, args.bases, args.split
-    )
+    if args.task == "report":
+        records = build_report(add, args.bases, args.split, args.history_mode)
+    else:
+        records = build_incident(add, args.bases, args.split)
     protocol = json.loads(Path("experiments/report_reactivity/protocol.json").read_text())
     payload = {
         "model_id": args.model,
@@ -146,6 +166,10 @@ def main():
         "queries": queries,
         "records": records,
     }
+    # Keep minimal payloads byte-compatible with historical prepare hashes.
+    # Redundant harder-games runs record the mode explicitly.
+    if args.history_mode != DEFAULT_HISTORY_MODE:
+        payload["history_mode"] = args.history_mode
     if args.split == "locked":
         payload["frozen_contrast"] = dict(FROZEN_CONTRAST)
     payload["sha256"] = digest(payload)
@@ -156,6 +180,7 @@ def main():
                 "sha256": payload["sha256"],
                 "queries": len(queries),
                 "records": len(records),
+                "history_mode": args.history_mode,
                 "max_length": max(q["length"] for q in queries.values()),
                 "total_prompt_tokens": sum(q["length"] for q in queries.values()),
             }
