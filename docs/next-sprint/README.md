@@ -12,6 +12,8 @@ The proposed organizing question is:
 Start with [the audit](audit.md), then [the literature comparison](literature.md),
 then [the experimental design](experiments.md) and
 [virtual tools with Qwen3.8, including the revised $30 budget](virtual-tools-qwen38.md).
+Living claims: [claim ledger](claim-ledger.md) (includes C11 GHA dry-run).
+Next design draft: [branched pre-action auditor protocol](../experiments/report_reactivity/branched_preaction_auditor_protocol.md).
 
 The original aspiration—understanding how internal information controls strategic
 reporting—is still worthwhile. The strongest existing evidence concerns semantic

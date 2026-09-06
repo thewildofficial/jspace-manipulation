@@ -56,6 +56,13 @@ The frozen null replicates on unseen lexical material.
 | C8 | 3.6 report pilot: direct 96.1% (5 errors), self-report rescues all 5 to 100%; primary self-minus-control +0.00 (control at ceiling); swapped-following 65.6% vs 82.8% on 3.8 | 768 report records, Qwen3.6 | `artifacts/processed/sprint_report16_36.json`, `results/report_reactivity/report16-36-v1/raw.json` | arm accuracy vs `expected_action`, base-equal weighting | Discovery pilot | 5-case rescue is descriptive; parity passed exactly on the 0.25 line, so 3.6 batch numerics are touchier than 3.8 (0.125) |
 | C9 | 3.6 incident pilot: 0/96 conflict violations vs 48/96 on 3.8; disclosure honest throughout | 192 incident records, Qwen3.6 | `artifacts/processed/sprint_incident16_36.json`, `results/report_reactivity/incident16-36-v1/raw.json` | choice via `expected_paths`, taken-action auditor branches | Discovery pilot | Violation propensity is a checkpoint property; with no violations there is no concealment test on 3.6 |
 
+## Instrumentation path (GitHub Actions)
+
+| # | Claim | Unit | Raw artifact | Analysis | Standing | Limit |
+|---|---|---|---|---|---|---|
+| C11 | GHA CPU dry-run path works: pytest → prepare_preflight → artifact upload; no Modal | Actions run 34044659196, `run_id=gha-dryrun-preflight-38-v1`, `dry_run=true`, stage=preflight, model Qwen/Qwen3.8-27B revision `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | Prepared payload sha256 `226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20` (n_queries=2); workflow `.github/workflows/report-reactivity.yml` | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md`; lengths [24, 28] | Engineering confirmation of instrumentation | Preflight tokenizer payload only; not behavioral; does not validate GPU/Modal scoring, parity, or any scientific estimand |
+| C12 | *(placeholder)* GHA GPU preflight via Actions | Intended `run_id=gha-preflight-38-v1`, `dry_run=false` | *No scored `results/report_reactivity/gha-preflight-38-v1/` artifact* | *Deferred* | **Not claimed.** Dispatch 34044902792 reached Modal entry, then failed at `reserve()` with `ValueError: global or stage budget exhausted` (preflight stage ceiling already consumed by prior local preflights). No GPU forward pass. | Do not invent GPU results; reopen only after stage/global ledger headroom or an explicit ledger revision |
+
 ## Correction C10: conflict-conditional position rigidity (Qwen3.8)
 
 Mapping-conditional choices (discovery 16-base and locked 32-base identical):
@@ -88,3 +95,7 @@ baseline + 2 incident + 1 locked replication). Failed runs
 (`report16-38-v1` parity, first `locked32-38-v1` dispatch bug) retain their
 ceilings; provider reconciliation is recorded separately and never refunds
 the ledger.
+
+Actions `gha-preflight-38-v1` (`dry_run=false`) did **not** add a reservation:
+`reserve()` rejected the dispatch when the preflight stage ceiling was already
+exhausted. Provider Modal balance is separate from this study ledger.
