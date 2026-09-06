@@ -93,8 +93,9 @@ monitor test, report insufficient positive support instead of adapting labels.
 **Harder-games update (2026-09-06).** Redundant correct demos
 (`harder-games-qwen38-n16-v1`) did not break Direct ceiling (C17); ask-first
 rescue remains blocked. Next behavioral bet on this track:
-mid-trajectory ask-as-intervention (`ask_mid_trajectory` protocol; not yet
-scored).
+mid-trajectory ask-as-intervention (`ask_mid_trajectory`); first GPU scores are
+committed under `ask-mid-traj-qwen38-n16-v1` without claim-ledger interpretation
+yet.
 
 ## Experiment 2: concepts versus bindings
 

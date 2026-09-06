@@ -12,6 +12,10 @@ artifacts/processed/*
 !artifacts/processed/.gitkeep
 artifacts/figures/*
 !artifacts/figures/.gitkeep
+# Local prepare scratch (tokenizer output). Scored-run copies live under
+# results/report_reactivity/<run_id>/prepared.json and are committed.
+artifacts/prepared/*
+!artifacts/prepared/.gitkeep
 artifacts/cache/
 
 # Local operational controls; not part of the public research narrative.

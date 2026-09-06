@@ -148,19 +148,25 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
         raise ValueError("only behavior stages are implemented")
     if Path(run_id).name != run_id or run_id in {".", ".."}:
         raise ValueError("invalid run ID")
-    payload = json.loads(Path(prepared).read_text())
+    prepared_path = Path(prepared)
+    payload = json.loads(prepared_path.read_text())
     verify_payload(payload)
     if stage == "replication" and payload["split"] != "locked":
         raise ValueError("replication stage requires a locked confirmation payload")
     output = Path("results/report_reactivity") / run_id
     output.mkdir(parents=True, exist_ok=False)
     ledger = resolve_ledger_path()
+    # Permanent copy of the exact scored input (Actions artifacts expire ~14d).
+    # Local scratch under artifacts/prepared/ stays disposable; this path is
+    # the committed companion to raw.json / input_manifest.json.
+    write_new(output / "prepared.json", payload)
     write_new(
         output / "input_manifest.json",
         {
             "run_id": run_id,
             "payload_sha256": payload["sha256"],
             "prepared_path": prepared,
+            "committed_prepared": str(output / "prepared.json"),
             "code_sha256": digest(
                 {
                     str(p): p.read_text()

@@ -1,8 +1,11 @@
 # Protocol: mid-trajectory ask as intervention
 
-Status: **design ready / not yet scored**. CPU prepare + Actions dry-run are
-wired; no Modal GPU from this documentation/code PR. Experiment ID:
-`ask_mid_trajectory` / study `ASK-MID-TRAJECTORY-1`.
+Status: **design ready; first GPU scores committed under
+`results/report_reactivity/ask-mid-traj-qwen38-n16-v1/` (Actions 34052527423,
+parity passed). Arm analysis and claim-ledger interpretation are not yet
+written — do not treat the raw file as a settled result.** CPU prepare + Actions
+dry-run are wired. Experiment ID: `ask_mid_trajectory` / study
+`ASK-MID-TRAJECTORY-1`.
 
 Companion context: harder-games substantive null (Direct still ceiling under
 redundant demos → ask-first rescue still blocked); claim ledger C14–C18;
