@@ -1,9 +1,10 @@
-# Methods note: GitHub Actions report-reactivity path (C11 / C12 / C13)
+# Methods note: GitHub Actions report-reactivity path (C11 / C12 / C13 / C14)
 
 Status: **engineering / ops findings**, not behavioral results.
 Companion ledger rows: **C11** (CPU dry-run success), **C12** (GPU reserve
 failure before scoring), **C13** (GPU scored remotely then local torch
-deserialize failure). Decision: [RR-D001](../../docs/next-sprint/decision-log.md).
+deserialize failure), **C14** (first clean GHA→Modal→JSON→`raw.json`
+preflight after the C13 fix). Decision: [RR-D001](../../docs/next-sprint/decision-log.md).
 
 ## C11 — CPU dry-run confirmed
 
@@ -87,6 +88,44 @@ payload JSON-safe instead.
 
 **Still not claimed:** any behavioral score for `gha-preflight-38-v2`.
 Re-dispatch with a **new** `run_id` after this fix merges.
+
+## C14 — First clean GHA→Modal→JSON→`raw.json` preflight (post-PR #17)
+
+| Field | Value |
+|---|---|
+| Actions run | [34046322701](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34046322701) |
+| Artifact | `report-reactivity-gha-preflight-38-v4-34046322701` (id `9993226576`) |
+| `run_id` | `gha-preflight-38-v4` |
+| `dry_run` | `false` |
+| Stage | `preflight` |
+| Model | `Qwen/Qwen3.8-27B` |
+| Revision | `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` |
+| `batch_size` | `4` |
+| Head SHA | `1d937b93b9b3235f0575674b9f6419c65587d82a` (main after PR #17 JSON-return fix) |
+| CPU gate | pytest → 133 passed, 4 skipped |
+| Prepare | payload sha256 `226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20`; lengths `[24, 28]` (`n_queries=2`) |
+| Ledger | `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl` |
+| Reserve | **succeeded** — second GHA row retained (`ceiling≈0.782856`, `global_ceiling_usd=28`, `total_reserved_usd≈1.565712`) |
+| `input_manifest.json` | committed under `results/report_reactivity/gha-preflight-38-v4/` (`run_id`, `stage=preflight`, `payload_sha256=226e488f…`, `ledger_path` set) |
+| GPU | `NVIDIA A100 80GB PCIe`; `load_seconds≈35.96`; `elapsed_seconds≈40.91`; `peak_memory_bytes=53871095808` |
+| `raw.json` | **written and uploaded**; `status=engineering_pilot`; `model_class=Qwen3_5ForCausalLM`; torch `2.13.0+cu130`; transformers `5.15.1` |
+| Parity (from artifact) | `passed=true`; `batch_single_max_abs=0.125`; `choices_agree=true`; `replay_max_abs=0.0` |
+| Scores present | two queries (`"0"`→A / `"1"`→B); both `format_valid=true` |
+| Historical ledger | unchanged |
+| Failure | none — all workflow steps succeeded including Modal scoring and artifact upload |
+
+### What this confirms / does not claim
+
+**Confirms (instrumentation):** after the C13 JSON-string return fix, the
+Actions client can reserve on the GHA ledger, invoke Modal `score_gpu`,
+receive a JSON-safe payload, write `raw.json`, and upload artifacts without
+installing torch on the runner.
+
+**Does not claim:** any behavioral, scientific, or paper-facing estimand.
+This is a preflight tokenizer payload (`n_queries=2`). The two recorded
+choices/logits are engineering smoke only. Stage ceilings and spend are
+ops facts, not science. Baseline / incident / replication stages remain
+unproven on this path until separately dispatched and ledgered.
 
 ## Fix implemented (RR-D001) — new GHA ledger, historical immutable
 

@@ -1,1 +1,2 @@
 {"ceiling_usd": 0.7828559999999999, "global_ceiling_usd": 28.0, "ledger_path": "results/report_reactivity/reservations_gha.jsonl", "run_id": "gha-preflight-38-v2", "stage": "preflight", "status": "reserved_unreconciled", "total_reserved_usd": 0.7828559999999999}
+{"ceiling_usd": 0.7828559999999999, "global_ceiling_usd": 28.0, "ledger_path": "results/report_reactivity/reservations_gha.jsonl", "run_id": "gha-preflight-38-v4", "stage": "preflight", "status": "reserved_unreconciled", "total_reserved_usd": 1.5657119999999998}

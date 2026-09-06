@@ -33,3 +33,23 @@ separate files over rewriting history.
 **Not claimed.** No GPU scores; no behavioral result; no authorization to exceed
 provider balance. First GHA GPU success still requires a human `dry_run=false`
 dispatch after this wiring merges.
+
+## 2026-09-06 — RR-D002 — Record C14 first clean GHA GPU preflight (no new science)
+
+**Context.** After PR #17 (`score_gpu` JSON-string return), human
+`workflow_dispatch` `gha-preflight-38-v4` (Actions run
+[34046322701](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34046322701),
+`dry_run=false`, stage=`preflight`, `batch_size=4`) completed all steps:
+CPU prepare (payload sha256 `226e488f…`, `n_queries=2`), GHA-ledger reserve,
+Modal A100 scoring, local `raw.json` write, artifact upload. Artifact parity:
+`passed=true`, `batch_single_max_abs=0.125`, `choices_agree=true`,
+`replay_max_abs=0.0`. Spend: second `reservations_gha.jsonl` row
+(`ceiling≈0.7829`, cumulative `total_reserved_usd≈1.5657` / $28). Historical
+`reservations.jsonl` unchanged.
+
+**Decision.** Commit immutable
+`results/report_reactivity/gha-preflight-38-v4/{raw.json,input_manifest.json}`
+and the updated GHA ledger; ledger as **C14** engineering confirmation only.
+
+**Not claimed.** Behavioral/science estimands; baseline/incident/replication
+path validity; paper conclusions. Preflight tokenizer smoke only.

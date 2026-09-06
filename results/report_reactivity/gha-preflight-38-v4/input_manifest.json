@@ -1,0 +1,10 @@
+{
+  "ceiling_usd": 0.7828559999999999,
+  "code_sha256": "3af7335b16a65a2fe3522abba12991c046b58eb6dc935af3d2e33419c016c4d8",
+  "global_ceiling_usd": 28.0,
+  "ledger_path": "results/report_reactivity/reservations_gha.jsonl",
+  "payload_sha256": "226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20",
+  "prepared_path": "artifacts/prepared/gha-preflight-38-v4.json",
+  "run_id": "gha-preflight-38-v4",
+  "stage": "preflight"
+}
