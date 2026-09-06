@@ -88,6 +88,7 @@ jobs:
       PREPARED_PATH: artifacts/prepared/${{ inputs.run_id }}.json
       # Fresh GHA-era study ledger (global ceiling 28.0). Historical
       # results/report_reactivity/reservations.jsonl (~$7.26) stays immutable.
+      # score_gpu returns JSON (C13); do not add torch to this CPU job.
       REPORT_REACTIVITY_LEDGER: results/report_reactivity/reservations_gha.jsonl
 
     steps:
