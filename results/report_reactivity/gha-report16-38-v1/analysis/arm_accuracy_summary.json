@@ -1,0 +1,133 @@
+{
+  "actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330",
+  "arm_accuracies_base_equal": {
+    "direct": 1.0,
+    "external_facts": 1.0,
+    "matched_control": 1.0,
+    "oracle": 1.0,
+    "self_report": 1.0,
+    "swapped": 0.828125
+  },
+  "arm_accuracy_detail": {
+    "direct": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "external_facts": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "matched_control": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "oracle": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "self_report": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "swapped": {
+      "base_equal_accuracy": 0.828125,
+      "micro_accuracy": 0.828125,
+      "n_bases": 16,
+      "n_correct": 106,
+      "n_rows": 128
+    }
+  },
+  "bases": 16,
+  "batch_size": 4,
+  "elapsed_seconds": 297.28503606699996,
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "interpretation_limits": [
+    "Discovery pilot / engineering_pilot; not locked confirmation; not a novelty/priority claim.",
+    "Ceiling on Direct/self/control means rewrite-vs-reveal rescue is unidentifiable here (stop rule for mechanistic rescue / reports-fix-failures).",
+    "Swapped action accuracy below ceiling shows report-content can steer action; drop is larger on prose than opaque.",
+    "Replicates qualitative pattern of earlier claim C2/C3 on a fresh GHA path + nonce corpus; do not overclaim independence beyond what's justified.",
+    "GHA ledger: reservations_gha includes gha-report16-38-v1 (~$0.7829 ceiling); total with prior v2 preflight retention \u2014 see reservations_gha.jsonl."
+  ],
+  "load_seconds": 76.29177139500001,
+  "model_id": "Qwen/Qwen3.8-27B",
+  "n_records": 768,
+  "n_scores": 960,
+  "parity": {
+    "batch_single_max_abs": 0.125,
+    "choices_agree": true,
+    "passed": true,
+    "replay_max_abs": 0.0
+  },
+  "payload_sha256": "126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d",
+  "primary_contrasts": {
+    "self_report_minus_direct": {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "effect": 0.0,
+      "n_bases": 16,
+      "p_value": 1.0
+    },
+    "self_report_minus_matched_control": {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "effect": 0.0,
+      "n_bases": 16,
+      "p_value": 1.0
+    }
+  },
+  "primary_gate": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "confirmatory": false,
+    "decision": "fail",
+    "effect": 0.0,
+    "gate_pass": false,
+    "n_bases": 16,
+    "p_value": 1.0,
+    "reason": "primary gate criteria are not all satisfied",
+    "selection_allowed": true,
+    "status": "descriptive_pilot"
+  },
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "run_id": "gha-report16-38-v1",
+  "self_report_both_reports_correct": {
+    "chaining": "report1\u2192report2[r1]\u2192actions[r1r2]",
+    "n_correct": 128,
+    "n_rows": 128
+  },
+  "split": "discovery",
+  "stage": "baseline",
+  "status": "engineering_pilot",
+  "swapped_by_surface_kind": {
+    "opaque": {
+      "base_equal_accuracy": 0.9375,
+      "micro_accuracy": 0.9375,
+      "n_bases": 16,
+      "n_correct": 60,
+      "n_rows": 64
+    },
+    "prose": {
+      "base_equal_accuracy": 0.71875,
+      "micro_accuracy": 0.71875,
+      "n_bases": 16,
+      "n_correct": 46,
+      "n_rows": 64
+    }
+  },
+  "task": "report"
+}

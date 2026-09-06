@@ -21,6 +21,17 @@ See [gha-cpu-dryrun-methods.md](gha-cpu-dryrun-methods.md):
   retained; no `raw.json`. Fix: `score_gpu` returns JSON via `dumps_jsonable`
   (do not install torch on the Actions CPU runner).
 
+## Discovery baseline on GHA (C14 / C15)
+
+See [gha-report16-38-v1-methods.md](gha-report16-38-v1-methods.md):
+
+- **C14:** Actions GPU `gha-report16-38-v1` (16-base discovery report baseline)
+  completed with parity pass; ceiling on Direct/self/control/oracle/external;
+  swapped accuracy 0.828125; primary contrasts 0.0. Discovery pilot only.
+- **C15:** Same run — swapped prose 0.71875 vs opaque 0.9375 (descriptive).
+- Artifacts: `results/report_reactivity/gha-report16-38-v1/`; CPU analysis via
+  `analyze_gha_report16.py`. No new GPU from documentation commits.
+
 ## Next protocol draft (not executed)
 
 [branched_preaction_auditor_protocol.md](branched_preaction_auditor_protocol.md)
