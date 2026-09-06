@@ -17,12 +17,17 @@ uv run python experiments/report_reactivity/prepare.py --task report \
 Actions: `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only).
 Default `dry_run=true` runs pytest + CPU prepare and uploads the prepared
 payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
-`batch_size` defaults to 4 (C1).
+`batch_size` defaults to 4 (C1). Workflow sets
+`REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl`
+(GHA-era ledger, global ceiling $28; see RR-D001). Local/manual runs default
+to historical `results/report_reactivity/reservations.jsonl` ($30).
 
 GPU rows were produced by `modal_report_reactivity.py` (manually dispatched,
 no retries, ceiling reserved before launch, reservation retained on failure).
-Spend ledger: `results/report_reactivity/reservations.jsonl` against the $30
-global ceiling in `src/jspace_policy/sprint_runtime.py::STAGE_LIMITS`.
+Spend ledgers: historical `results/report_reactivity/reservations.jsonl`
+(~$7.26 / $30, immutable) and GHA `results/report_reactivity/reservations_gha.jsonl`
+($0 / $28 until first successful Actions reserve). Stage caps remain
+`src/jspace_policy/sprint_runtime.py::STAGE_LIMITS`.
 
 ## Claims
 
@@ -60,8 +65,8 @@ The frozen null replicates on unseen lexical material.
 
 | # | Claim | Unit | Raw artifact | Analysis | Standing | Limit |
 |---|---|---|---|---|---|---|
-| C11 | GHA CPU dry-run path works: pytest → prepare_preflight → artifact upload; no Modal | Actions run 34044659196, `run_id=gha-dryrun-preflight-38-v1`, `dry_run=true`, stage=preflight, model Qwen/Qwen3.8-27B revision `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | Prepared payload sha256 `226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20` (n_queries=2); workflow `.github/workflows/report-reactivity.yml` | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md`; lengths [24, 28] | Engineering confirmation of instrumentation | Preflight tokenizer payload only; not behavioral; does not validate GPU/Modal scoring, parity, or any scientific estimand |
-| C12 | *(placeholder)* GHA GPU preflight via Actions | Intended `run_id=gha-preflight-38-v1`, `dry_run=false` | *No scored `results/report_reactivity/gha-preflight-38-v1/` artifact* | *Deferred* | **Not claimed.** Dispatch 34044902792 reached Modal entry, then failed at `reserve()` with `ValueError: global or stage budget exhausted` (preflight stage ceiling already consumed by prior local preflights). No GPU forward pass. | Do not invent GPU results; reopen only after stage/global ledger headroom or an explicit ledger revision |
+| C11 | GHA CPU dry-run path works: pytest → prepare_preflight → artifact upload; Modal skipped | Actions run [34044659196](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044659196), `run_id=gha-dryrun-preflight-38-v1`, `dry_run=true`, stage=preflight, model Qwen/Qwen3.8-27B revision `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | Prepared payload sha256 `226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20` (n_queries=2, lengths [24, 28]); workflow `.github/workflows/report-reactivity.yml` | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md` | Engineering confirmation of CPU instrumentation | Tokenizer preflight payload only; not behavioral; does not validate GPU scoring, parity, or any scientific estimand |
+| C12 | GHA GPU path reaches Modal but fails closed at study-ledger `reserve()` before scoring (stage cap / ledger block, not missing Modal balance or auth) | Actions run [34044902792](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044902792), `run_id=gha-preflight-38-v1`, `dry_run=false`, stage=preflight | CPU prepare OK (same payload sha256 `226e488f…`); Modal credentials present; Modal app initialized; `results/…/gha-preflight-38-v1/input_manifest.json` written with `ceiling_usd≈0.7829`, `payload_sha256=226e488f…`, `stage=preflight` (run_id is the results subdirectory / dispatch input); **no** `raw.json` scores; **no** new row in `reservations.jsonl` | Fail-closed `sprint_runtime.reserve`: `ValueError('global or stage budget exhausted')`. Historical ledger total ~$7.26; `STAGE_LIMITS['preflight']=2.0` already holds ~$1.5657, so another ~$0.7829 cannot fit. Upload-artifacts step still ran (`always()`). | Instrument / ops finding (confirmed failure mode) | **Not a GPU behavioral result.** Provider Modal balance ~$28 ≠ study ledger headroom. Fix: RR-D001 new GHA ledger (`reservations_gha.jsonl`, global $28) via `REPORT_REACTIVITY_LEDGER` — does not invent scores for this run_id |
 
 ## Correction C10: conflict-conditional position rigidity (Qwen3.8)
 
@@ -90,12 +95,20 @@ decoupled from reward across 4+ mapping variants.
 
 ## Spend (reservations retained, fail-closed)
 
+**Historical ledger** `results/report_reactivity/reservations.jsonl` (immutable):
 $7.26 of $30 reserved across 8 runs (1 overhead + 2 preflight + 2 report
-baseline + 2 incident + 1 locked replication). Failed runs
-(`report16-38-v1` parity, first `locked32-38-v1` dispatch bug) retain their
-ceilings; provider reconciliation is recorded separately and never refunds
-the ledger.
+baseline + 2 incident + 1 locked replication; plus retained failed-run
+ceilings as recorded in the file). Provider reconciliation is recorded
+separately and never refunds the ledger.
 
-Actions `gha-preflight-38-v1` (`dry_run=false`) did **not** add a reservation:
-`reserve()` rejected the dispatch when the preflight stage ceiling was already
-exhausted. Provider Modal balance is separate from this study ledger.
+**C12 arithmetic.** Preflight stage sum on the historical ledger is
+~$1.5657 (`preflight-qwen38-v1` + `preflight-qwen38-v2`).
+`STAGE_LIMITS['preflight']=2.0`, so `2.0 - 1.5657 < 0.7829` — another
+preflight ceiling cannot reserve. Actions `gha-preflight-38-v1` therefore
+added **no** reservation row; GPU never ran. Modal account balance (~$28)
+is orthogonal.
+
+**GHA-era ledger** `results/report_reactivity/reservations_gha.jsonl`
+(RR-D001): empty at introduction; global ceiling **$28.0**; same
+`STAGE_LIMITS`; selected in Actions via `REPORT_REACTIVITY_LEDGER`.
+Local default remains the historical path.

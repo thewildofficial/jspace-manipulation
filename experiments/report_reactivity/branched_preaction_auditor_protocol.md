@@ -135,8 +135,8 @@ No Modal/GPU from documentation agents. Human dispatch only after dry_run.
 
 - Stage proposal: new stage name `bpa` or reuse `incident` with an explicit
   payload task tag — decide at implementation; reserve under fail-closed
-  `STAGE_LIMITS` with ledger headroom (C12 showed preflight stage can already
-  be exhausted).
+  `STAGE_LIMITS` with ledger headroom (C12: historical preflight stage was
+  exhausted; GHA dispatches use `reservations_gha.jsonl` / RR-D001).
 - `batch_size=4` default (C1).
 - Discovery pilot first; locked confirmation only if discovery shows a
   non-null primary contrast with adequate support and mapping-conditional

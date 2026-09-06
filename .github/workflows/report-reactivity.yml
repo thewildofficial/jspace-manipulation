@@ -86,6 +86,9 @@ jobs:
       BATCH_SIZE: ${{ inputs.batch_size }}
       DRY_RUN: ${{ inputs.dry_run }}
       PREPARED_PATH: artifacts/prepared/${{ inputs.run_id }}.json
+      # Fresh GHA-era study ledger (global ceiling 28.0). Historical
+      # results/report_reactivity/reservations.jsonl (~$7.26) stays immutable.
+      REPORT_REACTIVITY_LEDGER: results/report_reactivity/reservations_gha.jsonl
 
     steps:
       - name: Check out frozen protocol
@@ -186,6 +189,7 @@ jobs:
           name: report-reactivity-${{ inputs.run_id }}-${{ github.run_id }}
           path: |
             results/report_reactivity/${{ inputs.run_id }}
+            results/report_reactivity/reservations_gha.jsonl
             results/report_reactivity/reservations.jsonl
           if-no-files-found: warn
           retention-days: 14

@@ -1,12 +1,10 @@
-# Methods note: GitHub Actions CPU dry-run path (C11)
+# Methods note: GitHub Actions report-reactivity path (C11 / C12)
 
-Status: **engineering confirmation**, not a behavioral result.
-Companion ledger rows: **C11** (confirmed), **C12** (placeholder; no GPU claim).
+Status: **engineering / ops findings**, not behavioral results.
+Companion ledger rows: **C11** (CPU dry-run success), **C12** (GPU reserve
+failure before scoring). Decision: [RR-D001](../../docs/next-sprint/decision-log.md).
 
-## What was confirmed
-
-Workflow `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only)
-was merged on main (PR #15). A CPU-only dispatch succeeded:
+## C11 — CPU dry-run confirmed
 
 | Field | Value |
 |---|---|
@@ -22,38 +20,55 @@ was merged on main (PR #15). A CPU-only dispatch succeeded:
 | `n_queries` | 2 (prompt lengths 24 and 28 tokens) |
 | Artifact | uploaded prepared JSON; Modal step skipped |
 
-Pipeline exercised: input validation → pytest → tokenizer prepare → artifact
-upload → dry-run exit. Default `batch_size=4` (C1 parity lesson) is wired for
-future GPU dispatches but was unused here.
+Pipeline: input validation → pytest → tokenizer prepare → artifact upload →
+dry-run exit. Not a behavioral claim.
 
-## What is not claimed
+## C12 — GPU dispatch failed at ledger `reserve()` (no scores)
 
-- No model action accuracy, violation rate, auditor truthfulness, or parity score.
-- Preflight queries are instrument checks ("return only A or B"), not incident-desk
-  episodes.
-- Success of CPU prepare does not imply Modal credentials, image build, reservation
-  headroom, or GPU scoring will succeed.
+| Field | Value |
+|---|---|
+| Actions run | [34044902792](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044902792) |
+| `run_id` | `gha-preflight-38-v1` |
+| `dry_run` | `false` |
+| CPU prepare | succeeded; same payload sha256 `226e488f…` |
+| Modal credentials | present (`Refuse missing Modal credentials` passed) |
+| Modal app | initialized (`Created function score_gpu`) |
+| `input_manifest.json` | written under `results/report_reactivity/gha-preflight-38-v1/` with `ceiling_usd≈0.782856`, `payload_sha256=226e488f…`, `stage=preflight` (run_id is the results directory name / workflow input; pre-fix manifests did not yet embed `run_id`) |
+| Failure | `sprint_runtime.reserve` → `ValueError('global or stage budget exhausted')` |
+| GPU scoring | **did not run** (no `raw.json`) |
+| Reservation row | **not** appended to historical `reservations.jsonl` |
+| Upload step | still ran (`if: always() && !dry_run`); shipped manifest dir + reservations copy |
 
-## GPU preflight placeholder (C12; not claimed)
+### Why reserve failed (ledger / stage-cap, not missing money)
 
-A subsequent dispatch with `run_id=gha-preflight-38-v1` and `dry_run=false`
-(Actions run [34044902792](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34044902792))
-passed CPU prepare (same prepared sha256) and credential presence checks, then
-failed locally at `sprint_runtime.reserve` with
-`ValueError: global or stage budget exhausted` before any GPU forward pass.
-Study ledger already holds ~$7.26 reserved historically; preflight stage ceiling
-in `STAGE_LIMITS` is $2.0 and was already consumed by earlier local preflights.
-No behavioral GPU artifact exists for this run_id. Do not fill C12 until a
-successful scored artifact is committed.
+Historical `results/report_reactivity/reservations.jsonl` total ≈ **$7.26** of
+the $30 study ceiling. Stage `preflight` alone sums to ≈ **$1.5657** against
+`STAGE_LIMITS['preflight']=2.0`. Another ceiling of ≈ **$0.7829** cannot fit
+(`1.5657 + 0.7829 > 2.0`). Provider Modal account balance (~$28) and valid
+tokens are irrelevant to this stop: fail-closed study accounting blocked
+dispatch before any GPU forward pass.
 
-Provider account balance (~$28 remaining on Modal at last user report) is
-orthogonal to the fail-closed study ledger: provider headroom does not authorize
-exceeding `STAGE_LIMITS` / the $30 global ceiling.
+## Fix implemented (RR-D001) — new GHA ledger, historical immutable
+
+| Choice | Detail |
+|---|---|
+| New ledger path | `results/report_reactivity/reservations_gha.jsonl` |
+| Global ceiling | **$28.0** (aligned to reported Modal balance) |
+| Stage limits | unchanged `STAGE_LIMITS` (counters restart on the new empty file) |
+| Env var | `REPORT_REACTIVITY_LEDGER` — default historical path for local continuity |
+| Workflow | sets `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl` |
+| Optional | `REPORT_REACTIVITY_GLOBAL_CEILING` override |
+
+Rejected: mutating historical rows or silently raising the old $30 ledger's
+preflight stage cap in place.
+
+**Still not claimed:** any GPU behavioral score for `gha-preflight-38-v1`.
+Re-dispatch with a **new** `run_id` after this wiring merges (same run_id would
+also be refused once reserved).
 
 ## Reproduction (CPU only)
 
 ```bash
-# Local analogue of the Actions dry-run prepare step:
 uv sync --extra dev
 uv run --extra dev pytest -q
 uv run --with 'transformers>=5.5' --with 'huggingface-hub>=0.34' \
@@ -64,6 +79,4 @@ uv run --with 'transformers>=5.5' --with 'huggingface-hub>=0.34' \
 # Expect sha256 226e488f85f437b14ff4a66382e73c4f36a8d7be8b3dde315fc98c9e8105fb20
 ```
 
-Or re-dispatch Actions with `dry_run=true` and a fresh `run_id`. Never set
-`dry_run=false` from an agent session without explicit human budget approval and
-ledger headroom.
+No Modal/GPU from documentation agents.
