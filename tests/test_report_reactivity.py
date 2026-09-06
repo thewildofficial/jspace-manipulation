@@ -138,3 +138,60 @@ def test_chat_messages_keep_reports_as_assistant_turns_and_action_as_user() -> N
     external_row = next(row for row in rows if row["arm"] == "external_facts")
     external = arm_messages(external_row)
     assert "external reference card" in external[1]["content"]
+
+
+def test_history_modes_differ_and_redundant_has_more_demo_lines() -> None:
+    minimal_config = {
+        "history_mode": "minimal",
+        "dataset": {"discovery_bases": 2, "locked_bases": 0},
+    }
+    redundant_config = {
+        "history_mode": "redundant",
+        "dataset": {"discovery_bases": 2, "locked_bases": 0},
+    }
+    minimal = dataset_payload(minimal_config)
+    redundant = dataset_payload(redundant_config)
+    verify_dataset_payload(minimal, minimal_config)
+    verify_dataset_payload(redundant, redundant_config)
+    assert minimal["content_sha256"] != redundant["content_sha256"]
+    assert minimal["config_sha256"] != redundant["config_sha256"]
+
+    m_row = next(row for row in minimal["rows"] if row["arm"] == "direct")
+    r_row = next(
+        row
+        for row in redundant["rows"]
+        if row["arm"] == "direct"
+        and row["base_game_id"] == m_row["base_game_id"]
+        and row["frame"] == m_row["frame"]
+        and row["surface_kind"] == m_row["surface_kind"]
+        and row["policy_kind"] == m_row["policy_kind"]
+    )
+    assert m_row["history_mode"] == "minimal"
+    assert r_row["history_mode"] == "redundant"
+    assert len(m_row["demonstrations"]) == 8
+    assert len(r_row["demonstrations"]) == 12
+    assert m_row["scenario"].count("Prior trial") == 8
+    assert r_row["scenario"].count("Prior trial") == 12
+    assert len(r_row["demonstrations"]) > len(m_row["demonstrations"])
+
+    # Arms in a cell still share one scenario under both modes.
+    for payload in (minimal, redundant):
+        cell = [
+            row
+            for row in payload["rows"]
+            if row["base_game_id"] == m_row["base_game_id"]
+            and row["frame"] == m_row["frame"]
+            and row["surface_kind"] == m_row["surface_kind"]
+            and row["policy_kind"] == m_row["policy_kind"]
+        ]
+        assert {row["arm"] for row in cell} == set(PRIMARY_ARMS)
+        assert len({row["scenario"] for row in cell}) == 1
+
+
+def test_minimal_history_matches_legacy_demo_shape() -> None:
+    """Default / minimal must keep the historical eight-demo scenario shape."""
+
+    rows = dataset_payload(_config(1, 0))["rows"]
+    assert all(row["history_mode"] == "minimal" for row in rows)
+    assert all(len(row["demonstrations"]) == 8 for row in rows)
+    assert all(row["scenario"].count("Prior trial") == 8 for row in rows)

@@ -21,7 +21,7 @@ See [gha-cpu-dryrun-methods.md](gha-cpu-dryrun-methods.md):
   retained; no `raw.json`. Fix: `score_gpu` returns JSON via `dumps_jsonable`
   (do not install torch on the Actions CPU runner).
 
-## Discovery baseline on GHA (C14 / C15)
+## Discovery baseline on GHA (C14 / C15 / C16)
 
 See [gha-report16-38-v1-methods.md](gha-report16-38-v1-methods.md):
 
@@ -29,8 +29,21 @@ See [gha-report16-38-v1-methods.md](gha-report16-38-v1-methods.md):
   completed with parity pass; ceiling on Direct/self/control/oracle/external;
   swapped accuracy 0.828125; primary contrasts 0.0. Discovery pilot only.
 - **C15:** Same run — swapped prose 0.71875 vs opaque 0.9375 (descriptive).
+- **C16:** Poisoned self-talk cell map — lied transcripts hurt most under wordy
+  opposed strategic framing; see
+  [poisoned-self-talk-cell-map.md](poisoned-self-talk-cell-map.md).
 - Artifacts: `results/report_reactivity/gha-report16-38-v1/`; CPU analysis via
   `analyze_gha_report16.py`. No new GPU from documentation commits.
+
+## Harder games (break Direct ceiling)
+
+Protocol note:
+[harder-games-break-the-ceiling.md](harder-games-break-the-ceiling.md).
+
+Prepare / Actions knob: `--history-mode minimal|redundant` (workflow input
+`history_mode`, default `minimal`). Redundant adds two extra correct demo
+cycles so Direct can fall below ceiling; parent dry-runs then scores after
+merge. No Modal from this docs/code PR.
 
 ## Next protocol draft (not executed)
 

@@ -11,13 +11,16 @@ every claim. No row is a paper conclusion on its own.
 uv sync --extra dev --extra modal
 uv run pytest                       # 160+ passed at last full run
 uv run python experiments/report_reactivity/prepare.py --task report \
-  --model Qwen/Qwen3.8-27B --bases 16 --output /tmp/check.json
+  --model Qwen/Qwen3.8-27B --bases 16 --history-mode minimal \
+  --output /tmp/check.json
+# Harder games (break Direct ceiling): --history-mode redundant
 ```
 
 Actions: `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only).
 Default `dry_run=true` runs pytest + CPU prepare and uploads the prepared
 payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
-`batch_size` defaults to 4 (C1). Workflow sets
+`batch_size` defaults to 4 (C1). Workflow input `history_mode` defaults to
+`minimal` (story: harder games = `redundant` correct demos). Workflow sets
 `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl`
 (GHA-era ledger, global ceiling $28; see RR-D001). Local/manual runs default
 to historical `results/report_reactivity/reservations.jsonl` ($30).
@@ -72,6 +75,7 @@ The frozen null replicates on unseen lexical material.
 | C13 | GHA GPU path reserves on `reservations_gha.jsonl` and completes remote `score_gpu`, then fails on local Modal deserialize (`torch` missing); reservation retained; no usable scores | Actions run [34045326136](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34045326136), `run_id=gha-preflight-38-v2`, `dry_run=false`, stage=preflight | `input_manifest.json` (`ceiling≈0.7829`, `global_ceiling_usd=28`, `ledger_path=…/reservations_gha.jsonl`, payload sha256 `226e488f…`); GHA ledger row retained; `failure.json` with `DeserializationError` / `No module named 'torch'`; **no** `raw.json`; historical `reservations.jsonl` unchanged | Methods note `experiments/report_reactivity/gha-cpu-dryrun-methods.md` (C13 section). Root cause: Modal pickle return required torch on the Actions client (`uv run --extra modal` has no torch). Fix: `score_gpu` returns `dumps_jsonable(...)` JSON string; local entrypoint `loads_jsonable` before writing `raw.json`. | Instrument / ops finding (confirmed failure mode) | **Not a behavioral result.** Do not install full torch on the CPU runner; keep payload JSON-safe. Re-dispatch needs a **new** `run_id` (this one is reserved). |
 | C14 | GHA 16-base discovery baseline replicates C2/C3 qualitative pattern: Direct/self/oracle/control/external at ceiling 1.0; primary self−control and self−direct = 0.0; swapped base-equal action accuracy 0.828125 (106/128) — report content can steer below ceiling | Actions run [34048123330](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330), `run_id=gha-report16-38-v1`, stage=baseline, task=report, model Qwen/Qwen3.8-27B revision `1d4bf0f2…`, batch_size=4, split=discovery, bases=16 | `results/report_reactivity/gha-report16-38-v1/{raw.json,input_manifest.json}`; payload sha256 `126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d` (matches CPU dry-run `gha-report16-38-dry-v1`); parity passed (`replay_max_abs=0.0`, `batch_single_max_abs=0.125`, `choices_agree=true`); status `engineering_pilot`; n_scores=960; n_records=768; GHA ledger row retained (~$0.7829; total with C13 ≈$1.5657) | `experiments/report_reactivity/analyze_gha_report16.py` → `…/analysis/arm_accuracy_summary.json`; `sprint_analysis` primary contrasts; methods note `experiments/report_reactivity/gha-report16-38-v1-methods.md` | Discovery pilot | Ceiling → rewrite-vs-reveal rescue unidentifiable (stop rule). Not locked confirmation; not novelty/priority. Qualitative replication of C2/C3 on fresh GHA path + nonce corpus — do not overclaim independence. Instruction privileges reports. |
 | C15 | Under the same GHA baseline, swapped steering is stronger on prose than opaque: swapped base-equal action accuracy prose 0.71875 (46/64) vs opaque 0.9375 (60/64) | Same unit as C14 (`gha-report16-38-v1`, 16 discovery bases, Qwen3.8) | Same raw artifact as C14; surface split in `…/analysis/arm_accuracy_summary.json` (`swapped_by_surface_kind`) | Same CPU analysis as C14; methods note `gha-report16-38-v1-methods.md` | Discovery pilot (descriptive split) | Surface contrast is descriptive within one pilot payload; not a locked surface-main-effect claim; not evidence of a mechanism. |
+| C16 | **Lied transcripts hurt most under wordy opposed strategic framing.** Swapped-arm cell map (n=16): prose/opposed/strategic **0.375**; prose/opposed/nonagentic **0.6875**; prose/direct/strategic **0.8125**; prose/direct/nonagentic **1.0**; opaque × most cells **0.875–1.0**; failures prose 18 / opaque 4 (overall swapped ≈0.828) | Same GHA baseline as C14/C15 (no new GPU) | Cell table `experiments/report_reactivity/poisoned-self-talk-cell-map.json`; story note `poisoned-self-talk-cell-map.md` | CPU stratify of swapped rows from prepared + `gha-report16-38-v1/raw.json` | Discovery pilot (descriptive cells) | Deployment implication only within this pilot; instruction privileges reports; not a locked three-way interaction claim |
 
 ## Correction C10: conflict-conditional position rigidity (Qwen3.8)
 

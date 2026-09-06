@@ -13,9 +13,11 @@ Start with [the audit](audit.md), then [the literature comparison](literature.md
 then [the experimental design](experiments.md) and
 [virtual tools with Qwen3.8, including the revised $30 budget](virtual-tools-qwen38.md).
 Living claims: [claim ledger](claim-ledger.md) (includes C11–C13 GHA path;
-C14–C15 GHA 16-base discovery baseline).
+C14–C15 GHA 16-base discovery baseline; C16 poisoned self-talk cell map).
 Ops decisions: [decision log](decision-log.md) (RR-D001 GHA ledger).
 Next design draft: [branched pre-action auditor protocol](../experiments/report_reactivity/branched_preaction_auditor_protocol.md).
+Harder-games dial: [break the Direct ceiling](../experiments/report_reactivity/harder-games-break-the-ceiling.md)
+(`history_mode=redundant`).
 Novelty bar: prefer experiments with deployment/safety/ToM implications (tool use, oversight, multi-agent, HITL, self-supervision) over quirks.
 
 The original aspiration—understanding how internal information controls strategic

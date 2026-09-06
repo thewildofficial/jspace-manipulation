@@ -37,6 +37,15 @@ PRIMARY_ARMS = (
 ACTION_LABELS = ("A", "B")
 REPORT_LABELS = ("X", "Y")
 
+# History modes control how many correct prior-trial demonstrations appear.
+# ``minimal`` is the historical default (four repeats of each mapped action).
+# ``redundant`` adds two extra full correct cycles (inverse-evidence style) to
+# break Direct-ceiling pilots without changing lexicon, arms, or the final query.
+HISTORY_MODES = ("minimal", "redundant")
+DEFAULT_HISTORY_MODE = "minimal"
+MINIMAL_DEMO_REPEATS = 4
+REDUNDANT_EXTRA_CYCLES = 2
+
 # The exact same string is appended to every primary prompt.  Keep this as a
 # public constant so a runner can assert suffix equality before dispatch.
 COMMON_FINAL_ACTION_QUERY = (
@@ -47,6 +56,7 @@ COMMON_FINAL_ACTION_QUERY_SUFFIX = COMMON_FINAL_ACTION_QUERY + "\nAnswer:"
 DEFAULT_CONFIG: dict[str, Any] = {
     "schema_version": SCHEMA_VERSION,
     "study_id": STUDY_ID,
+    "history_mode": DEFAULT_HISTORY_MODE,
     "dataset": {
         "discovery_bases": 48,
         "locked_bases": 96,
@@ -119,6 +129,20 @@ def _flip_pair(values: Sequence[str], flip: bool) -> list[str]:
     return result
 
 
+def _normalise_history_mode(value: object) -> str:
+    mode = str(value if value is not None else DEFAULT_HISTORY_MODE)
+    if mode not in HISTORY_MODES:
+        raise ValueError(f"history_mode must be one of {HISTORY_MODES}")
+    return mode
+
+
+def _demo_repeats(history_mode: str) -> int:
+    mode = _normalise_history_mode(history_mode)
+    if mode == "minimal":
+        return MINIMAL_DEMO_REPEATS
+    return MINIMAL_DEMO_REPEATS + REDUNDANT_EXTRA_CYCLES
+
+
 def _normalise_config(config: Mapping[str, Any] | None) -> dict[str, Any]:
     supplied = config or DEFAULT_CONFIG
     dataset = supplied.get("dataset", supplied)
@@ -130,6 +154,9 @@ def _normalise_config(config: Mapping[str, Any] | None) -> dict[str, Any]:
     surfaces = tuple(dataset.get("surface_kinds", SURFACE_KINDS))
     policies = tuple(dataset.get("policy_kinds", POLICY_KINDS))
     arms = tuple(dataset.get("primary_arms", PRIMARY_ARMS))
+    history_mode = _normalise_history_mode(
+        supplied.get("history_mode", dataset.get("history_mode", DEFAULT_HISTORY_MODE))
+    )
     if set(frames) != set(FRAMES):
         raise ValueError(f"frames must be exactly {FRAMES}")
     if set(surfaces) != set(SURFACE_KINDS):
@@ -141,6 +168,7 @@ def _normalise_config(config: Mapping[str, Any] | None) -> dict[str, Any]:
     return {
         "schema_version": int(supplied.get("schema_version", SCHEMA_VERSION)),
         "study_id": supplied.get("study_id", STUDY_ID),
+        "history_mode": history_mode,
         "dataset": {
             "discovery_bases": discovery,
             "locked_bases": locked,
@@ -280,10 +308,16 @@ def _turns_with_answers(
 
 
 def _make_variant(
-    base: Mapping[str, Any], *, frame: str, surface_kind: str, policy_kind: str
+    base: Mapping[str, Any],
+    *,
+    frame: str,
+    surface_kind: str,
+    policy_kind: str,
+    history_mode: str = DEFAULT_HISTORY_MODE,
 ) -> dict[str, Any]:
     split = str(base["split"])
     base_index = int(base["base_index"])
+    history_mode = _normalise_history_mode(history_mode)
     concepts_by_index = {
         index: _nonce_word(split, base_index, "O", int(outcome_index))
         for outcome_index, index in enumerate(base["outcome_order"])
@@ -315,6 +349,7 @@ def _make_variant(
         "frame": frame,
         "surface_kind": surface_kind,
         "policy_kind": policy_kind,
+        "history_mode": history_mode,
         "concepts": concepts,
         "opaque_tokens": opaque_tokens,
         "action_text": action_text,
@@ -324,10 +359,12 @@ def _make_variant(
         "expected_action": action_order[int(base["target_index"])],
     }
     demo_action_order = [action_order[index] for index in base["query_order"]]
+    # minimal: four repeats per mapped action (historical). redundant: two extra
+    # full correct cycles (each action appears two more times), still correct.
     demonstrations = [
         {"action": action, "outcome": action_to_outcome[action]}
         for action in demo_action_order
-        for _ in range(4)
+        for _ in range(_demo_repeats(history_mode))
     ]
     variant["demonstrations"] = demonstrations
     variant["report_queries"] = _report_queries(variant)
@@ -429,6 +466,7 @@ def _row_for_arm(variant: Mapping[str, Any], arm: str) -> dict[str, Any]:
         "frame": variant["frame"],
         "surface_kind": variant["surface_kind"],
         "policy_kind": variant["policy_kind"],
+        "history_mode": variant["history_mode"],
         "arm": arm,
         "concepts": list(variant["concepts"]),
         "opaque_tokens": dict(variant["opaque_tokens"]),
@@ -457,11 +495,17 @@ def _row_for_arm(variant: Mapping[str, Any], arm: str) -> dict[str, Any]:
     }
 
 
-def generate_rows(*, discovery_bases: int = 48, locked_bases: int = 96) -> list[dict[str, Any]]:
+def generate_rows(
+    *,
+    discovery_bases: int = 48,
+    locked_bases: int = 96,
+    history_mode: str = DEFAULT_HISTORY_MODE,
+) -> list[dict[str, Any]]:
     """Generate rows for all split, frame, surface, and primary-arm cells."""
 
     if discovery_bases < 0 or locked_bases < 0 or discovery_bases + locked_bases == 0:
         raise ValueError("at least one base is required")
+    history_mode = _normalise_history_mode(history_mode)
     rows: list[dict[str, Any]] = []
     for split, count in (("discovery", discovery_bases), ("locked", locked_bases)):
         for base_index in range(count):
@@ -474,6 +518,7 @@ def generate_rows(*, discovery_bases: int = 48, locked_bases: int = 96) -> list[
                             frame=frame,
                             surface_kind=surface_kind,
                             policy_kind=policy_kind,
+                            history_mode=history_mode,
                         )
                         variant["scenario"] = _render_scenario(
                             frame=frame,
@@ -488,22 +533,32 @@ def generate_rows(*, discovery_bases: int = 48, locked_bases: int = 96) -> list[
     return rows
 
 
-def generate_corpus(*, discovery_bases: int = 48, locked_bases: int = 96) -> dict[str, Any]:
+def generate_corpus(
+    *,
+    discovery_bases: int = 48,
+    locked_bases: int = 96,
+    history_mode: str = DEFAULT_HISTORY_MODE,
+) -> dict[str, Any]:
     """Generate a hashable payload using the proposed discovery/locked sizes."""
 
     config = _normalise_config(
         {
+            "history_mode": history_mode,
             "dataset": {
                 "discovery_bases": discovery_bases,
                 "locked_bases": locked_bases,
-            }
+            },
         }
     )
     body = {
         "schema_version": SCHEMA_VERSION,
         "study_id": STUDY_ID,
         "config_sha256": canonical_sha256(config),
-        "rows": generate_rows(discovery_bases=discovery_bases, locked_bases=locked_bases),
+        "rows": generate_rows(
+            discovery_bases=discovery_bases,
+            locked_bases=locked_bases,
+            history_mode=config["history_mode"],
+        ),
     }
     return {**body, "content_sha256": canonical_sha256(body)}
 
@@ -520,6 +575,7 @@ def dataset_payload(config: Mapping[str, Any] | None = None) -> dict[str, Any]:
         "rows": generate_rows(
             discovery_bases=dataset["discovery_bases"],
             locked_bases=dataset["locked_bases"],
+            history_mode=normalised["history_mode"],
         ),
     }
     return {**body, "content_sha256": canonical_sha256(body)}
@@ -560,10 +616,18 @@ def verify_dataset_payload(
     if len(ids) != len(set(ids)):
         raise ValueError("condition IDs are not unique")
     grouped: dict[tuple[Any, ...], list[Mapping[str, Any]]] = {}
+    expected_demo_count = 2 * _demo_repeats(normalised["history_mode"])
     for row in rows:
         grouped.setdefault(_row_key(row), []).append(row)
         if row.get("arm") not in PRIMARY_ARMS:
             raise ValueError("unknown primary arm")
+        if row.get("history_mode") != normalised["history_mode"]:
+            raise ValueError("row history_mode does not match config")
+        if len(row.get("demonstrations", [])) != expected_demo_count:
+            raise ValueError(
+                f"unexpected demonstration count: "
+                f"{len(row.get('demonstrations', []))} != {expected_demo_count}"
+            )
         if not str(row.get("prompt", "")).endswith(COMMON_FINAL_ACTION_QUERY_SUFFIX):
             raise ValueError("primary prompt does not end in the common action query")
         oracle = row.get("oracle", {})
@@ -581,6 +645,9 @@ def verify_dataset_payload(
         arms = {row["arm"] for row in cell}
         if arms != set(PRIMARY_ARMS):
             raise ValueError(f"primary arms incomplete for {key}")
+        scenarios = {row["scenario"] for row in cell}
+        if len(scenarios) != 1:
+            raise ValueError(f"primary arms do not share one scenario for {key}")
 
 
 def render_self_report_prompt(
@@ -796,8 +863,12 @@ __all__ = [
     "COMMON_FINAL_ACTION_QUERY",
     "COMMON_FINAL_ACTION_QUERY_SUFFIX",
     "DEFAULT_CONFIG",
+    "DEFAULT_HISTORY_MODE",
     "FRAMES",
+    "HISTORY_MODES",
+    "MINIMAL_DEMO_REPEATS",
     "PRIMARY_ARMS",
+    "REDUNDANT_EXTRA_CYCLES",
     "REPORT_LABELS",
     "SPLITS",
     "SURFACE_KINDS",
