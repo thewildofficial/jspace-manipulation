@@ -33,3 +33,25 @@ separate files over rewriting history.
 **Not claimed.** No GPU scores; no behavioral result; no authorization to exceed
 provider balance. First GHA GPU success still requires a human `dry_run=false`
 dispatch after this wiring merges.
+
+## 2026-09-06 — RR-D002 — Harder-games null; next bet = mid-trajectory ask
+
+**Context.** Harder-games Actions run 34051102729 (`harder-games-qwen38-n16-v1`,
+`history_mode=redundant`) completed with parity pass. Direct and all
+non-swapped arms remained at ceiling 1.0; swapped ≈0.789 with worst cell
+prose/opposed/strategic = 0.5. Ask-first rescue stays unidentifiable on this
+scaffold (C17/C18).
+
+**Decision.** Record the substantive null in the claim ledger and story notes.
+Do **not** spend further GPU on redundant-demo dials hoping to unlock ask-first
+rescue without a new content-controlled difficulty idea. Next executable bet:
+**mid-trajectory ask-as-intervention** (`ask_mid_trajectory`) — consequence
+question between two forced presses vs matched non-consequence chatter. Wire
+CPU prepare + Actions `task=ask_mid_trajectory` dry-run; score only after dry
+artifact hash is pinned. No Modal from the docs/code PR.
+
+**Rejected alternative.** Opening a second instrument-only PR for mid-trajectory
+plumbing without the harder-games scientific null.
+
+**Not claimed.** That demos make games harder in a useful way; locked
+confirmation; any mid-trajectory behavioral result (not yet scored).

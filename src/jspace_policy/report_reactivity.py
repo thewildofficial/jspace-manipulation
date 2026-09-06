@@ -21,6 +21,7 @@ from typing import Any
 
 SCHEMA_VERSION = 1
 STUDY_ID = "REPORT-REACTIVITY-1"
+MID_TRAJECTORY_STUDY_ID = "ASK-MID-TRAJECTORY-1"
 
 SPLITS = ("discovery", "locked")
 FRAMES = ("strategic", "nonagentic")
@@ -33,6 +34,15 @@ PRIMARY_ARMS = (
     "swapped",
     "matched_control",
     "external_facts",
+)
+# Mid-trajectory ask-as-intervention arms: forced choice → mid turn → forced choice.
+# Default six-arm report corpus is unchanged; these arms are generated only by
+# ``generate_mid_trajectory_rows``.
+MID_TRAJECTORY_ARMS = (
+    "mid_no_ask_control",
+    "mid_ask_self",
+    "mid_ask_oracle",
+    "mid_ask_swapped",
 )
 ACTION_LABELS = ("A", "B")
 REPORT_LABELS = ("X", "Y")
@@ -850,6 +860,287 @@ def independent_fork_queries(row: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _mid_turn_spec(variant: Mapping[str, Any], arm: str) -> dict[str, Any]:
+    """Return the mid-trajectory question and frozen answer (if any).
+
+    Ask arms use the first consequence check; the no-ask control uses the first
+    matched formatting check so length and forced-choice shape stay comparable.
+    """
+
+    if arm == "mid_no_ask_control":
+        query = dict(variant["control_queries"][0])
+        return {
+            "mid_kind": "control",
+            "mid_query": query,
+            "expected_mid_token": query["expected_token"],
+            "arm_mid_token": query["expected_token"],
+            "swapped_mid_token": REPORT_LABELS[
+                1 - REPORT_LABELS.index(query["expected_token"])
+            ],
+        }
+    query = dict(variant["report_queries"][0])
+    expected = query["expected_token"]
+    swapped = REPORT_LABELS[1 - REPORT_LABELS.index(expected)]
+    if arm == "mid_ask_self":
+        arm_mid_token: str | None = None
+    elif arm == "mid_ask_oracle":
+        arm_mid_token = expected
+    elif arm == "mid_ask_swapped":
+        arm_mid_token = swapped
+    else:
+        raise ValueError(f"unknown mid-trajectory arm: {arm}")
+    return {
+        "mid_kind": "consequence",
+        "mid_query": query,
+        "expected_mid_token": expected,
+        "arm_mid_token": arm_mid_token,
+        "swapped_mid_token": swapped,
+    }
+
+
+def _row_for_mid_arm(variant: Mapping[str, Any], arm: str) -> dict[str, Any]:
+    if arm not in MID_TRAJECTORY_ARMS:
+        raise ValueError(f"unknown mid-trajectory arm: {arm}")
+    mid = _mid_turn_spec(variant, arm)
+    condition_id = canonical_sha256(
+        [
+            MID_TRAJECTORY_STUDY_ID,
+            variant["base_game_id"],
+            variant["frame"],
+            variant["surface_kind"],
+            variant["policy_kind"],
+            arm,
+        ]
+    )[:16]
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "study_id": MID_TRAJECTORY_STUDY_ID,
+        "protocol": "ask_mid_trajectory",
+        "condition_id": condition_id,
+        "base_game_id": variant["base_game_id"],
+        "lexical_group_id": variant["lexical_group_id"],
+        "split": variant["split"],
+        "base_index": variant["base_index"],
+        "frame": variant["frame"],
+        "surface_kind": variant["surface_kind"],
+        "policy_kind": variant["policy_kind"],
+        "history_mode": variant["history_mode"],
+        "arm": arm,
+        "concepts": list(variant["concepts"]),
+        "opaque_tokens": dict(variant["opaque_tokens"]),
+        "action_text": dict(variant["action_text"]),
+        "action_to_outcome": dict(variant["action_to_outcome"]),
+        "target_outcome": variant["target_outcome"],
+        "expected_action": variant["expected_action"],
+        "action_order": list(variant["action_order"]),
+        "target_index": variant["target_index"],
+        "outcome_order": list(variant["outcome_order"]),
+        "report_order": list(variant["report_order"]),
+        "query_order": list(variant["query_order"]),
+        "demonstrations": [dict(item) for item in variant["demonstrations"]],
+        "report_mapping": dict(variant["report_mapping"]),
+        "report_queries": [dict(query) for query in variant["report_queries"]],
+        "control_queries": [dict(query) for query in variant["control_queries"]],
+        "expected_report_tokens": list(variant["expected_report_tokens"]),
+        "swapped_report_tokens": list(variant["swapped_report_tokens"]),
+        "oracle": dict(variant["oracle"]),
+        "scenario": variant["scenario"],
+        "mid_kind": mid["mid_kind"],
+        "mid_query": dict(mid["mid_query"]),
+        "expected_mid_token": mid["expected_mid_token"],
+        "arm_mid_token": mid["arm_mid_token"],
+        "swapped_mid_token": mid["swapped_mid_token"],
+        "final_action_query": COMMON_FINAL_ACTION_QUERY_SUFFIX,
+        "primary": True,
+    }
+
+
+def generate_mid_trajectory_rows(
+    *,
+    discovery_bases: int = 48,
+    locked_bases: int = 0,
+    history_mode: str = DEFAULT_HISTORY_MODE,
+) -> list[dict[str, Any]]:
+    """Generate ask-mid-trajectory rows (choice → mid ask/control → choice).
+
+    Reuses the same scenario family as the six-arm report corpus. Locked bases
+    default to zero because this protocol is discovery-first and not yet scored.
+    """
+
+    if discovery_bases < 0 or locked_bases < 0 or discovery_bases + locked_bases == 0:
+        raise ValueError("at least one base is required")
+    history_mode = _normalise_history_mode(history_mode)
+    rows: list[dict[str, Any]] = []
+    for split, count in (("discovery", discovery_bases), ("locked", locked_bases)):
+        for base_index in range(count):
+            base = _base_metadata(split, base_index)
+            for frame in FRAMES:
+                for surface_kind in SURFACE_KINDS:
+                    for policy_kind in POLICY_KINDS:
+                        variant = _make_variant(
+                            base,
+                            frame=frame,
+                            surface_kind=surface_kind,
+                            policy_kind=policy_kind,
+                            history_mode=history_mode,
+                        )
+                        variant["scenario"] = _render_scenario(
+                            frame=frame,
+                            surface_kind=surface_kind,
+                            concepts=variant["concepts"],
+                            action_to_outcome=variant["action_to_outcome"],
+                            action_text=variant["action_text"],
+                            target=variant["target_outcome"],
+                            demonstrations=variant["demonstrations"],
+                        )
+                        rows.extend(
+                            _row_for_mid_arm(variant, arm) for arm in MID_TRAJECTORY_ARMS
+                        )
+    return rows
+
+
+def mid_trajectory_dataset_payload(
+    *,
+    discovery_bases: int = 16,
+    locked_bases: int = 0,
+    history_mode: str = DEFAULT_HISTORY_MODE,
+) -> dict[str, Any]:
+    """Hashable mid-trajectory corpus payload (CPU-side, no tokenizer)."""
+
+    history_mode = _normalise_history_mode(history_mode)
+    config = {
+        "schema_version": SCHEMA_VERSION,
+        "study_id": MID_TRAJECTORY_STUDY_ID,
+        "protocol": "ask_mid_trajectory",
+        "history_mode": history_mode,
+        "dataset": {
+            "discovery_bases": discovery_bases,
+            "locked_bases": locked_bases,
+            "frames": list(FRAMES),
+            "surface_kinds": list(SURFACE_KINDS),
+            "policy_kinds": list(POLICY_KINDS),
+            "mid_trajectory_arms": list(MID_TRAJECTORY_ARMS),
+        },
+    }
+    body = {
+        "schema_version": SCHEMA_VERSION,
+        "study_id": MID_TRAJECTORY_STUDY_ID,
+        "protocol": "ask_mid_trajectory",
+        "config_sha256": canonical_sha256(config),
+        "rows": generate_mid_trajectory_rows(
+            discovery_bases=discovery_bases,
+            locked_bases=locked_bases,
+            history_mode=history_mode,
+        ),
+    }
+    return {**body, "content_sha256": canonical_sha256(body)}
+
+
+def verify_mid_trajectory_payload(payload: Mapping[str, Any]) -> None:
+    """Validate mid-trajectory factorial support and shared scenarios."""
+
+    body = {key: value for key, value in payload.items() if key != "content_sha256"}
+    if payload.get("content_sha256") != canonical_sha256(body):
+        raise ValueError("mid-trajectory content hash mismatch")
+    if payload.get("protocol") != "ask_mid_trajectory":
+        raise ValueError("payload protocol must be ask_mid_trajectory")
+    if payload.get("study_id") != MID_TRAJECTORY_STUDY_ID:
+        raise ValueError("unexpected mid-trajectory study_id")
+    rows = list(payload.get("rows", []))
+    if not rows:
+        raise ValueError("mid-trajectory payload has no rows")
+    grouped: dict[tuple[Any, ...], list[Mapping[str, Any]]] = {}
+    for row in rows:
+        if row.get("arm") not in MID_TRAJECTORY_ARMS:
+            raise ValueError(f"unknown mid-trajectory arm: {row.get('arm')}")
+        if row.get("protocol") != "ask_mid_trajectory":
+            raise ValueError("row protocol mismatch")
+        if not row.get("mid_query"):
+            raise ValueError("mid_query required")
+        if row["arm"] == "mid_ask_self" and row.get("arm_mid_token") is not None:
+            raise ValueError("mid_ask_self must not freeze arm_mid_token")
+        if row["arm"] != "mid_ask_self" and row.get("arm_mid_token") is None:
+            raise ValueError(f"{row['arm']} requires frozen arm_mid_token")
+        grouped.setdefault(_row_key(row), []).append(row)
+    for key, cell in grouped.items():
+        arms = {row["arm"] for row in cell}
+        if arms != set(MID_TRAJECTORY_ARMS):
+            raise ValueError(f"mid-trajectory arms incomplete for {key}")
+        scenarios = {row["scenario"] for row in cell}
+        if len(scenarios) != 1:
+            raise ValueError(f"mid-trajectory arms do not share one scenario for {key}")
+        ask = next(row for row in cell if row["arm"] == "mid_ask_self")
+        control = next(row for row in cell if row["arm"] == "mid_no_ask_control")
+        if ask["mid_query"]["question"] == control["mid_query"]["question"]:
+            raise ValueError("ask and control mid questions must differ")
+        if ask["mid_kind"] != "consequence" or control["mid_kind"] != "control":
+            raise ValueError("mid_kind mismatch for ask vs control")
+
+
+def mid_choice1_messages(row: Mapping[str, Any]) -> list[dict[str, str]]:
+    """First forced action choice (Direct-style final instruction)."""
+
+    return [
+        {"role": "user", "content": str(row["scenario"])},
+        {"role": "user", "content": COMMON_FINAL_ACTION_QUERY_SUFFIX},
+    ]
+
+
+def mid_turn_messages(
+    row: Mapping[str, Any], choice1: str, *, answer: str | None = None
+) -> list[dict[str, str]]:
+    """Messages through the mid ask/control turn after ``choice1``.
+
+    When ``answer`` is omitted, ends on the mid user question (for scoring the
+    model's mid response). When supplied, appends the assistant mid answer.
+    """
+
+    if choice1 not in ACTION_LABELS:
+        raise ValueError(f"choice1 must be one of {ACTION_LABELS}")
+    messages = mid_choice1_messages(row) + [
+        {"role": "assistant", "content": choice1},
+        {"role": "user", "content": str(row["mid_query"]["question"])},
+    ]
+    if answer is not None:
+        if not isinstance(answer, str):
+            raise TypeError("mid answer must be a string")
+        messages.append({"role": "assistant", "content": answer})
+    return messages
+
+
+def mid_choice2_messages(
+    row: Mapping[str, Any], choice1: str, mid_answer: str
+) -> list[dict[str, str]]:
+    """Second forced action choice after the mid turn (same final instruction)."""
+
+    if mid_answer not in REPORT_LABELS:
+        raise ValueError(f"mid_answer must be one of {REPORT_LABELS}")
+    return mid_turn_messages(row, choice1, answer=mid_answer) + [
+        {"role": "user", "content": COMMON_FINAL_ACTION_QUERY_SUFFIX},
+    ]
+
+
+def mid_ask_vs_control_prefix_diff(row_ask: Mapping[str, Any], row_control: Mapping[str, Any]) -> dict[str, Any]:
+    """Assert ask vs control share scenario and differ only in the mid question."""
+
+    if row_ask["scenario"] != row_control["scenario"]:
+        raise ValueError("ask/control scenarios differ")
+    if row_ask["base_game_id"] != row_control["base_game_id"]:
+        raise ValueError("ask/control base_game_id differ")
+    ask_q = str(row_ask["mid_query"]["question"])
+    ctrl_q = str(row_control["mid_query"]["question"])
+    return {
+        "scenario_equal": True,
+        "choice1_instruction_equal": True,
+        "choice2_instruction_equal": True,
+        "mid_questions_differ": ask_q != ctrl_q,
+        "ask_mid_kind": row_ask["mid_kind"],
+        "control_mid_kind": row_control["mid_kind"],
+        "ask_mid_question": ask_q,
+        "control_mid_question": ctrl_q,
+    }
+
+
 # Descriptive aliases make the API discoverable for runners without duplicating
 # the implementation.
 build_self_report_branch = self_report_branch
@@ -866,6 +1157,8 @@ __all__ = [
     "DEFAULT_HISTORY_MODE",
     "FRAMES",
     "HISTORY_MODES",
+    "MID_TRAJECTORY_ARMS",
+    "MID_TRAJECTORY_STUDY_ID",
     "MINIMAL_DEMO_REPEATS",
     "PRIMARY_ARMS",
     "REDUNDANT_EXTRA_CYCLES",
@@ -879,9 +1172,16 @@ __all__ = [
     "dataset_payload",
     "fork_report_queries",
     "generate_corpus",
+    "generate_mid_trajectory_rows",
     "generate_rows",
     "independent_fork_queries",
+    "mid_ask_vs_control_prefix_diff",
+    "mid_choice1_messages",
+    "mid_choice2_messages",
+    "mid_trajectory_dataset_payload",
+    "mid_turn_messages",
     "render_self_report_prompt",
     "self_report_branch",
     "verify_dataset_payload",
+    "verify_mid_trajectory_payload",
 ]

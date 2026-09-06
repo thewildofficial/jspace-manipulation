@@ -102,6 +102,21 @@
   ],
   "opaque_summary": "opaque × most cells: 0.875–1.0",
   "deployment_implication": "Lied transcripts hurt most under wordy opposed strategic framing.",
+  "redundant_history_replication": {
+    "run_id": "harder-games-qwen38-n16-v1",
+    "actions_run": 34051102729,
+    "actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34051102729",
+    "history_mode": "redundant",
+    "claim_id_footnote": "C18",
+    "overall_swapped_accuracy": 0.7890625,
+    "worst_cell": {
+      "surface_kind": "prose",
+      "policy_kind": "opposed_assertion",
+      "frame": "strategic",
+      "accuracy": 0.5,
+      "note": "Same worst cell as minimal-history map (was 0.375); Direct still ceiling (C17)."
+    }
+  },
   "limits": [
     "Discovery pilot on one checkpoint and one nonce corpus; not locked confirmation.",
     "Swapped arm privileges report content by instruction; measures transcript dependence, not spontaneous self-trust.",

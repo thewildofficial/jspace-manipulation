@@ -41,9 +41,20 @@ Protocol note:
 [harder-games-break-the-ceiling.md](harder-games-break-the-ceiling.md).
 
 Prepare / Actions knob: `--history-mode minimal|redundant` (workflow input
-`history_mode`, default `minimal`). Redundant adds two extra correct demo
-cycles so Direct can fall below ceiling; parent dry-runs then scores after
-merge. No Modal from this docs/code PR.
+`history_mode`, default `minimal`). **Scored outcome**
+(`harder-games-qwen38-n16-v1`, Actions 34051102729): redundant demos did **not**
+break Direct ceiling (C17); swapped still leaks (C18). Methods:
+[harder-games-qwen38-n16-v1-methods.md](harder-games-qwen38-n16-v1-methods.md).
+
+## Mid-trajectory ask as intervention (next bet; not yet scored)
+
+Protocol:
+[ask-mid-trajectory-protocol.md](ask-mid-trajectory-protocol.md) +
+[protocol_ask_mid_trajectory.json](protocol_ask_mid_trajectory.json).
+
+Prepare: `--task ask_mid_trajectory`. Actions: set `task=ask_mid_trajectory`,
+`dry_run=true` first (CPU only). Uses the same Modal scorer later — no separate
+local GPU path.
 
 ## Next protocol draft (not executed)
 

@@ -20,7 +20,9 @@ Actions: `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only).
 Default `dry_run=true` runs pytest + CPU prepare and uploads the prepared
 payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
 `batch_size` defaults to 4 (C1). Workflow input `history_mode` defaults to
-`minimal` (story: harder games = `redundant` correct demos). Workflow sets
+`minimal` (story: harder games = `redundant` correct demos). Task
+`ask_mid_trajectory` prepares the mid-trajectory ask-as-intervention protocol
+(CPU dry-run first; not yet scored). Workflow sets
 `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl`
 (GHA-era ledger, global ceiling $28; see RR-D001). Local/manual runs default
 to historical `results/report_reactivity/reservations.jsonl` ($30).
@@ -30,8 +32,8 @@ no retries, ceiling reserved before launch, reservation retained on failure).
 `score_gpu` returns a JSON string (`dumps_jsonable`) so the Actions client
 never unpickles torch (C13). Spend ledgers: historical
 `results/report_reactivity/reservations.jsonl` (~$7.26 / $30, immutable) and
-GHA `results/report_reactivity/reservations_gha.jsonl` (~$1.57 / $28 after
-retained C13 preflight + C14 baseline). Stage caps remain
+GHA `results/report_reactivity/reservations_gha.jsonl` (~$2.35 / $28 after
+retained C13 preflight + C14 baseline + C17 harder-games). Stage caps remain
 `src/jspace_policy/sprint_runtime.py::STAGE_LIMITS`.
 
 ## Claims
@@ -76,6 +78,8 @@ The frozen null replicates on unseen lexical material.
 | C14 | GHA 16-base discovery baseline replicates C2/C3 qualitative pattern: Direct/self/oracle/control/external at ceiling 1.0; primary self−control and self−direct = 0.0; swapped base-equal action accuracy 0.828125 (106/128) — report content can steer below ceiling | Actions run [34048123330](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330), `run_id=gha-report16-38-v1`, stage=baseline, task=report, model Qwen/Qwen3.8-27B revision `1d4bf0f2…`, batch_size=4, split=discovery, bases=16 | `results/report_reactivity/gha-report16-38-v1/{raw.json,input_manifest.json}`; payload sha256 `126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d` (matches CPU dry-run `gha-report16-38-dry-v1`); parity passed (`replay_max_abs=0.0`, `batch_single_max_abs=0.125`, `choices_agree=true`); status `engineering_pilot`; n_scores=960; n_records=768; GHA ledger row retained (~$0.7829; total with C13 ≈$1.5657) | `experiments/report_reactivity/analyze_gha_report16.py` → `…/analysis/arm_accuracy_summary.json`; `sprint_analysis` primary contrasts; methods note `experiments/report_reactivity/gha-report16-38-v1-methods.md` | Discovery pilot | Ceiling → rewrite-vs-reveal rescue unidentifiable (stop rule). Not locked confirmation; not novelty/priority. Qualitative replication of C2/C3 on fresh GHA path + nonce corpus — do not overclaim independence. Instruction privileges reports. |
 | C15 | Under the same GHA baseline, swapped steering is stronger on prose than opaque: swapped base-equal action accuracy prose 0.71875 (46/64) vs opaque 0.9375 (60/64) | Same unit as C14 (`gha-report16-38-v1`, 16 discovery bases, Qwen3.8) | Same raw artifact as C14; surface split in `…/analysis/arm_accuracy_summary.json` (`swapped_by_surface_kind`) | Same CPU analysis as C14; methods note `gha-report16-38-v1-methods.md` | Discovery pilot (descriptive split) | Surface contrast is descriptive within one pilot payload; not a locked surface-main-effect claim; not evidence of a mechanism. |
 | C16 | **Lied transcripts hurt most under wordy opposed strategic framing.** Swapped-arm cell map (n=16): prose/opposed/strategic **0.375**; prose/opposed/nonagentic **0.6875**; prose/direct/strategic **0.8125**; prose/direct/nonagentic **1.0**; opaque × most cells **0.875–1.0**; failures prose 18 / opaque 4 (overall swapped ≈0.828) | Same GHA baseline as C14/C15 (no new GPU) | Cell table `experiments/report_reactivity/poisoned-self-talk-cell-map.json`; story note `poisoned-self-talk-cell-map.md` | CPU stratify of swapped rows from prepared + `gha-report16-38-v1/raw.json` | Discovery pilot (descriptive cells) | Deployment implication only within this pilot; instruction privileges reports; not a locked three-way interaction claim |
+| C17 | **Direct still ceiling under redundant demos → ask-first rescue still unidentified.** Harder-games dial (`history_mode=redundant`) kept Direct / matched_control / self_report / oracle / external_facts at **1.0**; primary self−control and self−direct = 0.0 | Actions run [34051102729](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34051102729), story/`run_id`=`harder-games-qwen38-n16-v1`, stage=baseline, task=report, 16 discovery bases, Qwen/Qwen3.8-27B, `history_mode=redundant` | `results/report_reactivity/harder-games-qwen38-n16-v1/{raw.json,input_manifest.json}`; payload sha256 `a8b43df94451398b4edfecddb1a3f1c821c014e1d4212d6cc207be2dd077964c`; parity passed (`replay_max_abs=0.0`, `batch_single_max_abs=0.25`, `choices_agree=true`); n_scores=960; GHA ledger row retained (~$0.7829; total ≈$2.3486) | `experiments/report_reactivity/analyze_harder_games.py` → `…/analysis/arm_accuracy_summary.json`; methods `harder-games-qwen38-n16-v1-methods.md`; story update `harder-games-break-the-ceiling.md` | Discovery pilot / **substantive null** | **Not claimed:** that demos make games harder in a useful way. Ask-first rescue still blocked by Direct ceiling (same qualitative stop as C14 minimal-history). Not locked confirmation. |
+| C18 | **Swapped still leaks under redundant (~0.789); strategic cells worst.** Base-equal swapped **0.7890625**; cells (n=16): prose/opposed/strategic **0.5** (still worst); opaque/opposed/strategic **0.625**; opaque/direct/strategic **0.625**; prose/direct/strategic **0.75**; prose/opposed/nonagentic **0.8125**; remaining nonagentic cells **1.0** | Same unit as C17 (`harder-games-qwen38-n16-v1`) | Same raw artifact as C17; `swapped_cell_map` in analysis JSON; poisoned cell-map note updated for redundant replication | Same CPU analysis as C17 | Discovery pilot (descriptive cells) | Replication under harder demo dial vs C16 minimal map (worst cell was 0.375); not a locked interaction claim; instruction privileges reports |
 
 ## Correction C10: conflict-conditional position rigidity (Qwen3.8)
 
@@ -118,12 +122,12 @@ added **no** reservation row; GPU never ran. Modal account balance (~$28)
 is orthogonal.
 
 **GHA-era ledger** `results/report_reactivity/reservations_gha.jsonl`
-(RR-D001): retained rows are C13 `gha-preflight-38-v2` and C14
-`gha-report16-38-v1` (each ~$0.7829; total ≈ **$1.5657** / $28.0); same
-`STAGE_LIMITS`; selected in Actions via `REPORT_REACTIVITY_LEDGER`. Local
-default remains the historical path. Exact lines are the committed
-`reservations_gha.jsonl` (from Actions artifact download; historical
-`reservations.jsonl` immutable).
+(RR-D001): retained rows are C13 `gha-preflight-38-v2`, C14
+`gha-report16-38-v1`, and C17 `harder-games-qwen38-n16-v1` (each ~$0.7829;
+total ≈ **$2.3486** / $28.0); same `STAGE_LIMITS`; selected in Actions via
+`REPORT_REACTIVITY_LEDGER`. Local default remains the historical path. Exact
+lines are the committed `reservations_gha.jsonl` (from Actions artifact
+download; historical `reservations.jsonl` immutable).
 
 **C13 arithmetic.** Ledger OK (reserve succeeded); remote scoring completed
 enough to return a payload; local Modal unpickle failed needing `torch`.
@@ -132,3 +136,7 @@ Reservation retained; no `raw.json` scores committed for analysis.
 **C14 arithmetic.** Same ≈$0.7829 baseline ceiling reserved on the GHA ledger
 after the C13 JSON-return fix; scoring completed with usable `raw.json`
 (parity passed). Download artifact for exact ledger lines.
+
+**C17 arithmetic.** Same ≈$0.7829 baseline ceiling for
+`harder-games-qwen38-n16-v1` (`history_mode=redundant`); scoring completed with
+usable `raw.json` (parity passed at `batch_single_max_abs=0.25`).
