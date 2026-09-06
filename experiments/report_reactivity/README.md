@@ -8,7 +8,7 @@ Dispatch via `.github/workflows/report-reactivity.yml` (`workflow_dispatch`).
 without Modal GPU spend; set it false only for an intentional scoring run.
 Default `batch_size` is 4 (see claim ledger C1).
 
-## Instrumentation confirmation (C11 / C12)
+## Instrumentation confirmation (C11 / C12 / C13)
 
 See [gha-cpu-dryrun-methods.md](gha-cpu-dryrun-methods.md):
 
@@ -16,6 +16,10 @@ See [gha-cpu-dryrun-methods.md](gha-cpu-dryrun-methods.md):
 - **C12:** Actions GPU `gha-preflight-38-v1` failed at ledger `reserve()`
   (stage cap on historical ledger); no GPU scores. Fix: GHA ledger
   `reservations_gha.jsonl` via `REPORT_REACTIVITY_LEDGER` ([RR-D001](../../docs/next-sprint/decision-log.md)).
+- **C13:** Actions GPU `gha-preflight-38-v2` reserved on the GHA ledger and
+  finished remote scoring, then failed locally unpickling torch; reservation
+  retained; no `raw.json`. Fix: `score_gpu` returns JSON via `dumps_jsonable`
+  (do not install torch on the Actions CPU runner).
 
 ## Next protocol draft (not executed)
 

@@ -8,12 +8,71 @@ from jspace_policy.sprint_runtime import (
     GHA_GLOBAL_CEILING_USD,
     GHA_LEDGER_PATH,
     digest,
+    dumps_jsonable,
     global_ceiling_usd_for,
+    loads_jsonable,
     reserve,
     resolve_ledger_path,
+    to_jsonable,
     verify_payload,
     write_new,
 )
+
+
+class _FakeTensor:
+    """Stand-in for torch.Tensor: pickle would require a foreign module."""
+
+    def __init__(self, values, *, scalar: bool = False):
+        self._values = values
+        self.shape = () if scalar else (len(values),)
+
+    def tolist(self):
+        if self.shape == ():
+            return self._values
+        return list(self._values)
+
+    def item(self):
+        if self.shape != ():
+            raise ValueError("only scalars have .item()")
+        return self._values
+
+
+def test_score_return_payload_is_json_serializable_without_torch() -> None:
+    """C13 regression: Modal return must not require torch on the Actions client."""
+
+    assert "torch" not in globals() and "torch" not in locals()
+    raw = {
+        "payload_sha256": "abc",
+        "parity": {
+            "replay_max_abs": _FakeTensor(0.0, scalar=True),
+            "batch_single_max_abs": _FakeTensor(0.125, scalar=True),
+            "choices_agree": True,
+            "passed": True,
+        },
+        "scores": {
+            "q0": {
+                "choice": "A",
+                "logits": _FakeTensor([1.5, -0.25]),
+                "top1_token_id": _FakeTensor(42, scalar=True),
+                "format_valid": True,
+            }
+        },
+        "peak_memory_bytes": _FakeTensor(1_048_576, scalar=True),
+        "status": "engineering_pilot",
+    }
+    encoded = dumps_jsonable(raw)
+    # Round-trip must be pure JSON — the GHA runner has modal extra, not torch.
+    assert isinstance(encoded, str)
+    decoded = loads_jsonable(encoded)
+    json.dumps(decoded, allow_nan=False, sort_keys=True)
+    assert decoded["parity"]["batch_single_max_abs"] == pytest.approx(0.125)
+    assert decoded["scores"]["q0"]["logits"] == [1.5, -0.25]
+    assert decoded["scores"]["q0"]["top1_token_id"] == 42
+    assert decoded["peak_memory_bytes"] == 1_048_576
+    # Dict path still accepted (local/dev), but tensors must be sanitized first.
+    assert loads_jsonable(to_jsonable(raw))["status"] == "engineering_pilot"
+    with pytest.raises(TypeError, match="non-JSON-serializable"):
+        dumps_jsonable({"bad": object()})
 
 
 def test_failed_dispatch_cannot_refund_or_retry(tmp_path):

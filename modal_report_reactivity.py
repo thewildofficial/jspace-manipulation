@@ -10,7 +10,9 @@ import modal
 
 from jspace_policy.sprint_runtime import (
     digest,
+    dumps_jsonable,
     global_ceiling_usd_for,
+    loads_jsonable,
     reserve,
     resolve_ledger_path,
     verify_payload,
@@ -39,7 +41,13 @@ CEILING_USD = TIMEOUT * (0.000694 + 8 * 0.0000131 + 32 * 0.00000222)
     retries=0,
     volumes={"/cache": cache},
 )
-def score_gpu(payload: dict, batch_size: int = 8) -> dict:
+def score_gpu(payload: dict, batch_size: int = 8) -> str:
+    """Score on GPU and return a JSON string (not a pickled dict).
+
+    Returning plain JSON avoids Modal pickle deserialization that requires
+    ``torch`` on the Actions CPU client (C13). Do not install torch on the
+    runner just to unpickle tensors.
+    """
     import torch
     import transformers
 
@@ -79,11 +87,12 @@ def score_gpu(payload: dict, batch_size: int = 8) -> dict:
         result = {}
         for i, (key, query) in enumerate(part):
             values = logits[i, query["candidate_ids"]]
+            top1 = int(logits[i].argmax().item())
             result[key] = {
-                "choice": query["labels"][int(values.argmax())],
-                "logits": values.cpu().tolist(),
-                "top1_token_id": int(logits[i].argmax()),
-                "format_valid": int(logits[i].argmax()) in query["candidate_ids"],
+                "choice": query["labels"][int(values.argmax().item())],
+                "logits": [float(x) for x in values.detach().cpu().tolist()],
+                "top1_token_id": top1,
+                "format_valid": bool(top1 in query["candidate_ids"]),
             }
         return result
 
@@ -104,30 +113,33 @@ def score_gpu(payload: dict, batch_size: int = 8) -> dict:
     )
     choices_agree = all(first[key]["choice"] == singleton[key]["choice"] for key in first)
     parity = {
-        "replay_max_abs": replay_error,
-        "batch_single_max_abs": batch_error,
-        "choices_agree": choices_agree,
-        "passed": replay_error <= 0.01 and batch_error <= 0.25 and choices_agree,
+        "replay_max_abs": float(replay_error),
+        "batch_single_max_abs": float(batch_error),
+        "choices_agree": bool(choices_agree),
+        "passed": bool(replay_error <= 0.01 and batch_error <= 0.25 and choices_agree),
     }
     results = {}
     if parity["passed"]:
         for start in range(0, len(queries), batch_size):
             results.update(score(queries[start : start + batch_size]))
-    return {
-        "payload_sha256": payload["sha256"],
-        "parity": parity,
-        "scores": results,
-        "model_id": payload["model_id"],
-        "revision": payload["revision"],
-        "torch_version": torch.__version__,
-        "transformers_version": transformers.__version__,
-        "gpu": torch.cuda.get_device_name(),
-        "model_class": type(model).__name__,
-        "load_seconds": loaded - started,
-        "elapsed_seconds": time.perf_counter() - started,
-        "peak_memory_bytes": torch.cuda.max_memory_allocated(),
-        "status": "engineering_pilot" if parity["passed"] else "instrument_gate_failed",
-    }
+    # JSON string: Actions runners use ``uv run --extra modal`` without torch.
+    return dumps_jsonable(
+        {
+            "payload_sha256": payload["sha256"],
+            "parity": parity,
+            "scores": results,
+            "model_id": payload["model_id"],
+            "revision": payload["revision"],
+            "torch_version": str(torch.__version__),
+            "transformers_version": str(transformers.__version__),
+            "gpu": str(torch.cuda.get_device_name()),
+            "model_class": type(model).__name__,
+            "load_seconds": float(loaded - started),
+            "elapsed_seconds": float(time.perf_counter() - started),
+            "peak_memory_bytes": int(torch.cuda.max_memory_allocated()),
+            "status": "engineering_pilot" if parity["passed"] else "instrument_gate_failed",
+        }
+    )
 
 
 @app.local_entrypoint()
@@ -163,7 +175,8 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
     )
     reserve(ledger, run_id, stage, CEILING_USD)
     try:
-        result = score_gpu.remote(payload, batch_size)
+        # Remote returns a JSON string so the local client never unpickles torch.
+        result = loads_jsonable(score_gpu.remote(payload, batch_size))
         write_new(output / "raw.json", result)
     except Exception as exc:
         write_new(

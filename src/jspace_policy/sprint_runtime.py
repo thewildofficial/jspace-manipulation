@@ -63,6 +63,61 @@ def digest(value: object) -> str:
     ).hexdigest()
 
 
+def to_jsonable(value: object) -> object:
+    """Recursively convert tensors/arrays to plain JSON types (no torch required).
+
+    Modal's default pickle return path fails on Actions CPU runners that lack
+    torch even when values look like Python floats. Prefer sanitizing here and
+    returning ``dumps_jsonable(...)`` (a JSON string) from remote GPU functions.
+    """
+
+    if value is None or isinstance(value, (str, bool)):
+        return value
+    if isinstance(value, int) and not isinstance(value, bool):
+        return int(value)
+    if isinstance(value, float):
+        return float(value)
+    if isinstance(value, dict):
+        return {str(key): to_jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [to_jsonable(item) for item in value]
+    shape = getattr(value, "shape", None)
+    tolist = getattr(value, "tolist", None)
+    item = getattr(value, "item", None)
+    if shape is not None and callable(tolist):
+        # torch.Tensor / numpy.ndarray: scalars via .item(), else .tolist().
+        if tuple(shape) == ():
+            if not callable(item):
+                raise TypeError(f"scalar array without .item(): {type(value).__name__}")
+            return to_jsonable(item())
+        return to_jsonable(tolist())
+    if callable(item) and not callable(tolist):
+        return to_jsonable(item())
+    if callable(tolist):
+        return to_jsonable(tolist())
+    raise TypeError(f"non-JSON-serializable type: {type(value).__name__}")
+
+
+def dumps_jsonable(value: object) -> str:
+    """Serialize ``value`` as a JSON string after ``to_jsonable`` sanitization."""
+
+    return json.dumps(to_jsonable(value), allow_nan=False, sort_keys=True)
+
+
+def loads_jsonable(payload: str | dict) -> dict:
+    """Parse a Modal score return (JSON string preferred; dict accepted)."""
+
+    if isinstance(payload, str):
+        loaded = json.loads(payload)
+    elif isinstance(payload, dict):
+        loaded = payload
+    else:
+        raise TypeError(f"expected JSON str or dict, got {type(payload).__name__}")
+    if not isinstance(loaded, dict):
+        raise TypeError("score payload must decode to a dict")
+    return loaded
+
+
 def write_new(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("x") as stream:

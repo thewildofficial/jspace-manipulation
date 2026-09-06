@@ -1,0 +1,5 @@
+{
+  "automatic_retry": false,
+  "error": "Deserialization failed because the 'torch' module is not available in the local environment.",
+  "reservation_retained": true
+}
