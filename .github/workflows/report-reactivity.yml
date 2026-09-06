@@ -1,0 +1,191 @@
+# Report-reactivity sprint (manual dispatch).
+# GPU/Modal is reserved only after CPU gates pass (pytest + prepare) and dry_run is false.
+# Default dry_run=true stops after CPU prepare and uploads the prepared payload only.
+
+name: Report reactivity
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: Behavior stage to run on Modal after CPU prepare
+        required: true
+        default: preflight
+        type: choice
+        options:
+          - preflight
+          - baseline
+          - incident
+          - replication
+      task:
+        description: Task for prepare.py (ignored for stage=preflight)
+        required: true
+        default: report
+        type: choice
+        options:
+          - report
+          - incident
+      model:
+        description: Checkpoint to tokenize and score
+        required: true
+        default: Qwen/Qwen3.8-27B
+        type: choice
+        options:
+          - Qwen/Qwen3.8-27B
+          - Qwen/Qwen3.6-27B
+      bases:
+        description: Grouped bases for prepare.py (min 16; ignored for preflight)
+        required: true
+        default: 16
+        type: number
+      split:
+        description: Discovery vs locked confirmation payload
+        required: true
+        default: discovery
+        type: choice
+        options:
+          - discovery
+          - locked
+      run_id:
+        description: Immutable results subdirectory under results/report_reactivity/
+        required: true
+        type: string
+      batch_size:
+        description: GPU scoring batch size (prefer 4; C1 found batch-8 parity failure)
+        required: true
+        default: 4
+        type: number
+      dry_run:
+        description: If true, stop after CPU pytest+prepare (no Modal/GPU)
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report-reactivity
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      UV_CACHE_DIR: /tmp/jspace-uv-cache
+      HF_HOME: /tmp/jspace-hf-cache
+      STAGE: ${{ inputs.stage }}
+      TASK: ${{ inputs.task }}
+      MODEL: ${{ inputs.model }}
+      BASES: ${{ inputs.bases }}
+      SPLIT: ${{ inputs.split }}
+      RUN_ID: ${{ inputs.run_id }}
+      BATCH_SIZE: ${{ inputs.batch_size }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      PREPARED_PATH: artifacts/prepared/${{ inputs.run_id }}.json
+
+    steps:
+      - name: Check out frozen protocol
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Validate dispatch inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$STAGE" in
+            preflight|baseline|incident|replication) ;;
+            *) echo "invalid stage: $STAGE" >&2; exit 1 ;;
+          esac
+          if [[ "$(basename -- "$RUN_ID")" != "$RUN_ID" || "$RUN_ID" == "." || "$RUN_ID" == ".." || -z "$RUN_ID" ]]; then
+            echo "invalid run_id: $RUN_ID" >&2
+            exit 1
+          fi
+          if [[ "$STAGE" != "preflight" ]]; then
+            if ! [[ "$BASES" =~ ^[0-9]+$ ]] || (( BASES < 16 )); then
+              echo "bases must be an integer >= 16 (got $BASES)" >&2
+              exit 1
+            fi
+          fi
+          if ! [[ "$BATCH_SIZE" =~ ^[0-9]+$ ]] || (( BATCH_SIZE < 1 || BATCH_SIZE > 16 )); then
+            echo "batch_size must be an integer in 1..16 (got $BATCH_SIZE)" >&2
+            exit 1
+          fi
+          if [[ "$STAGE" == "replication" && "$SPLIT" != "locked" ]]; then
+            echo "replication stage requires split=locked" >&2
+            exit 1
+          fi
+          if [[ "$SPLIT" == "locked" && "$STAGE" != "preflight" && "$TASK" != "incident" ]]; then
+            echo "locked confirmation is frozen to the incident contrast only" >&2
+            exit 1
+          fi
+
+      - name: Validate repository locally
+        run: uv run --extra dev pytest -q
+
+      - name: CPU prepare payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/prepared
+          if [[ "$STAGE" == "preflight" ]]; then
+            uv run --with 'transformers>=5.5' --with 'huggingface-hub>=0.34' \
+              --with 'httpx[socks]>=0.28' --with 'jinja2>=3.1' \
+              python experiments/report_reactivity/prepare_preflight.py \
+              --model "$MODEL" \
+              --output "$PREPARED_PATH"
+          else
+            uv run --with 'transformers>=5.5' --with 'huggingface-hub>=0.34' \
+              --with 'httpx[socks]>=0.28' --with 'jinja2>=3.1' \
+              python experiments/report_reactivity/prepare.py \
+              --task "$TASK" \
+              --model "$MODEL" \
+              --bases "$BASES" \
+              --split "$SPLIT" \
+              --output "$PREPARED_PATH"
+          fi
+
+      - name: Upload prepared payload (dry_run / CPU gate)
+        if: ${{ inputs.dry_run }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: report-reactivity-prepared-${{ inputs.run_id }}-${{ github.run_id }}
+          path: artifacts/prepared/${{ inputs.run_id }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Dry-run complete (no Modal/GPU)
+        if: ${{ inputs.dry_run }}
+        run: echo "dry_run=true; prepared payload uploaded; skipping Modal."
+
+      - name: Refuse missing Modal credentials
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID"
+          test -n "$MODAL_TOKEN_SECRET"
+
+      - name: Run GPU scoring on Modal
+        if: ${{ !inputs.dry_run }}
+        run: |
+          uv run --extra modal modal run modal_report_reactivity.py \
+            --prepared "$PREPARED_PATH" \
+            --run-id "$RUN_ID" \
+            --stage "$STAGE" \
+            --batch-size "$BATCH_SIZE"
+
+      - name: Upload run outputs and reservations
+        if: ${{ always() && !inputs.dry_run }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: report-reactivity-${{ inputs.run_id }}-${{ github.run_id }}
+          path: |
+            results/report_reactivity/${{ inputs.run_id }}
+            results/report_reactivity/reservations.jsonl
+          if-no-files-found: warn
+          retention-days: 14

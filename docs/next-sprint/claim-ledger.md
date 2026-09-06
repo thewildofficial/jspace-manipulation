@@ -14,6 +14,11 @@ uv run python experiments/report_reactivity/prepare.py --task report \
   --model Qwen/Qwen3.8-27B --bases 16 --output /tmp/check.json
 ```
 
+Actions: `.github/workflows/report-reactivity.yml` (`workflow_dispatch` only).
+Default `dry_run=true` runs pytest + CPU prepare and uploads the prepared
+payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
+`batch_size` defaults to 4 (C1).
+
 GPU rows were produced by `modal_report_reactivity.py` (manually dispatched,
 no retries, ceiling reserved before launch, reservation retained on failure).
 Spend ledger: `results/report_reactivity/reservations.jsonl` against the $30
