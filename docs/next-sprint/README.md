@@ -20,6 +20,11 @@ Harder-games dial: [break the Direct ceiling](../experiments/report_reactivity/h
 (`history_mode=redundant`).
 Novelty bar: prefer experiments with deployment/safety/ToM implications (tool use, oversight, multi-agent, HITL, self-supervision) over quirks.
 
+For the current merged-main status, use the [research record](research-record.md).
+It separates infrastructure, prepared payloads, failed instrument attempts,
+discovery scores, and locked confirmation, and defines the naming fields used
+for new work.
+
 The original aspiration—understanding how internal information controls strategic
 reporting—is still worthwhile. The strongest existing evidence concerns semantic
 interference and report-conditioned action, rather than autonomous scheming.
