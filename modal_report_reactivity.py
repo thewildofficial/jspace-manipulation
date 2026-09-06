@@ -8,7 +8,14 @@ from pathlib import Path
 
 import modal
 
-from jspace_policy.sprint_runtime import digest, reserve, verify_payload, write_new
+from jspace_policy.sprint_runtime import (
+    digest,
+    global_ceiling_usd_for,
+    reserve,
+    resolve_ledger_path,
+    verify_payload,
+    write_new,
+)
 
 app = modal.App("report-reactivity-discovery")
 cache = modal.Volume.from_name("jspace-hf-cache", create_if_missing=True)
@@ -135,9 +142,11 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
         raise ValueError("replication stage requires a locked confirmation payload")
     output = Path("results/report_reactivity") / run_id
     output.mkdir(parents=True, exist_ok=False)
+    ledger = resolve_ledger_path()
     write_new(
         output / "input_manifest.json",
         {
+            "run_id": run_id,
             "payload_sha256": payload["sha256"],
             "prepared_path": prepared,
             "code_sha256": digest(
@@ -148,9 +157,11 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
             ),
             "ceiling_usd": CEILING_USD,
             "stage": stage,
+            "ledger_path": str(ledger),
+            "global_ceiling_usd": global_ceiling_usd_for(ledger),
         },
     )
-    reserve(Path("results/report_reactivity/reservations.jsonl"), run_id, stage, CEILING_USD)
+    reserve(ledger, run_id, stage, CEILING_USD)
     try:
         result = score_gpu.remote(payload, batch_size)
         write_new(output / "raw.json", result)

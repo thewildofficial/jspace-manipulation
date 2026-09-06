@@ -6,6 +6,7 @@ import fcntl
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 
 STAGE_LIMITS = {
@@ -16,10 +17,44 @@ STAGE_LIMITS = {
     "replication": 4.0,
     "overhead": 6.0,
 }
+# Historical local/manual study ledger (immutable rows; do not rewrite).
+DEFAULT_LEDGER_PATH = Path("results/report_reactivity/reservations.jsonl")
+DEFAULT_GLOBAL_CEILING_USD = 30.0
+# GHA-era ledger: fresh counters; global ceiling tracks ~$28 Modal balance.
+GHA_LEDGER_PATH = Path("results/report_reactivity/reservations_gha.jsonl")
+GHA_GLOBAL_CEILING_USD = 28.0
+LEDGER_ENV = "REPORT_REACTIVITY_LEDGER"
+GLOBAL_CEILING_ENV = "REPORT_REACTIVITY_GLOBAL_CEILING"
 MODEL_REVISIONS = {
     "Qwen/Qwen3.6-27B": "6a9e13bd6fc8f0983b9b99948120bc37f49c13e9",
     "Qwen/Qwen3.8-27B": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
 }
+
+
+def resolve_ledger_path() -> Path:
+    """Ledger path from ``REPORT_REACTIVITY_LEDGER``, else the historical default."""
+
+    raw = os.environ.get(LEDGER_ENV)
+    return Path(raw) if raw else DEFAULT_LEDGER_PATH
+
+
+def global_ceiling_usd_for(path: Path | None = None) -> float:
+    """Global USD ceiling for a ledger file.
+
+    Explicit ``REPORT_REACTIVITY_GLOBAL_CEILING`` wins. Otherwise the GHA ledger
+    filename maps to 28.0 and the historical ledger (default) maps to 30.0.
+    """
+
+    override = os.environ.get(GLOBAL_CEILING_ENV)
+    if override is not None and override != "":
+        value = float(override)
+        if not math.isfinite(value) or value <= 0:
+            raise ValueError("invalid global ceiling override")
+        return value
+    ledger = path if path is not None else resolve_ledger_path()
+    if ledger.name == GHA_LEDGER_PATH.name:
+        return GHA_GLOBAL_CEILING_USD
+    return DEFAULT_GLOBAL_CEILING_USD
 
 
 def digest(value: object) -> str:
@@ -35,7 +70,14 @@ def write_new(path: Path, value: object) -> None:
         stream.write("\n")
 
 
-def reserve(path: Path, run_id: str, stage: str, ceiling_usd: float) -> dict:
+def reserve(
+    path: Path,
+    run_id: str,
+    stage: str,
+    ceiling_usd: float,
+    *,
+    global_ceiling_usd: float | None = None,
+) -> dict:
     """Reserve before dispatch; failures/unknown charges retain the entire ceiling.
 
     This ledger never releases a reservation from an elapsed-time estimate. Provider
@@ -44,6 +86,13 @@ def reserve(path: Path, run_id: str, stage: str, ceiling_usd: float) -> dict:
     """
     if stage not in STAGE_LIMITS or not math.isfinite(ceiling_usd) or ceiling_usd <= 0:
         raise ValueError("invalid reservation")
+    ceiling_cap = (
+        global_ceiling_usd
+        if global_ceiling_usd is not None
+        else global_ceiling_usd_for(path)
+    )
+    if not math.isfinite(ceiling_cap) or ceiling_cap <= 0:
+        raise ValueError("invalid global ceiling")
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a+") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
@@ -53,7 +102,7 @@ def reserve(path: Path, run_id: str, stage: str, ceiling_usd: float) -> dict:
             raise ValueError("run ID already reserved; automatic retry refused")
         total = sum(row["ceiling_usd"] for row in entries)
         stage_total = sum(row["ceiling_usd"] for row in entries if row["stage"] == stage)
-        if total + ceiling_usd > 30 or stage_total + ceiling_usd > STAGE_LIMITS[stage]:
+        if total + ceiling_usd > ceiling_cap or stage_total + ceiling_usd > STAGE_LIMITS[stage]:
             raise ValueError("global or stage budget exhausted")
         row = {
             "run_id": run_id,
@@ -61,11 +110,11 @@ def reserve(path: Path, run_id: str, stage: str, ceiling_usd: float) -> dict:
             "ceiling_usd": ceiling_usd,
             "status": "reserved_unreconciled",
             "total_reserved_usd": total + ceiling_usd,
+            "ledger_path": str(path),
+            "global_ceiling_usd": ceiling_cap,
         }
         stream.write(json.dumps(row, sort_keys=True) + "\n")
         stream.flush()
-        import os
-
         os.fsync(stream.fileno())
         return row
 

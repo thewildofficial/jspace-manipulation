@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "experiment_id": "branched-preaction-auditor-v1",
+  "status": "design_draft",
+  "split": "discovery",
+  "seed": null,
+  "model_ids": ["Qwen/Qwen3.8-27B"],
+  "enable_thinking": false,
+  "preserve_thinking": false,
+  "primary_estimand": "preaction_verifiable_minus_unverifiable_honesty_given_branch_A_path",
+  "primary_population": "conflict_episodes_mapping_conditional",
+  "branches": ["action", "preaction_auditor_verifiable", "preaction_auditor_unverifiable"],
+  "mapping_conditional_required": true,
+  "aggregate_violations_across_mappings_forbidden": true,
+  "novelty_vs": "C5_post_action_oversight_invariant_null",
+  "locked_inference_allowed": false,
+  "mechanistic_inference_allowed": false,
+  "gpu_allowed_only_after_dry_run": true,
+  "batch_size_default": 4,
+  "stop_rules": [
+    "CPU prepare, dry_run, or parity failure stops the run.",
+    "Within-mapping 100/0 letter-fixed action stops incentive-propensity claims (C10).",
+    "Null primary pre-action auditor contrast with adequate support stops locked fishing.",
+    "Invalid A/B format mass stops interpretation; repair instrumentation.",
+    "No locked outcome selects discovery contrasts."
+  ],
+  "references": {
+    "protocol_doc": "experiments/report_reactivity/branched_preaction_auditor_protocol.md",
+    "gha_methods": "experiments/report_reactivity/gha-cpu-dryrun-methods.md",
+    "claim_ledger": "docs/next-sprint/claim-ledger.md"
+  }
+}
