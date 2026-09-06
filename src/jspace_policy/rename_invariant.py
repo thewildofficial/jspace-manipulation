@@ -53,7 +53,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
     },
 }
 
-# Syllable tables shared style with report_reactivity; distinct role codes.
+# Syllable tables (report_reactivity style) curated so left×right products never
+# embed loaded stems as substrings. Historical "SAV" was removed: SAV+E* → SAVE…
 _WORD_LEFT = (
     "QEV",
     "ZUM",
@@ -64,7 +65,7 @@ _WORD_LEFT = (
     "DOV",
     "KEF",
     "MUR",
-    "SAV",
+    "TIV",  # was SAV; SAV+EKA/ELO/ERI/EVA formed substring SAVE
     "TEX",
     "BUN",
     "LOR",
@@ -113,18 +114,60 @@ def canonical_sha256(value: object) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def _nonce_word(split: str, base_index: int, role: str, offset: int) -> str:
-    split_code = "D" if split == "discovery" else "L"
-    left = _WORD_LEFT[(base_index + offset) % len(_WORD_LEFT)]
-    right = _WORD_RIGHT[(base_index * 3 + offset * 5) % len(_WORD_RIGHT)]
-    return f"{split_code}{left}{right}{base_index:03d}{role}"
-
-
-def _assert_neutral_alias(token: str) -> None:
+def _contains_forbidden_stem(token: str) -> str | None:
     upper = token.upper()
     for stem in _FORBIDDEN_ALIAS_STEMS:
         if stem in upper:
-            raise ValueError(f"loaded alias stem {stem!r} forbidden in {token!r}")
+            return stem
+    return None
+
+
+def _assert_neutral_alias(token: str) -> None:
+    stem = _contains_forbidden_stem(token)
+    if stem is not None:
+        raise ValueError(f"loaded alias stem {stem!r} forbidden in {token!r}")
+
+
+def _nonce_word(split: str, base_index: int, role: str, offset: int) -> str:
+    """Build a neutral nonce; never return a token embedding a forbidden stem.
+
+    Primary safety is curated syllable tables. If a combination still embeds a
+    stem, bump the right-syllable index deterministically until clean.
+    """
+
+    split_code = "D" if split == "discovery" else "L"
+    left = _WORD_LEFT[(base_index + offset) % len(_WORD_LEFT)]
+    for bump in range(len(_WORD_RIGHT)):
+        right = _WORD_RIGHT[(base_index * 3 + offset * 5 + bump) % len(_WORD_RIGHT)]
+        token = f"{split_code}{left}{right}{base_index:03d}{role}"
+        if _contains_forbidden_stem(token) is None:
+            return token
+    raise ValueError(
+        f"unable to build neutral nonce for split={split!r} "
+        f"base_index={base_index} role={role!r} offset={offset}"
+    )
+
+
+def assert_syllable_tables_neutral() -> None:
+    """Fail if any left×right product (with split/role wrappers) embeds a stem."""
+
+    for left in _WORD_LEFT:
+        _assert_neutral_alias(left)
+        for right in _WORD_RIGHT:
+            _assert_neutral_alias(right)
+            _assert_neutral_alias(f"{left}{right}")
+            for split_code in ("D", "L"):
+                _assert_neutral_alias(f"{split_code}{left}{right}")
+                for role in ("P", "Q", "O"):
+                    # Digits cannot complete alphabetic stems; sample extremes.
+                    for base_index in range(0, 128, 7):
+                        _assert_neutral_alias(
+                            f"{split_code}{left}{right}{base_index:03d}{role}"
+                        )
+
+
+# Import-time hygiene: tables must stay clean so dry-runs never hit SAVE/DELETE…
+assert_syllable_tables_neutral()
 
 
 def _flip_pair(values: Sequence[str], flip: bool) -> list[str]:
@@ -586,6 +629,7 @@ __all__ = [
     "SCHEMA_VERSION",
     "SPLITS",
     "STUDY_ID",
+    "assert_syllable_tables_neutral",
     "canonical_sha256",
     "crossmap_consequences_swap",
     "crossmap_names_swap",
