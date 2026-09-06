@@ -206,7 +206,9 @@ def main() -> None:
     parser.add_argument(
         "--prepared",
         type=Path,
-        default=Path("artifacts/prepared/gha-report16-38-v1.json"),
+        default=Path(
+            "results/report_reactivity/gha-report16-38-v1/prepared.json"
+        ),
     )
     parser.add_argument(
         "--raw",

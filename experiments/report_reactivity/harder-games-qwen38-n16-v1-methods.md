@@ -42,6 +42,9 @@ Committed under `results/report_reactivity/harder-games-qwen38-n16-v1/`:
 
 - `raw.json` — Modal `score_gpu` JSON return (parity + scores); full raw lives
   here and in Actions artifact for run 34051102729
+- `prepared.json` — exact CPU prepare payload for this run (sha256 matches
+  `payload_sha256`; recovered from dry-run Actions artifact
+  `harder-games-qwen38-n16-dry-v1` / run 34051045417)
 - `input_manifest.json` — reserve metadata (`ledger_path=reservations_gha.jsonl`,
   `global_ceiling_usd=28`, ceiling ≈ `$0.7829`, `stage=baseline`)
 - `analysis/arm_accuracy_summary.json` — CPU join of prepared records + scores
@@ -73,7 +76,7 @@ GHA spend ledger updated from the Actions artifact only:
 
    ```bash
    uv run python experiments/report_reactivity/analyze_harder_games.py \
-     --prepared artifacts/prepared/harder-games-qwen38-n16-v1.json \
+     --prepared results/report_reactivity/harder-games-qwen38-n16-v1/prepared.json \
      --raw results/report_reactivity/harder-games-qwen38-n16-v1/raw.json \
      --output results/report_reactivity/harder-games-qwen38-n16-v1/analysis/arm_accuracy_summary.json
    ```

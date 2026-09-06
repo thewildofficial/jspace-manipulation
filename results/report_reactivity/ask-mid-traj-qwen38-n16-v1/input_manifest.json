@@ -1,0 +1,10 @@
+{
+  "ceiling_usd": 0.7828559999999999,
+  "code_sha256": "8b5c1bb90369c59741ec65663d30ec6a52474b28decfc128b1aedea97909e4f3",
+  "global_ceiling_usd": 28.0,
+  "ledger_path": "results/report_reactivity/reservations_gha.jsonl",
+  "payload_sha256": "50b854ae18ab584a25234e62687de4d4f6de8c467d5656ec9dda89a0b1d7a5d6",
+  "prepared_path": "artifacts/prepared/ask-mid-traj-qwen38-n16-v1.json",
+  "run_id": "ask-mid-traj-qwen38-n16-v1",
+  "stage": "baseline"
+}

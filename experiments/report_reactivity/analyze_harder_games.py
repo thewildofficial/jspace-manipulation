@@ -255,7 +255,9 @@ def main() -> None:
     parser.add_argument(
         "--prepared",
         type=Path,
-        default=Path("artifacts/prepared/harder-games-qwen38-n16-v1.json"),
+        default=Path(
+            "results/report_reactivity/harder-games-qwen38-n16-v1/prepared.json"
+        ),
     )
     parser.add_argument(
         "--raw",
@@ -274,9 +276,7 @@ def main() -> None:
     payload = json.loads(args.prepared.read_text())
     raw = json.loads(args.raw.read_text())
     summary = summarize(payload, raw)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    if args.output.exists():
-        args.output.unlink()
+    # Fail closed: never unlink/overwrite an existing analysis artifact.
     write_new(args.output, summary)
     print(
         json.dumps(

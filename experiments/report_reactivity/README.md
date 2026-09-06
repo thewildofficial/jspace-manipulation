@@ -46,15 +46,25 @@ Prepare / Actions knob: `--history-mode minimal|redundant` (workflow input
 break Direct ceiling (C17); swapped still leaks (C18). Methods:
 [harder-games-qwen38-n16-v1-methods.md](harder-games-qwen38-n16-v1-methods.md).
 
-## Mid-trajectory ask as intervention (next bet; not yet scored)
+## Mid-trajectory ask as intervention (scores committed; claims not yet written)
 
 Protocol:
 [ask-mid-trajectory-protocol.md](ask-mid-trajectory-protocol.md) +
 [protocol_ask_mid_trajectory.json](protocol_ask_mid_trajectory.json).
 
-Prepare: `--task ask_mid_trajectory`. Actions: set `task=ask_mid_trajectory`,
-`dry_run=true` first (CPU only). Uses the same Modal scorer later — no separate
-local GPU path.
+Prepare: `--task ask_mid_trajectory`. Actions GPU run
+[`ask-mid-traj-qwen38-n16-v1`](../../results/report_reactivity/ask-mid-traj-qwen38-n16-v1/)
+(Actions 34052527423) landed with parity pass; `raw.json` + matching
+`prepared.json` are committed for permanence. Arm analysis and claim-ledger
+rows are intentionally not added in the hygiene pass — do not overclaim from
+the raw file alone.
+
+## Prepared-payload permanence
+
+Scored runs write `results/report_reactivity/<run_id>/prepared.json` (exact
+CPU prepare dict; sha256 must match `raw.json`’s `payload_sha256`). Local
+scratch `artifacts/prepared/*` stays gitignored. GPU Actions uploads now also
+include the prepare file as a short-lived backup.
 
 ## Next protocol draft (not executed)
 

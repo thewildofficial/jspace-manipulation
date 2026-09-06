@@ -22,18 +22,23 @@ payload without Modal. Set `dry_run=false` only when you intend to spend GPU;
 `batch_size` defaults to 4 (C1). Workflow input `history_mode` defaults to
 `minimal` (story: harder games = `redundant` correct demos). Task
 `ask_mid_trajectory` prepares the mid-trajectory ask-as-intervention protocol
-(CPU dry-run first; not yet scored). Workflow sets
+(CPU dry-run first; first GPU scores are committed under
+`results/report_reactivity/ask-mid-traj-qwen38-n16-v1/` without claim rows yet).
+Workflow sets
 `REPORT_REACTIVITY_LEDGER=results/report_reactivity/reservations_gha.jsonl`
 (GHA-era ledger, global ceiling $28; see RR-D001). Local/manual runs default
 to historical `results/report_reactivity/reservations.jsonl` ($30).
 
 GPU rows were produced by `modal_report_reactivity.py` (manually dispatched,
 no retries, ceiling reserved before launch, reservation retained on failure).
+Successful scores also write `results/report_reactivity/<run_id>/prepared.json`
+(exact prepare payload; local `artifacts/prepared/` remains scratch).
 `score_gpu` returns a JSON string (`dumps_jsonable`) so the Actions client
 never unpickles torch (C13). Spend ledgers: historical
 `results/report_reactivity/reservations.jsonl` (~$7.26 / $30, immutable) and
-GHA `results/report_reactivity/reservations_gha.jsonl` (~$2.35 / $28 after
-retained C13 preflight + C14 baseline + C17 harder-games). Stage caps remain
+GHA `results/report_reactivity/reservations_gha.jsonl` (~$3.13 / $28 after
+retained C13 preflight + C14 baseline + C17 harder-games + ask-mid score pack).
+Stage caps remain
 `src/jspace_policy/sprint_runtime.py::STAGE_LIMITS`.
 
 ## Claims
@@ -123,11 +128,12 @@ is orthogonal.
 
 **GHA-era ledger** `results/report_reactivity/reservations_gha.jsonl`
 (RR-D001): retained rows are C13 `gha-preflight-38-v2`, C14
-`gha-report16-38-v1`, and C17 `harder-games-qwen38-n16-v1` (each ~$0.7829;
-total ≈ **$2.3486** / $28.0); same `STAGE_LIMITS`; selected in Actions via
-`REPORT_REACTIVITY_LEDGER`. Local default remains the historical path. Exact
-lines are the committed `reservations_gha.jsonl` (from Actions artifact
-download; historical `reservations.jsonl` immutable).
+`gha-report16-38-v1`, C17 `harder-games-qwen38-n16-v1`, and
+`ask-mid-traj-qwen38-n16-v1` (each ~$0.7829; total ≈ **$3.1314** / $28.0);
+same `STAGE_LIMITS`; selected in Actions via `REPORT_REACTIVITY_LEDGER`. Local
+default remains the historical path. Exact lines are the committed
+`reservations_gha.jsonl` (from Actions artifact download; historical
+`reservations.jsonl` immutable).
 
 **C13 arithmetic.** Ledger OK (reserve succeeded); remote scoring completed
 enough to return a payload; local Modal unpickle failed needing `torch`.
