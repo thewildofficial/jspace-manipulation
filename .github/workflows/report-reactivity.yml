@@ -18,13 +18,14 @@ on:
           - incident
           - replication
       task:
-        description: Task for prepare.py (ignored for stage=preflight)
+        description: "Task for prepare.py (ignored for stage=preflight). ask_mid_trajectory = mid-trajectory ask-as-intervention"
         required: true
         default: report
         type: choice
         options:
           - report
           - incident
+          - ask_mid_trajectory
       model:
         description: Checkpoint to tokenize and score
         required: true
@@ -137,12 +138,20 @@ jobs:
             echo "locked confirmation is frozen to the incident contrast only" >&2
             exit 1
           fi
+          case "$TASK" in
+            report|incident|ask_mid_trajectory) ;;
+            *) echo "invalid task: $TASK" >&2; exit 1 ;;
+          esac
           case "$HISTORY_MODE" in
             minimal|redundant) ;;
             *) echo "invalid history_mode: $HISTORY_MODE" >&2; exit 1 ;;
           esac
           if [[ "$TASK" == "incident" && "$HISTORY_MODE" != "minimal" ]]; then
-            echo "history_mode applies only to task=report" >&2
+            echo "history_mode applies only to task=report or ask_mid_trajectory" >&2
+            exit 1
+          fi
+          if [[ "$TASK" == "ask_mid_trajectory" && "$STAGE" != "preflight" && "$STAGE" != "baseline" ]]; then
+            echo "ask_mid_trajectory supports preflight (tokenizer) or baseline stages only" >&2
             exit 1
           fi
 

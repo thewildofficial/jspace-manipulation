@@ -90,6 +90,12 @@ instructions remove it, stop the mechanistic rescue claim. Report the instructio
 or turn effect and retain the unspent budget. If too few failures remain for a
 monitor test, report insufficient positive support instead of adapting labels.
 
+**Harder-games update (2026-09-06).** Redundant correct demos
+(`harder-games-qwen38-n16-v1`) did not break Direct ceiling (C17); ask-first
+rescue remains blocked. Next behavioral bet on this track:
+mid-trajectory ask-as-intervention (`ask_mid_trajectory` protocol; not yet
+scored).
+
 ## Experiment 2: concepts versus bindings
 
 Treat this as a gated mechanistic component, not another broad lens atlas.

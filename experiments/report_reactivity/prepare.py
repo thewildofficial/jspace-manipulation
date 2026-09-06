@@ -14,7 +14,11 @@ from jspace_policy.report_reactivity import (
     DEFAULT_HISTORY_MODE,
     HISTORY_MODES,
     arm_messages,
+    generate_mid_trajectory_rows,
     generate_rows,
+    mid_choice1_messages,
+    mid_choice2_messages,
+    mid_turn_messages,
     report_messages,
 )
 from jspace_policy.sprint_runtime import MODEL_REVISIONS, digest, prepare_query, write_new
@@ -58,6 +62,53 @@ def build_report(add, bases, split="discovery", history_mode=DEFAULT_HISTORY_MOD
             item["expected_reports"] = row["expected_report_tokens"]
         else:
             item["action"] = add(arm_messages(row))
+        records.append(item)
+    return records
+
+
+def build_ask_mid_trajectory(add, bases, split="discovery", history_mode=DEFAULT_HISTORY_MODE):
+    """Prepare choice1 → mid ask/control → choice2 queries for all mid arms."""
+
+    records = []
+    counts = {"split": split, "discovery": bases, "locked": 0}
+    if split == "locked":
+        counts = {"split": split, "discovery": 0, "locked": bases}
+    for row in generate_mid_trajectory_rows(
+        discovery_bases=counts["discovery"],
+        locked_bases=counts["locked"],
+        history_mode=history_mode,
+    ):
+        item = {
+            "base_id": row["base_game_id"],
+            "split": row["split"],
+            "arm": row["arm"],
+            "frame": row["frame"],
+            "surface_kind": row["surface_kind"],
+            "policy": row["policy_kind"],
+            "expected_action": row["expected_action"],
+            "protocol": "ask_mid_trajectory",
+            "mid_kind": row["mid_kind"],
+            "expected_mid_token": row["expected_mid_token"],
+            "choice1": add(mid_choice1_messages(row)),
+        }
+        if row["arm"] == "mid_ask_self":
+            item["mid"] = {
+                choice: add(mid_turn_messages(row, choice), ("X", "Y"))
+                for choice in ("A", "B")
+            }
+            item["choice2"] = {
+                choice + mid: add(mid_choice2_messages(row, choice, mid))
+                for choice in ("A", "B")
+                for mid in ("X", "Y")
+            }
+        else:
+            mid_token = str(row["arm_mid_token"])
+            item["arm_mid_token"] = mid_token
+            # Mid answer is injected (not scored); branch choice2 on choice1 only.
+            item["choice2"] = {
+                choice: add(mid_choice2_messages(row, choice, mid_token))
+                for choice in ("A", "B")
+            }
         records.append(item)
     return records
 
@@ -110,7 +161,11 @@ def build_incident(add, bases, split="discovery"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task", choices=("report", "incident"), required=True)
+    parser.add_argument(
+        "--task",
+        choices=("report", "incident", "ask_mid_trajectory"),
+        required=True,
+    )
     parser.add_argument("--model", choices=MODEL_REVISIONS, default="Qwen/Qwen3.8-27B")
     parser.add_argument("--bases", type=int, default=16)
     parser.add_argument("--split", choices=("discovery", "locked"), default="discovery")
@@ -130,7 +185,7 @@ def main():
     if args.split == "locked" and args.task != "incident":
         raise ValueError("locked confirmation is frozen to the incident contrast only")
     if args.task == "incident" and args.history_mode != DEFAULT_HISTORY_MODE:
-        raise ValueError("history_mode applies only to the report task")
+        raise ValueError("history_mode applies only to report / ask_mid_trajectory")
     tokenizer = AutoTokenizer.from_pretrained(
         args.model,
         revision=MODEL_REVISIONS[args.model],
@@ -146,9 +201,18 @@ def main():
 
     if args.task == "report":
         records = build_report(add, args.bases, args.split, args.history_mode)
+        protocol_path = Path("experiments/report_reactivity/protocol.json")
+    elif args.task == "ask_mid_trajectory":
+        records = build_ask_mid_trajectory(
+            add, args.bases, args.split, args.history_mode
+        )
+        protocol_path = Path(
+            "experiments/report_reactivity/protocol_ask_mid_trajectory.json"
+        )
     else:
         records = build_incident(add, args.bases, args.split)
-    protocol = json.loads(Path("experiments/report_reactivity/protocol.json").read_text())
+        protocol_path = Path("experiments/report_reactivity/protocol.json")
+    protocol = json.loads(protocol_path.read_text())
     payload = {
         "model_id": args.model,
         "revision": MODEL_REVISIONS[args.model],
@@ -170,6 +234,8 @@ def main():
     # Redundant harder-games runs record the mode explicitly.
     if args.history_mode != DEFAULT_HISTORY_MODE:
         payload["history_mode"] = args.history_mode
+    if args.task == "ask_mid_trajectory":
+        payload["protocol_id"] = "ask_mid_trajectory"
     if args.split == "locked":
         payload["frozen_contrast"] = dict(FROZEN_CONTRAST)
     payload["sha256"] = digest(payload)
@@ -180,6 +246,7 @@ def main():
                 "sha256": payload["sha256"],
                 "queries": len(queries),
                 "records": len(records),
+                "task": args.task,
                 "history_mode": args.history_mode,
                 "max_length": max(q["length"] for q in queries.values()),
                 "total_prompt_tokens": sum(q["length"] for q in queries.values()),

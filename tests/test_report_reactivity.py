@@ -6,14 +6,22 @@ import pytest
 
 from jspace_policy.report_reactivity import (
     COMMON_FINAL_ACTION_QUERY_SUFFIX,
+    MID_TRAJECTORY_ARMS,
     PRIMARY_ARMS,
     arm_messages,
     dataset_payload,
+    generate_mid_trajectory_rows,
     independent_fork_queries,
+    mid_ask_vs_control_prefix_diff,
+    mid_choice1_messages,
+    mid_choice2_messages,
+    mid_trajectory_dataset_payload,
+    mid_turn_messages,
     render_self_report_prompt,
     report_messages,
     self_report_branch,
     verify_dataset_payload,
+    verify_mid_trajectory_payload,
 )
 
 
@@ -195,3 +203,94 @@ def test_minimal_history_matches_legacy_demo_shape() -> None:
     assert all(row["history_mode"] == "minimal" for row in rows)
     assert all(len(row["demonstrations"]) == 8 for row in rows)
     assert all(row["scenario"].count("Prior trial") == 8 for row in rows)
+
+
+def test_mid_trajectory_hash_stable_and_arms_share_scenario() -> None:
+    left = mid_trajectory_dataset_payload(discovery_bases=2, locked_bases=0)
+    right = mid_trajectory_dataset_payload(discovery_bases=2, locked_bases=0)
+    assert left == right
+    assert left["content_sha256"] == right["content_sha256"]
+    verify_mid_trajectory_payload(left)
+    assert {row["arm"] for row in left["rows"]} == set(MID_TRAJECTORY_ARMS)
+    assert all(row["protocol"] == "ask_mid_trajectory" for row in left["rows"])
+    assert len(left["rows"]) == 2 * 2 * 2 * 2 * 4
+
+    sample = left["rows"][0]
+    cell = [
+        row
+        for row in left["rows"]
+        if row["base_game_id"] == sample["base_game_id"]
+        and row["frame"] == sample["frame"]
+        and row["surface_kind"] == sample["surface_kind"]
+        and row["policy_kind"] == sample["policy_kind"]
+    ]
+    assert {row["arm"] for row in cell} == set(MID_TRAJECTORY_ARMS)
+    assert len({row["scenario"] for row in cell}) == 1
+
+
+def test_mid_trajectory_rows_have_two_action_queries() -> None:
+    row = next(
+        r
+        for r in generate_mid_trajectory_rows(discovery_bases=1, locked_bases=0)
+        if r["arm"] == "mid_ask_self"
+    )
+    choice1 = mid_choice1_messages(row)
+    choice2 = mid_choice2_messages(row, "A", "X")
+    assert choice1[-1]["content"] == COMMON_FINAL_ACTION_QUERY_SUFFIX
+    assert choice2[-1]["content"] == COMMON_FINAL_ACTION_QUERY_SUFFIX
+    assert choice1[-1]["content"] == choice2[-1]["content"]
+    # Two distinct action queries in the choice2 transcript: after scenario and after mid.
+    action_turns = [
+        m for m in choice2 if m["role"] == "user" and m["content"] == COMMON_FINAL_ACTION_QUERY_SUFFIX
+    ]
+    assert len(action_turns) == 2
+    mid = mid_turn_messages(row, "B")
+    assert mid[-1]["role"] == "user"
+    assert mid[-1]["content"] == row["mid_query"]["question"]
+    assert mid[-2]["content"] == "B"
+
+
+def test_mid_ask_vs_control_prefixes_differ_only_as_intended() -> None:
+    rows = generate_mid_trajectory_rows(discovery_bases=1, locked_bases=0)
+    ask = next(row for row in rows if row["arm"] == "mid_ask_self")
+    control = next(
+        row
+        for row in rows
+        if row["arm"] == "mid_no_ask_control"
+        and row["base_game_id"] == ask["base_game_id"]
+        and row["frame"] == ask["frame"]
+        and row["surface_kind"] == ask["surface_kind"]
+        and row["policy_kind"] == ask["policy_kind"]
+    )
+    diff = mid_ask_vs_control_prefix_diff(ask, control)
+    assert diff["scenario_equal"]
+    assert diff["mid_questions_differ"]
+    assert diff["ask_mid_kind"] == "consequence"
+    assert diff["control_mid_kind"] == "control"
+    # Shared choice1 messages; mid question is the only content fork before choice2.
+    assert mid_choice1_messages(ask) == mid_choice1_messages(control)
+    ask_mid = mid_turn_messages(ask, "A")
+    ctrl_mid = mid_turn_messages(control, "A")
+    assert ask_mid[:-1] == ctrl_mid[:-1]
+    assert ask_mid[-1] != ctrl_mid[-1]
+    oracle = next(
+        row
+        for row in rows
+        if row["arm"] == "mid_ask_oracle"
+        and row["base_game_id"] == ask["base_game_id"]
+        and row["frame"] == ask["frame"]
+        and row["surface_kind"] == ask["surface_kind"]
+        and row["policy_kind"] == ask["policy_kind"]
+    )
+    swapped = next(
+        row
+        for row in rows
+        if row["arm"] == "mid_ask_swapped"
+        and row["base_game_id"] == ask["base_game_id"]
+        and row["frame"] == ask["frame"]
+        and row["surface_kind"] == ask["surface_kind"]
+        and row["policy_kind"] == ask["policy_kind"]
+    )
+    assert oracle["arm_mid_token"] == oracle["expected_mid_token"]
+    assert swapped["arm_mid_token"] == swapped["swapped_mid_token"]
+    assert oracle["arm_mid_token"] != swapped["arm_mid_token"]

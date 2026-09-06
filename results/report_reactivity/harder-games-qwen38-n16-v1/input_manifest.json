@@ -1,0 +1,10 @@
+{
+  "ceiling_usd": 0.7828559999999999,
+  "code_sha256": "26940633085d31e9b1a604fb0b6af5eee63a23c395fbadeb286f81c72fb14902",
+  "global_ceiling_usd": 28.0,
+  "ledger_path": "results/report_reactivity/reservations_gha.jsonl",
+  "payload_sha256": "a8b43df94451398b4edfecddb1a3f1c821c014e1d4212d6cc207be2dd077964c",
+  "prepared_path": "artifacts/prepared/harder-games-qwen38-n16-v1.json",
+  "run_id": "harder-games-qwen38-n16-v1",
+  "stage": "baseline"
+}

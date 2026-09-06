@@ -58,6 +58,21 @@ or HITL that trusts verbose self-talk in opposed-assertion tool settings is the
 highest-risk cell in this pilot; opaque / direct-policy surfaces are relatively
 protected here.
 
+## Redundant-history replication (harder games)
+
+Same factorial cell map under `history_mode=redundant`
+(`harder-games-qwen38-n16-v1`, Actions
+[34051102729](https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34051102729);
+claim **C18**):
+
+- Overall swapped ≈ **0.789** (was ~0.828 under minimal)
+- **Worst cell still prose + opposed + strategic**, now **0.5** (was 0.375)
+- Strategic cells remain worse than nonagentic; Direct still ceiling (C17)
+
+This is a replication under a harder demo dial, not a locked three-way
+interaction claim. See
+[`harder-games-qwen38-n16-v1-methods.md`](harder-games-qwen38-n16-v1-methods.md).
+
 ## Limits
 
 Discovery pilot only; instruction privileges reports; not a locked surface ×

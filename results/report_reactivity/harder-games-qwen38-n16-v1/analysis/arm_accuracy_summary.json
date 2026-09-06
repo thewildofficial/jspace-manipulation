@@ -1,0 +1,213 @@
+{
+  "actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34051102729",
+  "arm_accuracies_base_equal": {
+    "direct": 1.0,
+    "external_facts": 1.0,
+    "matched_control": 1.0,
+    "oracle": 1.0,
+    "self_report": 1.0,
+    "swapped": 0.7890625
+  },
+  "arm_accuracy_detail": {
+    "direct": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "external_facts": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "matched_control": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "oracle": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "self_report": {
+      "base_equal_accuracy": 1.0,
+      "micro_accuracy": 1.0,
+      "n_bases": 16,
+      "n_correct": 128,
+      "n_rows": 128
+    },
+    "swapped": {
+      "base_equal_accuracy": 0.7890625,
+      "micro_accuracy": 0.7890625,
+      "n_bases": 16,
+      "n_correct": 101,
+      "n_rows": 128
+    }
+  },
+  "bases": 16,
+  "batch_size": 4,
+  "contrast_vs_minimal_history": {
+    "note": "Prior ask-first minimal-history baseline also had Direct=1.0; swapped\u22480.828 with worst cell prose/opposed/strategic=0.375 (C14\u2013C16). Redundant demos did not break Direct ceiling.",
+    "prior_actions_run_url": "https://github.com/thewildofficial/when-words-override-consequences/actions/runs/34048123330",
+    "prior_run_id": "gha-report16-38-v1"
+  },
+  "elapsed_seconds": 340.42457629700004,
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "history_mode": "redundant",
+  "interpretation_limits": [
+    "Discovery pilot / engineering_pilot; not locked confirmation.",
+    "Substantive null: redundant correct demos did NOT break Direct ceiling (still 1.0) \u2192 ask-first rescue remains unidentifiable this way.",
+    "Not claimed: that demos make games harder in a useful way.",
+    "Swapped still leaks under redundant history (~0.789); strategic cells worst; worst cell remains prose+opposed+strategic (now 0.5 vs prior 0.375).",
+    "GHA ledger: reservations_gha includes harder-games-qwen38-n16-v1 (~$0.7829 ceiling); historical reservations.jsonl unchanged."
+  ],
+  "load_seconds": 36.646358288,
+  "model_id": "Qwen/Qwen3.8-27B",
+  "n_records": 768,
+  "n_scores": 960,
+  "parity": {
+    "batch_single_max_abs": 0.25,
+    "choices_agree": true,
+    "passed": true,
+    "replay_max_abs": 0.0
+  },
+  "payload_sha256": "a8b43df94451398b4edfecddb1a3f1c821c014e1d4212d6cc207be2dd077964c",
+  "primary_contrasts": {
+    "self_report_minus_direct": {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "effect": 0.0,
+      "n_bases": 16,
+      "p_value": 1.0
+    },
+    "self_report_minus_matched_control": {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "effect": 0.0,
+      "n_bases": 16,
+      "p_value": 1.0
+    }
+  },
+  "primary_gate": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "confirmatory": false,
+    "decision": "fail",
+    "effect": 0.0,
+    "gate_pass": false,
+    "n_bases": 16,
+    "p_value": 1.0,
+    "reason": "primary gate criteria are not all satisfied",
+    "selection_allowed": true,
+    "status": "descriptive_pilot"
+  },
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "run_id": "harder-games-qwen38-n16-v1",
+  "self_report_both_reports_correct": {
+    "chaining": "report1\u2192report2[r1]\u2192actions[r1r2]",
+    "n_correct": 128,
+    "n_rows": 128
+  },
+  "split": "discovery",
+  "stage": "baseline",
+  "status": "engineering_pilot",
+  "swapped_by_surface_kind": {
+    "opaque": {
+      "base_equal_accuracy": 0.8125,
+      "micro_accuracy": 0.8125,
+      "n_bases": 16,
+      "n_correct": 52,
+      "n_rows": 64
+    },
+    "prose": {
+      "base_equal_accuracy": 0.765625,
+      "micro_accuracy": 0.765625,
+      "n_bases": 16,
+      "n_correct": 49,
+      "n_rows": 64
+    }
+  },
+  "swapped_cell_map": [
+    {
+      "accuracy": 1.0,
+      "frame": "nonagentic",
+      "n": 16,
+      "n_correct": 16,
+      "n_failures": 0,
+      "policy_kind": "direct_policy",
+      "surface_kind": "opaque"
+    },
+    {
+      "accuracy": 0.625,
+      "frame": "strategic",
+      "n": 16,
+      "n_correct": 10,
+      "n_failures": 6,
+      "policy_kind": "direct_policy",
+      "surface_kind": "opaque"
+    },
+    {
+      "accuracy": 1.0,
+      "frame": "nonagentic",
+      "n": 16,
+      "n_correct": 16,
+      "n_failures": 0,
+      "policy_kind": "opposed_assertion",
+      "surface_kind": "opaque"
+    },
+    {
+      "accuracy": 0.625,
+      "frame": "strategic",
+      "n": 16,
+      "n_correct": 10,
+      "n_failures": 6,
+      "policy_kind": "opposed_assertion",
+      "surface_kind": "opaque"
+    },
+    {
+      "accuracy": 1.0,
+      "frame": "nonagentic",
+      "n": 16,
+      "n_correct": 16,
+      "n_failures": 0,
+      "policy_kind": "direct_policy",
+      "surface_kind": "prose"
+    },
+    {
+      "accuracy": 0.75,
+      "frame": "strategic",
+      "n": 16,
+      "n_correct": 12,
+      "n_failures": 4,
+      "policy_kind": "direct_policy",
+      "surface_kind": "prose"
+    },
+    {
+      "accuracy": 0.8125,
+      "frame": "nonagentic",
+      "n": 16,
+      "n_correct": 13,
+      "n_failures": 3,
+      "policy_kind": "opposed_assertion",
+      "surface_kind": "prose"
+    },
+    {
+      "accuracy": 0.5,
+      "frame": "strategic",
+      "n": 16,
+      "n_correct": 8,
+      "n_failures": 8,
+      "policy_kind": "opposed_assertion",
+      "surface_kind": "prose"
+    }
+  ],
+  "task": "report"
+}
