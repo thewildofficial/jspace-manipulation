@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import pytest
 
+from jspace_policy import rename_invariant as rename_mod
 from jspace_policy.rename_invariant import (
     ACTION_LABELS,
     COMMON_FINAL_ACTION_QUERY_SUFFIX,
     RENAME_ARMS,
+    assert_syllable_tables_neutral,
     crossmap_consequences_swap,
     crossmap_names_swap,
     generate_rename_invariant_rows,
@@ -74,18 +76,40 @@ def test_crossmap_invertibility_and_separation() -> None:
     assert identity["label_consequence_agree"]
 
 
-def test_neutral_aliases_forbid_loaded_stems() -> None:
-    rows = generate_rename_invariant_rows(discovery_bases=4, locked_bases=0)
-    forbidden = ("DELETE", "ARCHIVE", "KILL", "SAVE", "REMOVE")
+def test_syllable_tables_cannot_form_forbidden_stems() -> None:
+    """Regression: SAV+EKA produced DSAVEKA004Q and broke Actions prepare."""
+
+    assert_syllable_tables_neutral()
+    assert "SAV" not in rename_mod._WORD_LEFT
+    # Exhaustive left×right products (the dry-run failure mode).
+    for left in rename_mod._WORD_LEFT:
+        for right in rename_mod._WORD_RIGHT:
+            concat = f"{left}{right}".upper()
+            for stem in rename_mod._FORBIDDEN_ALIAS_STEMS:
+                assert stem not in concat, (left, right, stem)
+
+
+def test_neutral_aliases_forbid_loaded_stems_many_bases() -> None:
+    """Sample well beyond the 16-base pilot so substring collisions cannot hide."""
+
+    rows = generate_rename_invariant_rows(discovery_bases=48, locked_bases=16)
+    assert len(rows) == (48 + 16) * 2 * 4
+    forbidden = rename_mod._FORBIDDEN_ALIAS_STEMS
+    seen_tokens: set[str] = set()
     for row in rows:
         tokens = [
             *row["phase1_labels"].values(),
             *row["phase2_labels"].values(),
+            *row["concepts"],
         ]
         for token in tokens:
+            seen_tokens.add(token)
             upper = token.upper()
             for stem in forbidden:
-                assert stem not in upper
+                assert stem not in upper, (token, stem, row["base_game_id"])
+    # Specific regression token from Actions 34053946547 must not reappear.
+    assert "DSAVEKA004Q" not in seen_tokens
+    assert not any("SAVE" in t.upper() for t in seen_tokens)
 
 
 def test_phase1_and_phase2_messages_share_final_instruction() -> None:
@@ -122,3 +146,8 @@ def test_rename_preserve_phase_families_disjoint() -> None:
 def test_invert_label_map_rejects_collision() -> None:
     with pytest.raises(ValueError, match="non-injective"):
         invert_label_map({"A": "SAME", "B": "SAME"})
+
+
+def test_assert_neutral_alias_still_rejects_save_substring() -> None:
+    with pytest.raises(ValueError, match="SAVE"):
+        rename_mod._assert_neutral_alias("DSAVEKA004Q")
