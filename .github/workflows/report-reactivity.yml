@@ -112,7 +112,7 @@ jobs:
       PINNED_PAYLOAD_SHA256: ${{ inputs.pinned_payload_sha256 }}
       HISTORY_MODE: ${{ inputs.history_mode }}
       # Local scratch only (gitignored). On GPU success, modal_report_reactivity
-      # also writes results/report_reactivity/<run_id>/prepared.json for permanence.
+      # also writes results/report_reactivity/<run_id>/prepared.json.gz for permanence.
       PREPARED_PATH: artifacts/prepared/${{ inputs.run_id }}.json
       # Fresh GHA-era study ledger (global ceiling 28.0). Historical
       # results/report_reactivity/reservations.jsonl (~$7.26) stays immutable.
@@ -275,8 +275,8 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: report-reactivity-${{ inputs.run_id }}-${{ github.run_id }}
-          # Includes prepared.json when scoring wrote it (permanent git copy is
-          # the source of truth after documentation; this artifact is backup).
+          # Includes prepared.json.gz when scoring wrote it (permanent git copy
+          # is the source of truth after documentation; this artifact is backup).
           path: |
             results/report_reactivity/${{ inputs.run_id }}
             results/report_reactivity/reservations_gha.jsonl

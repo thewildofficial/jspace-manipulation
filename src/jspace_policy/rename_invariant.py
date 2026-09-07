@@ -11,7 +11,7 @@ Hard constraints:
 
 CPU-only corpus: plain dicts, hash-stable, prepare-ready. No Modal/GPU here.
 GPU scoring is blocked until a complete analyzer/results path exists
-(see experiments/report_reactivity/gha_gates.py).
+(see jspace_policy.report_reactivity_gates).
 """
 
 from __future__ import annotations

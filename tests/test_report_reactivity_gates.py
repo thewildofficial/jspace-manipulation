@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from jspace_policy.rename_invariant import LEGACY_STUDY_ID, PROTOCOL_ID, STUDY_ID
 from jspace_policy.report_reactivity import (
     MID_TRAJECTORY_LEGACY_STUDY_ID,
     MID_TRAJECTORY_STUDY_ID,
@@ -19,7 +20,6 @@ from jspace_policy.report_reactivity_gates import (
     prepared_payload_sha256,
     rename_analyzer_exists,
 )
-from jspace_policy.rename_invariant import LEGACY_STUDY_ID, PROTOCOL_ID, STUDY_ID
 
 
 def test_rename_gpu_scoring_remains_locked() -> None:
@@ -113,7 +113,6 @@ def test_science_docs_omit_queue_ops_voice() -> None:
         "experiments/report_reactivity/ask-mid-trajectory-protocol.md",
         "experiments/report_reactivity/ask-mid-trajectory-story.md",
         "experiments/report_reactivity/rename-invariant-protocol.md",
-        "experiments/report_reactivity/ask-after-the-act-protocol.md",
         "experiments/report_reactivity/README.md",
         "docs/next-sprint/experiments.md",
     ]

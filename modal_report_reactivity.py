@@ -12,10 +12,12 @@ from jspace_policy.sprint_runtime import (
     digest,
     dumps_jsonable,
     global_ceiling_usd_for,
+    load_json_file,
     loads_jsonable,
     reserve,
     resolve_ledger_path,
     verify_payload,
+    write_gzip_new,
     write_new,
 )
 
@@ -149,7 +151,7 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
     if Path(run_id).name != run_id or run_id in {".", ".."}:
         raise ValueError("invalid run ID")
     prepared_path = Path(prepared)
-    payload = json.loads(prepared_path.read_text())
+    payload = load_json_file(prepared_path)
     verify_payload(payload)
     if stage == "replication" and payload["split"] != "locked":
         raise ValueError("replication stage requires a locked confirmation payload")
@@ -159,14 +161,15 @@ def main(prepared: str, run_id: str, stage: str = "preflight", batch_size: int =
     # Permanent copy of the exact scored input (Actions artifacts expire ~14d).
     # Local scratch under artifacts/prepared/ stays disposable; this path is
     # the committed companion to raw.json / input_manifest.json.
-    write_new(output / "prepared.json", payload)
+    committed_prepared = output / "prepared.json.gz"
+    write_gzip_new(committed_prepared, payload)
     write_new(
         output / "input_manifest.json",
         {
             "run_id": run_id,
             "payload_sha256": payload["sha256"],
             "prepared_path": prepared,
-            "committed_prepared": str(output / "prepared.json"),
+            "committed_prepared": str(committed_prepared),
             "code_sha256": digest(
                 {
                     str(p): p.read_text()

@@ -15,8 +15,8 @@ This chapter is the discovery pilot trail on the GitHub Actions scoring path
 - Frozen checkpoint revision and CPU prepare → Modal GPU score pipeline.
 - Parity gate before scoring; study spend on the GHA ledger
   (`reservations_gha.jsonl`), separate from the older local ledger.
-- Prepared inputs for scored runs are committed as `prepared.json` next to
-  `raw.json` (Actions artifacts alone expire in ~14 days).
+- Prepared inputs for scored runs are committed as `prepared.json.gz` next to
+  `raw.json`; gzip keeps the exact payload while avoiding million-line diffs.
 
 ## What happened
 
@@ -46,9 +46,9 @@ runs the opposite way from ask-first swapped (C21).
 
 | Story | Results dir | Key files |
 |---|---|---|
-| Ask-first GHA baseline | [`gha-report16-38-v1/`](gha-report16-38-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
-| Harder games (redundant demos) | [`harder-games-qwen38-n16-v1/`](harder-games-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
-| Mid-trajectory ask (`ask_mid_trajectory`) | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json`, `analysis/arm_accuracy_summary.json` |
+| Ask-first GHA baseline | [`gha-report16-38-v1/`](gha-report16-38-v1/) | `raw.json`, `prepared.json.gz`, `analysis/arm_accuracy_summary.json` |
+| Harder games (redundant demos) | [`harder-games-qwen38-n16-v1/`](harder-games-qwen38-n16-v1/) | `raw.json`, `prepared.json.gz`, `analysis/arm_accuracy_summary.json` |
+| Mid-trajectory ask (`ask_mid_trajectory`) | [`ask-mid-traj-qwen38-n16-v1/`](ask-mid-traj-qwen38-n16-v1/) | `raw.json`, `prepared.json.gz`, `analysis/arm_accuracy_summary.json` |
 
 Methods and cell maps live under
 [`../../experiments/report_reactivity/`](../../experiments/report_reactivity/).
@@ -58,7 +58,8 @@ fail closed).
 
 Earlier Modal-local pilots (`report16-38-v2`, incident, locked, preflights) keep
 their historical `raw.json` / manifests; only the GHA-era scored runs above have
-recovered permanent `prepared.json` copies. Local prepare scratch under
-`artifacts/prepared/` stays disposable.
+recovered permanent `prepared.json.gz` copies. Local prepare scratch under
+`artifacts/prepared/` stays disposable. Use the shared JSON loader or
+`gzip -dc <path>/prepared.json.gz` when inspecting an archived payload.
 
 [Results map](../README.md) · [Project README](../../README.md)

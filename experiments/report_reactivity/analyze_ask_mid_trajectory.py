@@ -13,7 +13,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from jspace_policy.sprint_runtime import write_new
+from jspace_policy.sprint_runtime import load_json_file, write_new
 
 EXPECTED_PAYLOAD_SHA256 = (
     "50b854ae18ab584a25234e62687de4d4f6de8c467d5656ec9dda89a0b1d7a5d6"
@@ -369,7 +369,7 @@ def main() -> None:
         "--prepared",
         type=Path,
         default=Path(
-            "results/report_reactivity/ask-mid-traj-qwen38-n16-v1/prepared.json"
+            "results/report_reactivity/ask-mid-traj-qwen38-n16-v1/prepared.json.gz"
         ),
     )
     parser.add_argument(
@@ -386,7 +386,7 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
-    payload = json.loads(args.prepared.read_text())
+    payload = load_json_file(args.prepared)
     raw = json.loads(args.raw.read_text())
     summary = summarize(payload, raw)
     # Fail closed: never unlink/overwrite an existing analysis artifact.

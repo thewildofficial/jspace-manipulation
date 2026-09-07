@@ -10,11 +10,13 @@ from jspace_policy.sprint_runtime import (
     digest,
     dumps_jsonable,
     global_ceiling_usd_for,
+    load_json_file,
     loads_jsonable,
     reserve,
     resolve_ledger_path,
     to_jsonable,
     verify_payload,
+    write_gzip_new,
     write_new,
 )
 
@@ -97,6 +99,14 @@ def test_artifacts_cannot_be_overwritten(tmp_path):
     with pytest.raises(FileExistsError):
         write_new(path, {"first": False})
     assert json.loads(path.read_text())["first"]
+
+
+def test_gzip_archives_round_trip_and_cannot_be_overwritten(tmp_path):
+    path = tmp_path / "prepared.json.gz"
+    write_gzip_new(path, {"first": True})
+    assert load_json_file(path) == {"first": True}
+    with pytest.raises(FileExistsError):
+        write_gzip_new(path, {"first": False})
 
 
 def test_locked_inference_refused_even_with_valid_hash():

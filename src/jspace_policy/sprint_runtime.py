@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import fcntl
+import gzip
 import hashlib
+import io
 import json
 import math
 import os
 from pathlib import Path
+from typing import Any
 
 STAGE_LIMITS = {
     "preflight": 2.0,
@@ -123,6 +126,26 @@ def write_new(path: Path, value: object) -> None:
     with path.open("x") as stream:
         json.dump(value, stream, indent=2, sort_keys=True, allow_nan=False)
         stream.write("\n")
+
+
+def load_json_file(path: Path) -> Any:
+    """Load ordinary JSON or a gzip-compressed JSON archive."""
+
+    if path.suffix == ".gz":
+        with gzip.open(path, "rt", encoding="utf-8") as stream:
+            return json.load(stream)
+    return json.loads(path.read_text())
+
+
+def write_gzip_new(path: Path, value: object) -> None:
+    """Write deterministic gzip JSON without replacing an existing artifact."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("xb") as raw:
+        with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as compressed:
+            with io.TextIOWrapper(compressed, encoding="utf-8", newline="\n") as stream:
+                json.dump(value, stream, indent=2, sort_keys=True, allow_nan=False)
+                stream.write("\n")
 
 
 def reserve(

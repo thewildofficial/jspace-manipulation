@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from jspace_policy.sprint_analysis import grouped_paired_analysis, primary_gate
-from jspace_policy.sprint_runtime import write_new
+from jspace_policy.sprint_runtime import load_json_file, write_new
 
 EXPECTED_PAYLOAD_SHA256 = (
     "126ea05173558cd161f017922a936c8248704d2ac35dd34c3213b1de07bf257d"
@@ -192,11 +192,19 @@ def summarize(payload: dict[str, Any], raw: dict[str, Any]) -> dict[str, Any]:
             )
         },
         "interpretation_limits": [
-            "Discovery pilot / engineering_pilot; not locked confirmation; not a novelty/priority claim.",
-            "Ceiling on Direct/self/control means rewrite-vs-reveal rescue is unidentifiable here (stop rule for mechanistic rescue / reports-fix-failures).",
-            "Swapped action accuracy below ceiling shows report-content can steer action; drop is larger on prose than opaque.",
-            "Replicates qualitative pattern of earlier claim C2/C3 on a fresh GHA path + nonce corpus; do not overclaim independence beyond what's justified.",
-            "GHA ledger: reservations_gha includes gha-report16-38-v1 (~$0.7829 ceiling); total with prior v2 preflight retention — see reservations_gha.jsonl.",
+            "Discovery pilot / engineering_pilot; not locked confirmation; "
+            "not a novelty/priority claim.",
+            "Ceiling on Direct/self/control means rewrite-vs-reveal rescue is "
+            "unidentifiable here (stop rule for mechanistic rescue / "
+            "reports-fix-failures).",
+            "Swapped action accuracy below ceiling shows report-content can steer "
+            "action; drop is larger on prose than opaque.",
+            "Replicates qualitative pattern of earlier claim C2/C3 on a fresh "
+            "GHA path + nonce corpus; do not overclaim independence beyond "
+            "what's justified.",
+            "GHA ledger: reservations_gha includes gha-report16-38-v1 (~$0.7829 "
+            "ceiling); total with prior v2 preflight retention — see "
+            "reservations_gha.jsonl.",
         ],
     }
 
@@ -207,7 +215,7 @@ def main() -> None:
         "--prepared",
         type=Path,
         default=Path(
-            "results/report_reactivity/gha-report16-38-v1/prepared.json"
+            "results/report_reactivity/gha-report16-38-v1/prepared.json.gz"
         ),
     )
     parser.add_argument(
@@ -223,7 +231,7 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
-    payload = json.loads(args.prepared.read_text())
+    payload = load_json_file(args.prepared)
     raw = json.loads(args.raw.read_text())
     summary = summarize(payload, raw)
     args.output.parent.mkdir(parents=True, exist_ok=True)
