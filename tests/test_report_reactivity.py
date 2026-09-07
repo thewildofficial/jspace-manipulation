@@ -241,7 +241,9 @@ def test_mid_trajectory_rows_have_two_action_queries() -> None:
     assert choice1[-1]["content"] == choice2[-1]["content"]
     # Two distinct action queries in the choice2 transcript: after scenario and after mid.
     action_turns = [
-        m for m in choice2 if m["role"] == "user" and m["content"] == COMMON_FINAL_ACTION_QUERY_SUFFIX
+        m
+        for m in choice2
+        if m["role"] == "user" and m["content"] == COMMON_FINAL_ACTION_QUERY_SUFFIX
     ]
     assert len(action_turns) == 2
     mid = mid_turn_messages(row, "B")

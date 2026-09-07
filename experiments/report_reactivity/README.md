@@ -83,24 +83,11 @@ Canonical protocol / task / study ID: **`rename_invariant`**. Prepare:
 an analyzer + documented results layout exist. Module:
 `src/jspace_policy/rename_invariant.py`.
 
-## Ask-after-the-act (design stub)
-
-Stub only — not wired, not scored:
-[ask-after-the-act-protocol.md](ask-after-the-act-protocol.md). Operator
-priority ordering lives in the decision log, not here.
-
 ## Prepared-payload permanence
 
-Scored runs write `results/report_reactivity/<run_id>/prepared.json` (exact
-CPU prepare dict; sha256 must match `raw.json`’s `payload_sha256`). Local
-scratch `artifacts/prepared/*` stays gitignored. GPU Actions uploads now also
-include the prepare file as a short-lived backup. Paid runs require
+Scored runs write `results/report_reactivity/<run_id>/prepared.json.gz` (the
+exact CPU prepare dict compressed for repository storage; sha256 must match
+`raw.json`’s `payload_sha256`). Local scratch
+`artifacts/prepared/*` stays gitignored. GPU Actions uploads also include the
+uncompressed prepare file as a short-lived backup. Paid runs require
 `pinned_payload_sha256` to match the freshly prepared hash before Modal.
-
-## Next protocol draft (not executed)
-
-[branched_preaction_auditor_protocol.md](branched_preaction_auditor_protocol.md)
-and stub [protocol_bpa.json](protocol_bpa.json): shared-prefix fork into (A) tool
-choice vs (B) pre-action predictions of verifiable/unverifiable auditor reports.
-Primary estimand is pre-action honesty-intent relative to C5's post-action null.
-Mapping-conditional reporting is mandatory (C10).

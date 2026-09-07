@@ -7,9 +7,10 @@ CPU prepare / dry_run stays allowed. GPU scoring requires:
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
+
+from jspace_policy.sprint_runtime import load_json_file
 
 # Unlock rename GPU only when analyze_rename_invariant.py + documented results
 # layout exist AND instrument parity issues are understood. Do not flip this
@@ -44,7 +45,7 @@ def assert_rename_gpu_allowed(*, task: str, dry_run: bool) -> None:
 
 
 def prepared_payload_sha256(prepared_path: Path) -> str:
-    payload: dict[str, Any] = json.loads(prepared_path.read_text())
+    payload: dict[str, Any] = load_json_file(prepared_path)
     sha = payload.get("sha256")
     if not isinstance(sha, str) or not sha:
         raise SystemExit(f"prepared payload missing sha256: {prepared_path}")

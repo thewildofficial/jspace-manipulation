@@ -81,8 +81,9 @@ intervention lever on this scaffold.
    crossmap both directions. **Do not GPU-score** until analyzer + results
    layout exist (`RENAME_GPU_SCORING_UNLOCKED`). Score only after dry-run hash
    is pinned via `pinned_payload_sha256`. No Modal from the docs/wire PR.
-3. **#4 ask-after-the-act** — protocol stub only for now (queue visibility);
-   do not block #6.
+3. **#4 ask-after-the-act** — deferred with no active design file; do not
+   block #6. Reopen only with an implementation plan and a defined result
+   path.
 4. **#1 lie titration** — after #4 design is ready to wire.
 5. **#2 attribution** — after #1.
 

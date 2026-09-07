@@ -15,7 +15,6 @@ then [the experimental design](experiments.md) and
 Living claims: [claim ledger](claim-ledger.md) (includes C11–C13 GHA path;
 C14–C15 GHA 16-base discovery baseline; C16 poisoned self-talk cell map).
 Ops decisions: [decision log](decision-log.md) (RR-D001 GHA ledger).
-Next design draft: [branched pre-action auditor protocol](../experiments/report_reactivity/branched_preaction_auditor_protocol.md).
 Harder-games dial: [break the Direct ceiling](../experiments/report_reactivity/harder-games-break-the-ceiling.md)
 (`history_mode=redundant`).
 Novelty bar: prefer experiments with deployment/safety/ToM implications (tool use, oversight, multi-agent, HITL, self-supervision) over quirks.
@@ -24,6 +23,8 @@ For the current merged-main status, use the [research record](research-record.md
 It separates infrastructure, prepared payloads, failed instrument attempts,
 discovery scores, and locked confirmation, and defines the naming fields used
 for new work.
+Repository cleanup and artifact-retention decisions are recorded in the
+[repository hygiene note](repo-hygiene.md).
 
 The original aspiration—understanding how internal information controls strategic
 reporting—is still worthwhile. The strongest existing evidence concerns semantic

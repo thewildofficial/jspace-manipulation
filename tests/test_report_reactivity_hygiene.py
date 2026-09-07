@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from jspace_policy.sprint_runtime import write_new
+from jspace_policy.sprint_runtime import load_json_file, write_new
 
 
 def test_write_new_refuses_existing_analysis_path(tmp_path: Path) -> None:
@@ -41,6 +41,6 @@ def test_committed_prepared_matches_raw_payload_hash() -> None:
         "harder-games-qwen38-n16-v1",
         "ask-mid-traj-qwen38-n16-v1",
     ):
-        prepared = json.loads((root / run_id / "prepared.json").read_text())
+        prepared = load_json_file(root / run_id / "prepared.json.gz")
         raw = json.loads((root / run_id / "raw.json").read_text())
         assert prepared["sha256"] == raw["payload_sha256"]

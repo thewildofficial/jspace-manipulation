@@ -43,7 +43,7 @@ stop rule 2 of the protocol.
 Committed under `results/report_reactivity/ask-mid-traj-qwen38-n16-v1/`:
 
 - `raw.json` — Modal `score_gpu` JSON return (parity + scores)
-- `prepared.json` — exact CPU prepare payload (sha256 matches `payload_sha256`)
+- `prepared.json.gz` — exact CPU prepare payload (sha256 matches `payload_sha256`)
 - `input_manifest.json` — reserve metadata (`ledger_path=reservations_gha.jsonl`)
 - `analysis/arm_accuracy_summary.json` — CPU join (immutable `write_new`)
 
@@ -51,7 +51,7 @@ Committed under `results/report_reactivity/ask-mid-traj-qwen38-n16-v1/`:
 
 ```bash
 uv run python experiments/report_reactivity/analyze_ask_mid_trajectory.py \
-  --prepared results/report_reactivity/ask-mid-traj-qwen38-n16-v1/prepared.json \
+  --prepared results/report_reactivity/ask-mid-traj-qwen38-n16-v1/prepared.json.gz \
   --raw results/report_reactivity/ask-mid-traj-qwen38-n16-v1/raw.json \
   --output results/report_reactivity/ask-mid-traj-qwen38-n16-v1/analysis/arm_accuracy_summary.json
 ```

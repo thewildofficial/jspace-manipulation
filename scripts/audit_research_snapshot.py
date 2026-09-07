@@ -28,9 +28,15 @@ def audit() -> dict:
     spec = importlib.util.spec_from_file_location('rbg6_audit_analyzer', analyzer_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    config = json.loads((ROOT / 'configs/v5/full_action_trajectory/experiment.json').read_text())
+    config = json.loads(
+        (ROOT / 'configs/v5/full_action_trajectory/experiment.json').read_text()
+    )
     recomputed = module.analyze(payload, config)
-    archived = json.loads((ROOT / 'results/v5_full_action_trajectory/analysis/behavior_v1_analysis.json').read_text())
+    archived = json.loads(
+        (
+            ROOT / 'results/v5_full_action_trajectory/analysis/behavior_v1_analysis.json'
+        ).read_text()
+    )
     assert recomputed == archived, 'archived analysis no longer reproduces'
     # Non-uniform RMSNorm gains can change candidate ranking, not merely scale it.
     h = np.array([[2., 1.], [0., 0.]])
@@ -50,13 +56,28 @@ def audit() -> dict:
             'unique_source_conditions': len({r['source_condition_id'] for r in rows}),
             'unique_unordered_concept_pairs': len({tuple(sorted(r['concepts'])) for r in rows}),
             'both_reports_correct': len(both),
-            'correct_action_among_both_reports_correct': sum(r['trajectory_arms']['self_generated']['action_correct'] for r in both),
-            'wrong_action_among_report_error_cases': sum(not r['trajectory_arms']['self_generated']['action_correct'] for r in errors),
-            'correct_report_tokens': sum(v['correct'] for r in rows for v in r['self_reports'].values()),
+            'correct_action_among_both_reports_correct': sum(
+                r['trajectory_arms']['self_generated']['action_correct'] for r in both
+            ),
+            'wrong_action_among_report_error_cases': sum(
+                not r['trajectory_arms']['self_generated']['action_correct']
+                for r in errors
+            ),
+            'correct_report_tokens': sum(
+                v['correct'] for r in rows for v in r['self_reports'].values()
+            ),
             'total_report_tokens': 2*len(rows),
-            'dissociation_binomial_interval_treating_rows_independent': module.exact_binomial_interval(0, len(rows)),
-            'any_dissociation_per_base_zero_event_interval': module.exact_binomial_interval(0, len({r['base_game_id'] for r in rows})),
-            'note': 'The per-base interval targets any dissociation across two report orders; it is not an interchangeable CI for trajectory risk. Both binomial models additionally assume independent sampled units.'
+            'dissociation_binomial_interval_treating_rows_independent': (
+                module.exact_binomial_interval(0, len(rows))
+            ),
+            'any_dissociation_per_base_zero_event_interval': (
+                module.exact_binomial_interval(0, len({r['base_game_id'] for r in rows}))
+            ),
+            'note': (
+                'The per-base interval targets any dissociation across two report '
+                'orders; it is not an interchangeable CI for trajectory risk. '
+                'Both binomial models additionally assume independent sampled units.'
+            ),
         },
         'synthetic_normalization_counterexample': {
             'not_a_model_rerun': True,

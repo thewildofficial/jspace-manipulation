@@ -2,8 +2,9 @@
 
 Status: **reconciled record for the report-reactivity merge sequence**. This
 page records the state of GitHub `main` at commit
-[`486458f`](https://github.com/thewildofficial/when-words-override-consequences/commit/486458fc7bb37cf82ea5e8bbdbfd65406b4c4acb)
-after merges #18–#24. It is a navigation and status record, not a new result.
+[`30fa352`](https://github.com/thewildofficial/when-words-override-consequences/commit/30fa3520d954d8875ec84a4f3c23739fbe220664)
+after merges #18–#24 and the gate-failure archive. It is a navigation and
+status record, not a new result.
 
 ## Status vocabulary
 

@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from jspace_policy.sprint_analysis import grouped_paired_analysis, primary_gate
-from jspace_policy.sprint_runtime import write_new
+from jspace_policy.sprint_runtime import load_json_file, write_new
 
 EXPECTED_PAYLOAD_SHA256 = (
     "a8b43df94451398b4edfecddb1a3f1c821c014e1d4212d6cc207be2dd077964c"
@@ -256,7 +256,7 @@ def main() -> None:
         "--prepared",
         type=Path,
         default=Path(
-            "results/report_reactivity/harder-games-qwen38-n16-v1/prepared.json"
+            "results/report_reactivity/harder-games-qwen38-n16-v1/prepared.json.gz"
         ),
     )
     parser.add_argument(
@@ -273,7 +273,7 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
-    payload = json.loads(args.prepared.read_text())
+    payload = load_json_file(args.prepared)
     raw = json.loads(args.raw.read_text())
     summary = summarize(payload, raw)
     # Fail closed: never unlink/overwrite an existing analysis artifact.

@@ -1123,7 +1123,9 @@ def mid_choice2_messages(
     ]
 
 
-def mid_ask_vs_control_prefix_diff(row_ask: Mapping[str, Any], row_control: Mapping[str, Any]) -> dict[str, Any]:
+def mid_ask_vs_control_prefix_diff(
+    row_ask: Mapping[str, Any], row_control: Mapping[str, Any]
+) -> dict[str, Any]:
     """Assert ask vs control share scenario and differ only in the mid question."""
 
     if row_ask["scenario"] != row_control["scenario"]:
